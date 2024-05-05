@@ -2,9 +2,9 @@
 
 -- description --
 
-## distributors
+## Contributors
 
--- distributors แบ่งตาม role --
+-- Contributors แบ่งตาม role --
 
 ## game features
 

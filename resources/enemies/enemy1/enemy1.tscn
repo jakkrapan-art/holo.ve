@@ -1,0 +1,32 @@
+[gd_scene load_steps=7 format=3 uid="uid://c7jthwtyinhgw"]
+
+[ext_resource type="Script" path="res://scripts/entity/enemy/enemy.gd" id="1_d1lvk"]
+[ext_resource type="Texture2D" uid="uid://bxd2aatydxi5k" path="res://resources/player/playerRed_up1.png" id="1_w7mk5"]
+[ext_resource type="Resource" uid="uid://c7qyewpayim0s" path="res://resources/player/player_stats.tres" id="2_al312"]
+[ext_resource type="Script" path="res://scripts/entity/health_controller.gd" id="4_e5pnj"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_enl7i"]
+radius = 7.0
+height = 28.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_u5gmk"]
+
+[node name="Enemy1" type="Area2D" groups=["enemy"]]
+script = ExtResource("1_d1lvk")
+stats = ExtResource("2_al312")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_w7mk5")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 18)
+rotation = 1.5708
+shape = SubResource("CapsuleShape2D_enl7i")
+
+[node name="HealthController" type="Node" parent="."]
+script = ExtResource("4_e5pnj")
+
+[node name="Hitbox" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
+shape = SubResource("CircleShape2D_u5gmk")

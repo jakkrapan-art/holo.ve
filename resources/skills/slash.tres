@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="Skill" load_steps=4 format=3 uid="uid://e8s3ar3ja5hb"]
+
+[ext_resource type="Resource" uid="uid://2668hom5rg4s" path="res://resources/skills/skill_actions/attack_normal.tres" id="1_ta5j3"]
+[ext_resource type="Script" path="res://scripts/skill/skill.gd" id="1_uajoe"]
+[ext_resource type="Resource" uid="uid://cf4a0umnkyhqu" path="res://resources/skills/skill_actions/heal_normal.tres" id="2_21h1n"]
+
+[resource]
+script = ExtResource("1_uajoe")
+name = "Slash"
+desc = "Deal damage to target"
+cooldown = 5.0
+successChance = 1.0
+actions = Array[Resource]([ExtResource("1_ta5j3"), null, ExtResource("2_21h1n")])

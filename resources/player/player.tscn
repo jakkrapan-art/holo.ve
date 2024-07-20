@@ -1,0 +1,103 @@
+[gd_scene load_steps=17 format=3 uid="uid://d0erfm3fq5foa"]
+
+[ext_resource type="Script" path="res://scripts/entity/player/player.gd" id="1_xg5vq"]
+[ext_resource type="Texture2D" uid="uid://bgdf2gkm74hox" path="res://resources/player/playerRed_walk1.png" id="2_elebk"]
+[ext_resource type="Resource" uid="uid://c7qyewpayim0s" path="res://resources/player/player_stats.tres" id="2_u11jw"]
+[ext_resource type="Texture2D" uid="uid://bxd2aatydxi5k" path="res://resources/player/playerRed_up1.png" id="3_s8mgj"]
+[ext_resource type="Texture2D" uid="uid://b0m2r5iovu6y4" path="res://resources/player/playerRed_up2.png" id="4_hk5q7"]
+[ext_resource type="Texture2D" uid="uid://blbspye1ua1xp" path="res://resources/player/playerRed_walk2.png" id="5_8nkwt"]
+[ext_resource type="Script" path="res://scripts/skill/skill_controller.gd" id="6_qgv53"]
+[ext_resource type="Resource" uid="uid://e8s3ar3ja5hb" path="res://resources/skills/slash.tres" id="7_corsd"]
+[ext_resource type="Script" path="res://scripts/entity/health_controller.gd" id="8_a1yjq"]
+[ext_resource type="Script" path="res://scripts/enemy_detector.gd" id="10_sssv3"]
+[ext_resource type="Script" path="res://scripts/entity/attack_controller.gd" id="11_omp2f"]
+[ext_resource type="Script" path="res://scripts/combat/projectile_spawner.gd" id="12_d5uk5"]
+[ext_resource type="PackedScene" uid="uid://bm6ibfiqh7uvc" path="res://resources/combat/bullets/bullet.tscn" id="13_x0v5c"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_aqb6s"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_elebk")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 3.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_s8mgj")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_hk5q7")
+}],
+"loop": true,
+"name": &"run",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_8nkwt")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_elebk")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 5.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_8ouhl"]
+radius = 4.0
+height = 26.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_m0flo"]
+
+[node name="player" type="Area2D"]
+script = ExtResource("1_xg5vq")
+moveSpeed = 200.0
+runSpeedMultiplier = 1.5
+dashSpeedMultiplier = 2.2
+stats = ExtResource("2_u11jw")
+metadata/_edit_group_ = true
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_aqb6s")
+animation = &"walk"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 22.6)
+rotation = 1.5708
+shape = SubResource("CapsuleShape2D_8ouhl")
+one_way_collision_margin = 0.0
+
+[node name="DashTimer" type="Timer" parent="."]
+wait_time = 0.05
+one_shot = true
+
+[node name="SkillController" type="Node" parent="."]
+script = ExtResource("6_qgv53")
+skillList = Array[Resource]([ExtResource("7_corsd")])
+
+[node name="HealthController" type="Node" parent="."]
+script = ExtResource("8_a1yjq")
+
+[node name="EnemyDetector" type="Area2D" parent="." groups=["player"]]
+script = ExtResource("10_sssv3")
+radius = 5.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EnemyDetector"]
+scale = Vector2(5, 5)
+shape = SubResource("CircleShape2D_m0flo")
+
+[node name="AttackController" type="Node" parent="."]
+script = ExtResource("11_omp2f")
+
+[node name="AttackDelayTimer" type="Timer" parent="AttackController"]
+one_shot = true
+
+[node name="Gun" type="Node2D" parent="."]
+script = ExtResource("12_d5uk5")
+projectile = ExtResource("13_x0v5c")
+
+[connection signal="timeout" from="DashTimer" to="." method="_on_dash_timer_timeout"]

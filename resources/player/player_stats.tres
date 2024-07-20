@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="Stats" load_steps=2 format=3 uid="uid://c7qyewpayim0s"]
+
+[ext_resource type="Script" path="res://scripts/entity/stats.gd" id="1_vps7f"]
+
+[resource]
+script = ExtResource("1_vps7f")
+healh = 100
+attack = 4
+attackSpeed = 1.2
+mana = 100
+intialMana = 10

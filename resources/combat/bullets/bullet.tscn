@@ -1,0 +1,21 @@
+[gd_scene load_steps=4 format=3 uid="uid://bm6ibfiqh7uvc"]
+
+[ext_resource type="Script" path="res://scripts/combat/projectile.gd" id="1_m51ds"]
+[ext_resource type="Texture2D" uid="uid://cjniiq3h7lrk0" path="res://resources/combat/bullets/bullet.png" id="2_pqj8l"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_38r1k"]
+
+[node name="Bullet" type="RigidBody2D"]
+gravity_scale = 0.0
+script = ExtResource("1_m51ds")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+texture = ExtResource("2_pqj8l")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+scale = Vector2(1e-05, 1e-05)
+shape = SubResource("CircleShape2D_38r1k")
+
+[node name="LifetimeTimer" type="Timer" parent="."]
+
+[connection signal="timeout" from="LifetimeTimer" to="." method="onExpired"]

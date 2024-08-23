@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://cs2xxi3vk21js"]
 
-[ext_resource type="Script" path="res://scripts/map/pathFollowTest.gd" id="1_4ve4v"]
+[ext_resource type="Script" path="res://scripts/map/path_follow_test.gd" id="1_4ve4v"]
 
 [node name="enemy_base" type="PathFollow2D"]
 loop = false

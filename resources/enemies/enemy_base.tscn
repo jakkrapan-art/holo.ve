@@ -1,7 +1,23 @@
-[gd_scene load_steps=2 format=3 uid="uid://cs2xxi3vk21js"]
+[gd_scene load_steps=5 format=3 uid="uid://cs2xxi3vk21js"]
 
-[ext_resource type="Script" path="res://scripts/map/path_follow_test.gd" id="1_4ve4v"]
+[ext_resource type="Script" path="res://scripts/map/path_follow.gd" id="1_213bx"]
+[ext_resource type="Script" path="res://scripts/entity/enemy/enemy.gd" id="1_yukka"]
+[ext_resource type="Texture2D" uid="uid://qsyir3brjwvm" path="res://resources/enemies/images/enemy_test.png" id="3_5ljvi"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_gnwf4"]
+radius = 16.0
 
 [node name="enemy_base" type="PathFollow2D"]
 loop = false
-script = ExtResource("1_4ve4v")
+script = ExtResource("1_213bx")
+
+[node name="Enemy" type="Area2D" parent="." node_paths=PackedStringArray("pathFollow")]
+script = ExtResource("1_yukka")
+pathFollow = NodePath("..")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemy"]
+shape = SubResource("CircleShape2D_gnwf4")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+rotation = 1.5708
+texture = ExtResource("3_5ljvi")

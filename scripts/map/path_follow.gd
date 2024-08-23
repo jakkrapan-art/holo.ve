@@ -5,4 +5,4 @@ func _process(delta):
 		queue_free()
 
 func _physics_process(delta):
-	progress_ratio += 0.1 * delta
+	progress_ratio += 1 * delta

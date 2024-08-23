@@ -5,11 +5,9 @@ class_name Entity
 @export var stats: Stats
 
 func _ready():
-	health.setup(stats.healh, stats.healh)
-	health.connect("onDead", Callable(self, "onDead"))
-
-func _process(delta):
-	pass
+	if(stats != null):
+		health.setup(stats.healh, stats.healh)
+		health.connect("onDead", Callable(self, "onDead"))
 
 func getDamage() -> int:
 	return stats.attack

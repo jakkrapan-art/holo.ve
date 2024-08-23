@@ -1,8 +1,14 @@
 extends Entity
 class_name Enemy
 
-func _ready():
-	super()
+@export var pathFollow: PathFollow2D = null
 
-func _process(delta):
-	super(delta)
+func _process(_delta):
+	if(pathFollow.progress_ratio == 1):
+		onReachEndPoint.emit();
+		queue_free()
+
+func _physics_process(delta):
+	pathFollow.progress_ratio += 0.1 * delta
+
+signal onReachEndPoint();

@@ -10,14 +10,13 @@ config_version=5
 
 [application]
 
-config/name="FirstGame"
-run/main_scene="res://scenes/main_scene.tscn"
+config/name="holo.ve"
 config/features=PackedStringArray("4.2", "Forward Plus")
 config/icon="res://icon.svg"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/map_setting/plugin.cfg")
+enabled=PackedStringArray("res://addons/load_map_data/plugin.cfg")
 
 [input]
 

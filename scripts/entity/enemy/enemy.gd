@@ -1,14 +1,29 @@
-extends Entity
+extends PathFollow2D
 class_name Enemy
 
-@export var pathFollow: PathFollow2D = null
+@onready var sprite: Sprite2D = $Sprite2D;
+@onready var area: Area2D = $Enemy;
+
+enum EnemyType {Normal, Elite, Boss}
+
+var hp: int = 0;
+var armor: int = 0;
+var mArmor: int = 0;
+var moveSpeed: int = 0;
+
+func setup(hp: int, armor: int, mArmor: int, moveSpeed: int, texture: Texture2D):
+	setTexture(texture);
 
 func _process(_delta):
-	if(pathFollow.progress_ratio == 1):
+	if(progress_ratio == 1):
 		onReachEndPoint.emit();
 		queue_free()
 
 func _physics_process(delta):
-	pathFollow.progress_ratio += 0.1 * delta
+	progress_ratio += 0.1 * delta
+
+func setTexture(image: Texture2D):
+	if(sprite != null && image != null):
+		sprite.texture = image;
 
 signal onReachEndPoint();

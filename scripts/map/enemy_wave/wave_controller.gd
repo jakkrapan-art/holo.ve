@@ -38,7 +38,6 @@ func startNextWave():
 	currentGroupIndex = 0;
 	groupSpawnCount = 0;
 	
-	print("wave datas size: " , waveDatas.size());
 	var data: WaveData = waveDatas[currWave - 1] as WaveData
 	timer.wait_time = 0.5;
 	timer.start()
@@ -51,7 +50,6 @@ func startNextWave():
 func spawnEnemy():
 	var enemy: Enemy = createEnemyObject(Enemy.EnemyType.Normal)
 	var waveGroup = waveData.groupList[currentGroupIndex];
-	print("enemy:", enemy);
 	var texture: Texture2D = null; 
 	if(enemyTextures.has(waveGroup.texture)):
 		texture = enemyTextures[waveGroup.texture]

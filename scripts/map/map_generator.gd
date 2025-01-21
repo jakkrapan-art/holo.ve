@@ -50,7 +50,7 @@ func _on_HTTPRequest_request_completed(result, response_code, headers, body):
 		print("HTTP Request failed with response code:", response_code)
 
 func process_sheet_data(data):
-	var mapData: MapData = MapData.new(100, 100);
+	var mapData: MapData = MapData.new();
 	var result: Array[bool] = [];
 	var index: int = 0
 	for row in data:

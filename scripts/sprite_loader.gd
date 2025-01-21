@@ -19,9 +19,8 @@ static func preloadImage(group: String, path: String):
 			loaded[file_name.substr(0, file_name.length() - 4)] = texture
 		file_name = dir.get_next()
 
-	_sprites[group] = loaded
-	dir.list_dir_end()
-	print("Preloaded" + group + "Sprites:", loaded)
+	_sprites[group] = loaded;
+	dir.list_dir_end();
 
 static func getSpriteGroup(group: String):
 	if(!_sprites.has(group)):

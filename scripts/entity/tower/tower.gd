@@ -2,14 +2,24 @@ extends Node2D
 var GRID_SIZE = 64;
 
 @onready var spr: Sprite2D = $Sprite2D
+@export var enableMove: bool = false;
+@onready var attackController: AttackController = $AttackController;
+
+var enemy: Enemy = null;
+
+func _ready():
+	if(attackController != null):
+		attackController.setup(10, 0.2);
 
 func _process(delta):
-	var mousePos = get_global_mouse_position()
-	var gridPos = snapToGrid(mousePos)
-	position = gridPos
+	if enableMove:
+		var mousePos = get_global_mouse_position()
+		position = mousePos;
 	
-	var avail = isAvailable();
-	updateSpriteColor(avail);
+	attackEnemy();
+	#var gridPos = snapToGrid(mousePos)
+	#var avail = isAvailable();
+	#updateSpriteColor(avail);
 
 func snapToGrid(position):
 	var screenSize = get_viewport().size;
@@ -19,10 +29,12 @@ func snapToGrid(position):
 	
 	return Vector2(gridX, gridY)
 
+func attackEnemy():
+	if(enemy != null && attackController != null):
+		attackController.attack(enemy);
+	pass;
+
 func isAvailable():
-	if ((roundi(position.x / GRID_SIZE) % 2 == 1 && roundi(position.y / GRID_SIZE) % 2 == 0) ||
-		(roundi(position.x / GRID_SIZE) % 2 == 0 && roundi(position.y / GRID_SIZE) % 2 == 1)):
-		return false
 	return true
 
 func updateSpriteColor(available: bool):
@@ -30,3 +42,7 @@ func updateSpriteColor(available: bool):
 		spr.self_modulate = Color("#ffffff", 1);
 	else:
 		spr.self_modulate = Color("#ff0000", 1);
+
+func _onEnemyDetected(enemy: Enemy):
+	if(self.enemy == null):
+		self.enemy = enemy;

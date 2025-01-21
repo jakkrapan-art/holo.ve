@@ -1,10 +1,30 @@
-[gd_scene load_steps=3 format=3 uid="uid://d5g7c6yxmrv4"]
+[gd_scene load_steps=6 format=3 uid="uid://d5g7c6yxmrv4"]
 
 [ext_resource type="Script" path="res://scripts/entity/tower/tower.gd" id="1_mmirn"]
 [ext_resource type="Texture2D" uid="uid://bxd2aatydxi5k" path="res://resources/player/playerRed_up1.png" id="2_2h70i"]
+[ext_resource type="Script" path="res://scripts/enemy_detector.gd" id="3_57u27"]
+[ext_resource type="Script" path="res://scripts/entity/attack_controller.gd" id="4_ar3mn"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_qi6uv"]
 
 [node name="tower" type="Node2D"]
 script = ExtResource("1_mmirn")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("2_2h70i")
+
+[node name="EnemyDetector" type="Area2D" parent="." node_paths=PackedStringArray("collision")]
+scale = Vector2(3, 3)
+script = ExtResource("3_57u27")
+collision = NodePath("CollisionShape2D")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EnemyDetector"]
+shape = SubResource("CircleShape2D_qi6uv")
+
+[node name="AttackController" type="Node" parent="."]
+script = ExtResource("4_ar3mn")
+
+[node name="AttackDelayTimer" type="Timer" parent="AttackController"]
+
+[connection signal="onEnemyDetected" from="EnemyDetector" to="." method="_onEnemyDetected"]
+[connection signal="timeout" from="AttackController/AttackDelayTimer" to="AttackController" method="_onAttackDelayTimerTimeout"]

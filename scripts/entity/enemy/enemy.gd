@@ -6,13 +6,19 @@ class_name Enemy
 
 enum EnemyType {Normal, Elite, Boss}
 
-var hp: int = 0;
+var maxHp: int = 0;
+var currentHp: int = 0;
 var armor: int = 0;
 var mArmor: int = 0;
 var moveSpeed: int = 0;
 
 func setup(hp: int, armor: int, mArmor: int, moveSpeed: int, texture: Texture2D):
 	setTexture(texture);
+	maxHp = hp;
+	currentHp = hp;
+	self.armor = armor;
+	self.mArmor = mArmor;
+	self.moveSpeed = moveSpeed;
 
 func _process(_delta):
 	if(progress_ratio == 1):
@@ -25,5 +31,14 @@ func _physics_process(delta):
 func setTexture(image: Texture2D):
 	if(sprite != null && image != null):
 		sprite.texture = image;
+		
+func recvDamage(damage: int) -> int:
+	currentHp -= damage;
+	if(currentHp <= 0):
+		dead();
+	return damage;
+	
+func dead():
+	queue_free();
 
 signal onReachEndPoint();

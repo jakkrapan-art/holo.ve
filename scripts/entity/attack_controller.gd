@@ -2,26 +2,31 @@ extends Node
 class_name AttackController
 
 @onready var attackDelayTimer = $AttackDelayTimer
-var weapon = null;
+var attackDamage: int = 0;
+var isReady: bool = true;
 
-func setup(weapon):
-	self.weapon = weapon
+func setup(damage: int, delay: float):
+	updateDelayTime(delay);
+	updateAttackDamage(damage);
 
-func setDelayTime(delay: float):
+func updateAttackDamage(damage: int):
+	attackDamage = damage;
+
+func updateDelayTime(delay: float):
 	if attackDelayTimer == null:
 		return
 	attackDelayTimer.wait_time = delay
 
-func attack(target: Entity, damageAmount: int) -> int:
-	if(weapon == null || target == null || !isReady()):
+func attack(target: Enemy) -> int:
+	if(target == null || !isReady):
 		return 0
-	weapon.attack(target);
+	isReady = false;
 	attackDelayTimer.start()
-	return 0
-	#if (target.has_method("recvDamage")):
-		#return target.recvDamage(damageAmount)
-	#else:
-		#return 0
+	if (target.has_method("recvDamage")):
+		return target.recvDamage(attackDamage);
+	else:
+		return 0
 
-func isReady() -> bool:
-	return attackDelayTimer != null && attackDelayTimer.time_left <= 0
+
+func _onAttackDelayTimerTimeout():
+	isReady = true;

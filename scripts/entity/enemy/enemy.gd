@@ -39,6 +39,8 @@ func recvDamage(damage: int) -> int:
 	return damage;
 	
 func dead():
+	onDead.emit();
 	queue_free();
 
 signal onReachEndPoint();
+signal onDead();

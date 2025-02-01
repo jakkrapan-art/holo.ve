@@ -11,15 +11,24 @@ func _ready():
 	if(attackController != null):
 		attackController.setup(10, 0.2);
 
+func _input(event):
+	if event is InputEventKey and event.pressed and event.keycode == KEY_SPACE:
+		print("Space was pressed!")
+		enableMove = !enableMove
+
 func _process(delta):
 	if enableMove:
 		var mousePos = get_global_mouse_position()
-		position = mousePos;
+		var gridPos = snapToGrid(mousePos)
+		position = gridPos;
+		
+		var avail = isAvailable();
+		updateSpriteColor(avail);
 	
 	attackEnemy();
-	#var gridPos = snapToGrid(mousePos)
-	#var avail = isAvailable();
-	#updateSpriteColor(avail);
+
+func setEnableMove(enable: bool):
+	enableMove = enable;
 
 func snapToGrid(position):
 	var screenSize = get_viewport().size;

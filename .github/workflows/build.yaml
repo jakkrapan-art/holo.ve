@@ -1,0 +1,48 @@
+name: Build and Deploy Godot WebGL
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  export-web:
+    name: Export Godot WebGL
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Cache Godot export templates
+        uses: actions/cache@v3
+        with:
+          path: ~/.local/share/godot/export_templates
+          key: godot-templates-4.2.2
+          restore-keys: |
+            godot-templates-
+
+      - name: Download Godot
+        run: |
+          GODOT_VERSION="4.2.2"  # Change to your version
+          wget -O godot.zip https://downloads.tuxfamily.org/godotengine/$GODOT_VERSION/Godot_v$GODOT_VERSION-stable_linux.x86_64.zip
+          unzip godot.zip
+          mv Godot_v$GODOT_VERSION-stable_linux.x86_64 godot
+          chmod +x godot
+
+      - name: Export to Web
+        run: |
+          mkdir -p builds/web/
+          ./godot --headless --export-release "Web" builds/web/index.html
+
+      - name: Upload Web Export as Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: godot-web-export
+          path: builds/web/
+
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: builds/web

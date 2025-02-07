@@ -1,160 +1,178 @@
-[gd_resource type="Resource" script_class="MapData" load_steps=25 format=3 uid="uid://cpvebyys8omu2"]
+[gd_resource type="Resource" script_class="MapData" load_steps=27 format=3 uid="uid://cpvebyys8omu2"]
 
 [ext_resource type="Script" path="res://scripts/map/map_data.gd" id="1_4uukk"]
 [ext_resource type="Script" path="res://scripts/map/enemy_wave/wave_enemy_group.gd" id="2_j4v0f"]
 [ext_resource type="Script" path="res://scripts/map/enemy_wave/wave_data.gd" id="3_5j2nv"]
 
-[sub_resource type="Resource" id="Resource_wnmy3"]
+[sub_resource type="Resource" id="Resource_gdw2l"]
 script = ExtResource("2_j4v0f")
-texture = "something"
+texture = "slime "
+health = 45
+def = 1.0
+mDef = 1.0
+moveSpeed = 20.0
+count = 20
+
+[sub_resource type="Resource" id="Resource_p1p1u"]
+script = ExtResource("3_5j2nv")
+waveTime = 60.0
+groupList = Array[ExtResource("2_j4v0f")]([SubResource("Resource_gdw2l")])
+
+[sub_resource type="Resource" id="Resource_6o7yv"]
+script = ExtResource("2_j4v0f")
+texture = "mushroom"
 health = 50
 def = 1.0
+mDef = 1.0
+moveSpeed = 40.0
+count = 20
+
+[sub_resource type="Resource" id="Resource_vqqdq"]
+script = ExtResource("3_5j2nv")
+waveTime = 60.0
+groupList = Array[ExtResource("2_j4v0f")]([SubResource("Resource_6o7yv")])
+
+[sub_resource type="Resource" id="Resource_y74j1"]
+script = ExtResource("2_j4v0f")
+texture = "wisp"
+health = 20
+def = 1.0
+mDef = 10.0
+moveSpeed = 100.0
+count = 20
+
+[sub_resource type="Resource" id="Resource_l6wgk"]
+script = ExtResource("3_5j2nv")
+waveTime = 60.0
+groupList = Array[ExtResource("2_j4v0f")]([SubResource("Resource_y74j1")])
+
+[sub_resource type="Resource" id="Resource_a8ud5"]
+script = ExtResource("2_j4v0f")
+texture = "Goblin with shied"
+health = 150
+def = 25.0
 mDef = 1.0
 moveSpeed = 10.0
 count = 20
 
-[sub_resource type="Resource" id="Resource_jansf"]
+[sub_resource type="Resource" id="Resource_qgrw0"]
 script = ExtResource("3_5j2nv")
 waveTime = 60.0
-groupList = Array[ExtResource("2_j4v0f")]([SubResource("Resource_wnmy3")])
+groupList = Array[ExtResource("2_j4v0f")]([SubResource("Resource_a8ud5")])
 
-[sub_resource type="Resource" id="Resource_cqrxc"]
+[sub_resource type="Resource" id="Resource_xibi1"]
 script = ExtResource("2_j4v0f")
-texture = "something"
-health = 50
+texture = "slime "
+health = 45
 def = 1.0
 mDef = 1.0
+moveSpeed = 20.0
+count = 20
+
+[sub_resource type="Resource" id="Resource_xa5mg"]
+script = ExtResource("2_j4v0f")
+texture = "Slime Stone"
+health = 75
+def = 5.0
+mDef = 5.0
 moveSpeed = 10.0
 count = 20
 
-[sub_resource type="Resource" id="Resource_0j6xu"]
+[sub_resource type="Resource" id="Resource_whxaf"]
 script = ExtResource("2_j4v0f")
-texture = "dfd"
-health = 1
-def = 1.0
-mDef = 1.0
-moveSpeed = 5.0
+texture = "Slime King"
+health = 550
+def = 15.0
+mDef = 5.0
+moveSpeed = 30.0
 count = 20
 
-[sub_resource type="Resource" id="Resource_b0pk6"]
+[sub_resource type="Resource" id="Resource_5rnqd"]
 script = ExtResource("3_5j2nv")
 waveTime = 60.0
-groupList = Array[ExtResource("2_j4v0f")]([SubResource("Resource_cqrxc"), SubResource("Resource_0j6xu")])
+groupList = Array[ExtResource("2_j4v0f")]([SubResource("Resource_xibi1"), SubResource("Resource_xa5mg"), SubResource("Resource_whxaf")])
 
-[sub_resource type="Resource" id="Resource_t58x6"]
+[sub_resource type="Resource" id="Resource_kthqe"]
 script = ExtResource("2_j4v0f")
-texture = "something"
-health = 50
+texture = "fairy"
+health = 125
 def = 1.0
-mDef = 1.0
+mDef = 10.0
+moveSpeed = 40.0
+count = 20
+
+[sub_resource type="Resource" id="Resource_ko6gj"]
+script = ExtResource("3_5j2nv")
+waveTime = 60.0
+groupList = Array[ExtResource("2_j4v0f")]([SubResource("Resource_kthqe")])
+
+[sub_resource type="Resource" id="Resource_1r7fv"]
+script = ExtResource("2_j4v0f")
+texture = "fairy soilder"
+health = 325
+def = 10.0
+mDef = 4.0
+moveSpeed = 30.0
+count = 20
+
+[sub_resource type="Resource" id="Resource_cd3ee"]
+script = ExtResource("3_5j2nv")
+waveTime = 60.0
+groupList = Array[ExtResource("2_j4v0f")]([SubResource("Resource_1r7fv")])
+
+[sub_resource type="Resource" id="Resource_ea65d"]
+script = ExtResource("2_j4v0f")
+texture = "fairy"
+health = 125
+def = 1.0
+mDef = 10.0
+moveSpeed = 40.0
+count = 20
+
+[sub_resource type="Resource" id="Resource_0fnwt"]
+script = ExtResource("2_j4v0f")
+texture = "Fairy Queen Protecter"
+health = 500
+def = 17.0
+mDef = 5.0
+moveSpeed = 20.0
+count = 20
+
+[sub_resource type="Resource" id="Resource_co5up"]
+script = ExtResource("3_5j2nv")
+waveTime = 60.0
+groupList = Array[ExtResource("2_j4v0f")]([SubResource("Resource_ea65d"), SubResource("Resource_0fnwt")])
+
+[sub_resource type="Resource" id="Resource_l5b5r"]
+script = ExtResource("2_j4v0f")
+texture = "Treant"
+health = 450
+def = 10.0
+mDef = 5.0
 moveSpeed = 10.0
 count = 20
 
-[sub_resource type="Resource" id="Resource_a62ut"]
+[sub_resource type="Resource" id="Resource_27h71"]
 script = ExtResource("3_5j2nv")
 waveTime = 60.0
-groupList = Array[ExtResource("2_j4v0f")]([SubResource("Resource_t58x6")])
+groupList = Array[ExtResource("2_j4v0f")]([SubResource("Resource_l5b5r")])
 
-[sub_resource type="Resource" id="Resource_f80mc"]
+[sub_resource type="Resource" id="Resource_3u1q5"]
 script = ExtResource("2_j4v0f")
-texture = "something"
-health = 50
-def = 1.0
-mDef = 1.0
-moveSpeed = 10.0
+texture = "fairy queen"
+health = 3500
+def = 10.0
+mDef = 35.0
+moveSpeed = 300.0
 count = 20
 
-[sub_resource type="Resource" id="Resource_2mkx2"]
+[sub_resource type="Resource" id="Resource_kqask"]
 script = ExtResource("3_5j2nv")
 waveTime = 60.0
-groupList = Array[ExtResource("2_j4v0f")]([SubResource("Resource_f80mc")])
-
-[sub_resource type="Resource" id="Resource_qnnst"]
-script = ExtResource("2_j4v0f")
-texture = "something"
-health = 50
-def = 1.0
-mDef = 1.0
-moveSpeed = 10.0
-count = 20
-
-[sub_resource type="Resource" id="Resource_4o1xb"]
-script = ExtResource("3_5j2nv")
-waveTime = 60.0
-groupList = Array[ExtResource("2_j4v0f")]([SubResource("Resource_qnnst")])
-
-[sub_resource type="Resource" id="Resource_lu2pa"]
-script = ExtResource("2_j4v0f")
-texture = "something"
-health = 50
-def = 1.0
-mDef = 1.0
-moveSpeed = 10.0
-count = 20
-
-[sub_resource type="Resource" id="Resource_swgne"]
-script = ExtResource("3_5j2nv")
-waveTime = 60.0
-groupList = Array[ExtResource("2_j4v0f")]([SubResource("Resource_lu2pa")])
-
-[sub_resource type="Resource" id="Resource_jvwh7"]
-script = ExtResource("2_j4v0f")
-texture = "something"
-health = 50
-def = 1.0
-mDef = 1.0
-moveSpeed = 10.0
-count = 20
-
-[sub_resource type="Resource" id="Resource_lpmgy"]
-script = ExtResource("3_5j2nv")
-waveTime = 60.0
-groupList = Array[ExtResource("2_j4v0f")]([SubResource("Resource_jvwh7")])
-
-[sub_resource type="Resource" id="Resource_3p6e4"]
-script = ExtResource("2_j4v0f")
-texture = "something"
-health = 50
-def = 1.0
-mDef = 1.0
-moveSpeed = 10.0
-count = 20
-
-[sub_resource type="Resource" id="Resource_ivg76"]
-script = ExtResource("3_5j2nv")
-waveTime = 60.0
-groupList = Array[ExtResource("2_j4v0f")]([SubResource("Resource_3p6e4")])
-
-[sub_resource type="Resource" id="Resource_c45iw"]
-script = ExtResource("2_j4v0f")
-texture = "something"
-health = 50
-def = 1.0
-mDef = 1.0
-moveSpeed = 10.0
-count = 20
-
-[sub_resource type="Resource" id="Resource_pdo8b"]
-script = ExtResource("3_5j2nv")
-waveTime = 60.0
-groupList = Array[ExtResource("2_j4v0f")]([SubResource("Resource_c45iw")])
-
-[sub_resource type="Resource" id="Resource_8rf50"]
-script = ExtResource("2_j4v0f")
-texture = "something"
-health = 50
-def = 1.0
-mDef = 1.0
-moveSpeed = 10.0
-count = 20
-
-[sub_resource type="Resource" id="Resource_poy1o"]
-script = ExtResource("3_5j2nv")
-waveTime = 60.0
-groupList = Array[ExtResource("2_j4v0f")]([SubResource("Resource_8rf50")])
+groupList = Array[ExtResource("2_j4v0f")]([SubResource("Resource_3u1q5")])
 
 [resource]
 script = ExtResource("1_4uukk")
 width = 0
 height = 0
-waves = Array[ExtResource("3_5j2nv")]([SubResource("Resource_jansf"), SubResource("Resource_b0pk6"), SubResource("Resource_a62ut"), SubResource("Resource_2mkx2"), SubResource("Resource_4o1xb"), SubResource("Resource_swgne"), SubResource("Resource_lpmgy"), SubResource("Resource_ivg76"), SubResource("Resource_pdo8b"), SubResource("Resource_poy1o")])
+waves = Array[ExtResource("3_5j2nv")]([SubResource("Resource_p1p1u"), SubResource("Resource_vqqdq"), SubResource("Resource_l6wgk"), SubResource("Resource_qgrw0"), SubResource("Resource_5rnqd"), SubResource("Resource_ko6gj"), SubResource("Resource_cd3ee"), SubResource("Resource_co5up"), SubResource("Resource_27h71"), SubResource("Resource_kqask")])

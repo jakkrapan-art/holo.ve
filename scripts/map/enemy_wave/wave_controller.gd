@@ -71,13 +71,9 @@ func spawnEnemy():
 	
 	if(currentGroupIndex >= waveData.groupList.size()):
 		isSpawnAllEnemy = true
-
-	print("spawn count: ", spawnedCount);
-
-	if(enemy.has_signal("onReachEndPoint")):
-		enemy.connect("onReachEndPoint", Callable(self, "reduceEnemyCount"));
-	if(enemy.has_signal("onDead")):
-		enemy.connect("onDead", Callable(self, "reduceEnemyCount"));
+	
+	Utility.ConnectSignal(enemy, "onReachEndPoint", Callable(self, "reduceEnemyCount"));
+	Utility.ConnectSignal(enemy, "onDead", Callable(self, "reduceEnemyCount"));	
 
 func createEnemyObject(type: Enemy.EnemyType):
 	if(enemyFactory == null):

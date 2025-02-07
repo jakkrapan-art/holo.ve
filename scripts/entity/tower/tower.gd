@@ -53,5 +53,12 @@ func updateSpriteColor(available: bool):
 		spr.self_modulate = Color("#ff0000", 1);
 
 func _onEnemyDetected(enemy: Enemy):
-	if(self.enemy == null):
-		self.enemy = enemy;
+	if(self.enemy != null):
+		return;
+
+	self.enemy = enemy;	
+	Utility.ConnectSignal(self.enemy, "onDead", Callable(self, "clearEnemy"));
+	Utility.ConnectSignal(self.enemy, "onReachEndPoint", Callable(self, "clearEnemy"));
+
+func clearEnemy():
+	enemy = null;

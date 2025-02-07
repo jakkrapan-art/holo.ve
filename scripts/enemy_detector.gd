@@ -47,16 +47,16 @@ func onCollisionExit(area: Area2D):
 func updateTarget():
 	if(enemyInRange.size() == 0 || target != null):
 		return;
-	var currentDistance: Vector2 = Vector2.ZERO;
+	var currentDistance: float = 0;
 	
 	for i in range(enemyInRange.size()):
 		var enemy = enemyInRange[i];
 		if !enemy:
 			continue;
 
-		var distance = position.direction_to(enemy.position);
+		var distance = enemy.progress_ratio;
 		
-		if target == null || currentDistance < distance:
+		if target == null || distance > currentDistance:
 			setTarget(enemy)
 			currentDistance = distance;
 	onEnemyDetected.emit(target)

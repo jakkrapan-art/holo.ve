@@ -12,8 +12,6 @@ var armor: int = 0;
 var mArmor: int = 0;
 var moveSpeed: float = 0;
 
-var spawnTime = 0
-
 func setup(hp: int, armor: int, mArmor: int, moveSpeed: int, texture: Texture2D):
 	setTexture(texture);
 	maxHp = hp;
@@ -21,12 +19,6 @@ func setup(hp: int, armor: int, mArmor: int, moveSpeed: int, texture: Texture2D)
 	self.armor = armor;
 	self.mArmor = mArmor;
 	self.moveSpeed = calculate_pathfollow_speed(get_parent() as Path2D, moveSpeed);
-	spawnTime = Time.get_ticks_msec();
-	
-	connect("onReachEndPoint", Callable(self, "showLifeTime"));
-
-func showLifeTime():
-	print("lifetime: ", (Time.get_ticks_msec() - spawnTime)/1000);
 
 func _process(_delta):
 	if(progress_ratio == 1):

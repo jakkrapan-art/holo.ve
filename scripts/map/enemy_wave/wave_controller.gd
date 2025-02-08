@@ -22,11 +22,14 @@ var currentGroupIndex: int = 0
 var enemyAliveCount: int = 0;
 var isSpawnAllEnemy: bool = false;
 
+var onEnemyReachEndPoint: Callable;
+
 func _ready():
 	spawnParent = map.enemyParent
 
-func setup(waveDatas: Array[WaveData]):
+func setup(waveDatas: Array[WaveData], onEnemyReachEndpoint: Callable):
 	self.waveDatas = waveDatas;
+	self.onEnemyReachEndPoint = onEnemyReachEndpoint;
 	enemyTextures = SpriteLoader.getSpriteGroup("enemy");
 
 func start():
@@ -73,6 +76,7 @@ func spawnEnemy():
 		isSpawnAllEnemy = true
 	
 	Utility.ConnectSignal(enemy, "onReachEndPoint", Callable(self, "reduceEnemyCount"));
+	Utility.ConnectSignal(enemy, "onReachEndPoint", Callable(self, "enemyReachEndPoint").bind(enemy));
 	Utility.ConnectSignal(enemy, "onDead", Callable(self, "reduceEnemyCount"));	
 
 func createEnemyObject(type: Enemy.EnemyType):
@@ -82,6 +86,10 @@ func createEnemyObject(type: Enemy.EnemyType):
 	var instance = enemyFactory.getEnemy(type);
 	spawnParent.add_child(instance)
 	return instance
+
+func enemyReachEndPoint(enemy: Enemy):
+	onEnemyReachEndPoint.call(5);
+	pass
 
 func checkEndWave():
 	if(!isSpawnAllEnemy || enemyAliveCount > 0):

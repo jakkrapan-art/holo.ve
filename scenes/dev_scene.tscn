@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://vkntgith54x1"]
+[gd_scene load_steps=9 format=3 uid="uid://vkntgith54x1"]
 
 [ext_resource type="Script" path="res://scripts/scene/game_scene.gd" id="1_g4ay3"]
 [ext_resource type="PackedScene" uid="uid://ccnrotkl0jnmo" path="res://resources/tiles/tile_map.tscn" id="1_oeytk"]
@@ -7,6 +7,7 @@
 [ext_resource type="Script" path="res://scripts/entity/enemy/enemy_factory.gd" id="5_o6btn"]
 [ext_resource type="PackedScene" uid="uid://d5g7c6yxmrv4" path="res://resources/tower/tower.tscn" id="6_3t1m6"]
 [ext_resource type="PackedScene" uid="uid://cs2xxi3vk21js" path="res://resources/enemy/enemy_base.tscn" id="6_qvxbv"]
+[ext_resource type="PackedScene" uid="uid://ds61ramnlbso3" path="res://resources/player/player.tscn" id="8_7lq66"]
 
 [node name="DevScene" type="Node2D"]
 script = ExtResource("1_g4ay3")
@@ -24,3 +25,6 @@ enemyTemplate = ExtResource("6_qvxbv")
 
 [node name="tower" parent="." instance=ExtResource("6_3t1m6")]
 position = Vector2(352, 226)
+
+[node name="Player" parent="." instance=ExtResource("8_7lq66")]
+position = Vector2(78.2871, 18.3039)

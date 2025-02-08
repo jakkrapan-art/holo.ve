@@ -22,6 +22,14 @@ jobs:
           restore-keys: |
             godot-templates-
 
+      - name: Cache Godot download
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/godot
+          key: godot-download-4.2.2
+          restore-keys: |
+            godot-download-
+
       - name: Download Godot
         run: |
           GODOT_VERSION="4.2.2"  # Change to your version

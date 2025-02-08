@@ -32,11 +32,12 @@ jobs:
 
       - name: Download Godot
         run: |
-          GODOT_VERSION="4.2.2"  # Change to your version
-          wget -O godot.zip https://github.com/godotengine/godot/releases/download/$GODOT_VERSION/Godot_v$GODOT_VERSION-stable_linux.x86_64.zip
+          GODOT_VERSION="4.2.2-stable"  # Change to your version
+          wget -O godot.zip https://github.com/godotengine/godot/releases/download/$GODOT_VERSION/Godot_v$GODOT_VERSION_linux.x86_64.zip
           unzip godot.zip
-          mv Godot_v$GODOT_VERSION-stable_linux.x86_64 godot
+          mv Godot_v$GODOT_VERSION_linux.x86_64 godot
           chmod +x godot
+
 
       - name: Export to Web
         run: |

@@ -2,7 +2,7 @@ extends Node;
 class_name GameScene;
 
 # Load the pop-up panel scene
-var PopupPanelScene = preload("res://scenes/tower_select.tscn");
+var PopupPanelScene = preload("res://resources/ui_component/tower_select.tscn");
 
 @onready var waveController: WaveController = $WaveController;
 @onready var player: Player = $Player

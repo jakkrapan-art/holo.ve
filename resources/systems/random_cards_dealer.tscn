@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://dw5lqajy7casy"]
+
+[ext_resource type="Script" path="res://scripts/random_cards_dealer.gd" id="1_fc7ox"]
+
+[node name="RandomCardsDealer" type="Node"]
+script = ExtResource("1_fc7ox")

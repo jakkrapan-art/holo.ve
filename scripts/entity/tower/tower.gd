@@ -1,9 +1,16 @@
 extends Node2D
+class_name Tower
 var GRID_SIZE = 64;
 
 @onready var spr: Sprite2D = $Sprite2D
-@export var enableMove: bool = false;
+@export var isMoving: bool = false;
+var enableAttack: bool = true;
+var isOnValidCell: bool = false;
+var inPlaceMode: bool = false;
 @onready var attackController: AttackController = $AttackController;
+
+var onPlace: Callable;
+var onRemove: Callable;
 
 var enemy: Enemy = null;
 
@@ -13,22 +20,45 @@ func _ready():
 
 func _input(event):
 	if event is InputEventKey and event.pressed and event.keycode == KEY_SPACE:
-		print("Space was pressed!")
-		enableMove = !enableMove
+		if(!inPlaceMode):
+			enterPlaceMode();
+		else:
+			exitPlaceMode();
 
 func _process(delta):
-	if enableMove:
+	if isMoving:
 		var mousePos = get_global_mouse_position()
-		var gridPos = snapToGrid(mousePos)
+		var gridPos = snapToGrid(mousePos);
 		position = gridPos;
-		
-		var avail = isAvailable();
-		updateSpriteColor(avail);
-	
-	attackEnemy();
+		updateTowerState();
 
-func setEnableMove(enable: bool):
-	enableMove = enable;
+	if enableAttack:
+		attackEnemy();
+
+func setup(sprite: Texture, onPlace: Callable, onRemove: Callable):
+	if(sprite != null):
+		self.spr.texture = sprite;
+	self.onPlace = onPlace;
+	self.onRemove = onRemove;
+
+func enterPlaceMode():
+	isMoving = true;
+	enableAttack = false;
+	
+	inPlaceMode = true;
+	var cell = GridHelper.WorldToCell(position);
+	onRemove.call(cell);
+	
+func  exitPlaceMode():
+	if(!isOnValidCell):
+		return;
+	
+	isMoving = false;
+	enableAttack = true;
+	inPlaceMode = false;
+	
+	var cell = GridHelper.WorldToCell(position);
+	onPlace.call(cell);
 
 func snapToGrid(position):
 	var screenSize = get_viewport().size;
@@ -41,10 +71,15 @@ func snapToGrid(position):
 func attackEnemy():
 	if(enemy != null && attackController != null):
 		attackController.attack(enemy);
-	pass;
 
 func isAvailable():
-	return true
+	return true;
+
+func updateTowerState():
+	var cellPos = GridHelper.WorldToCell(position);
+	var valid = Map.isCellAvailable(cellPos);
+	updateSpriteColor(valid);
+	isOnValidCell = valid;
 
 func updateSpriteColor(available: bool):
 	if (available):

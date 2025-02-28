@@ -26,10 +26,21 @@ func _ready():
 	show_popup_panel();
 
 	SpriteLoader.preloadImage("enemy", "res://resources/enemy");
+	if (towerFactory):
+		towerFactory.setup(Callable(self, "placeTower"), Callable(self, "removeTower"));
+
 	if (waveController != null):
 		waveController.setup(map.waves, Callable(self, "reducePlayerHp"));
 		#waveController.start();
 
+func placeTower(cell: Vector2):
+	map.removeAvailableCell(cell);
+
+func removeTower(cell: Vector2):
+	map.addAvailableCell(cell);
+	
+func checkValidCell(cell: Vector2):
+	return !map.grids.has(cell);
 func reducePlayerHp(amount: int):
 	player.updateHp(-amount);
 

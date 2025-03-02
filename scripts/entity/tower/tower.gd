@@ -4,6 +4,9 @@ var GRID_SIZE = 64;
 
 @onready var spr: Sprite2D = $Sprite2D
 @export var isMoving: bool = false;
+
+var towerName: TowerFactory.TowerName;
+
 var enableAttack: bool = true;
 var isOnValidCell: bool = false;
 var inPlaceMode: bool = false;
@@ -35,10 +38,9 @@ func _process(delta):
 	if enableAttack:
 		attackEnemy();
 
-func setup(sprite: Texture, onPlace: Callable, onRemove: Callable):
-	if(sprite != null):
-		self.spr.texture = sprite;
+func setup(towerName: TowerFactory.TowerName, onPlace: Callable, onRemove: Callable):
 	self.onPlace = onPlace;
+	self.towerName = towerName;
 	self.onRemove = onRemove;
 
 func enterPlaceMode():
@@ -59,6 +61,13 @@ func  exitPlaceMode():
 	
 	var cell = GridHelper.WorldToCell(position);
 	onPlace.call(cell);
+
+func upgrade(tower: Tower):
+	if(tower.towerName != self.towerName):
+		return false;
+		
+#	Do upgrade tower
+	return true
 
 func snapToGrid(position):
 	var screenSize = get_viewport().size;

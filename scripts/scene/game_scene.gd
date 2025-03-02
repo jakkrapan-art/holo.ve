@@ -14,7 +14,7 @@ var t: Tower = null
 
 func _input(event):
 	if event is InputEventKey and event.pressed and event.keycode == KEY_1 and t == null:
-		var tower: Tower = towerFactory.GetTower(null);
+		var tower: Tower = towerFactory.GetTower(TowerFactory.TowerName.Test);
 		tower.enterPlaceMode();
 		add_child(tower);
 		t = tower

@@ -62,12 +62,8 @@ func  exitPlaceMode():
 	var cell = GridHelper.WorldToCell(position);
 	onPlace.call(cell);
 
-func upgrade(tower: Tower):
-	if(tower.towerName != self.towerName):
-		return false;
-		
-#	Do upgrade tower
-	return true
+func upgrade():
+	pass;
 
 func snapToGrid(position):
 	var screenSize = get_viewport().size;

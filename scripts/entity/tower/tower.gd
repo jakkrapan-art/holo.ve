@@ -2,21 +2,34 @@ extends Node2D
 class_name Tower
 var GRID_SIZE = 64;
 
-@onready var spr: Sprite2D = $Sprite2D
+@onready var spr: AnimatedSprite2D = $AnimatedSprite2D
 @export var isMoving: bool = false;
+
+var towerName: TowerFactory.TowerName;
+
 var enableAttack: bool = true;
 var isOnValidCell: bool = false;
 var inPlaceMode: bool = false;
 @onready var attackController: AttackController = $AttackController;
+@onready var enemyDetector: EnemyDetector = $EnemyDetector;
+@onready var anim: AnimationController
 
 var onPlace: Callable;
 var onRemove: Callable;
 
 var enemy: Enemy = null;
 
+var IDLE_ANIMATION = "idle";
+var ATTACK_ANIMATION = "n_attack";
+
+var ATTACK_SPEED = 0.2;
+
 func _ready():
+	anim = AnimationController.new(spr, IDLE_ANIMATION, [IDLE_ANIMATION, ATTACK_ANIMATION]);
 	if(attackController != null):
-		attackController.setup(10, 0.2);
+		attackController.setup(10, ATTACK_SPEED, Callable(anim, "play").bind(ATTACK_ANIMATION, 1/ATTACK_SPEED));
+	
+	enemyDetector.connect("onRemoveTarget", Callable(self, "clearEnemy"))
 
 func _input(event):
 	if event is InputEventKey and event.pressed and event.keycode == KEY_SPACE:
@@ -35,10 +48,9 @@ func _process(delta):
 	if enableAttack:
 		attackEnemy();
 
-func setup(sprite: Texture, onPlace: Callable, onRemove: Callable):
-	if(sprite != null):
-		self.spr.texture = sprite;
+func setup(towerName: TowerFactory.TowerName, onPlace: Callable, onRemove: Callable):
 	self.onPlace = onPlace;
+	self.towerName = towerName;
 	self.onRemove = onRemove;
 
 func enterPlaceMode():
@@ -49,7 +61,7 @@ func enterPlaceMode():
 	var cell = GridHelper.WorldToCell(position);
 	onRemove.call(cell);
 	
-func  exitPlaceMode():
+func exitPlaceMode():
 	if(!isOnValidCell):
 		return;
 	
@@ -59,6 +71,9 @@ func  exitPlaceMode():
 	
 	var cell = GridHelper.WorldToCell(position);
 	onPlace.call(cell);
+
+func upgrade():
+	pass;
 
 func snapToGrid(position):
 	var screenSize = get_viewport().size;
@@ -88,12 +103,14 @@ func updateSpriteColor(available: bool):
 		spr.self_modulate = Color("#ff0000", 1);
 
 func _onEnemyDetected(enemy: Enemy):
-	if(self.enemy != null):
-		return;
-
+	clearEnemy();
+	
 	self.enemy = enemy;	
-	Utility.ConnectSignal(self.enemy, "onDead", Callable(self, "clearEnemy"));
-	Utility.ConnectSignal(self.enemy, "onReachEndPoint", Callable(self, "clearEnemy"));
+	if(enemy != null):
+		Utility.ConnectSignal(self.enemy, "onDead", Callable(self, "clearEnemy"));
+		Utility.ConnectSignal(self.enemy, "onReachEndPoint", Callable(self, "clearEnemy"));
 
 func clearEnemy():
 	enemy = null;
+	if(anim != null):
+		anim.playDefault();

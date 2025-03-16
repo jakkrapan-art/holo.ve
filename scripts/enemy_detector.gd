@@ -8,7 +8,7 @@ var target: Enemy = null
 var enemyInRange: Array[Enemy] = []
 
 func _ready():
-	collision.scale = Vector2.ONE * (radius * 2)
+	collision.scale = Vector2.ONE * (radius)
 	connect("area_entered", Callable(self, "onCollisionHit"))
 	connect("area_exited", Callable(self, "onCollisionExit"))
 
@@ -16,6 +16,10 @@ func _draw():
 	if(target != null):
 		var targetLocalPos = to_local(target.global_position);
 		draw_line(position, targetLocalPos, Color.RED, 2.0)
+	
+	var circleColor = Color.SPRING_GREEN;
+	circleColor.a = 0.2;
+	draw_circle(position, 12.5 * radius, circleColor);
 
 func _process(delta):
 	queue_redraw();
@@ -42,11 +46,15 @@ func onCollisionExit(area: Area2D):
 					if(enemyInRange[i] == enemy):
 						enemyInRange.remove_at(i);
 						break
+
 			updateTarget();
 
 func updateTarget():
-	if(enemyInRange.size() == 0 || target != null):
+	if(enemyInRange.size() == 0):
+		setTarget(null);
+		onEnemyDetected.emit(null);
 		return;
+
 	var currentDistance: float = 0;
 	
 	for i in range(enemyInRange.size()):
@@ -56,16 +64,16 @@ func updateTarget():
 
 		var distance = enemy.progress_ratio;
 		
-		if target == null || distance > currentDistance:
+		if distance > currentDistance:
 			setTarget(enemy)
 			currentDistance = distance;
 	onEnemyDetected.emit(target)
 
 func setTarget(enemy: Enemy):
 	removeTarget();
-	
-	enemy.connect("onDead", Callable(self, "updateTarget"));
-	target = enemy;
+	if(enemy != null):
+		enemy.connect("onDead", Callable(self, "updateTarget"));
+		target = enemy;
 
 func removeTarget():
 	if target == null:
@@ -73,8 +81,10 @@ func removeTarget():
 	
 	target.disconnect("onDead", Callable(self, "updateTarget"))
 	target = null;
+	onRemoveTarget.emit();
 
 func isHasEnemy() -> bool:
 	return target != null
 
-signal onEnemyDetected(enemy: Entity)
+signal onEnemyDetected(enemy: Entity);
+signal onRemoveTarget();

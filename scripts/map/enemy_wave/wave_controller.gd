@@ -25,7 +25,7 @@ var isSpawnAllEnemy: bool = false;
 var onEnemyReachEndPoint: Callable;
 
 func _ready():
-	spawnParent = map.enemyParent
+	spawnParent = map.path
 
 func setup(waveDatas: Array[WaveData], onEnemyReachEndpoint: Callable):
 	self.waveDatas = waveDatas;

@@ -26,6 +26,7 @@ func bake():
 	
 	draw_path_line(path);
 	print("Path set with %d points." % path.size())
+	return path
 
 func get_marked_points(layer: int) -> Array[Vector2i]:
 	var marked: Array[Vector2i] = []
@@ -114,3 +115,31 @@ func draw_path_line(points: Array[Vector2]) -> void:
 		line.add_point(point)
 
 	path2d.add_child(line)
+
+func get_available_tiles(path_tiles: Array[Vector2], excluded_layers: Array[int] = []) -> Array[Vector2i]:
+	var available_tiles: Array[Vector2i] = []
+
+	var target_layer := 1
+	var target_source := 3
+	var used_cells := tilemap.get_used_cells(target_layer)
+
+	for pos in used_cells:
+		if path_tiles.has(pos):
+			continue
+
+		#var source_id := tilemap.get_cell_source_id(target_layer, pos)
+		#if source_id != target_source:
+			#continue
+#
+		#var is_used_elsewhere := false
+		#for check_layer in range(tilemap.get_layers_count()):
+			#if check_layer == target_layer or excluded_layers.has(check_layer):
+				#continue
+			#if tilemap.get_used_cells(check_layer).has(pos):
+				#is_used_elsewhere = true
+				#break
+
+		available_tiles.append(pos)
+		#if not is_used_elsewhere:
+
+	return available_tiles

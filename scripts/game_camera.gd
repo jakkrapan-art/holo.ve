@@ -24,9 +24,8 @@ func _ready():
 	
 	# Use the larger value to ensure the entire map fits
 	var zoom_factor = max(zoom_x, zoom_y)
+	zoom_factor *= 1.15;
 	
-	# Set the zoom
-	print("zoom:", zoom_factor);
 	zoom = Vector2(zoom_factor, zoom_factor)
 	
 	var center = get_tilemap_center(tilemap);

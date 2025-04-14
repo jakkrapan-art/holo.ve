@@ -8,7 +8,7 @@ var target: Enemy = null
 var enemyInRange: Array[Enemy] = []
 
 func _ready():
-	collision.scale = Vector2.ONE * (radius)
+	collision.scale = Vector2.ONE * (radius * GridHelper.CELL_SIZE) / 2;
 	connect("area_entered", Callable(self, "onCollisionHit"))
 	connect("area_exited", Callable(self, "onCollisionExit"))
 
@@ -19,7 +19,7 @@ func _draw():
 	
 	var circleColor = Color.SPRING_GREEN;
 	circleColor.a = 0.2;
-	draw_circle(position, 12.5 * radius, circleColor);
+	draw_circle(position, radius * GridHelper.CELL_SIZE, circleColor);
 
 func _process(delta):
 	queue_redraw();

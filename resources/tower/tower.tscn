@@ -141,12 +141,12 @@ frame_progress = 0.743494
 offset = Vector2(-22.5, -77.5)
 
 [node name="EnemyDetector" type="Area2D" parent="." node_paths=PackedStringArray("collision")]
-scale = Vector2(3, 3)
 script = ExtResource("3_57u27")
 collision = NodePath("CollisionShape2D")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="EnemyDetector"]
 shape = SubResource("CircleShape2D_qi6uv")
+debug_color = Color(0.950515, 1.34766e-06, 0.568223, 0.42)
 
 [node name="AttackController" type="Node" parent="."]
 script = ExtResource("4_ar3mn")

@@ -2,35 +2,59 @@ extends Node
 class_name AttackController
 
 @onready var attackDelayTimer = $AttackDelayTimer
-var attackDamage: int = 0;
-var isReady: bool = true;
-var onAttack: Callable;
 
-func setup(damage: int, delay: float, onAttack: Callable):
-	updateDelayTime(delay);
+
+enum STATE {DELAY_ATTACK, COOLDOWN}
+
+var attackDamage: int = 0;
+var attackCooldown: float = 0;
+var attackDelay: float = 0;
+var isReady: bool = true;
+var state: STATE; 
+var target: Enemy = null;
+
+func setup(damage: int, delay: float, cooldown: float):
+	attackDelay = delay;
+	attackCooldown = cooldown;
+	
+	print("attack delay:", attackDelay);
+	print("attack cd:", attackCooldown);
 	updateAttackDamage(damage);
-	self.onAttack = onAttack;
+
+func canAttack(target: Enemy):
+	return target != null && isReady
 
 func updateAttackDamage(damage: int):
 	attackDamage = damage;
 
-func updateDelayTime(delay: float):
-	if attackDelayTimer == null:
-		return
-	attackDelayTimer.wait_time = delay
-
-func attack(target: Enemy) -> int:
-	if(target == null || !isReady):
-		return 0
+func attack(target: Enemy):
 	isReady = false;
-	if(onAttack != null):
-		onAttack.call();
-	attackDelayTimer.start()
-	if (target.has_method("recvDamage")):
-		return target.recvDamage(attackDamage);
-	else:
-		return 0
+	self.target = target;
+	startAttackTimer(attackDelay, STATE.DELAY_ATTACK);
+	print("attack:", Time.get_ticks_msec());
 
+func dealDamage() -> int:
+	var dmgResult = 0
+	if (target.has_method("recvDamage")):
+		dmgResult = target.recvDamage(attackDamage);
+	target = null;
+	startAttackTimer(attackCooldown, STATE.COOLDOWN);
+	print("deal dmg:", Time.get_ticks_msec());	
+	return 0
+
+func startAttackTimer(time: float, state: STATE):
+	self.state = state
+	attackDelayTimer.wait_time = time
+	
+	if(attackDelayTimer != null):
+		attackDelayTimer.start();
 
 func _onAttackDelayTimerTimeout():
-	isReady = true;
+	match(state):
+		STATE.DELAY_ATTACK:
+			dealDamage();
+		STATE.COOLDOWN:
+			isReady = true
+	if(state == STATE.DELAY_ATTACK):
+		isReady = true;
+	

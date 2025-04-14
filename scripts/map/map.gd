@@ -3,6 +3,7 @@ class_name Map
 
 @export var mapSize: Vector2;
 @export var path: Path2D;
+@onready var path_bake: PathBakeAuto = $Path2D
 static var availableCells: Array[Vector2];
 
 static func isCellAvailable(cellPos: Vector2) -> bool:
@@ -20,6 +21,7 @@ func addAvailableCell(cell: Vector2):
 	availableCells.append(cell);
 
 func setup():
+	path_bake.bake();
 	availableCells = [];
 	for y in range(mapSize.y):
 		for x in range(mapSize.x):

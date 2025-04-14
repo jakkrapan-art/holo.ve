@@ -54,6 +54,8 @@ func show_popup_panel():
 # Handle the selection from the popup
 func _on_option_selected(selection):
 	print("Selected:", selection)
+	if(waveController):
+		waveController.start();
 	# Run different logic based on the selection
 	match selection:
 		"Button1":

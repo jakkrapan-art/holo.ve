@@ -4,3 +4,6 @@
 
 [resource]
 script = ExtResource("1_8qqex")
+width = 0
+height = 0
+waves = Array[Resource("res://scripts/map/enemy_wave/wave_data.gd")]([])

@@ -23,5 +23,5 @@ func play(animationName: String, speed: float = 1):
 		anim.play(default);
 
 	anim.speed_scale = speed;
-	anim.play(animationName);
 	current = animationName;
+	anim.play(current);

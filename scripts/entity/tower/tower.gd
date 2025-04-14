@@ -1,15 +1,20 @@
 extends Node2D
 class_name Tower
-var GRID_SIZE = 64;
+var GRID_SIZE = 512;
 
 @onready var spr: AnimatedSprite2D = $AnimatedSprite2D
 @export var isMoving: bool = false;
+
+@export var stats: Array[TowerStat];
+
+var currentStatIndex: int = 0;
 
 var towerName: TowerFactory.TowerName;
 
 var enableAttack: bool = true;
 var isOnValidCell: bool = false;
 var inPlaceMode: bool = false;
+
 @onready var attackController: AttackController = $AttackController;
 @onready var enemyDetector: EnemyDetector = $EnemyDetector;
 @onready var anim: AnimationController
@@ -22,12 +27,18 @@ var enemy: Enemy = null;
 var IDLE_ANIMATION = "idle";
 var ATTACK_ANIMATION = "n_attack";
 
-var ATTACK_SPEED = 0.2;
+func getStat():
+	var index = currentStatIndex if currentStatIndex < (stats.size() - 1) else stats.size() - 1
+	return stats[currentStatIndex]
+
+func getAttackAnimationSpeed():
+	return getStat().getAttackAnimationSpeed(spr, ATTACK_ANIMATION);
 
 func _ready():
 	anim = AnimationController.new(spr, IDLE_ANIMATION, [IDLE_ANIMATION, ATTACK_ANIMATION]);
 	if(attackController != null):
-		attackController.setup(10, ATTACK_SPEED, Callable(anim, "play").bind(ATTACK_ANIMATION, 1/ATTACK_SPEED));
+		var stat = getStat();
+		attackController.setup(stat.pDamage, getAttackAnimationSpeed(), stat.getAttackDelay());
 	
 	enemyDetector.connect("onRemoveTarget", Callable(self, "clearEnemy"))
 
@@ -40,9 +51,7 @@ func _input(event):
 
 func _process(delta):
 	if isMoving:
-		var mousePos = get_global_mouse_position()
-		var gridPos = snapToGrid(mousePos);
-		position = gridPos;
+		position = GridHelper.snapToGrid(get_viewport().size, get_global_mouse_position());
 		updateTowerState();
 
 	if enableAttack:
@@ -73,20 +82,17 @@ func exitPlaceMode():
 	onPlace.call(cell);
 
 func upgrade():
-	pass;
-
-func snapToGrid(position):
-	var screenSize = get_viewport().size;
-	position = Vector2(clamp(position.x, 0, screenSize.x - GRID_SIZE), clamp(position.y, 0, screenSize.y - GRID_SIZE));
-	var gridX = floor(position.x / GRID_SIZE) * GRID_SIZE + GRID_SIZE / 2
-	var gridY = floor(position.y / GRID_SIZE) * GRID_SIZE + GRID_SIZE / 2
+	if currentStatIndex >= stats.size() - 1:
+		return false;
 	
-	return Vector2(gridX, gridY)
+	currentStatIndex += 1;
+	return true;
 
 func attackEnemy():
-	if(enemy != null && attackController != null):
+	if(enemy != null && attackController != null && attackController.canAttack(enemy)):
 		attackController.attack(enemy);
-
+		var speed = getAttackAnimationSpeed();		
+		anim.play(ATTACK_ANIMATION, speed);
 func isAvailable():
 	return true;
 

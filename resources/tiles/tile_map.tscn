@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://ccnrotkl0jnmo"]
+[gd_scene load_steps=21 format=3 uid="uid://ccnrotkl0jnmo"]
 
 [ext_resource type="Texture2D" uid="uid://dhrxbu6vewft2" path="res://resources/tiles/Bush_FB_tile.png" id="1_tpmca"]
 [ext_resource type="Texture2D" uid="uid://nfv1i5ydobrb" path="res://resources/tiles/OBJ01.png" id="1_v0y5x"]
@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://dnebl0ehvdoco" path="res://resources/tiles/Grass_Fool_tile.png" id="2_yyq8w"]
 [ext_resource type="Texture2D" uid="uid://dug3nftgl6rqy" path="res://resources/tiles/OBJ03.png" id="5_ulhyl"]
 [ext_resource type="Texture2D" uid="uid://cxkuvheslu0n7" path="res://resources/tiles/OBJ04.png" id="6_r3m74"]
+[ext_resource type="Script" path="res://scripts/map/path_bake_auto.gd" id="8_nw8xb"]
 [ext_resource type="Texture2D" uid="uid://dflugtxnbke75" path="res://resources/tiles/LightAnimation01.png" id="8_wce3f"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_k166p"]
@@ -847,10 +848,45 @@ sources/4 = SubResource("TileSetAtlasSource_o8xts")
 sources/5 = SubResource("TileSetAtlasSource_356av")
 
 [sub_resource type="Curve2D" id="Curve2D_lircj"]
-_data = {
-"points": PackedVector2Array(0, 0, 0, 0, 286, 0, 0, 0, 0, 0, 286, 39, 0, 0, 0, 0, 286, 97, 0, 0, 0, 0, 286, 160, 0, 0, 0, 0, 355, 160, 0, 0, 0, 0, 416, 160, 0, 0, 0, 0, 417, 224, 0, 0, 0, 0, 479, 224, 0, 0, 0, 0, 547, 224, 0, 0, 0, 0, 608, 225, 0, 0, 0, 0, 607, 162, 0, 0, 0, 0, 607, 97, 0, 0, 0, 0, 673, 97, 0, 0, 0, 0, 742, 97, 0, 0, 0, 0, 797, 97, 0, 0, 0, 0, 863, 98, 0, 0, 0, 0, 863, 160, 0, 0, 0, 0, 864, 220, 0, 0, 0, 0, 865, 281, 0, 0, 0, 0, 865, 350, 0, 0, 0, 0, 801, 353, 0, 0, 0, 0, 734, 353, 0, 0, 0, 0, 672, 353, 0, 0, 0, 0, 608, 351, 0, 0, 0, 0, 607, 418, 0, 0, 0, 0, 556, 420, 0, 0, 0, 0, 488, 420, 0, 0, 0, 0, 414, 420, 0, 0, 0, 0, 346, 419, 0, 0, 0, 0, 289, 419, 0, 0, 0, 0, 288, 480, 0, 0, 0, 0, 288, 546, 0, 0, 0, 0, 288, 610, 0, 0, 0, 0, 354, 611, 0, 0, 0, 0, 422, 609, 0, 0, 0, 0, 495, 611, 0, 0, 0, 0, 561, 612, 0, 0, 0, 0, 619, 612, 0, 0, 0, 0, 677, 610, 0, 0, 0, 0, 735, 609, 0, 0, 0, 0, 798, 610, 0, 0, 0, 0, 796, 543, 0, 0, 0, 0, 798, 480, 0, 0, 0, 0, 863, 480, 0, 0, 0, 0, 923, 480, 0, 0, 0, 0, 962, 479)
+
+[sub_resource type="Animation" id="Animation_j4utq"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimationPlayer/LightAnimation01:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [ExtResource("8_wce3f")]
 }
-point_count = 46
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("AnimationPlayer/LightAnimation01:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(4353, 4971)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("AnimationPlayer/LightAnimation01:modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
 
 [sub_resource type="Animation" id="Animation_r3uvk"]
 resource_name = "light"
@@ -892,52 +928,13 @@ tracks/2/keys = {
 "values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0.431373), Color(1, 1, 1, 1)]
 }
 
-[sub_resource type="Animation" id="Animation_j4utq"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("AnimationPlayer/LightAnimation01:texture")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [ExtResource("8_wce3f")]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("AnimationPlayer/LightAnimation01:position")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(4353, 4971)]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("AnimationPlayer/LightAnimation01:modulate")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Color(1, 1, 1, 1)]
-}
-
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_dypxo"]
 _data = {
 "RESET": SubResource("Animation_j4utq"),
 "light": SubResource("Animation_r3uvk")
 }
 
-[node name="TileMap" type="TileMap" node_paths=PackedStringArray("enemyParent")]
+[node name="TileMap" type="TileMap" node_paths=PackedStringArray("path")]
 rotation = 6.28319
 tile_set = SubResource("TileSet_xh70x")
 rendering_quadrant_size = 64
@@ -960,10 +957,13 @@ layer_6/tile_data = PackedInt32Array(24, 524289, 0, 65560, 524289, 0, 131096, 52
 layer_7/name = "Bush"
 layer_7/tile_data = PackedInt32Array(65535, 524290, 1, 131071, 524290, 1, 196607, 524290, 1, 262143, 524290, 1, 327679, 524290, 1, 393215, 524290, 1, 458751, 524290, 1, 524287, 524290, 1, 589823, 524290, 1, 655359, 524290, 1, 720895, 524290, 1, 786431, 524290, 1, 851967, 524290, 1, 917503, 524290, 1, 983039, 524290, 1, 1048575, 524290, 1, 1114111, 524290, 3, 1048576, 589826, 3, 1048577, 589826, 3, 1048578, 589826, 3, 1048579, 589826, 3, 1048580, 589826, 3, 1048581, 589826, 3, 1048582, 589826, 3, 1048583, 589826, 3, 1048584, 589826, 3, 1048585, 589826, 3, 1048586, 589826, 3, 1048587, 589826, 3, 1048588, 589826, 3, 1048589, 589826, 3, 1048590, 589826, 3, 1048591, 589826, 3, 1048592, 589826, 3, 1048593, 589826, 3, 1048594, 589826, 3, 1048595, 589826, 3, 1048596, 589826, 3, 1048597, 589826, 3, 1048598, 589826, 3, 1048599, 589826, 3, 1048600, 589826, 3, 1048601, 589826, 3, 1048602, 589826, 3, 1048603, 589826, 3, 1048604, 720898, 3, 983068, 720898, 2, 917532, 720898, 2, 851996, 720898, 2, 786460, 720898, 2, 720924, 720898, 2, 655388, 720898, 2, 589852, 720898, 2, 524316, 720898, 2, 458780, 720898, 2, 393244, 720898, 2, 393243, 524290, 1, 327707, 524290, 1, 327708, 720898, 2, 262172, 720898, 2, 196636, 720898, 2, 131100, 720898, 2, 65564, 720898, 2, 28, 720898, 2, -65508, 720898, 0, -65509, 655362, 0, -65510, 655362, 0, -65511, 655362, 0, -65512, 655362, 0, -65513, 655362, 0, -65514, 655362, 0, -65515, 655362, 0, -65516, 655362, 0, -65517, 655362, 0, -65518, 655362, 0, -65519, 655362, 0, -65520, 655362, 0, -65521, 655362, 0, -65522, 655362, 0, -65523, 655362, 0, -65524, 655362, 0, -65525, 655362, 0, -65526, 655362, 0, -65527, 655362, 0, -65528, 655362, 0, -65529, 655362, 0, -65530, 655362, 0, -65531, 655362, 0, -65532, 655362, 0, -65533, 655362, 0, -65534, 655362, 0, -65535, 655362, 0, -65536, 655362, 0, -1, 524290, 0, 983067, 589826, 2, 983040, 589826, 2, 0, 589826, 2, 27, 589826, 2, 65536, 589826, 2, 131072, 589826, 2, 196608, 393218, 2, 262144, 720898, 2, 327680, 720898, 2, 393216, 720898, 2, 458752, 720898, 2, 524288, 720898, 2, 589824, 720898, 2, 655360, 720898, 2, 720896, 720898, 2, 786432, 720898, 2, 917504, 589826, 2, 983041, 589826, 2, 983042, 393218, 1, 983043, 655362, 0, 983044, 655362, 0, 983045, 655362, 0, 983046, 655362, 0, 983047, 655362, 0, 983048, 655362, 0, 983049, 655362, 0, 983050, 655362, 0, 983051, 655362, 0, 983052, 655362, 0, 983053, 655362, 0, 983054, 655362, 0, 983055, 655362, 0, 983056, 655362, 0, 983057, 655362, 0, 983058, 655362, 0, 983059, 655362, 0, 983060, 655362, 0, 983061, 655362, 0, 983062, 327682, 1, 983063, 589826, 2, 983064, 589826, 2, 983065, 589826, 2, 983066, 589826, 2, 917531, 589826, 2, 851995, 589826, 2, 786459, 589826, 2, 720923, 589826, 2, 655387, 327682, 1, 589851, 524290, 1, 524315, 524290, 1, 458779, 524290, 1, 262171, 524290, 1, 196635, 524290, 1, 131099, 327682, 2, 65563, 589826, 2, 26, 589826, 2, 25, 327682, 2, 24, 589826, 3, 23, 589826, 3, 22, 589826, 3, 21, 589826, 3, 20, 589826, 3, 19, 589826, 3, 18, 589826, 3, 17, 589826, 3, 16, 589826, 3, 15, 589826, 3, 14, 589826, 3, 13, 589826, 3, 12, 589826, 3, 11, 589826, 3, 10, 589826, 3, 9, 589826, 3, 8, 589826, 3, 7, 589826, 3, 6, 589826, 3, 5, 589826, 3, 4, 589826, 3, 3, 589826, 3, 2, 393218, 2, 1, 589826, 2, 65537, 589826, 2, 65538, 720898, 2, 131073, 393218, 2, 131074, 720898, 3, 196609, 720898, 3, 917505, 393218, 1, 851969, 720898, 0, 917506, 720898, 0, 917530, 589826, 2, 917529, 589826, 2, 851993, 327682, 1, 851994, 589826, 2, 786458, 327682, 1, 851968, 393218, 1, 786457, 524290, 0, 65562, 327682, 2, 65561, 524290, 3, 131098, 524290, 3, 917526, 524290, 0, 917527, 655362, 0, 917528, 327682, 1, 851992, 524290, 0, 720922, 524290, 1, 655386, 524290, 0, 458776, 524289, 1, 524312, 524289, 2)
 script = ExtResource("2_f5qkg")
-enemyParent = NodePath("Path2D")
+path = NodePath("Path2D")
 
-[node name="Path2D" type="Path2D" parent="."]
+[node name="Path2D" type="Path2D" parent="." node_paths=PackedStringArray("tilemap", "path2d")]
 curve = SubResource("Curve2D_lircj")
+script = ExtResource("8_nw8xb")
+tilemap = NodePath("..")
+path2d = NodePath(".")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {

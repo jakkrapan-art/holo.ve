@@ -1,10 +1,35 @@
-[gd_scene load_steps=20 format=3 uid="uid://d5g7c6yxmrv4"]
+[gd_scene load_steps=24 format=3 uid="uid://d5g7c6yxmrv4"]
 
 [ext_resource type="Script" path="res://scripts/entity/tower/tower.gd" id="1_mmirn"]
 [ext_resource type="Texture2D" uid="uid://ckv1mcuwniogb" path="res://resources/tower/sprite/test/test_character_idle.png" id="2_l7ruh"]
+[ext_resource type="Script" path="res://scripts/entity/tower_stats.gd" id="2_v1ohr"]
 [ext_resource type="Script" path="res://scripts/enemy_detector.gd" id="3_57u27"]
 [ext_resource type="Texture2D" uid="uid://cjn5fqq1oxe23" path="res://resources/tower/sprite/test/test_character_attack_n.png" id="3_jmr26"]
 [ext_resource type="Script" path="res://scripts/entity/attack_controller.gd" id="4_ar3mn"]
+
+[sub_resource type="Resource" id="Resource_5g4bw"]
+script = ExtResource("2_v1ohr")
+pDamage = 4
+mDamage = 4
+attackSpeed = 90.0
+mana = 100
+intialMana = 10
+
+[sub_resource type="Resource" id="Resource_6820u"]
+script = ExtResource("2_v1ohr")
+pDamage = 4
+mDamage = 4
+attackSpeed = 0.5
+mana = 100
+intialMana = 10
+
+[sub_resource type="Resource" id="Resource_bjofy"]
+script = ExtResource("2_v1ohr")
+pDamage = 4
+mDamage = 4
+attackSpeed = 0.5
+mana = 100
+intialMana = 10
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_t2hop"]
 atlas = ExtResource("2_l7ruh")
@@ -107,6 +132,7 @@ animations = [{
 
 [node name="tower" type="Node2D"]
 script = ExtResource("1_mmirn")
+stats = Array[ExtResource("2_v1ohr")]([SubResource("Resource_5g4bw"), SubResource("Resource_6820u"), SubResource("Resource_bjofy")])
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 scale = Vector2(0.24, 0.24)

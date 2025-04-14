@@ -86,5 +86,5 @@ func removeTarget():
 func isHasEnemy() -> bool:
 	return target != null
 
-signal onEnemyDetected(enemy: Entity);
+signal onEnemyDetected(enemy: Enemy);
 signal onRemoveTarget();

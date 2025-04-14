@@ -4,21 +4,14 @@ class_name Enemy
 @onready var sprite: Sprite2D = $Sprite2D;
 @onready var area: Area2D = $Enemy;
 
-enum EnemyType {Normal, Elite, Boss}
+@export var stats: EnemyStat;
 
-var maxHp: int = 0;
-var currentHp: int = 0;
-var armor: int = 0;
-var mArmor: int = 0;
-var moveSpeed: float = 0;
+enum EnemyType {Normal, Elite, Boss}
 
 func setup(hp: int, armor: int, mArmor: int, moveSpeed: int, texture: Texture2D):
 	setTexture(texture);
-	maxHp = hp;
-	currentHp = hp;
-	self.armor = armor;
-	self.mArmor = mArmor;
-	self.moveSpeed = calculate_pathfollow_speed(get_parent() as Path2D, moveSpeed);
+	var calMoveSpeed = calculate_pathfollow_speed(get_parent() as Path2D, moveSpeed);
+	stats = EnemyStat.new(hp, armor, mArmor, calMoveSpeed);
 
 func _process(_delta):
 	if(progress_ratio == 1):
@@ -26,14 +19,14 @@ func _process(_delta):
 		queue_free()
 
 func _physics_process(delta):
-	progress_ratio += moveSpeed * delta;
+	progress_ratio += stats.moveSpeed * delta;
 
 func setTexture(image: Texture2D):
 	if(sprite != null && image != null):
 		sprite.texture = image;
 		
 func recvDamage(damage: int) -> int:
-	currentHp -= damage;
+	var currentHp = stats.updateHealth(-damage);
 	if(currentHp <= 0):
 		dead();
 	return damage;

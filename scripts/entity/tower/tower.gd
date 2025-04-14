@@ -1,6 +1,5 @@
 extends Node2D
 class_name Tower
-var GRID_SIZE = 512;
 
 @onready var spr: AnimatedSprite2D = $AnimatedSprite2D
 @export var isMoving: bool = false;

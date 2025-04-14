@@ -1,10 +1,10 @@
 extends Camera2D
 
-@export var cell_size:= 512
 @export var margin: float = 0.9
 @export var tilemap: TileMap
 
 func _ready():
+	var cell_size = GridHelper.GetCellSize();
 	# Get cell size from TileMap (if you want to use TileMap's cell size instead of the export var)
 	var tile_cell_size = cell_size  # Assuming square cells
 	

@@ -29,9 +29,6 @@ enemyTemplate = ExtResource("6_qvxbv")
 script = ExtResource("9_6l060")
 towerTemplate = ExtResource("6_3t1m6")
 
-[node name="tower" parent="." instance=ExtResource("6_3t1m6")]
-position = Vector2(385, 277)
-
 [node name="Player" parent="." instance=ExtResource("8_7lq66")]
 position = Vector2(78.2871, 18.3039)
 

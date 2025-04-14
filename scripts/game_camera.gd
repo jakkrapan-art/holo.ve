@@ -4,7 +4,7 @@ extends Camera2D
 @export var tilemap: TileMap
 
 func _ready():
-	var cell_size = GridHelper.GetCellSize();
+	var cell_size = GridHelper.CELL_SIZE;
 	# Get cell size from TileMap (if you want to use TileMap's cell size instead of the export var)
 	var tile_cell_size = cell_size  # Assuming square cells
 	

@@ -17,12 +17,15 @@ func bake():
 		print("No valid path found.")
 		return
 
+	# Clear existing path
 	path2d.curve.clear_points()
+
+	# Add points to the Path2D curve
 	for point in path:
 		path2d.curve.add_point(point)
-
+	
+	draw_path_line(path);
 	print("Path set with %d points." % path.size())
-
 
 func get_marked_points(layer: int) -> Array[Vector2i]:
 	var marked: Array[Vector2i] = []
@@ -32,6 +35,7 @@ func get_marked_points(layer: int) -> Array[Vector2i]:
 		Vector2i(2, 0), Vector2i(2, 1), Vector2i(2, 2)
 	]
 
+	# Step 1: Collect from the base layer (layer 0)
 	for pos in tilemap.get_used_cells(layer):
 		var source_id: int = tilemap.get_cell_source_id(layer, pos)
 		if source_id != target_source_id:
@@ -41,8 +45,16 @@ func get_marked_points(layer: int) -> Array[Vector2i]:
 		if allowed_atlas_coords.has(atlas_coord):
 			marked.append(pos)
 
-	return marked
+	# Step 2: Check other layers and remove positions if they exist there
+	var final_marked := marked.duplicate()
+	for check_layer in range(2):
+		if check_layer == layer:
+			continue
+		for pos in marked:
+			if tilemap.get_used_cells(check_layer).has(pos):
+				final_marked.erase(pos)
 
+	return final_marked
 
 func find_path_from_marked_points(points: Array[Vector2i]) -> Array[Vector2]:
 	if points.is_empty():
@@ -65,9 +77,16 @@ func find_path_from_marked_points(points: Array[Vector2i]) -> Array[Vector2]:
 			var neighbor: Vector2i = current + offset
 			if points.has(neighbor) and not visited.has(neighbor):
 				stack.append(neighbor)
-
+		
+	if(path.size() >= 2):
+		var last_dir = get_direction(path[path.size() - 2], path[path.size() - 1])/2
+		var last_cell = path[path.size()-1];
+		path.append(Vector2(last_cell.x + last_dir.x, last_cell.y + last_dir.y));
 	return path
 
+func get_direction(from: Vector2i, to: Vector2i):
+	var cell_size = GridHelper.CELL_SIZE;
+	return (to - from)
 
 func get_adjacent_offsets() -> Array[Vector2i]:
 	return [
@@ -76,3 +95,22 @@ func get_adjacent_offsets() -> Array[Vector2i]:
 		Vector2i(0, 1),
 		Vector2i(0, -1)
 	]
+
+func draw_path_line(points: Array[Vector2]) -> void:
+	# Remove old Line2D if any
+	for child in path2d.get_children():
+		if child is Line2D:
+			child.queue_free()
+
+	if points.size() < 2:
+		return  # Need at least two points to draw a line
+
+	var line := Line2D.new()
+	line.width = 15
+	line.default_color = Color.DARK_RED
+	line.position = Vector2.ZERO
+
+	for point in points:
+		line.add_point(point)
+
+	path2d.add_child(line)

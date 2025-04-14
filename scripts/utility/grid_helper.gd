@@ -3,8 +3,6 @@ extends Node
 class_name GridHelper
 
 const CELL_SIZE: int = 512
-static func GetCellSize() -> int:
-	return CELL_SIZE;
 
 static func WorldToCell(world_position: Vector2) -> Vector2i:
 	return Vector2i(floor(world_position.x / CELL_SIZE), floor(world_position.y / CELL_SIZE))

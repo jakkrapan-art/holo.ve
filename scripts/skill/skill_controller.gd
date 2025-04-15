@@ -11,10 +11,14 @@ func _init(maxMana: float, initialMana: float, skill: Skill):
 
 func updateMana(amount: float):
 	currentMana = clamp(currentMana + amount, 0, maxMana)
-	print("update mana:", amount, " current:", currentMana, "/", maxMana);
+	on_mana_updated.emit(currentMana);
+	#print("update mana:", amount, " current:", currentMana, "/", maxMana);
 
 func useSkill():
 	if(currentMana < maxMana):
 		return;
 	
 	updateMana(-currentMana);
+
+
+signal on_mana_updated(current: float)

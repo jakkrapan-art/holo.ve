@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://d5g7c6yxmrv4"]
+[gd_scene load_steps=25 format=3 uid="uid://d5g7c6yxmrv4"]
 
 [ext_resource type="Script" path="res://scripts/entity/tower/tower.gd" id="1_mmirn"]
 [ext_resource type="Texture2D" uid="uid://ckv1mcuwniogb" path="res://resources/tower/sprite/test/test_character_idle.png" id="2_l7ruh"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" path="res://scripts/enemy_detector.gd" id="3_57u27"]
 [ext_resource type="Texture2D" uid="uid://cjn5fqq1oxe23" path="res://resources/tower/sprite/test/test_character_attack_n.png" id="3_jmr26"]
 [ext_resource type="Script" path="res://scripts/entity/attack_controller.gd" id="4_ar3mn"]
+[ext_resource type="Script" path="res://scripts/ui/health_bar.gd" id="7_ue18x"]
 
 [sub_resource type="Resource" id="Resource_5g4bw"]
 script = ExtResource("2_v1ohr")
@@ -153,6 +154,16 @@ debug_color = Color(0.950515, 1.34766e-06, 0.568223, 0.42)
 script = ExtResource("4_ar3mn")
 
 [node name="AttackDelayTimer" type="Timer" parent="AttackController"]
+
+[node name="ManaBar" type="ProgressBar" parent="."]
+modulate = Color(1, 0, 0, 1)
+offset_left = -106.0
+offset_top = -240.0
+offset_right = 60.0
+offset_bottom = -213.0
+value = 100.0
+show_percentage = false
+script = ExtResource("7_ue18x")
 
 [connection signal="onEnemyDetected" from="EnemyDetector" to="." method="_onEnemyDetected"]
 [connection signal="timeout" from="AttackController/AttackDelayTimer" to="AttackController" method="_onAttackDelayTimerTimeout"]

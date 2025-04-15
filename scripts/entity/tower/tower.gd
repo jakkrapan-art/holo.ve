@@ -17,7 +17,9 @@ var inPlaceMode: bool = false;
 @onready var attackController: AttackController = $AttackController;
 @onready var enemyDetector: EnemyDetector = $EnemyDetector;
 var anim: AnimationController
+
 var skill: SkillController
+@onready var manaBar = $ManaBar
 
 var onPlace: Callable;
 var onRemove: Callable;
@@ -38,7 +40,15 @@ func _ready():
 	anim = AnimationController.new(spr, IDLE_ANIMATION, [IDLE_ANIMATION, ATTACK_ANIMATION]);
 	anim.connect("on_animation_finished", Callable(self, "on_animation_finished"));
 	
-	skill = SkillController.new(100.0, 10.0, null);
+	var maxMana := 100.0;
+	var initMana := 10.0;
+	
+	if(manaBar != null):
+		manaBar.setup(maxMana, false);
+		manaBar.updateValue(initMana);
+	
+	skill = SkillController.new(maxMana, initMana, null);
+	skill.connect("on_mana_updated", Callable(self, "update_mana_bar"));
 	
 	if(attackController != null):
 		var stat = getStat();
@@ -136,3 +146,9 @@ func on_animation_finished(name: String):
 		ATTACK_ANIMATION:
 			attackController.dealDamage();
 			anim.playDefault();
+			
+func update_mana_bar(current: float):
+	if(manaBar == null):
+		return;
+	
+	manaBar.updateValue(current)

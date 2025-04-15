@@ -1,13 +1,20 @@
-extends Node
 class_name SkillController
 
-@export var skillList: Array[Resource] = []
+var maxMana := 0.0;
+var currentMana := 0.0;
+var skill: Skill = null;
 
-func useSkill(index: int, actor, target):
-	if skillList[index]:
-		var skill: Skill = skillList[index]
-		for act in skill.actions:
-			if act == null:
-				continue
+func _init(maxMana: float, initialMana: float, skill: Skill):
+	self.maxMana = maxMana;
+	currentMana = initialMana;
+	self.skill = skill;
 
-			act.active(actor, target)
+func updateMana(amount: float):
+	currentMana = clamp(currentMana + amount, 0, maxMana)
+	print("update mana:", amount, " current:", currentMana, "/", maxMana);
+
+func useSkill():
+	if(currentMana < maxMana):
+		return;
+	
+	updateMana(-currentMana);

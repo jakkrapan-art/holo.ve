@@ -11,7 +11,7 @@
 script = ExtResource("2_v1ohr")
 pDamage = 4
 mDamage = 4
-attackSpeed = 200.0
+attackSpeed = 90.0
 mana = 100
 intialMana = 10
 

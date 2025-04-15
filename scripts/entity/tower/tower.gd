@@ -16,7 +16,8 @@ var inPlaceMode: bool = false;
 
 @onready var attackController: AttackController = $AttackController;
 @onready var enemyDetector: EnemyDetector = $EnemyDetector;
-@onready var anim: AnimationController
+var anim: AnimationController
+var skill: SkillController
 
 var onPlace: Callable;
 var onRemove: Callable;
@@ -36,6 +37,8 @@ func getAttackAnimationSpeed():
 func _ready():
 	anim = AnimationController.new(spr, IDLE_ANIMATION, [IDLE_ANIMATION, ATTACK_ANIMATION]);
 	anim.connect("on_animation_finished", Callable(self, "on_animation_finished"));
+	
+	skill = SkillController.new(100.0, 10.0, null);
 	
 	if(attackController != null):
 		var stat = getStat();
@@ -57,6 +60,9 @@ func _process(delta):
 
 	if enableAttack:
 		attackEnemy();
+	
+	if skill:
+		skill.updateMana(2 * delta);
 
 func setup(towerName: TowerFactory.TowerName, onPlace: Callable, onRemove: Callable):
 	self.onPlace = onPlace;

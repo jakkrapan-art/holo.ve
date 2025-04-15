@@ -110,6 +110,7 @@ func updateSpriteColor(available: bool):
 func _onEnemyDetected(enemy: Enemy):
 	clearEnemy();
 	
+	print("enemy detect:", enemy);
 	self.enemy = enemy;	
 	if(enemy != null):
 		Utility.ConnectSignal(self.enemy, "onDead", Callable(self, "clearEnemy"));

@@ -7,84 +7,82 @@ class_name EnemyDetector
 var target: Enemy = null
 var enemyInRange: Array[Enemy] = []
 
+signal onEnemyDetected(enemy: Enemy)
+signal onRemoveTarget()
+
 func _ready():
-	collision.scale = Vector2.ONE * (radius * GridHelper.CELL_SIZE) / 2;
+	var circle = collision.shape as CircleShape2D
+	if circle:
+		circle.radius = radius * GridHelper.CELL_SIZE
+
 	connect("area_entered", Callable(self, "onCollisionHit"))
 	connect("area_exited", Callable(self, "onCollisionExit"))
 
 func _draw():
-	if(target != null):
-		var targetLocalPos = to_local(target.global_position);
+	var circleColor = Color.SPRING_GREEN
+	circleColor.a = 0.2
+
+	var draw_radius = radius * GridHelper.CELL_SIZE
+	draw_circle(position, draw_radius, circleColor)
+
+	if target != null:
+		var targetLocalPos = to_local(target.global_position)
 		draw_line(position, targetLocalPos, Color.RED, 2.0)
-	
-	var circleColor = Color.SPRING_GREEN;
-	circleColor.a = 0.2;
-	draw_circle(position, radius * GridHelper.CELL_SIZE, circleColor);
 
 func _process(delta):
-	queue_redraw();
+	queue_redraw()
 
 func onCollisionHit(area: Area2D):
 	if area.is_in_group("enemy"):
 		var eArea = area as EnemyArea
-		if(eArea):
+		if eArea and eArea.enemy and not enemyInRange.has(eArea.enemy):
 			enemyInRange.append(eArea.enemy)
-			pass
-	
-	updateTarget();
+			updateTarget()
 
 func onCollisionExit(area: Area2D):
-	if(area.is_in_group("enemy")):
+	if area.is_in_group("enemy"):
 		var eArea = area as EnemyArea
-		if(eArea):
-			var enemy = eArea.enemy;
-			if(enemy == target):
-				target = null
+		if eArea:
+			var enemy = eArea.enemy
+			if enemy == target:
+				removeTarget()
 
-			if(enemyInRange.has(enemy)):
-				for i in range(enemyInRange.size()):
-					if(enemyInRange[i] == enemy):
-						enemyInRange.remove_at(i);
-						break
-
-			updateTarget();
+			enemyInRange.erase(enemy)
+			print("enemy exit:", enemy, " current:", enemyInRange.size());
+			updateTarget()
 
 func updateTarget():
-	if(enemyInRange.size() == 0):
-		setTarget(null);
-		onEnemyDetected.emit(null);
-		return;
+	if enemyInRange.size() == 0:
+		setTarget(null)
+		onEnemyDetected.emit(null)
+		return
 
-	var currentDistance: float = 0;
-	
-	for i in range(enemyInRange.size()):
-		var enemy = enemyInRange[i];
-		if !enemy:
-			continue;
+	var best: Enemy = null
+	var currentDistance: float = -1
 
-		var distance = enemy.progress_ratio;
-		
-		if distance > currentDistance:
-			setTarget(enemy)
-			currentDistance = distance;
-	onEnemyDetected.emit(target)
+	for enemy in enemyInRange:
+		if enemy:
+			var distance = enemy.progress_ratio
+			if distance > currentDistance:
+				currentDistance = distance
+				best = enemy
+
+	setTarget(best)
+	onEnemyDetected.emit(best)
 
 func setTarget(enemy: Enemy):
-	removeTarget();
-	if(enemy != null):
-		enemy.connect("onDead", Callable(self, "updateTarget"));
-		target = enemy;
+	removeTarget()
+	if enemy != null:
+		if not enemy.is_connected("onDead", Callable(self, "updateTarget")):
+			enemy.connect("onDead", Callable(self, "updateTarget"))
+		target = enemy
 
 func removeTarget():
-	if target == null:
-		return;
-	
-	target.disconnect("onDead", Callable(self, "updateTarget"))
-	target = null;
-	onRemoveTarget.emit();
+	if target != null:
+		if target.is_connected("onDead", Callable(self, "updateTarget")):
+			target.disconnect("onDead", Callable(self, "updateTarget"))
+		target = null
+		onRemoveTarget.emit()
 
 func isHasEnemy() -> bool:
 	return target != null
-
-signal onEnemyDetected(enemy: Enemy);
-signal onRemoveTarget();

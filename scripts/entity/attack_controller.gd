@@ -35,7 +35,7 @@ func attack(target: Enemy):
 
 func dealDamage() -> int:
 	var dmgResult = 0
-	if (target.has_method("recvDamage")):
+	if (target && target.has_method("recvDamage")):
 		dmgResult = target.recvDamage(attackDamage);
 	target = null;
 	startAttackTimer(attackCooldown, STATE.COOLDOWN);

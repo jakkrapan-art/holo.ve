@@ -10,7 +10,8 @@ func _init(animSprite: AnimatedSprite2D, defaultAnimation: String, animationList
 	anim = animSprite;
 	default = defaultAnimation;
 	
-	anim.connect("animation_finished", Callable(self, "anim_finish"))
+	#anim.connect("animation_finished", Callable(self, "anim_finish"))
+	anim.connect("frame_changed", Callable(self, "anim_finish"))
 	play(defaultAnimation);
 
 func playDefault():
@@ -28,6 +29,9 @@ func play(animationName: String, speed: float = 1):
 	anim.play(current);
 
 func anim_finish():
-	on_animation_finished.emit(anim.animation);
+	var currFrame: float = anim.frame;
+	var maxFrame: float = anim.sprite_frames.get_frame_count(current) - 1;
+	if (currFrame / maxFrame > 0.8):
+		on_animation_finished.emit(anim.animation);	
 
 signal on_animation_finished(name: String)

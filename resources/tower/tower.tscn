@@ -156,11 +156,19 @@ script = ExtResource("4_ar3mn")
 [node name="AttackDelayTimer" type="Timer" parent="AttackController"]
 
 [node name="ManaBar" type="ProgressBar" parent="."]
-modulate = Color(1, 0, 0, 1)
-offset_left = -106.0
+modulate = Color(6.73831e-07, 0.603873, 0.776888, 1)
+self_modulate = Color(0.988235, 1, 1, 1)
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -107.0
 offset_top = -240.0
-offset_right = 60.0
+offset_right = 107.0
 offset_bottom = -213.0
+grow_horizontal = 2
+grow_vertical = 0
 value = 100.0
 show_percentage = false
 script = ExtResource("7_ue18x")

@@ -12,7 +12,6 @@ func setup(maxValue: float, showText: bool = true):
 	
 func updateValue(currentValue: float):
 	value = currentValue;
-	print("update:", value);
 	updateText()
 
 func updateText():

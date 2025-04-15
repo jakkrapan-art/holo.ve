@@ -5,6 +5,7 @@ class_name Enemy
 @onready var area: Area2D = $Enemy;
 
 @export var stats: EnemyStat;
+var original_modulate: Color
 
 enum EnemyType {Normal, Elite, Boss}
 
@@ -12,6 +13,8 @@ func setup(hp: int, armor: int, mArmor: int, moveSpeed: int, texture: Texture2D)
 	setTexture(texture);
 	var calMoveSpeed = calculate_pathfollow_speed(get_parent() as Path2D, moveSpeed);
 	stats = EnemyStat.new(hp, armor, mArmor, calMoveSpeed);
+	
+	original_modulate = sprite.modulate
 
 func _process(_delta):
 	if(progress_ratio == 1):
@@ -26,10 +29,21 @@ func setTexture(image: Texture2D):
 		sprite.texture = image;
 		
 func recvDamage(damage: int) -> int:
-	var currentHp = stats.updateHealth(-damage);
-	if(currentHp <= 0):
-		dead();
-	return damage;
+	sprite.modulate = Color.RED
+
+	# Create a one-shot timer to reset the color
+	var timer := get_tree().create_timer(0.3)
+	timer.timeout.connect(_on_damage_flash_timeout)
+
+	var currentHp = stats.updateHealth(-damage)
+	if currentHp <= 0:
+		dead()
+
+	return damage
+
+func _on_damage_flash_timeout():
+	if sprite:
+		sprite.modulate = original_modulate
 	
 func dead():
 	onDead.emit();

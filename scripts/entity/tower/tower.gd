@@ -35,9 +35,11 @@ func getAttackAnimationSpeed():
 
 func _ready():
 	anim = AnimationController.new(spr, IDLE_ANIMATION, [IDLE_ANIMATION, ATTACK_ANIMATION]);
+	anim.connect("on_animation_finished", Callable(self, "on_animation_finished"));
+	
 	if(attackController != null):
 		var stat = getStat();
-		attackController.setup(stat.pDamage, getAttackAnimationSpeed(), stat.getAttackDelay());
+		attackController.setup(stat.pDamage, stat.getAttackDelay());
 	
 	enemyDetector.connect("onRemoveTarget", Callable(self, "clearEnemy"))
 
@@ -108,9 +110,11 @@ func updateSpriteColor(available: bool):
 		spr.self_modulate = Color("#ff0000", 1);
 
 func _onEnemyDetected(enemy: Enemy):
+	if(self.enemy != null || enemy == self.enemy):
+		return;
+	
 	clearEnemy();
 	
-	print("enemy detect:", enemy);
 	self.enemy = enemy;	
 	if(enemy != null):
 		Utility.ConnectSignal(self.enemy, "onDead", Callable(self, "clearEnemy"));
@@ -120,3 +124,9 @@ func clearEnemy():
 	enemy = null;
 	if(anim != null):
 		anim.playDefault();
+		
+func on_animation_finished(name: String):
+	match name:
+		ATTACK_ANIMATION:
+			attackController.dealDamage();
+			anim.playDefault();

@@ -10,6 +10,7 @@ func _init(animSprite: AnimatedSprite2D, defaultAnimation: String, animationList
 	anim = animSprite;
 	default = defaultAnimation;
 	
+	anim.connect("animation_finished", Callable(self, "anim_finish"))
 	play(defaultAnimation);
 
 func playDefault():
@@ -25,3 +26,8 @@ func play(animationName: String, speed: float = 1):
 	anim.speed_scale = speed;
 	current = animationName;
 	anim.play(current);
+
+func anim_finish():
+	on_animation_finished.emit(anim.animation);
+
+signal on_animation_finished(name: String)

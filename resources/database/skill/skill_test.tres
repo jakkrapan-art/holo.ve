@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="Skill" load_steps=9 format=3 uid="uid://bd58f3iohilrf"]
+
+[ext_resource type="Script" path="res://scripts/skill/skillActions/skill_action_attack.gd" id="1_cuhum"]
+[ext_resource type="Script" path="res://scripts/skill/skillActions/skill_action_find_target.gd" id="1_lm36n"]
+[ext_resource type="Script" path="res://scripts/skill/skillActions/skill_action_shout.gd" id="1_lv8dv"]
+[ext_resource type="Script" path="res://scripts/skill/skill.gd" id="1_x7ue0"]
+
+[sub_resource type="Resource" id="Resource_r2ccx"]
+script = ExtResource("1_lv8dv")
+message = "using skill"
+
+[sub_resource type="Resource" id="Resource_s3h55"]
+script = ExtResource("1_lm36n")
+
+[sub_resource type="Resource" id="Resource_m4x26"]
+script = ExtResource("1_cuhum")
+damage = 1000
+
+[sub_resource type="Resource" id="Resource_e0302"]
+script = ExtResource("1_lv8dv")
+message = "skill use success"
+
+[resource]
+script = ExtResource("1_x7ue0")
+name = "Skill"
+desc = "Just a skill"
+actions = Array[Resource("res://scripts/skill/skill_action.gd")]([SubResource("Resource_r2ccx"), SubResource("Resource_s3h55"), SubResource("Resource_m4x26"), SubResource("Resource_e0302")])

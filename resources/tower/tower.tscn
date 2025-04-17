@@ -1,17 +1,18 @@
-[gd_scene load_steps=25 format=3 uid="uid://d5g7c6yxmrv4"]
+[gd_scene load_steps=28 format=3 uid="uid://d5g7c6yxmrv4"]
 
 [ext_resource type="Script" path="res://scripts/entity/tower/tower.gd" id="1_mmirn"]
 [ext_resource type="Texture2D" uid="uid://ckv1mcuwniogb" path="res://resources/tower/sprite/test/test_character_idle.png" id="2_l7ruh"]
 [ext_resource type="Script" path="res://scripts/entity/tower_stats.gd" id="2_v1ohr"]
 [ext_resource type="Script" path="res://scripts/enemy_detector.gd" id="3_57u27"]
+[ext_resource type="Resource" uid="uid://bd58f3iohilrf" path="res://resources/database/skill/skill_test.tres" id="3_fuwn7"]
 [ext_resource type="Texture2D" uid="uid://cjn5fqq1oxe23" path="res://resources/tower/sprite/test/test_character_attack_n.png" id="3_jmr26"]
 [ext_resource type="Script" path="res://scripts/entity/attack_controller.gd" id="4_ar3mn"]
 [ext_resource type="Script" path="res://scripts/ui/health_bar.gd" id="7_ue18x"]
 
 [sub_resource type="Resource" id="Resource_5g4bw"]
 script = ExtResource("2_v1ohr")
-pDamage = 4
-mDamage = 4
+pDamage = 0
+mDamage = 0
 attackSpeed = 90.0
 mana = 100
 intialMana = 10
@@ -131,9 +132,16 @@ animations = [{
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_qi6uv"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lqtte"]
+bg_color = Color(0.2, 0.2, 0.2, 0.329412)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_re4r8"]
+bg_color = Color(5.10186e-06, 0.546956, 0.761719, 1)
+
 [node name="tower" type="Node2D"]
 script = ExtResource("1_mmirn")
 stats = Array[ExtResource("2_v1ohr")]([SubResource("Resource_5g4bw"), SubResource("Resource_6820u"), SubResource("Resource_bjofy")])
+skill = ExtResource("3_fuwn7")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_sj4s8")
@@ -156,7 +164,6 @@ script = ExtResource("4_ar3mn")
 [node name="AttackDelayTimer" type="Timer" parent="AttackController"]
 
 [node name="ManaBar" type="ProgressBar" parent="."]
-modulate = Color(6.73831e-07, 0.603873, 0.776888, 1)
 self_modulate = Color(0.988235, 1, 1, 1)
 anchors_preset = 7
 anchor_left = 0.5
@@ -169,7 +176,9 @@ offset_right = 107.0
 offset_bottom = -213.0
 grow_horizontal = 2
 grow_vertical = 0
-value = 100.0
+theme_override_styles/background = SubResource("StyleBoxFlat_lqtte")
+theme_override_styles/fill = SubResource("StyleBoxFlat_re4r8")
+value = 72.24
 show_percentage = false
 script = ExtResource("7_ue18x")
 

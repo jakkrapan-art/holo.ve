@@ -16,9 +16,13 @@ var inPlaceMode: bool = false;
 
 @onready var attackController: AttackController = $AttackController;
 @onready var enemyDetector: EnemyDetector = $EnemyDetector;
-var anim: AnimationController
+var anim: AnimationController;
 
-var skill: SkillController
+var attacking: bool = false;
+var usingSkill: bool = false;
+
+@export var skill: Skill;
+var skillController: SkillController
 @onready var manaBar = $ManaBar
 
 var onPlace: Callable;
@@ -40,15 +44,15 @@ func _ready():
 	anim = AnimationController.new(spr, IDLE_ANIMATION, [IDLE_ANIMATION, ATTACK_ANIMATION]);
 	anim.connect("on_animation_finished", Callable(self, "on_animation_finished"));
 	
-	var maxMana := 100.0;
+	var maxMana := 20.0;
 	var initMana := 10.0;
 	
 	if(manaBar != null):
 		manaBar.setup(maxMana, false);
 		manaBar.updateValue(initMana);
 	
-	skill = SkillController.new(maxMana, initMana, null);
-	skill.connect("on_mana_updated", Callable(self, "update_mana_bar"));
+	skillController = SkillController.new(self,maxMana, initMana, skill);
+	skillController.connect("on_mana_updated", Callable(self, "update_mana_bar"));
 	
 	if(attackController != null):
 		var stat = getStat();
@@ -68,11 +72,14 @@ func _process(delta):
 		position = GridHelper.snapToGrid(get_viewport().size, get_global_mouse_position());
 		updateTowerState();
 
-	if enableAttack:
+	if enableAttack && !attacking:
 		attackEnemy();
 	
-	if skill:
-		skill.updateMana(2 * delta);
+	if skillController && !usingSkill:
+		skillController.updateMana(2 * delta);
+
+		if(skillController.currentMana == skillController.maxMana && !attacking):
+			skillController.useSkill();
 
 func setup(towerName: TowerFactory.TowerName, onPlace: Callable, onRemove: Callable):
 	self.onPlace = onPlace;
@@ -110,6 +117,7 @@ func attackEnemy():
 		attackController.attack(enemy);
 		var speed = getAttackAnimationSpeed();		
 		anim.play(ATTACK_ANIMATION, speed);
+		attacking = true;
 func isAvailable():
 	return true;
 
@@ -146,6 +154,7 @@ func on_animation_finished(name: String):
 		ATTACK_ANIMATION:
 			attackController.dealDamage();
 			anim.playDefault();
+			attacking = false;
 			
 func update_mana_bar(current: float):
 	if(manaBar == null):

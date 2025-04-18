@@ -42,7 +42,7 @@ func getAttackAnimationSpeed():
 
 func _ready():
 	anim = AnimationController.new(spr, IDLE_ANIMATION, [IDLE_ANIMATION, ATTACK_ANIMATION]);
-	anim.connect("on_animation_finished", Callable(self, "on_animation_finished"));
+	Utility.ConnectSignal(anim,"on_animation_finished", Callable(self, "animation_finished"));
 	
 	var maxMana := 20.0;
 	var initMana := 10.0;
@@ -52,13 +52,13 @@ func _ready():
 		manaBar.updateValue(initMana);
 	
 	skillController = SkillController.new(self,maxMana, initMana, skill);
-	skillController.connect("on_mana_updated", Callable(self, "update_mana_bar"));
+	Utility.ConnectSignal(skillController, "on_mana_updated", Callable(self, "update_mana_bar"));
 	
 	if(attackController != null):
 		var stat = getStat();
 		attackController.setup(stat.pDamage, stat.getAttackDelay());
 	
-	enemyDetector.connect("onRemoveTarget", Callable(self, "clearEnemy"))
+	Utility.ConnectSignal(enemyDetector, "onRemoveTarget", Callable(self, "clearEnemy"))
 
 func _input(event):
 	if event is InputEventKey and event.pressed and event.keycode == KEY_SPACE:
@@ -68,18 +68,18 @@ func _input(event):
 			exitPlaceMode();
 
 func _process(delta):
+	var stat = getStat();
 	if isMoving:
 		position = GridHelper.snapToGrid(get_viewport().size, get_global_mouse_position());
 		updateTowerState();
 
-	if enableAttack && !attacking:
-		attackEnemy();
-	
 	if skillController && !usingSkill:
-		skillController.updateMana(2 * delta);
-
+		skillController.updateMana(stat.manaRegen * delta);
 		if(skillController.currentMana == skillController.maxMana && !attacking):
-			skillController.useSkill();
+			await skillController.useSkill();
+
+	if enableAttack && !attacking && !usingSkill:
+		attackEnemy();
 
 func setup(towerName: TowerFactory.TowerName, onPlace: Callable, onRemove: Callable):
 	self.onPlace = onPlace;
@@ -116,7 +116,7 @@ func attackEnemy():
 	if(enemy != null && attackController != null && attackController.canAttack(enemy)):
 		attackController.attack(enemy);
 		var speed = getAttackAnimationSpeed();		
-		anim.play(ATTACK_ANIMATION, speed);
+		play_animation(ATTACK_ANIMATION, speed);
 		attacking = true;
 func isAvailable():
 	return true;
@@ -146,18 +146,31 @@ func _onEnemyDetected(enemy: Enemy):
 
 func clearEnemy():
 	enemy = null;
+	play_animation_default();
+
+func play_animation(name: String, speed: float = 1):
+	if(anim != null):
+		return anim.play(name, speed);
+	return false;
+
+func play_animation_default():
 	if(anim != null):
 		anim.playDefault();
-		
-func on_animation_finished(name: String):
+
+func animation_finished(name: String):
 	match name:
 		ATTACK_ANIMATION:
-			attackController.dealDamage();
-			anim.playDefault();
-			attacking = false;
+			if attacking:
+				attackController.dealDamage();
+				play_animation_default();
+				attacking = false;
+
+	on_animation_finished.emit(name);
 			
 func update_mana_bar(current: float):
 	if(manaBar == null):
 		return;
 	
 	manaBar.updateValue(current)
+
+signal on_animation_finished(name: String);

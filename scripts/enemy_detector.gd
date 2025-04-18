@@ -18,16 +18,16 @@ func _ready():
 	connect("area_entered", Callable(self, "onCollisionHit"))
 	connect("area_exited", Callable(self, "onCollisionExit"))
 
-#func _draw():
-	#var circleColor = Color.SPRING_GREEN
-	#circleColor.a = 0.2
-#
-	#var draw_radius = radius * GridHelper.CELL_SIZE
-	#draw_circle(position, draw_radius, circleColor)
-#
-	#if target != null:
-		#var targetLocalPos = to_local(target.global_position)
-		#draw_line(position, targetLocalPos, Color.RED, 2.0)
+func _draw():
+	var circleColor = Color.SPRING_GREEN
+	circleColor.a = 0.25
+
+	var draw_radius = radius * GridHelper.CELL_SIZE
+	draw_circle(position, draw_radius, circleColor)
+
+	if target != null:
+		var targetLocalPos = to_local(target.global_position)
+		draw_line(position, targetLocalPos, Color.RED, 2.0)
 
 func _process(delta):
 	queue_redraw()

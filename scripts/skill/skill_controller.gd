@@ -33,11 +33,16 @@ func useSkill():
 		(user as Tower).usingSkill = false;
 
 func execute_skill_actions(context: SkillContext):
+	var index := 0;
 	for action in skill.actions:
 		if(context.cancel):
-			print("skill cancel.");
+			print("cancel skill at:", index);
 			return false;
+		
+		context.cancel = false;
 		await action.execute(context)
+		print("index:", index, " cancel:", context.cancel);
+		index += 1;
 	return true;
 
 signal on_mana_updated(current: float)

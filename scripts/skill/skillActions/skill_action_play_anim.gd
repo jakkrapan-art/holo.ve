@@ -15,7 +15,6 @@ func execute(context: SkillContext):
 		context.cancel = true;
 		
 	if(context.cancel):
-		print("cancel");
 		return
 
 	var finished: bool = false

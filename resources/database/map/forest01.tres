@@ -7,11 +7,11 @@
 [sub_resource type="Resource" id="Resource_gdw2l"]
 script = ExtResource("2_j4v0f")
 texture = "slime "
-health = 100
+health = 10
 def = 1.0
 mDef = 1.0
 moveSpeed = 1.0
-count = 40
+count = 3
 
 [sub_resource type="Resource" id="Resource_p1p1u"]
 script = ExtResource("3_5j2nv")

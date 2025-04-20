@@ -2,35 +2,42 @@ extends Node
 class_name AttackController
 
 @onready var attackDelayTimer = $AttackDelayTimer
-var attackDamage: int = 0;
-var isReady: bool = true;
-var onAttack: Callable;
 
-func setup(damage: int, delay: float, onAttack: Callable):
-	updateDelayTime(delay);
+var attackDamage: int = 0;
+var attackCooldown: float = 0;
+var isReady: bool = true;
+
+var target: Enemy = null;
+
+func setup(damage: int, cooldown: float):
+	attackCooldown = cooldown;
 	updateAttackDamage(damage);
-	self.onAttack = onAttack;
+
+func canAttack(target: Enemy):
+	return target != null && isReady
 
 func updateAttackDamage(damage: int):
 	attackDamage = damage;
 
-func updateDelayTime(delay: float):
-	if attackDelayTimer == null:
-		return
-	attackDelayTimer.wait_time = delay
-
-func attack(target: Enemy) -> int:
-	if(target == null || !isReady):
-		return 0
+func attack(target: Enemy):
 	isReady = false;
-	if(onAttack != null):
-		onAttack.call();
-	attackDelayTimer.start()
-	if (target.has_method("recvDamage")):
-		return target.recvDamage(attackDamage);
-	else:
-		return 0
+	self.target = target;
 
+func dealDamage() -> int:
+	if(target == null):
+		return 0;
+
+	var dmgResult = 0
+	if (target && target.has_method("recvDamage")):
+		dmgResult = target.recvDamage(attackDamage);
+	target = null;
+	
+	startAttackTimer();
+	return 0
+
+func startAttackTimer():
+	attackDelayTimer.wait_time = attackCooldown
+	attackDelayTimer.start();
 
 func _onAttackDelayTimerTimeout():
 	isReady = true;

@@ -1,7 +1,0 @@
-[gd_resource type="Resource" script_class="SkillActionHeal" load_steps=2 format=3 uid="uid://cf4a0umnkyhqu"]
-
-[ext_resource type="Script" path="res://scripts/skill/skillActions/heal.gd" id="1_qdnpa"]
-
-[resource]
-script = ExtResource("1_qdnpa")
-healMultiplier = 1.0

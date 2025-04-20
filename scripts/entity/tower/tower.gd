@@ -1,18 +1,29 @@
 extends Node2D
 class_name Tower
-var GRID_SIZE = 64;
 
 @onready var spr: AnimatedSprite2D = $AnimatedSprite2D
 @export var isMoving: bool = false;
+
+@export var stats: Array[TowerStat];
+
+var currentStatIndex: int = 0;
 
 var towerName: TowerFactory.TowerName;
 
 var enableAttack: bool = true;
 var isOnValidCell: bool = false;
 var inPlaceMode: bool = false;
+
 @onready var attackController: AttackController = $AttackController;
 @onready var enemyDetector: EnemyDetector = $EnemyDetector;
-@onready var anim: AnimationController
+var anim: AnimationController;
+
+var attacking: bool = false;
+var usingSkill: bool = false;
+
+@export var skill: Skill;
+var skillController: SkillController
+@onready var manaBar = $ManaBar
 
 var onPlace: Callable;
 var onRemove: Callable;
@@ -22,14 +33,32 @@ var enemy: Enemy = null;
 var IDLE_ANIMATION = "idle";
 var ATTACK_ANIMATION = "n_attack";
 
-var ATTACK_SPEED = 0.2;
+func getStat():
+	var index = currentStatIndex if currentStatIndex < (stats.size() - 1) else stats.size() - 1
+	return stats[currentStatIndex]
+
+func getAttackAnimationSpeed():
+	return getStat().getAttackAnimationSpeed(spr, ATTACK_ANIMATION);
 
 func _ready():
 	anim = AnimationController.new(spr, IDLE_ANIMATION, [IDLE_ANIMATION, ATTACK_ANIMATION]);
-	if(attackController != null):
-		attackController.setup(10, ATTACK_SPEED, Callable(anim, "play").bind(ATTACK_ANIMATION, 1/ATTACK_SPEED));
+	Utility.ConnectSignal(anim,"on_animation_finished", Callable(self, "animation_finished"));
 	
-	enemyDetector.connect("onRemoveTarget", Callable(self, "clearEnemy"))
+	var maxMana := 20.0;
+	var initMana := 10.0;
+	
+	if(manaBar != null):
+		manaBar.setup(maxMana, false);
+		manaBar.updateValue(initMana);
+	
+	skillController = SkillController.new(self,maxMana, initMana, skill);
+	Utility.ConnectSignal(skillController, "on_mana_updated", Callable(self, "update_mana_bar"));
+	
+	if(attackController != null):
+		var stat = getStat();
+		attackController.setup(stat.pDamage, stat.getAttackDelay());
+	
+	Utility.ConnectSignal(enemyDetector, "onRemoveTarget", Callable(self, "clearEnemy"))
 
 func _input(event):
 	if event is InputEventKey and event.pressed and event.keycode == KEY_SPACE:
@@ -39,13 +68,17 @@ func _input(event):
 			exitPlaceMode();
 
 func _process(delta):
+	var stat = getStat();
 	if isMoving:
-		var mousePos = get_global_mouse_position()
-		var gridPos = snapToGrid(mousePos);
-		position = gridPos;
+		position = GridHelper.snapToGrid(get_viewport().size, get_global_mouse_position());
 		updateTowerState();
 
-	if enableAttack:
+	if skillController && !usingSkill:
+		skillController.updateMana(stat.manaRegen * delta);
+		if(skillController.currentMana == skillController.maxMana && !attacking):
+			await skillController.useSkill();
+
+	if enableAttack && !attacking && !usingSkill:
 		attackEnemy();
 
 func setup(towerName: TowerFactory.TowerName, onPlace: Callable, onRemove: Callable):
@@ -73,20 +106,18 @@ func exitPlaceMode():
 	onPlace.call(cell);
 
 func upgrade():
-	pass;
-
-func snapToGrid(position):
-	var screenSize = get_viewport().size;
-	position = Vector2(clamp(position.x, 0, screenSize.x - GRID_SIZE), clamp(position.y, 0, screenSize.y - GRID_SIZE));
-	var gridX = floor(position.x / GRID_SIZE) * GRID_SIZE + GRID_SIZE / 2
-	var gridY = floor(position.y / GRID_SIZE) * GRID_SIZE + GRID_SIZE / 2
+	if currentStatIndex >= stats.size() - 1:
+		return false;
 	
-	return Vector2(gridX, gridY)
+	currentStatIndex += 1;
+	return true;
 
 func attackEnemy():
-	if(enemy != null && attackController != null):
+	if(enemy != null && attackController != null && attackController.canAttack(enemy)):
 		attackController.attack(enemy);
-
+		var speed = getAttackAnimationSpeed();		
+		play_animation(ATTACK_ANIMATION, speed);
+		attacking = true;
 func isAvailable():
 	return true;
 
@@ -103,6 +134,9 @@ func updateSpriteColor(available: bool):
 		spr.self_modulate = Color("#ff0000", 1);
 
 func _onEnemyDetected(enemy: Enemy):
+	if(self.enemy != null || enemy == self.enemy):
+		return;
+	
 	clearEnemy();
 	
 	self.enemy = enemy;	
@@ -112,5 +146,31 @@ func _onEnemyDetected(enemy: Enemy):
 
 func clearEnemy():
 	enemy = null;
+	play_animation_default();
+
+func play_animation(name: String, speed: float = 1):
+	if(anim != null):
+		return anim.play(name, speed);
+	return false;
+
+func play_animation_default():
 	if(anim != null):
 		anim.playDefault();
+
+func animation_finished(name: String):
+	match name:
+		ATTACK_ANIMATION:
+			if attacking:
+				attackController.dealDamage();
+				play_animation_default();
+				attacking = false;
+
+	on_animation_finished.emit(name);
+			
+func update_mana_bar(current: float):
+	if(manaBar == null):
+		return;
+	
+	manaBar.updateValue(current)
+
+signal on_animation_finished(name: String);

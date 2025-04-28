@@ -3,10 +3,10 @@ extends Resource
 
 @export var pDamage: int = 4
 @export var mDamage: int = 4
+@export var attackRange: float = 1.0
 @export var attackSpeed: float = 0.5
 @export var mana: int = 100
 @export var intialMana: int = 10
-@export var manaRegen: float = 3.5
 
 func getAttackAnimationSpeed(anim: AnimatedSprite2D, name: String):
 	var total_frames: int = anim.sprite_frames.get_frame_count(name)

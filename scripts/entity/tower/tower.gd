@@ -54,11 +54,13 @@ func _ready():
 	skillController = SkillController.new(self,maxMana, initMana, skill);
 	Utility.ConnectSignal(skillController, "on_mana_updated", Callable(self, "update_mana_bar"));
 	
+	var stat = getStat();
 	if(attackController != null):
-		var stat = getStat();
 		attackController.setup(stat.pDamage, stat.getAttackDelay());
 	
-	Utility.ConnectSignal(enemyDetector, "onRemoveTarget", Callable(self, "clearEnemy"))
+	if(enemyDetector != null):
+		enemyDetector.setup(stat.attackRange);
+		Utility.ConnectSignal(enemyDetector, "onRemoveTarget", Callable(self, "clearEnemy"))
 
 func _input(event):
 	if event is InputEventKey and event.pressed and event.keycode == KEY_SPACE:
@@ -74,7 +76,6 @@ func _process(delta):
 		updateTowerState();
 
 	if skillController && !usingSkill:
-		skillController.updateMana(stat.manaRegen * delta);
 		if(skillController.currentMana == skillController.maxMana && !attacking):
 			await skillController.useSkill();
 
@@ -118,6 +119,9 @@ func attackEnemy():
 		var speed = getAttackAnimationSpeed();		
 		play_animation(ATTACK_ANIMATION, speed);
 		attacking = true;
+		if(skillController != null):
+			skillController.updateMana(10);			
+		
 func isAvailable():
 	return true;
 

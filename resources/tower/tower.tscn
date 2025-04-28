@@ -13,28 +13,28 @@
 script = ExtResource("2_v1ohr")
 pDamage = 0
 mDamage = 0
+attackRange = 1.5
 attackSpeed = 90.0
-mana = 100
-intialMana = 10
-manaRegen = 4.0
+mana = 80
+intialMana = 40
 
 [sub_resource type="Resource" id="Resource_6820u"]
 script = ExtResource("2_v1ohr")
 pDamage = 4
 mDamage = 4
+attackRange = 1.0
 attackSpeed = 0.5
 mana = 100
 intialMana = 10
-manaRegen = 3.5
 
 [sub_resource type="Resource" id="Resource_bjofy"]
 script = ExtResource("2_v1ohr")
 pDamage = 4
 mDamage = 4
+attackRange = 1.0
 attackSpeed = 0.5
 mana = 100
 intialMana = 10
-manaRegen = 3.5
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_t2hop"]
 atlas = ExtResource("2_l7ruh")

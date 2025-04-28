@@ -1,7 +1,7 @@
 extends Area2D
 class_name EnemyDetector
 
-@export var radius: float = 3
+var radius: float = 3
 @export var collision: CollisionShape2D;
 
 var target: Enemy = null
@@ -10,7 +10,8 @@ var enemyInRange: Array[Enemy] = []
 signal onEnemyDetected(enemy: Enemy)
 signal onRemoveTarget()
 
-func _ready():
+func setup(radius: float):
+	self.radius = radius;
 	var circle = collision.shape as CircleShape2D
 	if circle:
 		circle.radius = radius * GridHelper.CELL_SIZE

@@ -1,0 +1,554 @@
+towers:
+  Takanashi Kiara:
+    '1':
+      Attack Type: Physical
+      Attack: 100
+      Delay: 110
+      Interval: 5.56
+      Attack Speed: 90
+      Range: 1
+      Max Energy: 50
+      Start Energy: 10
+      Critical Chance: 0
+      Critical Damage: 150
+      Generation (Trait1): Myth
+      Class (Trait2): Warrior
+      Skill Name: Flame Slash I
+      Skill Type: Active
+      Skill Desc: Kiara ฟันดาบเปลวเพลิงของนกอมตะไปด้านหน้าระยะ w3*h1 ช่อง สร้างความเสียหายกายภาพ
+        x% แก่ศัตรูทั้งหมด
+      Skill Mechanic: Target AOE
+      Skill Variable "x": 140
+      Buff: '-'
+      Debuff: '-'
+      Trigger Count: 11.08
+      Estimated DPS: 7724
+    '2':
+      Attack Type: Physical
+      Attack: 120
+      Delay: 110
+      Interval: 5.56
+      Attack Speed: 90
+      Range: 1
+      Max Energy: 50
+      Start Energy: 10
+      Critical Chance: 0
+      Critical Damage: 150
+      Generation (Trait1): Myth
+      Class (Trait2): Warrior
+      Skill Name: Flame Slash II
+      Skill Type: Active
+      Skill Desc: ''
+      Skill Mechanic: Target AOE
+      Skill Variable "x": 150
+      Buff: '-'
+      Debuff: '-'
+      Trigger Count: 11.08
+      Estimated DPS: 9266
+    '3':
+      Attack Type: Physical
+      Attack: 160
+      Delay: 110
+      Interval: 5.56
+      Attack Speed: 90
+      Range: 1
+      Max Energy: 50
+      Start Energy: 10
+      Critical Chance: 0
+      Critical Damage: 150
+      Generation (Trait1): Myth
+      Class (Trait2): Warrior
+      Skill Name: Flame Slash IIII
+      Skill Type: Active
+      Skill Desc: ''
+      Skill Mechanic: Target AOE
+      Skill Variable "x": 170
+      Buff: '-'
+      Debuff: '-'
+      Trigger Count: 11.08
+      Estimated DPS: 12352
+    evolution:
+      Attack Type: Physical
+      Attack: 300
+      Delay: 80
+      Interval: 6.67
+      Attack Speed: 120
+      Range: 1
+      Max Energy: 80
+      Start Energy: 40
+      Critical Chance: 0
+      Critical Damage: 150
+      Generation (Trait1): Myth
+      Class (Trait2): Warrior
+      Skill Name: Hinotori
+      Skill Type: Active
+      Skill Desc: Kiara เสริมพลังดาบด้วยเพลิงศักสิทธิ์แล้วฟาดฟันออกไปข้างหน้าอย่างรุนแรงหน้าระยะ
+        w6*h3 ช่อง สร้างความเสียหายกายภาพ x% แก่ศัตรูทั้งหมด
+      Skill Mechanic: Projectile
+      Skill Variable "x": 300
+      Buff: '-'
+      Debuff: '-'
+      Trigger Count: 9.4
+      Estimated DPS: 17248
+  Mori Calliope:
+    '1':
+      Attack Type: Physical
+      Attack: 80
+      Delay: 100
+      Interval: 4.00
+      Attack Speed: 100
+      Range: 2
+      Max Energy: 40
+      Start Energy: 10
+      Critical Chance: 0
+      Critical Damage: 150
+      Generation (Trait1): Myth
+      Class (Trait2): Assassin
+      Skill Name: Ricky I
+      Skill Type: Active
+      Skill Mechanic: Self AOE
+      Skill Desc: Calli ตวัดเคียวที่ชื่อว่า Ricky ไปรอบตัว 1 ช่องรอบตัว สร้างความเสียหาย
+        x% + (Soul* 0.5) Calli จะได้รับ 1 Soul ต่อศัตรูที่ถูกสังหารด้วยสกิลนี้
+      Skill Variable "x": 120
+      Buff: '-'
+      Debuff: '-'
+      Trigger Count: 15.25
+      Estimated DPS: 6264
+    '2':
+      Attack Type: Physical
+      Attack: 100
+      Delay: 100
+      Interval: 4.00
+      Attack Speed: 100
+      Range: 2
+      Max Energy: 40
+      Start Energy: 10
+      Critical Chance: 0
+      Critical Damage: 150
+      Generation (Trait1): Myth
+      Class (Trait2): Assassin
+      Skill Name: Ricky II
+      Skill Type: Active
+      Skill Mechanic: Self AOE
+      Skill Desc: ''
+      Skill Variable "x": 130
+      Buff: '-'
+      Debuff: '-'
+      Trigger Count: 15.25
+      Estimated DPS: 7983
+    '3':
+      Attack Type: Physical
+      Attack: 140
+      Delay: 100
+      Interval: 4.00
+      Attack Speed: 100
+      Range: 2
+      Max Energy: 40
+      Start Energy: 10
+      Critical Chance: 0
+      Critical Damage: 150
+      Generation (Trait1): Myth
+      Class (Trait2): Assassin
+      Skill Name: Ricky IIII
+      Skill Type: Active
+      Skill Mechanic: Self AOE
+      Skill Desc: ''
+      Skill Variable "x": 150
+      Buff: '-'
+      Debuff: '-'
+      Trigger Count: 15.25
+      Estimated DPS: 11603
+    evolution:
+      Attack Type: Physical
+      Attack: 200
+      Delay: 70
+      Interval: 150
+      Attack Speed: 130
+      Range: 2
+      Max Energy: 80
+      Start Energy: 40
+      Critical Chance: 0
+      Critical Damage: 150
+      Generation (Trait1): Myth
+      Class (Trait2): Assassin
+      Skill Name: Excuse My Rudeness, But Could You Please RIP?
+      Skill Type: Active
+      Skill Mechanic: Self AOE
+      Skill Desc: Calli ตวัดเคียวความตาย Ricky ไปรอบตัวระยะ 2 ช่องรอบตัว สร้างความเสียหาย
+        x% + (Soul * 0.5) และหลังจากนั้น 0.5 วินาทีระเบิดสร้างความเสียหายอีกรอบ y%
+        + (Soul * 0.25) Calli จะได้รับ 1 Soul ต่อศัตรูที่ถูกสังหารด้วยสกิลนี้
+      Skill Variable "x": 200
+      Buff: '-'
+      Debuff: '-'
+      Trigger Count: 6.15
+      Estimated DPS: 10.10
+  Ninomae Ina Nis:
+    '1':
+      Attack Type: Magical
+      Attack: 140
+      Delay: 140
+      Interval: 16.67
+      Attack Speed: 60
+      Range: 4
+      Max Energy: 100
+      Start Energy: 60
+      Critical Chance: 0
+      Critical Damage: 150
+      Generation (Trait1): Myth
+      Class (Trait2): Spell Caster
+      Skill Name: Tentacle I
+      Skill Type: Active
+      Skill Mechanic: Target AOE
+      Skill Desc: Ina เรียกหนวดจากเทพบรรกาลมาโจมตีศัตตรูที่อยู่ด้านหน้าในระยะ w3*h1
+        ช่อง สร้างความเสียหายเวทมนตร์ x% พร้อมทั้ง Slow ศัตรูทั้งหมดที่ถูกโจมตี 5%
+        เป็นระยะเวลา 1.5 วินาที
+      Skill Variable "x": 200
+      Buff: '-'
+      Debuff: Movement Slow
+      Trigger Count: 4.36
+      Estimated DPS: 12981
+    '2':
+      Attack Type: Magical
+      Attack: 160
+      Delay: 140
+      Interval: 16.67
+      Attack Speed: 60
+      Range: 4
+      Max Energy: 100
+      Start Energy: 60
+      Critical Chance: 0
+      Critical Damage: 150
+      Generation (Trait1): Myth
+      Class (Trait2): Spell Caster
+      Skill Name: Tentacle II
+      Skill Type: Active
+      Skill Mechanic: Target AOE
+      Skill Desc: ''
+      Skill Variable "x": 240
+      Buff: '-'
+      Debuff: Movement Slow
+      Trigger Count: 4.36
+      Estimated DPS: 15114
+    '3':
+      Attack Type: Magical
+      Attack: 200
+      Delay: 140
+      Interval: 16.67
+      Attack Speed: 60
+      Range: 4
+      Max Energy: 100
+      Start Energy: 60
+      Critical Chance: 0
+      Critical Damage: 150
+      Generation (Trait1): Myth
+      Class (Trait2): Spell Caster
+      Skill Name: Tentacle III
+      Skill Type: Active
+      Skill Mechanic: Target AOE
+      Skill Desc: ''
+      Skill Variable "x": 300
+      Buff: '-'
+      Debuff: Movement Slow
+      Trigger Count: 4.36
+      Estimated DPS: 19416
+    evolution:
+      Attack Type: Magical
+      Attack: 500
+      Delay: 120
+      Interval: 12.50
+      Attack Speed: 80
+      Range: 4
+      Max Energy: 100
+      Start Energy: 60
+      Critical Chance: 0
+      Critical Damage: 150
+      Generation (Trait1): Myth
+      Class (Trait2): Spell Caster
+      Skill Name: Forbidden Book
+      Skill Type: Active
+      Skill Mechanic: Target AOE
+      Skill Desc: Ina เรียกหนวดจากเทพบรรกาล 3 เส้น มาโจมตีศัตรูที่อยู่ด้านหน้าในระยะ
+        w3*h1 ช่อง ต่อ 1 หนวด สร้างความเสียหายเวทมนตร์ x% พร้อมทั้ง Slow ศัตรูทั้งหมดที่ถูกโจมตี
+        5% เป็นระยะเวลา 1.5 วินาที
+      Skill Variable "x": 600
+      Buff: '-'
+      Debuff: Movement Slow
+      Trigger Count: 5.48
+      Estimated DPS: 52440
+  Gawr Gura:
+    '1':
+      Attack Type: Magical
+      Attack: 80
+      Delay: 120
+      Interval: 15.0
+      Attack Speed: 80
+      Range: 2
+      Max Energy: 120
+      Start Energy: 60
+      Critical Chance: 0
+      Critical Damage: 150
+      Generation (Trait1): Myth
+      Class (Trait2): Spell Caster
+      Skill Name: Anlantis Trident I
+      Skill Type: Active
+      Skill Mechanic: Self AOE
+      Skill Desc: Gura ใช้ตรีศูลแห่งแอตแลนติสเรียกพายุคลื่น 4 ลูกในระยะ 1 ช่องห่างจากตัวเอง
+        เป็นเวลา 5 วินาที ศัตรูที่ถูกโจมตีด้วยคลื่นจะได้รับความเสียหาย x% ต่อคลื่น
+        1 ลูก พร้อมทั้ง Stun ศัตรูเป็นเวลา 0.1 วินาที ในระยะเวลาที่สกิลนี้แสดงผล Gura
+        จะไม่ได้รับ Energy
+      Skill Variable "x": 120
+      Buff: '-'
+      Debuff: Stun
+      Trigger Count: 4.6
+      Estimated DPS: 7968
+    '2':
+      Attack Type: Magical
+      Attack: 120
+      Delay: 120
+      Interval: 15.0
+      Attack Speed: 80
+      Range: 2
+      Max Energy: 120
+      Start Energy: 60
+      Critical Chance: 0
+      Critical Damage: 150
+      Generation (Trait1): Myth
+      Class (Trait2): Spell Caster
+      Skill Name: Anlantis Trident II
+      Skill Type: Active
+      Skill Mechanic: Self AOE
+      Skill Desc: ''
+      Skill Variable "x": 130
+      Buff: '-'
+      Debuff: Stun
+      Trigger Count: 4.6
+      Estimated DPS: 12228
+    '3':
+      Attack Type: Magical
+      Attack: 180
+      Delay: 120
+      Interval: 15.0
+      Attack Speed: 80
+      Range: 2
+      Max Energy: 120
+      Start Energy: 60
+      Critical Chance: 0
+      Critical Damage: 150
+      Generation (Trait1): Myth
+      Class (Trait2): Spell Caster
+      Skill Name: Anlantis Trident III
+      Skill Type: Active
+      Skill Mechanic: Self AOE
+      Skill Desc: ''
+      Skill Variable "x": 150
+      Buff: '-'
+      Debuff: Stun
+      Trigger Count: 4.6
+      Estimated DPS: 19170
+    evolution:
+      Attack Type: Magical
+      Attack: 240
+      Delay: 100
+      Interval: 12.0
+      Attack Speed: 100
+      Range: 2
+      Max Energy: 120
+      Start Energy: 80
+      Critical Chance: 0
+      Critical Damage: 150
+      Generation (Trait1): Myth
+      Class (Trait2): Spell Caster
+      Skill Name: Sink in to the void at the bottom of the sea!!
+      Skill Type: Active
+      Skill Mechanic: Self AOE
+      Skill Desc: Gura ใช้ตรีศูลแห่งแอตแลนติสเรียกพายุคลื่น 8 ลูกในระยะ 1 ช่องห่างจากตัวเอง
+        เป็นเวลา 5 วินาที ศัตรูที่ถูกโจมตีด้วยคลื่นจะได้รับความเสียหาย x% ต่อคลื่น
+        1 ลูก พร้อมทั้ง Stun ศัตรูเป็นเวลา 0.1 วินาที ในระยะเวลาที่สกิลนี้แสดงผล Gura
+        จะไม่ได้รับ Energy
+      Skill Variable "x": 200
+      Buff: '-'
+      Debuff: Stun
+      Trigger Count: 5.67
+      Estimated DPS: 36160
+  Watson Amelia:
+    '1':
+      Attack Type: Physical
+      Attack: 150
+      Delay: 80
+      Interval: 8.33
+      Attack Speed: 120
+      Range: 5
+      Max Energy: 100
+      Start Energy: 80
+      Critical Chance: 0
+      Critical Damage: 150
+      Generation (Trait1): Myth
+      Class (Trait2): Marksman
+      Skill Name: Time Traveler I
+      Skill Type: Active
+      Skill Mechanic: Self
+      Skill Desc: Amelia ใช้นาฬิกาแห่งเวลาเพิ่มความเร็วในการโจมตี x% ให้กับตนเอง เป็นเวลา
+        4 วินาที
+      Skill Variable "x": 5
+      Buff: Attack Speed Increase
+      Debuff: '-'
+      Trigger Count: 7.96
+    '2':
+      Attack Type: Physical
+      Attack: 175
+      Delay: 80
+      Interval: 8.33
+      Attack Speed: 120
+      Range: 5
+      Max Energy: 100
+      Start Energy: 80
+      Critical Chance: 0
+      Critical Damage: 150
+      Generation (Trait1): Myth
+      Class (Trait2): Marksman
+      Skill Name: Time Traveler II
+      Skill Type: Active
+      Skill Mechanic: Self
+      Skill Desc: ''
+      Skill Variable "x": 7
+      Buff: Attack Speed Increase
+      Debuff: '-'
+      Trigger Count: 7.96
+    '3':
+      Attack Type: Physical
+      Attack: 225
+      Delay: 80
+      Interval: 8.33
+      Attack Speed: 120
+      Range: 5
+      Max Energy: 100
+      Start Energy: 80
+      Critical Chance: 0
+      Critical Damage: 150
+      Generation (Trait1): Myth
+      Class (Trait2): Marksman
+      Skill Name: Time Traveler III
+      Skill Type: Active
+      Skill Mechanic: Self
+      Skill Desc: ''
+      Skill Variable "x": 10
+      Buff: Attack Speed Increase
+      Debuff: '-'
+      Trigger Count: 7.96
+    evolution:
+      Attack Type: Physical
+      Attack: 350
+      Delay: 50
+      Interval: 8.0
+      Attack Speed: 150
+      Range: 5
+      Max Energy: 120
+      Start Energy: 80
+      Critical Chance: 0
+      Critical Damage: 150
+      Generation (Trait1): Myth
+      Class (Trait2): Marksman
+      Skill Name: Elementary my dear
+      Skill Type: Active
+      Skill Mechanic: Self AOE
+      Skill Desc: Amelia ใช้นาฬิกาแห่งเวลาเพิ่มความเร็วในการโจมตี x% ให้กับตนเองและยูนิตรอบๆ
+        ตัวในระยะ 1 ช่อง และทำให้ตนเองได้รับโอกาสคริติคอล 100% เป็นเวลา 4 วินาที
+      Skill Variable "x": 10
+      Buff: Attack Speed Increase
+      Debuff: '-'
+      Trigger Count: 8.0
+  Hakos Baelz:
+    '1':
+      Attack Type: Physical
+      Attack: 90
+      Delay: 100
+      Interval: 10.00
+      Attack Speed: 100
+      Range: 3
+      Max Energy: 80
+      Start Energy: 40
+      Critical Chance: 0
+      Critical Damage: 150
+      Generation (Trait1): Myth
+      Class (Trait2): Berserker
+      Skill Name: Chaos Strike I
+      Skill Type: Active
+      Skill Mechanic: Target AOE
+      Skill Desc: Baelz โจมตีศัตรูในระยะ w2*h2 ช่องด้วยพลังแห่งความโกลาหล สร้างความเสียหายกายภาพ
+        x% พร้อมทั้งลดพลังป้องกันของศัตรูลง y% เป็นเวลา 3 วินาที
+      Skill Variable "x": 150
+      Skill Variable "y": 10
+      Buff: '-'
+      Debuff: Defense Reduction
+      Trigger Count: 10.00
+      Estimated DPS: 13500
+    '2':
+      Attack Type: Physical
+      Attack: 110
+      Delay: 100
+      Interval: 10.00
+      Attack Speed: 100
+      Range: 3
+      Max Energy: 80
+      Start Energy: 40
+      Critical Chance: 0
+      Critical Damage: 150
+      Generation (Trait1): Myth
+      Class (Trait2): Berserker
+      Skill Name: Chaos Strike II
+      Skill Type: Active
+      Skill Mechanic: Target AOE
+      Skill Desc: ''
+      Skill Variable "x": 180
+      Skill Variable "y": 15
+      Buff: '-'
+      Debuff: Defense Reduction
+      Trigger Count: 10.00
+      Estimated DPS: 16500
+    '3':
+      Attack Type: Physical
+      Attack: 140
+      Delay: 100
+      Interval: 10.00
+      Attack Speed: 100
+      Range: 3
+      Max Energy: 80
+      Start Energy: 40
+      Critical Chance: 0
+      Critical Damage: 150
+      Generation (Trait1): Myth
+      Class (Trait2): Berserker
+      Skill Name: Chaos Strike III
+      Skill Type: Active
+      Skill Mechanic: Target AOE
+      Skill Desc: ''
+      Skill Variable "x": 220
+      Skill Variable "y": 20
+      Buff: '-'
+      Debuff: Defense Reduction
+      Trigger Count: 10.00
+      Estimated DPS: 19800
+    evolution:
+      Attack Type: Physical
+      Attack: 200
+      Delay: 80
+      Interval: 8.00
+      Attack Speed: 125
+      Range: 3
+      Max Energy: 100
+      Start Energy: 50
+      Critical Chance: 0
+      Critical Damage: 150
+      Generation (Trait1): Myth
+      Class (Trait2): Berserker
+      Skill Name: Chaos Unleashed
+      Skill Type: Active
+      Skill Mechanic: Target AOE
+      Skill Desc: Baelz ปลดปล่อยพลังแห่งความโกลาหล โจมตีศัตรูในระยะ w3*h3 ช่อง สร้างความเสียหายกายภาพ
+        x% พร้อมทั้งลดพลังป้องกันของศัตรูลง y% เป็นเวลา 5 วินาที
+      Skill Variable "x": 300
+      Skill Variable "y": 30
+      Buff: '-'
+      Debuff: Defense Reduction
+      Trigger Count: 8.00
+      Estimated DPS: 37500

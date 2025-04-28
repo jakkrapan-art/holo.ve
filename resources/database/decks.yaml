@@ -1,0 +1,11 @@
+Tempest:
+  name: Tempest
+  sprite: Tempest.png
+  architype: Holostars
+  branch: en
+
+Myth:
+  name: Myth
+  sprite: Myth.png
+  architype: Hololive
+  branch: en

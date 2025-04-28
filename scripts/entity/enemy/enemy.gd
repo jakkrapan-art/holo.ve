@@ -51,13 +51,9 @@ func dead():
 	
 func calculate_pathfollow_speed(path: Path2D, moveSpeed: float) -> float:
 	var curve = path.curve
-	if curve.point_count < 2:
-		return 0.0  # Not enough points to move
-	
-	var pointCount = curve.point_count - 2; # remove start and end node
+	var pointCount = curve.point_count - 2
 	var totalSegments = pointCount - 1
-	return 1.0 / (totalSegments * moveSpeed)
-
+	return (100.00 / moveSpeed / totalSegments) if totalSegments else 0.0
 
 signal onReachEndPoint();
 signal onDead();

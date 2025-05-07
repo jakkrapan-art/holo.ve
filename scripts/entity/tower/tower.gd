@@ -9,6 +9,7 @@ class_name Tower
 var currentStatIndex: int = 0;
 
 var towerName: TowerFactory.TowerName;
+@export var data: TowerData;
 
 var enableAttack: bool = true;
 var isOnValidCell: bool = false;

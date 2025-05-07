@@ -20,5 +20,5 @@ func getAttackAnimationSpeed(anim: AnimatedSprite2D, name: String):
 	
 	return speed_scale
 
-func getAttackDelay():
-	return maxf((100 + (100 - attackSpeed)) / 100, 0.01);
+func getAttackDelay(extraSpeed: float = 0):
+	return maxf((100 + (100 - attackSpeed + extraSpeed)) / 100, 0.01);

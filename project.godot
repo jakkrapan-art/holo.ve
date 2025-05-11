@@ -11,9 +11,14 @@ config_version=5
 [application]
 
 config/name="holo.ve"
-run/main_scene="res://scenes/dev_scene.tscn"
+run/main_scene="res://scenes/main_menu.tscn"
 config/features=PackedStringArray("4.2", "Forward Plus")
 config/icon="res://icon.svg"
+
+[autoload]
+
+GridHelper="*res://scripts/utility/grid_helper.gd"
+Global="*res://scripts/global.gd"
 
 [editor_plugins]
 

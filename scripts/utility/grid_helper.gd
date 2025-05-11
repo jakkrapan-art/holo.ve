@@ -1,7 +1,5 @@
 extends Node
 
-class_name GridHelper
-
 const CELL_SIZE: int = 512
 
 static func WorldToCell(world_position: Vector2) -> Vector2i:

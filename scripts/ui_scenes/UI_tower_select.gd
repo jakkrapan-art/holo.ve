@@ -8,6 +8,7 @@ signal tower_select(num_select)
 var test_deck = ['1','2','3','4','5']
 
 func _ready():
+	print("Deck passed in:", Global.selected_deck)
 	_setup_buttons()
 	var refresh_button = get_node("CanvasLayer/PopupPanel/Panel/RefreshButton")
 	refresh_button.pressed.connect(Callable(self, "_setup_buttons"))

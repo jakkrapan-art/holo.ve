@@ -51,9 +51,13 @@ func dead():
 	
 func calculate_pathfollow_speed(path: Path2D, moveSpeed: float) -> float:
 	var curve = path.curve
-	var pointCount = curve.point_count - 2
-	var totalSegments = pointCount - 1
-	return (100.00 / moveSpeed / totalSegments) if totalSegments else 0.0
+	if not curve:
+		return 0.0
+	var totalSegments = curve.point_count - 3
+	if totalSegments <= 0:
+		return 0.0
+	var totalTime = (100.0 / moveSpeed) * totalSegments
+	return 1.0 / totalTime  # how much progress_ratio to move per second
 
 signal onReachEndPoint();
 signal onDead();

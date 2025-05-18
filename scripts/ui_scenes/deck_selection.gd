@@ -3,6 +3,7 @@ extends Control
 @export var decks: Array[Dictionary]  # List of all decks
 @export var characters: Array[Dictionary]  # List of characters
 
+var _data
 var selected_deck: String = ""
 var current_character_index: int = 0
 
@@ -13,17 +14,13 @@ func _ready():
 	_setup_buttons()
 
 func _load_deck():
-	var data = YamlParser.load_data("res://resources/database/decks.yaml")
-	print("Loaded JSON Data: ", data.keys())
+	_data = YamlParser.load_data("res://resources/database/decks.yaml")
+	print("Loaded JSON Data: ", _data.keys())
 	
 	var outdata = YamlParser.load_data("res://resources/database/towers_data_test.yaml")
-	print(outdata.keys())
-	print(outdata["towers"].keys())
 
 	for deck_name in data.keys():
 		var deck_info = data[deck_name]
-		print("deck name: ", deck_name)
-		print("data: ", deck_info["name"])
 		
 		var deck_choice = preload("res://resources/ui_component/deck_choice.tscn").instantiate()
 		
@@ -69,6 +66,7 @@ func _on_deck_selected(deck_name: String):
 func _on_confirm():
 	print("Deck selected:", selected_deck)
 	Global.selected_deck = selected_deck
+	Global.selected_data_file = selected_deck
 	#print("Character selected:", characters[current_character_index])
 	get_tree().change_scene_to_file("res://scenes/dev_scene.tscn")
 

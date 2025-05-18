@@ -1,9 +1,10 @@
 Takanashi_Kiara:
-  '1':
+  '1': # This is comment
     Attack_Type: Physical
     Attack: 100
     Delay: 110
-    Interval: 5.56
+    Interval: 5.56 # not used? for example
+    # Attack_Speed: 90 -- exapmle
     Attack_Speed: 90
     Range: 1
     Max_Energy: 50

@@ -3,8 +3,7 @@ Takanashi_Kiara:
     Attack_Type: Physical
     Attack: 100
     Delay: 110
-    Interval: 5.56 # not used? for example
-    # Attack_Speed: 90 -- exapmle
+    Interval: 5.56 #ไม่ใช้ ผมใช้คำนวณวินาทีที่ป้อมจะกดสกิล เช่นอันนี้คือกดสกิลทุก ๆ 5.56 วินาที
     Attack_Speed: 90
     Range: 1
     Max_Energy: 50
@@ -17,12 +16,12 @@ Takanashi_Kiara:
     Skill_Type: Active
     Skill_Desc: Kiara ฟันดาบเปลวเพลิงของนกอมตะไปด้านหน้าระยะ w3*h1 ช่อง สร้างความเสียหายกายภาพ
       x% แก่ศัตรูทั้งหมด
-    Skill_Mechanic: Target AOE
+    Skill_Mechanic: Target AOE #ไม่ชัวร์ ผมใช้บอก Dev ว่าสกิลนี้ทำงานยังไง
     Skill_Variable_X: 140
     Buff: '-'
     Debuff: '-'
-    Trigger_Count: 11.08
-    Estimated_DPS: 7724
+    Trigger_Count: 11.08 #ไม่ใช้ ผมใช้คำนวณจำนวนครั้งที่ป้อมจะกดสกิลใน 60 วินาที
+    Estimated_DPS: 7724 #ไม่ใช้ ผมใช้คำนวณ DPS ของป้อมครับ
   '2':
     Attack_Type: Physical
     Attack: 120

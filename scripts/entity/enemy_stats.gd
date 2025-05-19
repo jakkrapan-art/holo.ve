@@ -17,3 +17,16 @@ func _init(hp: int, armor: int, mArmor: int, moveSpeed: float):
 func updateHealth(amount: int):
 	currentHp = clamp(currentHp + amount, 0, maxHp);
 	return currentHp;
+
+func getMoveSpeed(path: Path2D):
+	return calculatePathfollowSpeed(path);
+	
+func calculatePathfollowSpeed(path: Path2D) -> float:
+	var curve = path.curve
+	if not curve:
+		return 0.0
+	var totalSegments = curve.point_count - 3
+	if totalSegments <= 0:
+		return 0.0
+	var totalTime = (100.0 / moveSpeed) * totalSegments
+	return 1.0 / totalTime  # how much progress_ratio to move per second

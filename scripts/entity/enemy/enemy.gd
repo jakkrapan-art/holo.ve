@@ -11,8 +11,7 @@ enum EnemyType {Normal, Elite, Boss}
 
 func setup(hp: int, armor: int, mArmor: int, moveSpeed: int, texture: Texture2D):
 	setTexture(texture);
-	var calMoveSpeed = calculate_pathfollow_speed(get_parent() as Path2D, moveSpeed);
-	stats = EnemyStat.new(hp, armor, mArmor, calMoveSpeed);
+	stats = EnemyStat.new(hp, armor, mArmor, moveSpeed);
 	
 	original_modulate = sprite.modulate
 
@@ -22,7 +21,7 @@ func _process(_delta):
 		queue_free()
 
 func _physics_process(delta):
-	progress_ratio += stats.moveSpeed * delta;
+	progress_ratio += stats.getMoveSpeed(get_parent() as Path2D) * delta;
 
 func setTexture(image: Texture2D):
 	if(sprite != null && image != null):
@@ -48,16 +47,6 @@ func _on_damage_flash_timeout():
 func dead():
 	onDead.emit();
 	queue_free();
-	
-func calculate_pathfollow_speed(path: Path2D, moveSpeed: float) -> float:
-	var curve = path.curve
-	if not curve:
-		return 0.0
-	var totalSegments = curve.point_count - 3
-	if totalSegments <= 0:
-		return 0.0
-	var totalTime = (100.0 / moveSpeed) * totalSegments
-	return 1.0 / totalTime  # how much progress_ratio to move per second
 
 signal onReachEndPoint();
 signal onDead();

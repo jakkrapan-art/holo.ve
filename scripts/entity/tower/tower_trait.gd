@@ -38,7 +38,10 @@ const SYNERGY_BUFFS := {
 	TowerClass.Assassin: [
 		{ "atk_bonus": 5 },
 		{ "atk_bonus": 10 },
-		{ "atk_bonus": 50 }
+		{ 
+			"atk_bonus": 50,
+			"atk_speed": 20
+		}
 	],
 	TowerClass.Diva: [
 		{ "aoe_radius": 1.2 },
@@ -77,7 +80,7 @@ func _update_synergy(synergy_id: int, delta: int) -> void:
 	_check_synergy_tiers(synergy_id)
 
 func _check_synergy_tiers(synergy_id: int) -> void:
-	var thresholds: Array[int] = SYNERGY_REQUIREMENTS.get(synergy_id, [])
+	var thresholds: Array = SYNERGY_REQUIREMENTS.get(synergy_id, [])
 	var current: int = current_counts.get(synergy_id, 0)
 	var prev_tier: int = active_synergy_tiers.get(synergy_id, -1)
 

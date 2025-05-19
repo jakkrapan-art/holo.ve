@@ -6,10 +6,10 @@ const TowerGeneration = preload("res://scripts/entity/tower/tower_trait.gd").Tow
 
 var level: int = 1;
 
-var pDamageBuff: int = 0;
-var mDamageBuff: int = 0;
+var damageBuff: int = 0;
 var rangeBuff: float = 0;
 var attackSpeedBuff: float = 0;
+var attackModifierBuff: Array[Callable] = []
 
 @export var maxLevel: int = 3;
 @export var towerClass: TowerClass;
@@ -20,23 +20,24 @@ func getStat():
 	var index = level - 1 if level > 0 and level <= (stats.size()) else stats.size() - 1
 	return stats[index]
 	
-func getPhysicDamage():
-	return getStat().pDamage + pDamageBuff;
+func getDamage(enemy: Enemy):
+	var finalDamage = calculateFinalDamage(getStat().damage + damageBuff, enemy);
+	return finalDamage;
 
 func addPhysicDamageBuff(amount: int):
-	pDamageBuff += amount;
+	damageBuff += amount;
 
 func removePhysicDamageBuff(amount: int):
-	pDamageBuff -= amount
+	damageBuff -= amount
 
-func getMagicDamage():
-	return getStat().mDamage + mDamageBuff;
+func calculateFinalDamage(baseDamage: float, enemy: Enemy) -> float:
+	var finalDamage = baseDamage
 	
-func addMagicDamageBuff(amount: int):
-	mDamageBuff += amount;
-
-func removeMagicDamageBuff(amount: int):
-	mDamageBuff -= amount
+	# Apply each modifier in the array
+	for modifier in attackModifierBuff:
+		finalDamage = modifier.call(finalDamage, enemy)
+	
+	return finalDamage
 
 func getAttackRange():
 	return getStat().attackRange + rangeBuff;
@@ -63,5 +64,17 @@ func getAttackAnimationSpeed(anim: AnimatedSprite2D, name: String):
 	var stat = getStat();
 	return stat.getAttackAnimationSpeed(anim, name);
 
+func addAttackModifierBuff(modifier: Callable):
+	attackModifierBuff.append(modifier);
+
+func removeAttackModifierBuff(modifier: Callable):
+	attackModifierBuff.erase(modifier);
+
 func levelUp():
+	if level >= stats.size() - 1:
+		return false;
+	
 	level = mini(level + 1, maxLevel);
+	return true;
+
+signal onAttack(target);

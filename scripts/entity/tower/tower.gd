@@ -4,11 +4,7 @@ class_name Tower
 @onready var spr: AnimatedSprite2D = $AnimatedSprite2D
 @export var isMoving: bool = false;
 
-@export var stats: Array[TowerStat];
-
-var currentStatIndex: int = 0;
-
-var towerName: TowerFactory.TowerName;
+@export var id: TowerFactory.TowerId;
 @export var data: TowerData;
 
 var enableAttack: bool = true;
@@ -35,8 +31,7 @@ var IDLE_ANIMATION = "idle";
 var ATTACK_ANIMATION = "n_attack";
 
 func getStat():
-	var index = currentStatIndex if currentStatIndex < (stats.size() - 1) else stats.size() - 1
-	return stats[currentStatIndex]
+	return data.getStat();
 
 func getAttackAnimationSpeed():
 	return getStat().getAttackAnimationSpeed(spr, ATTACK_ANIMATION);
@@ -57,18 +52,18 @@ func _ready():
 	
 	var stat = getStat();
 	if(attackController != null):
-		attackController.setup(stat.pDamage, stat.getAttackDelay());
+		attackController.setup(data.getDamage(target), stat.getAttackDelay());
 	
 	if(enemyDetector != null):
 		enemyDetector.setup(stat.attackRange);
 		Utility.ConnectSignal(enemyDetector, "onRemoveTarget", Callable(self, "clearEnemy"))
 
-func _input(event):
-	if event is InputEventKey and event.pressed and event.keycode == KEY_SPACE:
-		if(!inPlaceMode):
-			enterPlaceMode();
-		else:
-			exitPlaceMode();
+#func _input(event):
+	#if event is InputEventKey and event.pressed and event.keycode == KEY_SPACE:
+		##if(!inPlaceMode):
+			##enterPlaceMode();
+		##else:
+		#exitPlaceMode();
 
 func _process(delta):
 	var stat = getStat();
@@ -83,9 +78,9 @@ func _process(delta):
 	if enableAttack && !attacking && !usingSkill:
 		attackEnemy();
 
-func setup(towerName: TowerFactory.TowerName, onPlace: Callable, onRemove: Callable):
+func setup(id: TowerFactory.TowerId, onPlace: Callable, onRemove: Callable):
 	self.onPlace = onPlace;
-	self.towerName = towerName;
+	self.id = id;
 	self.onRemove = onRemove;
 
 func enterPlaceMode():
@@ -108,11 +103,7 @@ func exitPlaceMode():
 	onPlace.call(cell);
 
 func upgrade():
-	if currentStatIndex >= stats.size() - 1:
-		return false;
-	
-	currentStatIndex += 1;
-	return true;
+	return data.levelUp()
 
 func attackEnemy():
 	if(enemy != null && attackController != null && attackController.canAttack(enemy)):
@@ -166,7 +157,7 @@ func animation_finished(name: String):
 	match name:
 		ATTACK_ANIMATION:
 			if attacking:
-				attackController.dealDamage();
+				attackController.dealDamage(data.getDamage(enemy));
 				play_animation_default();
 				attacking = false;
 
@@ -177,5 +168,16 @@ func update_mana_bar(current: float):
 		return;
 	
 	manaBar.updateValue(current)
+
+func processActiveBuff(buff):
+	if(buff.has("atk_bonus")):
+		data.addPhysicDamageBuff(buff.atk_bonus);
+	if(buff.has("atk_speed")):
+		data.addAttackSpeedBuff(buff.atk_speed);
+	if(buff.has("modifier")):
+		data.addAttackModifierBuff(buff.modifier);
+
+func processDeactiveBuff(buff):
+	pass
 
 signal on_animation_finished(name: String);

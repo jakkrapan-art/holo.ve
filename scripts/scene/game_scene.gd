@@ -14,10 +14,14 @@ var t: Tower = null
 
 func _input(event):
 	if event is InputEventKey and event.pressed and event.keycode == KEY_1 and t == null:
-		var tower: Tower = towerFactory.GetTower(TowerFactory.TowerName.Test);
+		var tower: Tower = towerFactory.GetTower(TowerFactory.TowerId.Test);
 		tower.enterPlaceMode();
 		add_child(tower);
 		t = tower
+	
+	if event is InputEventKey and event.pressed and event.keycode == KEY_SPACE:
+		t.exitPlaceMode();
+		t = null;
 
 func _ready():
 	if(map != null):

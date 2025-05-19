@@ -1,8 +1,7 @@
 class_name TowerStat
 extends Resource
 
-@export var pDamage: int = 4
-@export var mDamage: int = 4
+@export var damage: int = 4
 @export var attackRange: float = 1.0
 @export var attackSpeed: float = 0.5
 @export var mana: int = 100

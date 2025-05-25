@@ -4,7 +4,7 @@ extends Control
 @export var characters: Array[Dictionary]  # List of characters
 
 var _data
-var selected_deck: String = ""
+var _selected_deck: Dictionary
 var current_character_index: int = 0
 
 func _ready():
@@ -16,11 +16,9 @@ func _ready():
 func _load_deck():
 	_data = YamlParser.load_data("res://resources/database/decks.yaml")
 	print("Loaded JSON Data: ", _data.keys())
-	
-	var outdata = YamlParser.load_data("res://resources/database/towers_data_test.yaml")
 
-	for deck_name in data.keys():
-		var deck_info = data[deck_name]
+	for deck_name in _data.keys():
+		var deck_info = _data[deck_name]
 		
 		var deck_choice = preload("res://resources/ui_component/deck_choice.tscn").instantiate()
 		
@@ -59,14 +57,14 @@ func _on_prev_character():
 	_display_character()
 
 func _on_deck_selected(deck_name: String):
-	selected_deck = deck_name
-	print("Selected Deck:", selected_deck)
+	_selected_deck = _data[deck_name]
+	print("Selected Deck:", _selected_deck)
 	$Start.disabled = false
 	
 func _on_confirm():
-	print("Deck selected:", selected_deck)
-	Global.selected_deck = selected_deck
-	Global.selected_data_file = selected_deck
+	print("Deck selected:", _selected_deck)
+	Global.selected_deck = _selected_deck["name"]
+	Global.selected_data_file = _selected_deck["data_file"]
 	#print("Character selected:", characters[current_character_index])
 	get_tree().change_scene_to_file("res://scenes/dev_scene.tscn")
 

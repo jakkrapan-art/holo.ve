@@ -16,6 +16,7 @@ damage = 4
 attackRange = 1.5
 attackSpeed = 120.0
 mana = 80
+manaRegen = 10
 intialMana = 40
 
 [sub_resource type="Resource" id="Resource_6820u"]
@@ -24,6 +25,7 @@ damage = 4
 attackRange = 1.0
 attackSpeed = 0.5
 mana = 100
+manaRegen = 10
 intialMana = 10
 
 [sub_resource type="Resource" id="Resource_bjofy"]
@@ -32,6 +34,7 @@ damage = 4
 attackRange = 1.0
 attackSpeed = 0.5
 mana = 100
+manaRegen = 10
 intialMana = 10
 
 [sub_resource type="Resource" id="Resource_4fxdq"]
@@ -148,8 +151,6 @@ bg_color = Color(5.10186e-06, 0.546956, 0.761719, 1)
 
 [node name="tower" type="Node2D"]
 script = ExtResource("1_mmirn")
-isMoving = null
-id = null
 data = SubResource("Resource_4fxdq")
 skill = ExtResource("3_fuwn7")
 

@@ -25,6 +25,8 @@ var skillController: SkillController
 var onPlace: Callable;
 var onRemove: Callable;
 
+var synergyBuffs := {}  # key: synergy_id, value: Array of buffs
+
 var enemy: Enemy = null;
 
 var IDLE_ANIMATION = "idle";
@@ -52,18 +54,11 @@ func _ready():
 	
 	var stat = getStat();
 	if(attackController != null):
-		attackController.setup(data.getDamage(target), stat.getAttackDelay());
+		attackController.setup(self,stat.getAttackDelay());
 	
 	if(enemyDetector != null):
 		enemyDetector.setup(stat.attackRange);
 		Utility.ConnectSignal(enemyDetector, "onRemoveTarget", Callable(self, "clearEnemy"))
-
-#func _input(event):
-	#if event is InputEventKey and event.pressed and event.keycode == KEY_SPACE:
-		##if(!inPlaceMode):
-			##enterPlaceMode();
-		##else:
-		#exitPlaceMode();
 
 func _process(delta):
 	var stat = getStat();
@@ -73,7 +68,7 @@ func _process(delta):
 
 	if skillController && !usingSkill:
 		if(skillController.currentMana == skillController.maxMana && !attacking):
-			await skillController.useSkill();
+			await useSkill();
 
 	if enableAttack && !attacking && !usingSkill:
 		attackEnemy();
@@ -111,9 +106,18 @@ func attackEnemy():
 		var speed = getAttackAnimationSpeed();		
 		play_animation(ATTACK_ANIMATION, speed);
 		attacking = true;
-		if(skillController != null):
-			skillController.updateMana(10);			
-		
+		regenMana(data.getManaRegen());			
+
+func useSkill():
+	if(skillController == null):
+		return;
+	await skillController.useSkill();
+	
+func regenMana(regenAmount: int):
+	if(skillController == null):
+		return;
+	skillController.updateMana(regenAmount);
+
 func isAvailable():
 	return true;
 
@@ -169,15 +173,87 @@ func update_mana_bar(current: float):
 	
 	manaBar.updateValue(current)
 
-func processActiveBuff(buff):
-	if(buff.has("atk_bonus")):
-		data.addPhysicDamageBuff(buff.atk_bonus);
-	if(buff.has("atk_speed")):
-		data.addAttackSpeedBuff(buff.atk_speed);
-	if(buff.has("modifier")):
-		data.addAttackModifierBuff(buff.modifier);
+func processActiveBuff(buff: Dictionary):
+	var synergy_id = buff.get("synergy_id", null)
+	if synergy_id == null:
+		return
 
-func processDeactiveBuff(buff):
-	pass
+	for key in buff.keys():
+		if key == "synergy_id":
+			continue
+
+		var value = buff[key]
+		match key:
+			"damageBuff":
+				data.addPhysicDamageBuff(value)
+			"rangeBuff":
+				data.addAttackRangeBuff(value)
+			"attackSpeedBuff":
+				data.addAttackSpeedBuff(value)
+			"phys_atk_bonus_percent":
+				data.addPhysicDamagePercentBuff(value)
+			"magic_atk_bonus_percent":
+				data.addMagicDamagePercentBuff(value)
+			"mana_regen":
+				data.addManaRegen(value)
+			"meteor_proc_chance_percent":
+				data.addMeteorProcChance(value)
+			"meteor_damage_percent":
+				data.addMeteorDamagePercent(value)
+			"crit_chance_bonus_percent":
+				data.addCritChanceBuff(value)
+			"on_skill_cast":
+				if(skillController):
+					skillController.addModifier(synergy_id, value)
+			"on_attack":
+				if(attackController):
+					attackController.addModifier(synergy_id, value)
+			_:
+				print("Unknown synergy buff key: ", key)
+
+	# Track for removal
+	if not synergyBuffs.has(synergy_id):
+		synergyBuffs[synergy_id] = []
+	synergyBuffs[synergy_id].append(buff)
+
+
+func clearSynergyBuffs(synergy_id: int):
+	if not synergyBuffs.has(synergy_id):
+		return
+
+	for buff in synergyBuffs[synergy_id]:
+		for key in buff.keys():
+			if key == "synergy_id":
+				continue
+			var value = buff[key]
+			match key:
+				"damageBuff":
+					data.removePhysicDamageBuff(value)
+				"rangeBuff":
+					data.removeAttackRangeBuff(value)
+				"attackSpeedBuff":
+					data.removeAttackSpeedBuff(value)
+				"phys_atk_bonus_percent":
+					data.removePhysicDamagePercentBuff(value)
+				"magic_atk_bonus_percent":
+					data.removeMagicDamagePercentBuff(value)
+				"mana_regen":
+					data.removeManaRegen(value)
+				"meteor_proc_chance_percent":
+					data.removeMeteorProcChance(value)
+				"meteor_damage_percent":
+					data.removeMeteorDamagePercent(value)
+				"crit_chance_bonus_percent":
+					data.removeCritChanceBuff(value)
+				"on_skill_cast":
+					if(skillController):
+						skillController.removeModifier(synergy_id)
+				"on_attack":
+					if(attackController):
+						attackController.removeModifier(synergy_id)
+				_:
+					print("Unknown synergy buff key: ", key)
+
+	synergyBuffs.erase(synergy_id)
 
 signal on_animation_finished(name: String);

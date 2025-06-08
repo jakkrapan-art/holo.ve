@@ -6,10 +6,28 @@ class_name AttackController
 var attackCooldown: float = 0;
 var isReady: bool = true;
 
+var tower: Tower;
 var target: Enemy = null;
 
-func setup(cooldown: float):
+var modifier: Dictionary = {}
+
+func setup(tower: Tower,cooldown: float):
 	attackCooldown = cooldown;
+	self.tower = tower;
+
+func addModifier(key: int, mod: Callable):
+	modifier[key] = mod
+
+func removeModifier(key: int):
+	if(!modifier.has(key)):
+		pass
+	
+	modifier.erase(key);
+
+func executeModifier():
+	for mod in modifier:
+		if(mod.has_method("call")):
+			mod.call(tower);
 
 func canAttack(target: Enemy):
 	return target != null && isReady

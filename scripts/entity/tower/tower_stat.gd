@@ -5,6 +5,7 @@ extends Resource
 @export var attackRange: float = 1.0
 @export var attackSpeed: float = 0.5
 @export var mana: int = 100
+@export var manaRegen: int = 10
 @export var intialMana: int = 10
 
 func getAttackAnimationSpeed(anim: AnimatedSprite2D, name: String):

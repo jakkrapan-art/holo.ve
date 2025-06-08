@@ -9,7 +9,13 @@ var level: int = 1;
 var damageBuff: int = 0;
 var rangeBuff: float = 0;
 var attackSpeedBuff: float = 0;
+var manaRegenBuff: float = 0.0
+var critChanceBuff: float = 0.0
+var meteorProcChanceBuff: float = 0.0
+var meteorDamageBuff: float = 0.0
+
 var attackModifierBuff: Array[Callable] = []
+var modifiers := {}
 
 @export var maxLevel: int = 3;
 @export var towerClass: TowerClass;
@@ -54,6 +60,9 @@ func getAttackSpeed():
 func getAttackDelay():
 	return getStat().getAttackDelay(attackSpeedBuff);
 
+func getmanaRegen():
+	return getStat().manaRegen + manaRegenBuff;
+
 func addAttackSpeedBuff(amount: int):
 	attackSpeedBuff += amount;
 
@@ -69,6 +78,38 @@ func addAttackModifierBuff(modifier: Callable):
 
 func removeAttackModifierBuff(modifier: Callable):
 	attackModifierBuff.erase(modifier);
+	
+func addmanaRegenBuff(amount: float):
+	manaRegenBuff += amount
+	applyBuff("manaRegenBuff", amount)
+
+func removemanaRegenBuff(amount: float):
+	manaRegenBuff -= amount
+	removeBuff("manaRegenBuff", amount)
+
+func addCritChanceBuff(amount: float):
+	critChanceBuff += amount
+	applyBuff("critChanceBuff", amount)
+
+func removeCritChanceBuff(amount: float):
+	critChanceBuff -= amount
+	removeBuff("critChanceBuff", amount)
+
+func addMeteorProcChanceBuff(amount: float):
+	meteorProcChanceBuff += amount
+	applyBuff("meteorProcChanceBuff", amount)
+
+func removeMeteorProcChanceBuff(amount: float):
+	meteorProcChanceBuff -= amount
+	removeBuff("meteorProcChanceBuff", amount)
+
+func addMeteorDamageBuff(amount: float):
+	meteorDamageBuff += amount
+	applyBuff("meteorDamageBuff", amount)
+
+func removeMeteorDamageBuff(amount: float):
+	meteorDamageBuff -= amount
+	removeBuff("meteorDamageBuff", amount)
 
 func levelUp():
 	if level >= stats.size() - 1:
@@ -76,5 +117,11 @@ func levelUp():
 	
 	level = mini(level + 1, maxLevel);
 	return true;
+
+func applyBuff(key: String, value):
+	modifiers[key] = (modifiers.get(key, 0) + value)
+
+func removeBuff(key: String, value):
+	modifiers[key] = max(0, modifiers.get(key, 0) - value)
 
 signal onAttack(target);

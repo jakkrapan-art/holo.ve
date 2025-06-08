@@ -62,8 +62,8 @@ func updateTarget():
 
 	for enemy in enemyInRange:
 		if enemy:
-			var distance = enemy.progress_ratio
-			if distance > currentDistance:
+			var distance = position.distance_to(enemy.position)
+			if distance < currentDistance || currentDistance == -1:
 				currentDistance = distance
 				best = enemy
 	

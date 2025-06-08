@@ -53,8 +53,8 @@ func execute_skill_actions(context: SkillContext):
 	return true;
 
 func executeModifier():
-	for mod in modifier:
-		if(mod.has_method("call") && user is Tower):
+	for mod in modifier.values():
+		if(user is Tower):
 			mod.call(user as Tower);
 
 signal on_mana_updated(current: float)

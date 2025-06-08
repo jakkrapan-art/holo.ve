@@ -25,9 +25,8 @@ func removeModifier(key: int):
 	modifier.erase(key);
 
 func executeModifier():
-	for mod in modifier:
-		if(mod.has_method("call")):
-			mod.call(tower);
+	for mod in modifier.values():
+		mod.call(tower);
 
 func canAttack(target: Enemy):
 	return target != null && isReady

@@ -63,9 +63,9 @@ var SYNERGY_BUFFS = {
 		# No buffs or synergy data given for this group
 	],
 	TowerGeneration.Myth: [
-		{ "on_skill_cast": Callable(self, "").bind(5) },
-		{ "on_skill_cast": 7 },
-		{ "on_skill_cast": 10 }
+		{ "on_skill_cast": Callable(self, "mythSynergyEffect").bind(5) },
+		{ "on_skill_cast": Callable(self, "mythSynergyEffect").bind(7) },
+		{ "on_skill_cast": Callable(self, "mythSynergyEffect").bind(10) }
 	],
 	TowerGeneration.Tempus: [
 		{ "mission": "Kill 500 monsters", "reward": "Tempus units +10% phys & magic attack" },

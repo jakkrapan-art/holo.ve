@@ -33,7 +33,7 @@ func setup(waveDatas: Array[WaveData], onEnemyReachEndpoint: Callable):
 	enemyTextures = SpriteLoader.getSpriteGroup("enemy");
 
 func start():
-	nextWaveTimer.wait_time = 0
+	nextWaveTimer.wait_time = 0.001
 	nextWaveTimer.start()
 	
 func startNextWave():

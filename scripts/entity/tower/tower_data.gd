@@ -60,7 +60,7 @@ func getAttackSpeed():
 func getAttackDelay():
 	return getStat().getAttackDelay(attackSpeedBuff);
 
-func getmanaRegen():
+func getManaRegen():
 	return getStat().manaRegen + manaRegenBuff;
 
 func addAttackSpeedBuff(amount: int):

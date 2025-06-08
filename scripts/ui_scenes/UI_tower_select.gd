@@ -11,7 +11,7 @@ var test_deck = ['1','2','3','4','5']
 func _ready():
 	print("Deck passed in:", Global.selected_deck)
 	_load_towers_data()
-	print("tower_data: ",_towers_data["towers"].keys())
+	print("tower_data: ",_towers_data.keys())
 	_setup_buttons()
 	var refresh_button = get_node("CanvasLayer/PopupPanel/Panel/RefreshButton")
 	refresh_button.pressed.connect(Callable(self, "_setup_buttons"))
@@ -21,7 +21,7 @@ func _load_towers_data():
 	_towers_data = YamlParser.load_data(selected_deck_file_path)
 
 func _setup_buttons():
-	var cards = dealer.get_random_cards(_towers_data["towers"].keys())
+	var cards = dealer.get_random_cards(_towers_data.keys())
 	var buttons = get_tree().get_nodes_in_group("tower_buttons")
 	
 	for button in buttons:

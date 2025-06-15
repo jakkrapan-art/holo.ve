@@ -31,8 +31,6 @@ func _draw():
 		draw_line(position, targetLocalPos, Color.RED, 2.0)
 
 func _process(delta):
-	checkTargetDistance();
-	
 	queue_redraw();
 
 func onCollisionHit(area: Area2D):
@@ -92,16 +90,6 @@ func removeTarget():
 			target.disconnect("onDead", Callable(self, "updateTarget"))
 		target = null
 		onRemoveTarget.emit()
-
-func checkTargetDistance():
-	if(target == null):
-		return;
-		
-	var distance = global_position.distance_to(target.global_position);
-	if(distance > radius * GridHelper.CELL_SIZE):
-		pass
-		#print("distance: ", distance, " radius: ", radius * GridHelper.CELL_SIZE);
-		#removeTarget();
 
 func isHasEnemy() -> bool:
 	return target != null

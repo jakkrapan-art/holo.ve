@@ -29,7 +29,7 @@ func executeModifier():
 		mod.call(tower);
 
 func canAttack(target: Enemy):
-	return target != null && isReady
+	return is_instance_valid(target) && isReady
 
 func attack(target: Enemy):
 	isReady = false;

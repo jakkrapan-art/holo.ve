@@ -105,11 +105,13 @@ func upgrade():
 	return data.levelUp()
 
 func attackEnemy():
-	if(enemy != null && attackController != null && attackController.canAttack(enemy)):
+	if(is_instance_valid(enemy) && attackController != null && attackController.canAttack(enemy)):
 		attackController.attack(enemy);
 		var speed = getAttackAnimationSpeed();		
 		play_animation(ATTACK_ANIMATION, speed);
 		attacking = true;
+	elif(!is_instance_valid(enemy)):
+		clearEnemy();
 
 func useSkill():
 	if(skillController == null):

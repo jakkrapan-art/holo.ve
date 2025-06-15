@@ -11,7 +11,7 @@ signal onEnemyDetected(enemy: Enemy)
 signal onRemoveTarget()
 
 func setup(radius: float):
-	self.radius = radius;
+	self.radius = radius + 0.5;
 	var circle = collision.shape as CircleShape2D
 	if circle:
 		circle.radius = radius * GridHelper.CELL_SIZE
@@ -31,7 +31,9 @@ func _draw():
 		draw_line(position, targetLocalPos, Color.RED, 2.0)
 
 func _process(delta):
-	queue_redraw()
+	checkTargetDistance();
+	
+	queue_redraw();
 
 func onCollisionHit(area: Area2D):
 	if area.is_in_group("enemy"):
@@ -62,6 +64,11 @@ func updateTarget():
 
 	for enemy in enemyInRange:
 		if enemy:
+			if (enemy == target):
+				best = enemy
+				currentDistance = 0
+				break;
+				
 			var distance = position.distance_to(enemy.position)
 			if distance < currentDistance || currentDistance == -1:
 				currentDistance = distance
@@ -85,6 +92,15 @@ func removeTarget():
 			target.disconnect("onDead", Callable(self, "updateTarget"))
 		target = null
 		onRemoveTarget.emit()
+
+func checkTargetDistance():
+	if(target == null):
+		return;
+		
+	var distance = global_position.distance_to(target.global_position);
+	if(distance > radius * GridHelper.CELL_SIZE):
+		print("distance: ", distance, " radius: ", radius * GridHelper.CELL_SIZE);
+		removeTarget();
 
 func isHasEnemy() -> bool:
 	return target != null

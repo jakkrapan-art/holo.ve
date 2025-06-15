@@ -42,6 +42,7 @@ func dealDamage(damage: int) -> int:
 	var dmgResult = 0
 	if (target && target.has_method("recvDamage")):
 		dmgResult = target.recvDamage(damage);
+	executeModifier();
 	target = null;
 	
 	startAttackTimer();

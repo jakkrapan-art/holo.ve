@@ -73,6 +73,10 @@ func _process(delta):
 	if enableAttack && !attacking && !usingSkill:
 		attackEnemy();
 
+func _input(event):
+	if event is InputEventKey and event.pressed and event.keycode == KEY_S:
+		pass
+
 func setup(id: TowerFactory.TowerId, onPlace: Callable, onRemove: Callable):
 	self.onPlace = onPlace;
 	self.id = id;
@@ -106,7 +110,6 @@ func attackEnemy():
 		var speed = getAttackAnimationSpeed();		
 		play_animation(ATTACK_ANIMATION, speed);
 		attacking = true;
-		regenMana(data.getManaRegen());			
 
 func useSkill():
 	if(skillController == null):
@@ -147,6 +150,8 @@ func _onEnemyDetected(enemy: Enemy):
 func clearEnemy():
 	enemy = null;
 	play_animation_default();
+	attacking = false;
+	usingSkill = false;
 
 func play_animation(name: String, speed: float = 1):
 	if(anim != null):
@@ -162,6 +167,7 @@ func animation_finished(name: String):
 		ATTACK_ANIMATION:
 			if attacking:
 				attackController.dealDamage(data.getDamage(enemy));
+				regenMana(data.getManaRegen());
 				play_animation_default();
 				attacking = false;
 
@@ -184,11 +190,11 @@ func processActiveBuff(buff: Dictionary):
 
 		var value = buff[key]
 		match key:
-			"damageBuff":
+			"attack_bonus":
 				data.addPhysicDamageBuff(value)
 			"rangeBuff":
 				data.addAttackRangeBuff(value)
-			"attackSpeedBuff":
+			"attack_speed_bonus":
 				data.addAttackSpeedBuff(value)
 			"phys_atk_bonus_percent":
 				data.addPhysicDamagePercentBuff(value)

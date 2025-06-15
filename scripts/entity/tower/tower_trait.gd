@@ -29,18 +29,19 @@ const SYNERGY_REQUIREMENTS := {
 	TowerClass.Assassin: [3, 4, 6],
 	TowerClass.Diva: [2, 4],
 	TowerClass.Hero: [3],
-	TowerGeneration.Myth: [2, 3]
+	TowerGeneration.Myth: [2, 3],
+	TowerGeneration.Gen1: [2, 4]
 	# Add more as needed
 }
 
 # Buffs per tier (indexed by synergy_id and tier index)
 var SYNERGY_BUFFS = {
 	TowerClass.Assassin: [
-		{ "atk_bonus": 5 },
-		{ "atk_bonus": 10 },
+		{ "attack_bonus": 5 },
+		{ "attack_bonus": 10 },
 		{ 
-			"atk_bonus": 50,
-			"atk_speed": 20
+			"attack_bonus": 50,
+			"attack_speed_bonus": 20
 		}
 	],
 	TowerClass.Diva: [
@@ -98,13 +99,13 @@ func _check_synergy_tiers(synergy_id: int) -> void:
 	var thresholds: Array = SYNERGY_REQUIREMENTS.get(synergy_id, [])
 	var current: int = current_counts.get(synergy_id, 0)
 	var prev_tier: int = active_synergy_tiers.get(synergy_id, -1)
-
+	
 	var new_tier := -1
 
 	for i in thresholds.size():
 		if current >= thresholds[i]:
 			new_tier = i
-
+	
 	if new_tier != prev_tier:
 		if new_tier > prev_tier:
 			for tier in range(prev_tier + 1, new_tier + 1):
@@ -127,7 +128,16 @@ func mythSynergyEffect(tower: Tower, regenAmount: int):
 	print(tower, " call regen from synergy ", regenAmount);
 
 func gen1SynergySkill(tower: Tower, chance: float, dmgPercent: float):
-	print(tower, " call metheor")
+	if(tower == null || tower.enemy == null):
+		return;
+	print("calling metheor");
+	var metheor = Metheor.new(tower, dmgPercent, tower.enemy.position, 0.5, Callable(self, "onMetheorHit"));
+	tower.add_sibling(metheor);
+
+func onMetheorHit(tower: Tower, dmgPercent: float, enemyHit: Enemy):
+	var damage = tower.data.getDamage(enemyHit) * dmgPercent + 100;
+	if(enemyHit.has_method("recvDamage")):
+		enemyHit.recvDamage(damage);
 
 func get_synergy_name(synergy_id: int) -> String:
 	return TOWER_CLASS_NAMES.get(synergy_id, TOWER_GENERATION_NAMES.get(synergy_id, "Unknown"))

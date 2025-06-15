@@ -14,7 +14,7 @@ func setup(radius: float):
 	self.radius = radius + 0.5;
 	var circle = collision.shape as CircleShape2D
 	if circle:
-		circle.radius = radius * GridHelper.CELL_SIZE
+		circle.radius = self.radius * GridHelper.CELL_SIZE
 
 	connect("area_entered", Callable(self, "onCollisionHit"))
 	connect("area_exited", Callable(self, "onCollisionExit"))
@@ -99,8 +99,9 @@ func checkTargetDistance():
 		
 	var distance = global_position.distance_to(target.global_position);
 	if(distance > radius * GridHelper.CELL_SIZE):
-		print("distance: ", distance, " radius: ", radius * GridHelper.CELL_SIZE);
-		removeTarget();
+		pass
+		#print("distance: ", distance, " radius: ", radius * GridHelper.CELL_SIZE);
+		#removeTarget();
 
 func isHasEnemy() -> bool:
 	return target != null

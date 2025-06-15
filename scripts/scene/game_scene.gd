@@ -19,7 +19,7 @@ func _input(event):
 		add_child(tower);
 		t = tower
 	
-	if event is InputEventKey and event.pressed and event.keycode == KEY_SPACE:
+	if event is InputEventKey and event.pressed and event.keycode == KEY_SPACE && t != null:
 		t.exitPlaceMode();
 		t = null;
 

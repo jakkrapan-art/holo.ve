@@ -1,6 +1,8 @@
 extends Node2D
 class_name Tower
 
+var isReady = false;
+
 @onready var spr: AnimatedSprite2D = $AnimatedSprite2D
 @export var isMoving: bool = false;
 
@@ -42,23 +44,28 @@ func _ready():
 	anim = AnimationController.new(spr, IDLE_ANIMATION, [IDLE_ANIMATION, ATTACK_ANIMATION]);
 	Utility.ConnectSignal(anim,"on_animation_finished", Callable(self, "animation_finished"));
 	
-	var maxMana := 20.0;
-	var initMana := 10.0;
+	var stat = getStat();
+	
+	var maxMana = stat.mana;
+	var initMana = stat.intialMana;
 	
 	if(manaBar != null):
 		manaBar.setup(maxMana, false);
 		manaBar.updateValue(initMana);
 	
 	skillController = SkillController.new(self,maxMana, initMana, skill);
-	Utility.ConnectSignal(skillController, "on_mana_updated", Callable(self, "update_mana_bar"));
 	
-	var stat = getStat();
+	if(skillController != null):
+		Utility.ConnectSignal(skillController, "on_mana_updated", Callable(self, "update_mana_bar"));
+	
 	if(attackController != null):
-		attackController.setup(self,stat.getAttackDelay());
+		attackController.setup(self, stat.getAttackDelay());
 	
 	if(enemyDetector != null):
 		enemyDetector.setup(stat.attackRange);
 		Utility.ConnectSignal(enemyDetector, "onRemoveTarget", Callable(self, "clearEnemy"))
+	
+	isReady = true;
 
 func _process(delta):
 	var stat = getStat();
@@ -182,10 +189,14 @@ func update_mana_bar(current: float):
 	manaBar.updateValue(current)
 
 func processActiveBuff(buff: Dictionary):
+	if(!isReady):
+		call_deferred("processActiveBuff", buff);
+		return;
+	
 	var synergy_id = buff.get("synergy_id", null)
 	if synergy_id == null:
 		return
-
+	
 	for key in buff.keys():
 		if key == "synergy_id":
 			continue

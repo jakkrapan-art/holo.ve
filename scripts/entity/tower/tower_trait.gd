@@ -133,10 +133,8 @@ func gen1SynergySkill(tower: Tower, chance: float, dmgPercent: float):
 		
 	var rand = randi_range(0, 100);
 	if(rand > chance):
-		print("call metheor failed. chance:", chance, " rand:", rand);
 		return;
 
-	print("calling metheor");
 	var metheor = Metheor.new(tower, dmgPercent, tower.enemy.position, 0.5, Callable(self, "onMetheorHit"));
 	tower.add_sibling(metheor);
 

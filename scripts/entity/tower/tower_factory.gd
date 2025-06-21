@@ -1,6 +1,9 @@
 extends Node
 class_name TowerFactory
 
+const TowerClass = preload("res://scripts/entity/tower/tower_trait.gd").TowerClass
+const TowerGeneration = preload("res://scripts/entity/tower/tower_trait.gd").TowerGeneration
+
 @export var towerTemplate: PackedScene
 var onPlace: Callable
 var onRemove: Callable
@@ -89,8 +92,18 @@ func onActivateSynergy(synergy_id: int, tier: int, buff: Dictionary):
 
 	# Apply buff to all towers with this synergy
 	if towers.has(synergy_id):
-		for tower in towers[synergy_id]:
+		var starGen1Damage = 0;
+		var isStarGen1 = false;
+
+		for tower: Tower in towers[synergy_id]:
 			tower.processActiveBuff(buff)
+			
+			if synergy_id == TowerGeneration.Gen1:
+				isStarGen1 = true;
+				starGen1Damage += tower.data.getDamage(null);
+				
+		if isStarGen1:
+			towerTrait.setStarGen1Damage(starGen1Damage);
 
 func onDeactivateSynergy(synergy_id: int, tier: int):
 	if not activeSynergies.has(synergy_id):

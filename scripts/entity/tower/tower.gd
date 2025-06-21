@@ -34,7 +34,7 @@ var enemy: Enemy = null;
 var IDLE_ANIMATION = "idle";
 var ATTACK_ANIMATION = "n_attack";
 
-func getStat():
+func getStat() -> TowerStat: 
 	return data.getStat();
 
 func getAttackAnimationSpeed():

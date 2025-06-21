@@ -27,6 +27,9 @@ func getStat():
 	return stats[index]
 	
 func getDamage(enemy: Enemy):
+	if(enemy == null):
+		return getStat().damage + damageBuff
+
 	var finalDamage = calculateFinalDamage(getStat().damage + damageBuff, enemy);
 	return finalDamage;
 

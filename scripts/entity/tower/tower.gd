@@ -204,29 +204,23 @@ func processActiveBuff(buff: Dictionary):
 		var value = buff[key]
 		match key:
 			"attack_bonus":
-				data.addPhysicDamageBuff(value)
+				data.addPhysicDamageBuff(value, synergy_id)
 			"rangeBuff":
-				data.addAttackRangeBuff(value)
+				data.addAttackRangeBuff(value, synergy_id)
 			"attack_speed_bonus":
-				data.addAttackSpeedBuff(value)
-			"phys_atk_bonus_percent":
-				data.addPhysicDamagePercentBuff(value)
-			"magic_atk_bonus_percent":
-				data.addMagicDamagePercentBuff(value)
+				data.addAttackSpeedBuff(value, synergy_id)
 			"mana_regen":
-				data.addManaRegen(value)
-			"meteor_proc_chance_percent":
-				data.addMeteorProcChance(value)
-			"meteor_damage_percent":
-				data.addMeteorDamagePercent(value)
+				data.addManaRegen(value, synergy_id)
 			"crit_chance_bonus_percent":
-				data.addCritChanceBuff(value)
+				data.addCritChanceBuff(value, synergy_id)
 			"on_skill_cast":
 				if(skillController):
 					skillController.addModifier(synergy_id, value)
 			"on_attack":
 				if(attackController):
 					attackController.addModifier(synergy_id, value)
+			"syn_attack_percent":
+				pass
 			_:
 				print("Unknown synergy buff key: ", key)
 
@@ -247,23 +241,23 @@ func clearSynergyBuffs(synergy_id: int):
 			var value = buff[key]
 			match key:
 				"damageBuff":
-					data.removePhysicDamageBuff(value)
+					data.removePhysicDamageBuff(synergy_id)
 				"rangeBuff":
-					data.removeAttackRangeBuff(value)
+					data.removeAttackRangeBuff(synergy_id)
 				"attackSpeedBuff":
-					data.removeAttackSpeedBuff(value)
+					data.removeAttackSpeedBuff(synergy_id)
 				"phys_atk_bonus_percent":
-					data.removePhysicDamagePercentBuff(value)
+					data.removePhysicDamagePercentBuff(synergy_id)
 				"magic_atk_bonus_percent":
-					data.removeMagicDamagePercentBuff(value)
+					data.removeMagicDamagePercentBuff(synergy_id)
 				"mana_regen":
-					data.removeManaRegen(value)
+					data.removeManaRegen(synergy_id)
 				"meteor_proc_chance_percent":
-					data.removeMeteorProcChance(value)
+					data.removeMeteorProcChance(synergy_id)
 				"meteor_damage_percent":
-					data.removeMeteorDamagePercent(value)
+					data.removeMeteorDamagePercent(synergy_id)
 				"crit_chance_bonus_percent":
-					data.removeCritChanceBuff(value)
+					data.removeCritChanceBuff(synergy_id)
 				"on_skill_cast":
 					if(skillController):
 						skillController.removeModifier(synergy_id)

@@ -52,9 +52,9 @@ var SYNERGY_BUFFS = {
 		{ "regen": 5 }
 	],
 	TowerGeneration.Gen0: [
-		{ "phys_atk_bonus_percent": 4, "magic_atk_bonus_percent": 4 },
-		{ "phys_atk_bonus_percent": 6, "magic_atk_bonus_percent": 6 },
-		{ "phys_atk_bonus_percent": 10, "magic_atk_bonus_percent": 10 }
+		{ "syn_attack_percent": 4 },
+		{ "syn_attack_percent": 6 },
+		{ "syn_attack_percent": 10 }
 	],
 	TowerGeneration.Gen1: [
 		{ 

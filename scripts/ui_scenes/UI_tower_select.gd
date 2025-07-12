@@ -4,24 +4,18 @@ class_name UITowerSelect
 # Signal to send selection back to the stage
 signal tower_select(num_select)
 
-var _towers_data
 @onready var dealer: RandomCardsDealer = $RandomCardsDealer
 var test_deck = ['1','2','3','4','5']
 
 func _ready():
 	print("Deck passed in:", Global.selected_deck)
-	_load_towers_data()
-	print("tower_data: ",_towers_data.keys())
+	print("tower_data: ", Global.towers_data.keys())
 	_setup_buttons()
 	var refresh_button = get_node("CanvasLayer/PopupPanel/Panel/RefreshButton")
 	refresh_button.pressed.connect(Callable(self, "_setup_buttons"))
 
-func _load_towers_data():
-	var selected_deck_file_path = "res://resources/database/" + Global.selected_data_file
-	_towers_data = YamlParser.load_data(selected_deck_file_path)
-
 func _setup_buttons():
-	var cards = dealer.get_random_cards(_towers_data.keys())
+	var cards = dealer.get_random_cards(Global.towers_data.keys())
 	var buttons = get_tree().get_nodes_in_group("tower_buttons")
 	
 	for button in buttons:

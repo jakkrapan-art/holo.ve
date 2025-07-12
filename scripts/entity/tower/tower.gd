@@ -4,7 +4,7 @@ class_name Tower
 @onready var spr: AnimatedSprite2D = $AnimatedSprite2D
 @export var isMoving: bool = false;
 
-@export var id: TowerFactory.TowerId;
+@export var id: String;
 @export var data: TowerData;
 
 var enableAttack: bool = true;
@@ -73,9 +73,9 @@ func _process(delta):
 	if enableAttack && !attacking && !usingSkill:
 		attackEnemy();
 
-func setup(id: TowerFactory.TowerId, onPlace: Callable, onRemove: Callable):
+func setup(name: String, onPlace: Callable, onRemove: Callable):
 	self.onPlace = onPlace;
-	self.id = id;
+	self.name = name;
 	self.onRemove = onRemove;
 
 func enterPlaceMode():

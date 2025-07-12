@@ -11,19 +11,21 @@ var PopupPanelScene = preload("res://resources/ui_component/tower_select.tscn");
 @onready var towerFactory: TowerFactory = $TowerFactory;
 
 var t: Tower = null
+var state: String = ""
 
 func _input(event):
-	if event is InputEventKey and event.pressed and event.keycode == KEY_1 and t == null:
-		var tower: Tower = towerFactory.GetTower(TowerFactory.TowerId.Test);
-		tower.enterPlaceMode();
-		add_child(tower);
-		t = tower
-	
-	if event is InputEventKey and event.pressed and event.keycode == KEY_SPACE:
+	if state == "tower_placement" and event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		t.exitPlaceMode();
 		t = null;
+		state = "wave"
+		if(waveController):
+			waveController.start()
 
 func _ready():
+	_load_towers_data() # temp
+	var camera = get_node("Camera2D")
+	camera.make_current()
+	print("Camera forced to current:", camera.is_current())
 	if(map != null):
 		map.setup();
 
@@ -58,23 +60,12 @@ func show_popup_panel():
 # Handle the selection from the popup
 func _on_option_selected(selection):
 	print("Selected:", selection)
-	if(waveController):
-		waveController.start();
-	# Run different logic based on the selection
-	match selection:
-		"Button1":
-			run_option_1_logic()
-		"Button2":
-			run_option_2_logic()
-		"Button3":
-			run_option_3_logic()
+	var tower: Tower = towerFactory.GetTower(selection);
+	tower.enterPlaceMode();
+	add_child(tower);
+	t = tower
+	state = "tower_placement"
 
-# Example logic for each option
-func run_option_1_logic():
-	print("Running logic for Option 1")
-
-func run_option_2_logic():
-	print("Running logic for Option 2")
-
-func run_option_3_logic():
-	print("Running logic for Option 3")
+func _load_towers_data(): #temp
+	var selected_deck_file_path = "res://resources/database/" + Global.selected_data_file
+	Global.towers_data = YamlParser.load_data(selected_deck_file_path)

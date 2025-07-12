@@ -8,10 +8,6 @@ var towerTrait: TowerTrait = TowerTrait.new()
 var towers: Dictionary = {}
 var activeSynergies: Dictionary = {}
 
-enum TowerId {
-	Test
-}
-
 func setup(onPlace: Callable, onRemove: Callable):
 	self.onPlace = onPlace
 	self.onRemove = onRemove
@@ -19,13 +15,13 @@ func setup(onPlace: Callable, onRemove: Callable):
 	Utility.ConnectSignal(towerTrait, "synergy_activated", Callable(self, "onActivateSynergy"))
 	Utility.ConnectSignal(towerTrait, "synergy_deactivated", Callable(self, "onDeactivateSynergy"))
 
-func GetTower(id: TowerId):
+func GetTower(name: String):
 	if(towerTemplate == null):
 		push_error("Get Tower Failed. template missing")
 		return null
 	
 	var tower: Tower = towerTemplate.instantiate() as Tower
-	tower.setup(id, onPlace, onRemove)
+	tower.setup(name, onPlace, onRemove)
 	
 	for syn in [tower.data.towerClass, tower.data.generation]:
 		if syn == 0:  # Skip default/unset values

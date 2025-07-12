@@ -1,6 +1,9 @@
 extends Node
 class_name TowerFactory
 
+const TowerClass = preload("res://scripts/entity/tower/tower_trait.gd").TowerClass
+const TowerGeneration = preload("res://scripts/entity/tower/tower_trait.gd").TowerGeneration
+
 @export var towerTemplate: PackedScene
 var onPlace: Callable
 var onRemove: Callable
@@ -85,8 +88,18 @@ func onActivateSynergy(synergy_id: int, tier: int, buff: Dictionary):
 
 	# Apply buff to all towers with this synergy
 	if towers.has(synergy_id):
-		for tower in towers[synergy_id]:
+		var starGen1Damage = 0;
+		var isStarGen1 = false;
+
+		for tower: Tower in towers[synergy_id]:
 			tower.processActiveBuff(buff)
+			
+			if synergy_id == TowerGeneration.Gen1:
+				isStarGen1 = true;
+				starGen1Damage += tower.data.getDamage(null);
+				
+		if isStarGen1:
+			towerTrait.setStarGen1Damage(starGen1Damage);
 
 func onDeactivateSynergy(synergy_id: int, tier: int):
 	if not activeSynergies.has(synergy_id):
@@ -108,3 +121,18 @@ func onDeactivateSynergy(synergy_id: int, tier: int):
 	# If no more buffs, clean up
 	if buffList.is_empty():
 		activeSynergies.erase(synergy_id)
+
+func onWaveStart():
+	processGen0Buff()
+	
+func processGen0Buff():
+	if (!activeSynergies.has(TowerGeneration.Gen0)):
+		return;
+	
+	var buffs:Dictionary = activeSynergies.get(TowerGeneration.Gen0);
+	var buffDmgPercent:int = buffs.get("syn_atk_percent", 0);
+	
+	var towerList: Array = towers.get(TowerGeneration.Gen0);
+	for t: Tower in towerList:
+		var buff: Dictionary = {"synergy_id": TowerGeneration.Gen0, "attack_bonus": (buffDmgPercent * towerList.size())};
+		t.processActiveBuff(buff)

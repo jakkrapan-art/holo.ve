@@ -27,14 +27,28 @@ func getStat():
 	return stats[index]
 	
 func getDamage(enemy: Enemy):
+	if(enemy == null):
+		return getStat().damage + damageBuff
+
 	var finalDamage = calculateFinalDamage(getStat().damage + damageBuff, enemy);
 	return finalDamage;
 
-func addPhysicDamageBuff(amount: int):
+func addPhysicDamageBuff(amount: int, key):
+	if(key):
+		if(modifiers.has(key)):
+			removePhysicDamageBuff(key)
+		applyBuff(key, amount);
+	
 	damageBuff += amount;
+	applyBuff(key, amount);
 
-func removePhysicDamageBuff(amount: int):
-	damageBuff -= amount
+func removePhysicDamageBuff(key):
+	var amount := 0;
+	if(modifiers.has(key)):
+		amount = modifiers.get(key, 0)
+		removeBuff(key, amount);
+
+	damageBuff -= amount;
 
 func calculateFinalDamage(baseDamage: float, enemy: Enemy) -> float:
 	var finalDamage = baseDamage
@@ -48,10 +62,18 @@ func calculateFinalDamage(baseDamage: float, enemy: Enemy) -> float:
 func getAttackRange():
 	return getStat().attackRange + rangeBuff;
 
-func addAttackRangeBuff(amount: int):
+func addAttackRangeBuff(amount: int, key):
+	if(key):
+		if(modifiers.has(key)):
+			removeAttackRangeBuff(key)
+		applyBuff(key, amount);
 	rangeBuff += amount;
 
-func removeAttackRangeBuff(amount: int):
+func removeAttackRangeBuff(key):
+	var amount = 0;
+	if(modifiers.has(key)):
+		amount = modifiers[key]
+		removeBuff(key, amount);
 	rangeBuff -= amount
 
 func getAttackSpeed():
@@ -63,53 +85,51 @@ func getAttackDelay():
 func getManaRegen():
 	return getStat().manaRegen + manaRegenBuff;
 
-func addAttackSpeedBuff(amount: int):
+func addAttackSpeedBuff(amount: int, key):
+	if(key):
+		if(modifiers.has(key)):
+			removeAttackSpeedBuff(key)
+		applyBuff(key, amount);
 	attackSpeedBuff += amount;
 
-func removeAttackSpeedBuff(amount: int):
+func removeAttackSpeedBuff(key):
+	var amount = 0;
+	if(modifiers.has(key)):
+		amount = modifiers[key]
+		removeBuff(key, amount);
 	attackSpeedBuff -= amount
 
 func getAttackAnimationSpeed(anim: AnimatedSprite2D, name: String):
 	var stat = getStat();
 	return stat.getAttackAnimationSpeed(anim, name);
-
-func addAttackModifierBuff(modifier: Callable):
-	attackModifierBuff.append(modifier);
-
-func removeAttackModifierBuff(modifier: Callable):
-	attackModifierBuff.erase(modifier);
 	
-func addmanaRegenBuff(amount: float):
+func addmanaRegenBuff(amount: float, key):
+	if(key):
+		if(modifiers.has(key)):
+			removemanaRegenBuff(key)
+		applyBuff(key, amount);
 	manaRegenBuff += amount
-	applyBuff("manaRegenBuff", amount)
 
-func removemanaRegenBuff(amount: float):
+func removemanaRegenBuff(key):
+	var amount := 0;
+	if(modifiers.has(key)):
+		amount = modifiers.get(key, 0)
+		removeBuff(key, amount);
 	manaRegenBuff -= amount
-	removeBuff("manaRegenBuff", amount)
 
-func addCritChanceBuff(amount: float):
+func addCritChanceBuff(amount: float, key):
+	if(key):
+		if(modifiers.has(key)):
+			removeCritChanceBuff(key)
+		applyBuff(key, amount);
 	critChanceBuff += amount
-	applyBuff("critChanceBuff", amount)
 
-func removeCritChanceBuff(amount: float):
+func removeCritChanceBuff(key):
+	var amount := 0;
+	if(modifiers.has(key)):
+		amount = modifiers.get(key, 0)
+		removeBuff(key, amount);
 	critChanceBuff -= amount
-	removeBuff("critChanceBuff", amount)
-
-func addMeteorProcChanceBuff(amount: float):
-	meteorProcChanceBuff += amount
-	applyBuff("meteorProcChanceBuff", amount)
-
-func removeMeteorProcChanceBuff(amount: float):
-	meteorProcChanceBuff -= amount
-	removeBuff("meteorProcChanceBuff", amount)
-
-func addMeteorDamageBuff(amount: float):
-	meteorDamageBuff += amount
-	applyBuff("meteorDamageBuff", amount)
-
-func removeMeteorDamageBuff(amount: float):
-	meteorDamageBuff -= amount
-	removeBuff("meteorDamageBuff", amount)
 
 func levelUp():
 	if level >= stats.size() - 1:
@@ -119,9 +139,9 @@ func levelUp():
 	return true;
 
 func applyBuff(key: String, value):
-	modifiers[key] = (modifiers.get(key, 0) + value)
+	modifiers[key] = value
 
 func removeBuff(key: String, value):
-	modifiers[key] = max(0, modifiers.get(key, 0) - value)
+	modifiers.erase(key);
 
 signal onAttack(target);

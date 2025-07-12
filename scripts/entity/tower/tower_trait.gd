@@ -29,18 +29,19 @@ const SYNERGY_REQUIREMENTS := {
 	TowerClass.Assassin: [3, 4, 6],
 	TowerClass.Diva: [2, 4],
 	TowerClass.Hero: [3],
-	TowerGeneration.Myth: [2, 3]
+	TowerGeneration.Myth: [2, 3],
+	TowerGeneration.Gen1: [2, 4]
 	# Add more as needed
 }
 
 # Buffs per tier (indexed by synergy_id and tier index)
 var SYNERGY_BUFFS = {
 	TowerClass.Assassin: [
-		{ "atk_bonus": 5 },
-		{ "atk_bonus": 10 },
+		{ "attack_bonus": 5 },
+		{ "attack_bonus": 10 },
 		{ 
-			"atk_bonus": 50,
-			"atk_speed": 20
+			"attack_bonus": 50,
+			"attack_speed_bonus": 20
 		}
 	],
 	TowerClass.Diva: [
@@ -51,13 +52,17 @@ var SYNERGY_BUFFS = {
 		{ "regen": 5 }
 	],
 	TowerGeneration.Gen0: [
-		{ "phys_atk_bonus_percent": 4, "magic_atk_bonus_percent": 4 },
-		{ "phys_atk_bonus_percent": 6, "magic_atk_bonus_percent": 6 },
-		{ "phys_atk_bonus_percent": 10, "magic_atk_bonus_percent": 10 }
+		{ "syn_attack_percent": 4 },
+		{ "syn_attack_percent": 6 },
+		{ "syn_attack_percent": 10 }
 	],
 	TowerGeneration.Gen1: [
-		{ "on_attack": Callable(self, "gen1SynergySkill").bind(20, 50) },
-		{ "on_attack": Callable(self, "gen1SynergySkill").bind(60, 50) }
+		{ 
+			"on_attack": Callable(self, "starGen1SynergySkill").bind(20, 50)
+		},
+		{ 
+			"on_attack": Callable(self, "starGen1SynergySkill").bind(60, 50)
+		}
 	],
 	TowerGeneration.Indo1: [
 		# No buffs or synergy data given for this group
@@ -76,6 +81,7 @@ var SYNERGY_BUFFS = {
 
 var current_counts: Dictionary = {}
 var active_synergy_tiers: Dictionary = {}  # Stores highest tier reached per synergy
+var starGen1Damage: int = 0;
 
 func _init():
 	for synergy_id in SYNERGY_REQUIREMENTS.keys():
@@ -98,13 +104,13 @@ func _check_synergy_tiers(synergy_id: int) -> void:
 	var thresholds: Array = SYNERGY_REQUIREMENTS.get(synergy_id, [])
 	var current: int = current_counts.get(synergy_id, 0)
 	var prev_tier: int = active_synergy_tiers.get(synergy_id, -1)
-
+	
 	var new_tier := -1
 
 	for i in thresholds.size():
 		if current >= thresholds[i]:
 			new_tier = i
-
+	
 	if new_tier != prev_tier:
 		if new_tier > prev_tier:
 			for tier in range(prev_tier + 1, new_tier + 1):
@@ -124,10 +130,20 @@ func mythSynergyEffect(tower: Tower, regenAmount: int):
 		return;
 		
 	tower.regenMana(regenAmount);
-	print(tower, " call regen from synergy ", regenAmount);
 
-func gen1SynergySkill(tower: Tower, chance: float, dmgPercent: float):
-	print(tower, " call metheor")
+func setStarGen1Damage(damage: int):
+	starGen1Damage = damage;
+
+func starGen1SynergySkill(tower: Tower, chance: float, dmgPercent: float):
+	if(tower == null || tower.enemy == null):
+		return;
+		
+	var rand = randi_range(0, 100);
+	if(rand > chance):
+		return;
+
+	var metheor = Metheor.new(starGen1Damage * (dmgPercent / 100), tower.enemy.position, 0.5);
+	tower.add_sibling(metheor);
 
 func get_synergy_name(synergy_id: int) -> String:
 	return TOWER_CLASS_NAMES.get(synergy_id, TOWER_GENERATION_NAMES.get(synergy_id, "Unknown"))

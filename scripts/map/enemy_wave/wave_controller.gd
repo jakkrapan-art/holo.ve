@@ -36,6 +36,8 @@ func start():
 	nextWaveTimer.wait_time = 0.001
 	nextWaveTimer.start()
 	
+	onWaveStart.emit();
+	
 func startNextWave():
 	if(currWave >= waveDatas.size()):
 		return
@@ -111,3 +113,5 @@ func _on_spawn_timer_timeout():
 		timer.stop()
 		return
 	spawnEnemy()
+
+signal onWaveStart();

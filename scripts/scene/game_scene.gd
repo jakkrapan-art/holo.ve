@@ -35,8 +35,10 @@ func _ready():
 	if (towerFactory):
 		towerFactory.setup(Callable(self, "placeTower"), Callable(self, "removeTower"));
 
-	if (waveController != null):
+	if (waveController):
 		waveController.setup(mapData.waves, Callable(self, "reducePlayerHp"));
+		
+		waveController.connect("onWaveStart", Callable(towerFactory, "onWaveStart"));
 
 func placeTower(cell: Vector2):
 	map.removeAvailableCell(cell);

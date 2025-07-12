@@ -1,6 +1,8 @@
 extends Node2D
 class_name Tower
 
+var isReady = false;
+
 @onready var spr: AnimatedSprite2D = $AnimatedSprite2D
 @export var isMoving: bool = false;
 
@@ -32,7 +34,7 @@ var enemy: Enemy = null;
 var IDLE_ANIMATION = "idle";
 var ATTACK_ANIMATION = "n_attack";
 
-func getStat():
+func getStat() -> TowerStat: 
 	return data.getStat();
 
 func getAttackAnimationSpeed():
@@ -42,23 +44,28 @@ func _ready():
 	anim = AnimationController.new(spr, IDLE_ANIMATION, [IDLE_ANIMATION, ATTACK_ANIMATION]);
 	Utility.ConnectSignal(anim,"on_animation_finished", Callable(self, "animation_finished"));
 	
-	var maxMana := 20.0;
-	var initMana := 10.0;
+	var stat = getStat();
+	
+	var maxMana = stat.mana;
+	var initMana = stat.intialMana;
 	
 	if(manaBar != null):
 		manaBar.setup(maxMana, false);
 		manaBar.updateValue(initMana);
 	
 	skillController = SkillController.new(self,maxMana, initMana, skill);
-	Utility.ConnectSignal(skillController, "on_mana_updated", Callable(self, "update_mana_bar"));
 	
-	var stat = getStat();
+	if(skillController != null):
+		Utility.ConnectSignal(skillController, "on_mana_updated", Callable(self, "update_mana_bar"));
+	
 	if(attackController != null):
-		attackController.setup(self,stat.getAttackDelay());
+		attackController.setup(self, stat.getAttackDelay());
 	
 	if(enemyDetector != null):
 		enemyDetector.setup(stat.attackRange);
 		Utility.ConnectSignal(enemyDetector, "onRemoveTarget", Callable(self, "clearEnemy"))
+	
+	isReady = true;
 
 func _process(delta):
 	var stat = getStat();
@@ -73,7 +80,11 @@ func _process(delta):
 	if enableAttack && !attacking && !usingSkill:
 		attackEnemy();
 
-func setup(name: String, onPlace: Callable, onRemove: Callable):
+func _input(event):
+	if event is InputEventKey and event.pressed and event.keycode == KEY_S:
+		pass
+
+func setup(id: String, onPlace: Callable, onRemove: Callable):
 	self.onPlace = onPlace;
 	self.name = name;
 	self.onRemove = onRemove;
@@ -101,12 +112,13 @@ func upgrade():
 	return data.levelUp()
 
 func attackEnemy():
-	if(enemy != null && attackController != null && attackController.canAttack(enemy)):
+	if(is_instance_valid(enemy) && attackController != null && attackController.canAttack(enemy)):
 		attackController.attack(enemy);
 		var speed = getAttackAnimationSpeed();		
 		play_animation(ATTACK_ANIMATION, speed);
 		attacking = true;
-		regenMana(data.getManaRegen());			
+	elif(!is_instance_valid(enemy)):
+		clearEnemy();
 
 func useSkill():
 	if(skillController == null):
@@ -147,6 +159,8 @@ func _onEnemyDetected(enemy: Enemy):
 func clearEnemy():
 	enemy = null;
 	play_animation_default();
+	attacking = false;
+	usingSkill = false;
 
 func play_animation(name: String, speed: float = 1):
 	if(anim != null):
@@ -162,6 +176,7 @@ func animation_finished(name: String):
 		ATTACK_ANIMATION:
 			if attacking:
 				attackController.dealDamage(data.getDamage(enemy));
+				regenMana(data.getManaRegen());
 				play_animation_default();
 				attacking = false;
 
@@ -174,40 +189,38 @@ func update_mana_bar(current: float):
 	manaBar.updateValue(current)
 
 func processActiveBuff(buff: Dictionary):
+	if(!isReady):
+		call_deferred("processActiveBuff", buff);
+		return;
+	
 	var synergy_id = buff.get("synergy_id", null)
 	if synergy_id == null:
 		return
-
+	
 	for key in buff.keys():
 		if key == "synergy_id":
 			continue
 
 		var value = buff[key]
 		match key:
-			"damageBuff":
-				data.addPhysicDamageBuff(value)
+			"attack_bonus":
+				data.addPhysicDamageBuff(value, synergy_id)
 			"rangeBuff":
-				data.addAttackRangeBuff(value)
-			"attackSpeedBuff":
-				data.addAttackSpeedBuff(value)
-			"phys_atk_bonus_percent":
-				data.addPhysicDamagePercentBuff(value)
-			"magic_atk_bonus_percent":
-				data.addMagicDamagePercentBuff(value)
+				data.addAttackRangeBuff(value, synergy_id)
+			"attack_speed_bonus":
+				data.addAttackSpeedBuff(value, synergy_id)
 			"mana_regen":
-				data.addManaRegen(value)
-			"meteor_proc_chance_percent":
-				data.addMeteorProcChance(value)
-			"meteor_damage_percent":
-				data.addMeteorDamagePercent(value)
+				data.addManaRegen(value, synergy_id)
 			"crit_chance_bonus_percent":
-				data.addCritChanceBuff(value)
+				data.addCritChanceBuff(value, synergy_id)
 			"on_skill_cast":
 				if(skillController):
 					skillController.addModifier(synergy_id, value)
 			"on_attack":
 				if(attackController):
 					attackController.addModifier(synergy_id, value)
+			"syn_attack_percent":
+				pass
 			_:
 				print("Unknown synergy buff key: ", key)
 
@@ -228,23 +241,23 @@ func clearSynergyBuffs(synergy_id: int):
 			var value = buff[key]
 			match key:
 				"damageBuff":
-					data.removePhysicDamageBuff(value)
+					data.removePhysicDamageBuff(synergy_id)
 				"rangeBuff":
-					data.removeAttackRangeBuff(value)
+					data.removeAttackRangeBuff(synergy_id)
 				"attackSpeedBuff":
-					data.removeAttackSpeedBuff(value)
+					data.removeAttackSpeedBuff(synergy_id)
 				"phys_atk_bonus_percent":
-					data.removePhysicDamagePercentBuff(value)
+					data.removePhysicDamagePercentBuff(synergy_id)
 				"magic_atk_bonus_percent":
-					data.removeMagicDamagePercentBuff(value)
+					data.removeMagicDamagePercentBuff(synergy_id)
 				"mana_regen":
-					data.removeManaRegen(value)
+					data.removeManaRegen(synergy_id)
 				"meteor_proc_chance_percent":
-					data.removeMeteorProcChance(value)
+					data.removeMeteorProcChance(synergy_id)
 				"meteor_damage_percent":
-					data.removeMeteorDamagePercent(value)
+					data.removeMeteorDamagePercent(synergy_id)
 				"crit_chance_bonus_percent":
-					data.removeCritChanceBuff(value)
+					data.removeCritChanceBuff(synergy_id)
 				"on_skill_cast":
 					if(skillController):
 						skillController.removeModifier(synergy_id)

@@ -41,7 +41,8 @@ func GetTower(id: TowerId):
 		for buff: Dictionary in activeSyn:
 			var mission: MissionDetail = buff.get("mission", null);
 			if(mission == null):
-				tower.processActiveBuff(buff)
+				var tier = buff.get("tier", "")				
+				tower.processActiveBuff(buff, str(tier))
 			
 			var checkAndProcessActiveMissionSyn = func(synergyId, tier, missionBuff):			
 				if synergyId == tower.data.generation || synergyId == tower.data.towerClass:

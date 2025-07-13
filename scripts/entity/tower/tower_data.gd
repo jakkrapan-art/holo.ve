@@ -38,7 +38,6 @@ func addPhysicDamageBuff(amount: int, key):
 	if(key):
 		if(modifiers.has(key)):
 			removePhysicDamageBuff(key)
-		applyBuff(key, amount);
 	
 	damageBuff += amount;
 	applyBuff(key, amount);

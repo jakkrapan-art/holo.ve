@@ -5,9 +5,9 @@ var spawn_position: Vector2
 var delay_explode: float
 var max_radius: float = GridHelper.CELL_SIZE / 2
 var elapsed_time: float = 0.0
-var damage: float;
+var damage: Damage;
 
-func _init(damage: float, position: Vector2, delay_explode: float) -> void:
+func _init(damage: Damage, position: Vector2, delay_explode: float) -> void:
 	spawn_position = position
 	self.delay_explode = delay_explode;
 

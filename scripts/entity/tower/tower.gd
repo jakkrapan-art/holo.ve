@@ -33,6 +33,8 @@ var enemy: Enemy = null;
 
 var IDLE_ANIMATION = "idle";
 var ATTACK_ANIMATION = "n_attack";
+var noActionKey = ["synergy_id", "syn_attack_percent", "tier"];
+
 
 func getStat() -> TowerStat: 
 	return data.getStat();
@@ -188,9 +190,9 @@ func update_mana_bar(current: float):
 	
 	manaBar.updateValue(current)
 
-func processActiveBuff(buff: Dictionary):
+func processActiveBuff(buff: Dictionary, extraKey: String = ""):
 	if(!isReady):
-		call_deferred("processActiveBuff", buff);
+		call_deferred("processActiveBuff", buff, extraKey);
 		return;
 	
 	var synergy_id = buff.get("synergy_id", null)
@@ -198,29 +200,35 @@ func processActiveBuff(buff: Dictionary):
 		return
 	
 	for key in buff.keys():
-		if key == "synergy_id":
-			continue
+		if noActionKey.has(key):
+			continue;
 
 		var value = buff[key]
 		match key:
 			"attack_bonus":
-				data.addPhysicDamageBuff(value, synergy_id)
+				data.addPhysicDamageBuff(value, str(synergy_id) + extraKey)
+			"attack_bonus_percent":
+				data.addAttackBonusPercentBuff(value, str(synergy_id) + extraKey)
 			"rangeBuff":
-				data.addAttackRangeBuff(value, synergy_id)
+				data.addAttackRangeBuff(value, str(synergy_id) + extraKey)
 			"attack_speed_bonus":
-				data.addAttackSpeedBuff(value, synergy_id)
+				data.addAttackSpeedBuff(value, str(synergy_id) + extraKey)
 			"mana_regen":
-				data.addManaRegen(value, synergy_id)
+				data.addManaRegen(value, str(synergy_id) + extraKey)
 			"crit_chance_bonus_percent":
-				data.addCritChanceBuff(value, synergy_id)
+				data.addCritChanceBuff(value, str(synergy_id) + extraKey)
 			"on_skill_cast":
 				if(skillController):
 					skillController.addModifier(synergy_id, value)
 			"on_attack":
 				if(attackController):
 					attackController.addModifier(synergy_id, value)
+			"mission":
+				onReceiveMission.emit(value);
 			"syn_attack_percent":
-				pass
+				pass;
+			"tier":
+				pass;
 			_:
 				print("Unknown synergy buff key: ", key)
 
@@ -236,12 +244,14 @@ func clearSynergyBuffs(synergy_id: int):
 
 	for buff in synergyBuffs[synergy_id]:
 		for key in buff.keys():
-			if key == "synergy_id":
+			if noActionKey.has(key):
 				continue
 			var value = buff[key]
 			match key:
 				"damageBuff":
 					data.removePhysicDamageBuff(synergy_id)
+				"attack_bonus_percent":
+					data.removeAttackBonusPercentBuff(synergy_id);
 				"rangeBuff":
 					data.removeAttackRangeBuff(synergy_id)
 				"attackSpeedBuff":
@@ -269,4 +279,5 @@ func clearSynergyBuffs(synergy_id: int):
 
 	synergyBuffs.erase(synergy_id)
 
+signal onReceiveMission(mission: MissionDetail);
 signal on_animation_finished(name: String);

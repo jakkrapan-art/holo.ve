@@ -41,7 +41,7 @@ func dealDamage(damage: int) -> int:
 
 	var dmgResult = 0
 	if (target && target.has_method("recvDamage")):
-		dmgResult = target.recvDamage(damage);
+		dmgResult = target.recvDamage(Damage.new(tower, damage, Damage.DamageType.physical));
 	executeModifier();
 	target = null;
 	

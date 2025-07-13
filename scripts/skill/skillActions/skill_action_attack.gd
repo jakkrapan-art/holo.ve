@@ -5,4 +5,4 @@ class_name SkillActionAttack
 
 func execute(context: SkillContext):
 	if is_instance_valid(context.target) && context.target.has_method("recvDamage"):
-		context.target.recvDamage(damage)
+		context.target.recvDamage(Damage.new(context.user, damage, Damage.DamageType.physical));

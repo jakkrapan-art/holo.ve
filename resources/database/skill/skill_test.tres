@@ -1,24 +1,24 @@
 [gd_resource type="Resource" script_class="Skill" load_steps=8 format=3 uid="uid://bd58f3iohilrf"]
 
-[ext_resource type="Script" path="res://scripts/skill/skillActions/skill_action_attack.gd" id="1_cuhum"]
-[ext_resource type="Script" path="res://scripts/skill/skillActions/skill_action_find_target.gd" id="1_lm36n"]
 [ext_resource type="Script" path="res://scripts/skill/skill.gd" id="1_x7ue0"]
-[ext_resource type="Script" path="res://scripts/skill/skillActions/skill_action_play_anim.gd" id="2_kmkyu"]
+[ext_resource type="Script" path="res://scripts/skill/skillActions/skill_action_find_target.gd" id="2_gyyif"]
+[ext_resource type="Script" path="res://scripts/skill/skillActions/skill_action_play_anim.gd" id="3_assyk"]
+[ext_resource type="Script" path="res://scripts/skill/skillActions/skill_action_attack.gd" id="4_s4yd3"]
 
-[sub_resource type="Resource" id="Resource_s3h55"]
-script = ExtResource("1_lm36n")
+[sub_resource type="Resource" id="Resource_uavme"]
+script = ExtResource("2_gyyif")
 
-[sub_resource type="Resource" id="Resource_ibuhh"]
-script = ExtResource("2_kmkyu")
+[sub_resource type="Resource" id="Resource_amlw3"]
+script = ExtResource("3_assyk")
 animationName = "n_attack"
 animationSpeed = 0.4
 
-[sub_resource type="Resource" id="Resource_m4x26"]
-script = ExtResource("1_cuhum")
-damage = 1000
+[sub_resource type="Resource" id="Resource_56f1o"]
+script = ExtResource("4_s4yd3")
+damage = 25
 
 [resource]
 script = ExtResource("1_x7ue0")
 name = "Skill"
 desc = "Just a skill"
-actions = Array[Resource("res://scripts/skill/skill_action.gd")]([SubResource("Resource_s3h55"), SubResource("Resource_ibuhh"), SubResource("Resource_m4x26")])
+actions = Array[Resource("res://scripts/skill/skill_action.gd")]([SubResource("Resource_uavme"), SubResource("Resource_amlw3"), SubResource("Resource_56f1o")])

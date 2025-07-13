@@ -10,6 +10,7 @@ var onRemove: Callable
 var towerTrait: TowerTrait = TowerTrait.new()
 var towers: Dictionary = {}
 var activeSynergies: Dictionary = {}
+var activeMissionBuff: Dictionary = {}
 
 enum TowerId {
 	Test
@@ -19,8 +20,9 @@ func setup(onPlace: Callable, onRemove: Callable):
 	self.onPlace = onPlace
 	self.onRemove = onRemove
 	
-	Utility.ConnectSignal(towerTrait, "synergy_activated", Callable(self, "onActivateSynergy"))
-	Utility.ConnectSignal(towerTrait, "synergy_deactivated", Callable(self, "onDeactivateSynergy"))
+	Utility.ConnectSignal(towerTrait, "synergy_activated", Callable(self, "onActivateSynergy"));
+	Utility.ConnectSignal(towerTrait, "synergy_deactivated", Callable(self, "onDeactivateSynergy"));
+	Utility.ConnectSignal(towerTrait, "mission_completed", Callable(self, "onMissionCompleted"));
 
 func GetTower(id: TowerId):
 	if(towerTemplate == null):
@@ -29,17 +31,33 @@ func GetTower(id: TowerId):
 	
 	var tower: Tower = towerTemplate.instantiate() as Tower
 	tower.setup(id, onPlace, onRemove)
-	
-	for syn in [tower.data.towerClass, tower.data.generation]:
-		if syn == 0:  # Skip default/unset values
+	Utility.ConnectSignal(tower, "onReceiveMission", Callable(self, "towerReceiveMission"));
+	for towerSyn in [tower.data.towerClass, tower.data.generation]:
+		if towerSyn == 0:  # Skip default/unset values
 			continue
 			
-		# Apply active synergy buffs to new tower
-		var activeSyn = activeSynergies.get(syn, [])
-		for buff in activeSyn:
-			tower.processActiveBuff(buff)
+		# Apply active towerSynergy buffs to new tower
+		var activeSyn = activeSynergies.get(towerSyn, [])
+		for buff: Dictionary in activeSyn:
+			var mission: MissionDetail = buff.get("mission", null);
+			if(mission == null):
+				tower.processActiveBuff(buff)
+			
+			var checkAndProcessActiveMissionSyn = func(synergyId, tier, missionBuff):			
+				if synergyId == tower.data.generation || synergyId == tower.data.towerClass:
+					tower.processActiveBuff(missionBuff, str(tier));				
+			
+			for missionBuff in activeMissionBuff.values():
+				var tier = missionBuff.get("tier", "")
+				var synergyId = missionBuff.get("synergy_id", -1);
+				if not synergyId is Array:
+					checkAndProcessActiveMissionSyn.call(synergyId, tier, missionBuff);
+				else:
+					var synergyArray: Array = synergyId as Array;
+					for syn in synergyArray:
+						checkAndProcessActiveMissionSyn.call(syn, tier, missionBuff);
 
-		addTowerToDict(tower, syn)
+		addTowerToDict(tower, towerSyn)
 	
 	towerTrait.add_tower_traits([tower.data.towerClass, tower.data.generation])
 	
@@ -96,7 +114,7 @@ func onActivateSynergy(synergy_id: int, tier: int, buff: Dictionary):
 		var isStarGen1 = false;
 
 		for tower: Tower in towers[synergy_id]:
-			tower.processActiveBuff(buff)
+			tower.processActiveBuff(buff, str(tier));
 			
 			if synergy_id == TowerGeneration.Gen1:
 				isStarGen1 = true;
@@ -126,6 +144,28 @@ func onDeactivateSynergy(synergy_id: int, tier: int):
 	if buffList.is_empty():
 		activeSynergies.erase(synergy_id)
 
+func onMissionCompleted(id: int, buff: Dictionary):
+	var synergyId = buff.get("synergy_id", -1);
+	if not synergyId is Array && synergyId == -1:
+		return;
+	var tier = buff.get("tier", 0);
+	var process = func(syn) -> Array:
+		var towersArr: Array = towers.get(syn, []);
+		for tower: Tower in towersArr:
+			tower.processActiveBuff(buff, str(synergyId) + str(tier));
+		return towersArr;
+
+	if synergyId is Array:
+		var synergyArray = synergyId as Array;
+		print("processing buff to:", synergyArray);
+		for syn in synergyArray:
+			process.call(syn);
+	else:
+		process.call(synergyId);
+		
+	activeMissionBuff[id] = buff;
+	#print("on mission complete id:", id, "synergy: ", synergyId, " buff:", buff);
+
 func onWaveStart():
 	processGen0Buff()
 	
@@ -140,3 +180,8 @@ func processGen0Buff():
 	for t: Tower in towerList:
 		var buff: Dictionary = {"synergy_id": TowerGeneration.Gen0, "attack_bonus": (buffDmgPercent * towerList.size())};
 		t.processActiveBuff(buff)
+
+func towerReceiveMission(mission: MissionDetail):
+	onReceiveMission.emit(mission);
+
+signal onReceiveMission(mission: MissionDetail);

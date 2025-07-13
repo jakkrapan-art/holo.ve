@@ -79,7 +79,7 @@ func spawnEnemy():
 	
 	Utility.ConnectSignal(enemy, "onReachEndPoint", Callable(self, "reduceEnemyCount"));
 	Utility.ConnectSignal(enemy, "onReachEndPoint", Callable(self, "enemyReachEndPoint").bind(enemy));
-	Utility.ConnectSignal(enemy, "onDead", Callable(self, "reduceEnemyCount"));	
+	Utility.ConnectSignal(enemy, "onDead", Callable(self, "enemyDead"));	
 
 func createEnemyObject(type: Enemy.EnemyType):
 	if(enemyFactory == null):
@@ -98,7 +98,11 @@ func checkEndWave():
 		return;
 	
 	endWave();
-	
+
+func enemyDead(cause: Damage):
+	reduceEnemyCount();
+	onEnemyDead.emit(cause);
+
 func reduceEnemyCount():
 	enemyAliveCount -= 1;
 	checkEndWave();
@@ -115,3 +119,4 @@ func _on_spawn_timer_timeout():
 	spawnEnemy()
 
 signal onWaveStart();
+signal onEnemyDead(cause: Damage);

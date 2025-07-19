@@ -36,7 +36,7 @@ var ATTACK_ANIMATION = "n_attack";
 var noActionKey = ["synergy_id", "syn_attack_percent", "tier"];
 
 
-func getStat() -> TowerStat: 
+func getStat() -> TowerStat:
 	return data.getStat();
 
 func getAttackAnimationSpeed():
@@ -45,28 +45,28 @@ func getAttackAnimationSpeed():
 func _ready():
 	anim = AnimationController.new(spr, IDLE_ANIMATION, [IDLE_ANIMATION, ATTACK_ANIMATION]);
 	Utility.ConnectSignal(anim,"on_animation_finished", Callable(self, "animation_finished"));
-	
+
 	var stat = getStat();
-	
+
 	var maxMana = stat.mana;
 	var initMana = stat.intialMana;
-	
+
 	if(manaBar != null):
 		manaBar.setup(maxMana, false);
 		manaBar.updateValue(initMana);
-	
+
 	skillController = SkillController.new(self,maxMana, initMana, skill);
-	
+
 	if(skillController != null):
 		Utility.ConnectSignal(skillController, "on_mana_updated", Callable(self, "update_mana_bar"));
-	
+
 	if(attackController != null):
 		attackController.setup(self, stat.getAttackDelay());
-	
+
 	if(enemyDetector != null):
 		enemyDetector.setup(stat.attackRange);
 		Utility.ConnectSignal(enemyDetector, "onRemoveTarget", Callable(self, "clearEnemy"))
-	
+
 	isReady = true;
 
 func _process(delta):
@@ -94,19 +94,19 @@ func setup(id: TowerFactory.TowerId, onPlace: Callable, onRemove: Callable):
 func enterPlaceMode():
 	isMoving = true;
 	enableAttack = false;
-	
+
 	inPlaceMode = true;
 	var cell = GridHelper.WorldToCell(position);
 	onRemove.call(cell);
-	
+
 func exitPlaceMode():
 	if(!isOnValidCell):
 		return;
-	
+
 	isMoving = false;
 	enableAttack = true;
 	inPlaceMode = false;
-	
+
 	var cell = GridHelper.WorldToCell(position);
 	onPlace.call(cell);
 
@@ -116,7 +116,7 @@ func upgrade():
 func attackEnemy():
 	if(is_instance_valid(enemy) && attackController != null && attackController.canAttack(enemy)):
 		attackController.attack(enemy);
-		var speed = getAttackAnimationSpeed();		
+		var speed = getAttackAnimationSpeed();
 		play_animation(ATTACK_ANIMATION, speed);
 		attacking = true;
 	elif(!is_instance_valid(enemy)):
@@ -126,7 +126,7 @@ func useSkill():
 	if(skillController == null):
 		return;
 	await skillController.useSkill();
-	
+
 func regenMana(regenAmount: int):
 	if(skillController == null):
 		return;
@@ -150,10 +150,10 @@ func updateSpriteColor(available: bool):
 func _onEnemyDetected(enemy: Enemy):
 	if(self.enemy != null || enemy == self.enemy):
 		return;
-	
+
 	clearEnemy();
-	
-	self.enemy = enemy;	
+
+	self.enemy = enemy;
 	if(enemy != null):
 		Utility.ConnectSignal(self.enemy, "onDead", Callable(self, "clearEnemy"));
 		Utility.ConnectSignal(self.enemy, "onReachEndPoint", Callable(self, "clearEnemy"));
@@ -183,22 +183,22 @@ func animation_finished(name: String):
 				attacking = false;
 
 	on_animation_finished.emit(name);
-			
+
 func update_mana_bar(current: float):
 	if(manaBar == null):
 		return;
-	
+
 	manaBar.updateValue(current)
 
 func processActiveBuff(buff: Dictionary, extraKey: String = ""):
 	if(!isReady):
 		call_deferred("processActiveBuff", buff, extraKey);
 		return;
-	
+
 	var synergy_id = buff.get("synergy_id", null)
 	if synergy_id == null:
 		return
-	
+
 	for key in buff.keys():
 		if noActionKey.has(key):
 			continue;

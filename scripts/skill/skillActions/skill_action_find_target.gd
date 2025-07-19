@@ -9,7 +9,7 @@ func execute(context: SkillContext):
 	while context.target == null && attemp < maxAttemp:
 		if context.user is Tower:
 			var tower := context.user as Tower
-			context.target = tower.enemy
+			context.target = [tower.enemy]
 		else:
 			break
 			

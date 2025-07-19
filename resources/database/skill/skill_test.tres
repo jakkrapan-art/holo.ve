@@ -1,24 +1,26 @@
 [gd_resource type="Resource" script_class="Skill" load_steps=8 format=3 uid="uid://bd58f3iohilrf"]
 
+[ext_resource type="Script" path="res://scripts/skill/skillActions/skill_action_play_anim.gd" id="1_58n7f"]
+[ext_resource type="Script" path="res://scripts/skill/skillActions/skill_action_find_multiple_in_range.gd" id="1_vas75"]
 [ext_resource type="Script" path="res://scripts/skill/skill.gd" id="1_x7ue0"]
-[ext_resource type="Script" path="res://scripts/skill/skillActions/skill_action_find_target.gd" id="2_gyyif"]
-[ext_resource type="Script" path="res://scripts/skill/skillActions/skill_action_play_anim.gd" id="3_assyk"]
-[ext_resource type="Script" path="res://scripts/skill/skillActions/skill_action_attack.gd" id="4_s4yd3"]
+[ext_resource type="Script" path="res://scripts/skill/skillActions/skill_action_attack.gd" id="2_dhkd2"]
 
-[sub_resource type="Resource" id="Resource_uavme"]
-script = ExtResource("2_gyyif")
-
-[sub_resource type="Resource" id="Resource_amlw3"]
-script = ExtResource("3_assyk")
+[sub_resource type="Resource" id="Resource_jcgif"]
+script = ExtResource("1_58n7f")
 animationName = "n_attack"
-animationSpeed = 0.4
+animationSpeed = 0.6
 
-[sub_resource type="Resource" id="Resource_56f1o"]
-script = ExtResource("4_s4yd3")
-damage = 25
+[sub_resource type="Resource" id="Resource_hsnqs"]
+script = ExtResource("1_vas75")
+width = null
+height = 3
+
+[sub_resource type="Resource" id="Resource_v8trc"]
+script = ExtResource("2_dhkd2")
+damage = 100
 
 [resource]
 script = ExtResource("1_x7ue0")
 name = "Skill"
 desc = "Just a skill"
-actions = Array[Resource("res://scripts/skill/skill_action.gd")]([SubResource("Resource_uavme"), SubResource("Resource_amlw3"), SubResource("Resource_56f1o")])
+actions = Array[Resource("res://scripts/skill/skill_action.gd")]([SubResource("Resource_jcgif"), SubResource("Resource_hsnqs"), SubResource("Resource_v8trc")])

@@ -4,5 +4,7 @@ class_name SkillActionAttack
 @export var damage := 10
 
 func execute(context: SkillContext):
-	if is_instance_valid(context.target) && context.target.has_method("recvDamage"):
-		context.target.recvDamage(damage)
+	for target in context.target:
+		if is_instance_valid(target) && target.has_method("recvDamage"):
+			target.recvDamage(Damage.new(context.user, damage, Damage.DamageType.physical));
+

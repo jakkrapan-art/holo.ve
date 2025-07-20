@@ -31,7 +31,14 @@ func generate(data: MapData, width: int, height: int):
 
 func setTile(layer: int, cell: Vector2i, sourceId: int, atlasCoord: Vector2i):
 	tilemap.set_cell(layer, cell, sourceId, atlasCoord);
-	pass
+	
+func a():
+	var source_id = 0      # Your TileSet source (e.g., for your tileset atlas)
+	var tile_id = 1        # The tile ID inside that source
+	var atlas_coords = Vector2i(0, 0)
+	var coords = Vector2i(5, 2)
+
+	tilemap.set_cell(source_id, coords, tile_id, atlas_coords)
 	
 func loadData():
 	# Construct the URL to fetch data from Google Sheets

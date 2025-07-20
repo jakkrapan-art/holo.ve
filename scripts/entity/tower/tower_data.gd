@@ -7,6 +7,7 @@ const TowerGeneration = preload("res://scripts/entity/tower/tower_trait.gd").Tow
 var level: int = 1;
 
 var damageBuff: int = 0;
+var damagePercentBuff: float = 0;
 var rangeBuff: float = 0;
 var attackSpeedBuff: float = 0;
 var manaRegenBuff: float = 0.0
@@ -37,7 +38,6 @@ func addPhysicDamageBuff(amount: int, key):
 	if(key):
 		if(modifiers.has(key)):
 			removePhysicDamageBuff(key)
-		applyBuff(key, amount);
 	
 	damageBuff += amount;
 	applyBuff(key, amount);
@@ -50,6 +50,20 @@ func removePhysicDamageBuff(key):
 
 	damageBuff -= amount;
 
+func addAttackBonusPercentBuff(amount: int, key):
+	if key && modifiers.has(key):
+		removeAttackBonusPercentBuff(key);
+	
+	damagePercentBuff += amount;
+	applyBuff(key, amount);
+
+func removeAttackBonusPercentBuff(key):
+	var amount = 0;
+	if(modifiers.has(key)):
+		amount = modifiers[key]
+		removeBuff(key, amount);
+	damagePercentBuff -= amount
+
 func calculateFinalDamage(baseDamage: float, enemy: Enemy) -> float:
 	var finalDamage = baseDamage
 	
@@ -57,6 +71,9 @@ func calculateFinalDamage(baseDamage: float, enemy: Enemy) -> float:
 	for modifier in attackModifierBuff:
 		finalDamage = modifier.call(finalDamage, enemy)
 	
+	#Apply percent buff
+	print("damage: ", getStat().damage, " bunus flat:", damageBuff, " bonus percent: ", damagePercentBuff, " result:", (finalDamage + (finalDamage * damagePercentBuff/100)));
+	finalDamage += finalDamage * damagePercentBuff / 100
 	return finalDamage
 
 func getAttackRange():

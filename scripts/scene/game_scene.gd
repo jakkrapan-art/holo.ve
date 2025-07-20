@@ -10,6 +10,7 @@ var PopupPanelScene = preload("res://resources/ui_component/tower_select.tscn");
 @export var mapData: MapData = null;
 @onready var towerFactory: TowerFactory = $TowerFactory;
 
+var mission: Mission = null;
 var t: Tower = null
 var state: String = ""
 
@@ -32,13 +33,18 @@ func _ready():
 	show_popup_panel();
 
 	SpriteLoader.preloadImage("enemy", "res://resources/enemy");
+	
+	mission = Mission.new();
+	
 	if (towerFactory):
 		towerFactory.setup(Callable(self, "placeTower"), Callable(self, "removeTower"));
+		Utility.ConnectSignal(towerFactory, "onReceiveMission", Callable(mission, "addMission"));
 
 	if (waveController):
 		waveController.setup(mapData.waves, Callable(self, "reducePlayerHp"));
 		
 		waveController.connect("onWaveStart", Callable(towerFactory, "onWaveStart"));
+		Utility.ConnectSignal(waveController, "onEnemyDead", Callable(mission, "enemyDeadCheck"));
 
 func placeTower(cell: Vector2):
 	map.removeAvailableCell(cell);

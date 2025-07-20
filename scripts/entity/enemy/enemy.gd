@@ -27,26 +27,27 @@ func setTexture(image: Texture2D):
 	if(sprite != null && image != null):
 		sprite.texture = image;
 		
-func recvDamage(damage: int) -> int:
+func recvDamage(damage: Damage) -> int:
 	sprite.modulate = Color.RED
 
 	# Create a one-shot timer to reset the color
 	var timer := get_tree().create_timer(0.3)
 	timer.timeout.connect(_on_damage_flash_timeout)
 
-	var currentHp = stats.updateHealth(-damage)
+	var currentHp = stats.updateHealth(-damage.damage)
 	if currentHp <= 0:
-		dead()
+		dead(damage)
 
-	return damage
+	return damage.damage
 
 func _on_damage_flash_timeout():
 	if sprite:
 		sprite.modulate = original_modulate
 	
-func dead():
-	onDead.emit();
+func dead(cause: Damage):
+	onDead.emit(cause);
+	#print("cause of dead: ",cause.source, " ",cause.damage);
 	queue_free();
 
 signal onReachEndPoint();
-signal onDead();
+signal onDead(cause: Damage);

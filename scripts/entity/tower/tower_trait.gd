@@ -30,7 +30,8 @@ const SYNERGY_REQUIREMENTS := {
 	TowerClass.Diva: [2, 4],
 	TowerClass.Hero: [3],
 	TowerGeneration.Myth: [2, 3],
-	TowerGeneration.Gen1: [2, 4]
+	TowerGeneration.Gen1: [2, 4],
+	TowerGeneration.Tempus: [2, 4, 6]
 	# Add more as needed
 }
 
@@ -73,9 +74,9 @@ var SYNERGY_BUFFS = {
 		{ "on_skill_cast": Callable(self, "mythSynergyEffect").bind(10) }
 	],
 	TowerGeneration.Tempus: [
-		{ "mission": "Kill 500 monsters", "reward": "Tempus units +10% phys & magic attack" },
-		{ "mission": "Kill 1000 monsters", "reward": "Tempus units +60% crit chance" },
-		{ "mission": "Kill 2000 monsters", "reward": "All units +10% energy regen every 5s" }
+		{ "mission": MissionDetail.new(0, str(TowerGeneration.Tempus) + "kill_enemy", 0, 500, "Kill 500 monsters", Callable(self, "activeTempusSynergyTier1"))},
+		{ "mission": MissionDetail.new(1, str(TowerGeneration.Tempus) + "kill_enemy", 0, 1000, "Kill 1000 monsters", Callable(self, "activeTempusSynergyTier2"))},
+		{ "mission": MissionDetail.new(2, str(TowerGeneration.Tempus) + "kill_enemy", 0, 2000, "Kill 2000 monsters", Callable(self, "activeTempusSynergyTier3"))},
 	]
 }
 
@@ -115,6 +116,7 @@ func _check_synergy_tiers(synergy_id: int) -> void:
 		if new_tier > prev_tier:
 			for tier in range(prev_tier + 1, new_tier + 1):
 				var buff = SYNERGY_BUFFS[synergy_id][tier]
+				buff["tier"] = tier;
 				buff["synergy_id"] = synergy_id  # Mark the buff
 				synergy_activated.emit(synergy_id, tier, buff)
 				print("Synergy activated:", get_synergy_name(synergy_id), "Tier", tier + 1)
@@ -142,11 +144,48 @@ func starGen1SynergySkill(tower: Tower, chance: float, dmgPercent: float):
 	if(rand > chance):
 		return;
 
-	var metheor = Metheor.new(starGen1Damage * (dmgPercent / 100), tower.enemy.position, 0.5);
+	var metheor = Metheor.new(Damage.new(tower, starGen1Damage * (dmgPercent / 100), Damage.DamageType.magical), tower.enemy.position, 0.5);
 	tower.add_sibling(metheor);
+
+func activeTempusSynergyTier1(missionId: int):
+	print("active tempus synergy tier 1");
+	var buff := {
+		"attack_bonus_percent": 10,
+		"synergy_id": TowerGeneration.Tempus,
+		"tier": 0
+	}
+	
+	mission_completed.emit(missionId, buff);
+
+func activeTempusSynergyTier2(missionId: int):
+	print("active tempus synergy tier 2");
+	var buff := {
+		"attack_bonus_percent": 10,
+		"synergy_id": TowerGeneration.Tempus,
+		"tier": 1
+	}
+	
+	mission_completed.emit(missionId, buff);
+	
+func activeTempusSynergyTier3(missionId: int):
+	print("active tempus synergy tier 3");
+	var buff := {
+		"attack_bonus_percent": 10,
+		"synergy_id": [
+			TowerGeneration.Myth,
+			TowerGeneration.Tempus,
+			TowerGeneration.Gen0,
+			TowerGeneration.Gen1,
+			TowerGeneration.Indo1
+		],
+		"tier": 2
+	}
+	
+	mission_completed.emit(missionId, buff);
 
 func get_synergy_name(synergy_id: int) -> String:
 	return TOWER_CLASS_NAMES.get(synergy_id, TOWER_GENERATION_NAMES.get(synergy_id, "Unknown"))
 
 signal synergy_activated(synergy_id: int, tier: int, buff: Dictionary)
 signal synergy_deactivated(synergy_id: int, tier: int)
+signal mission_completed(mission_id: int, buff: Dictionary);

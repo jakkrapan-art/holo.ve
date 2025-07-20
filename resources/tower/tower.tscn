@@ -13,7 +13,7 @@
 [sub_resource type="Resource" id="Resource_5g4bw"]
 script = ExtResource("2_v1ohr")
 damage = 4
-attackRange = 1.5
+attackRange = 2.0
 attackSpeed = 120.0
 mana = 80
 manaRegen = 10
@@ -41,7 +41,7 @@ intialMana = 10
 script = ExtResource("3_wlsl0")
 maxLevel = 3
 towerClass = 100
-generation = 200
+generation = 201
 stats = Array[ExtResource("2_v1ohr")]([SubResource("Resource_5g4bw"), SubResource("Resource_6820u"), SubResource("Resource_bjofy")])
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_t2hop"]

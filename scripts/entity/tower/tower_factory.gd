@@ -24,13 +24,13 @@ func setup(onPlace: Callable, onRemove: Callable):
 	Utility.ConnectSignal(towerTrait, "synergy_deactivated", Callable(self, "onDeactivateSynergy"));
 	Utility.ConnectSignal(towerTrait, "mission_completed", Callable(self, "onMissionCompleted"));
 
-func GetTower(id: TowerId):
+func GetTower(name: String):
 	if(towerTemplate == null):
 		push_error("Get Tower Failed. template missing")
 		return null
 	
 	var tower: Tower = towerTemplate.instantiate() as Tower
-	tower.setup(id, onPlace, onRemove)
+	tower.setup(name, onPlace, onRemove)
 	Utility.ConnectSignal(tower, "onReceiveMission", Callable(self, "towerReceiveMission"));
 	for towerSyn in [tower.data.towerClass, tower.data.generation]:
 		if towerSyn == 0:  # Skip default/unset values

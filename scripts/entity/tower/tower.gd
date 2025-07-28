@@ -6,7 +6,7 @@ var isReady = false;
 @onready var spr: AnimatedSprite2D = $AnimatedSprite2D
 @export var isMoving: bool = false;
 
-@export var id: TowerFactory.TowerId;
+@export var id: String;
 @export var data: TowerData;
 
 var enableAttack: bool = true;
@@ -86,9 +86,9 @@ func _input(event):
 	if event is InputEventKey and event.pressed and event.keycode == KEY_S:
 		pass
 
-func setup(id: TowerFactory.TowerId, onPlace: Callable, onRemove: Callable):
+func setup(id: String, onPlace: Callable, onRemove: Callable):
 	self.onPlace = onPlace;
-	self.id = id;
+	self.name = name;
 	self.onRemove = onRemove;
 
 func enterPlaceMode():

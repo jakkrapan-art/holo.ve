@@ -1,5 +1,6 @@
 extends Node
 
+var towers_data: Dictionary
 #var selected_deck: String = ""
 var selected_deck: String = "Myth" #temporary
 var selected_data_file: String = "towers_Myth.yaml" #temporary

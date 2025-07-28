@@ -42,8 +42,8 @@ func attackAnimFinish(damage: int) -> int:
 	if(target == null):
 		return 0;
 
-	# dealDamage(Damage.new(tower, damage, Damage.DamageType.physical));
-	shootProjectile(Callable(self, "dealDamage"));
+	dealDamage(target);
+	# shootProjectile(Callable(self, "dealDamage"));
 	startAttackTimer();
 	return 0
 
@@ -65,11 +65,11 @@ func shootProjectile(onHit: Callable = Callable()):
 		2:
 			p.setup_direction(tower, target.global_position - tower.global_position, damage, -1, ProjectileCallback.new(onHit, Callable(), Callable()));
 		1:
-			p.setup_circle(tower, damage, 1 * GridHelper.CELL_SIZE, 180.0, 5, ProjectileCallback.new(onHit, Callable(), Callable()));
+			p.setup_circle(tower, damage, 1 * GridHelper.CELL_SIZE, 180.0, 0, 5, ProjectileCallback.new(onHit, Callable(), Callable()));
 		_:
 			print(rand, " type: ", typeof(rand));
 
-func dealDamage(projectile: Projectile, enemy: Enemy = null):
+func dealDamage(enemy: Enemy = null):
 	if(!enemy):
 		return;
 

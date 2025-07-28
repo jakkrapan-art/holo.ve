@@ -51,12 +51,11 @@ func setup_direction(shooter: Tower, direction: Vector2, damage: Damage, lifetim
 	rotation = Utility.get_angle_to_target(global_position, global_position + direction)
 	connect("area_entered", Callable(self, "onAreaEntered"))
 
-func setup_circle(shooter: Tower, damage: Damage, circle_radius: float = 100.0, angular_speed: float = 180.0, lifetime: float = 5.0, callback: ProjectileCallback = null):
+func setup_circle(shooter: Tower, damage: Damage, circle_radius: float = 100.0, angular_speed: float = 180.0, initial_angle: float = 0.0, lifetime: float = 5.0, callback: ProjectileCallback = null):
 	_base_setup(shooter, damage, lifetime, callback)
 	spawn_position = global_position
-	# print("shooter global position:", shooter.global_position, " spawn position:", spawn_position);
-	self.circle_radius = circle_radius
-	self.circle_angle = 0.0
+	self.circle_radius = circle_radius * GridHelper.CELL_SIZE
+	self.circle_angle = initial_angle
 	self.circle_angular_speed = angular_speed
 	moveType = ProjectileMoveType.Circle
 	connect("area_entered", Callable(self, "onAreaEntered"))
@@ -98,7 +97,7 @@ func processMoveToPosition(delta: float):
 	if global_position.distance_to(target_position) < 5.0:
 		# hitTarget(target.area)
 		if callback and callback.onHit.is_valid():
-			callback.onHit.call(self, target)
+			callback.onHit.call(target)
 		queue_free()
 
 func processMoveByDirection(delta: float):

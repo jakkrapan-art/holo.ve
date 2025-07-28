@@ -38,6 +38,7 @@ func recvDamage(damage: Damage) -> int:
 	if currentHp <= 0:
 		dead(damage)
 
+	Utility.show_damage_text(global_position, get_parent(), damage.damage, Color.RED)
 	return damage.damage
 
 func _on_damage_flash_timeout():

@@ -59,16 +59,12 @@ func shootProjectile(onHit: Callable = Callable()):
 	# print("rand result:", rand);
 	match rand:
 		0:
-			print("shoot projectile to target");
 			p.setupTarget(tower, target, damage, -1, ProjectileCallback.new(onHit, Callable(), Callable()));
 		3:
-			print("shoot projectile to target position");
 			p.setupTargetPosition(tower, target.global_position, damage, -1, ProjectileCallback.new(onHit, Callable(), Callable()));
 		2:
-			print("shoot projectile by direction");
 			p.setup_direction(tower, target.global_position - tower.global_position, damage, -1, ProjectileCallback.new(onHit, Callable(), Callable()));
 		1:
-			print("shoot projectile in circle");
 			p.setup_circle(tower, damage, 1 * GridHelper.CELL_SIZE, 180.0, 5, ProjectileCallback.new(onHit, Callable(), Callable()));
 		_:
 			print(rand, " type: ", typeof(rand));

@@ -66,16 +66,12 @@ func _process(delta: float) -> void:
 		ProjectileMoveType.Target:
 			processMoveToTarget(delta)
 		ProjectileMoveType.Position:
-			print("Processing move to position");
 			processMoveToPosition(delta)
 		ProjectileMoveType.Direction:
-			print("Processing move by direction");
 			processMoveByDirection(delta)
 		ProjectileMoveType.Circle:
-			print("Processing circle movement");
 			processCircleMovement(delta)
 		_:
-			print("Unknown move type for projectile: ", moveType)
 			queue_free();
 
 	if callback and callback.onMove.is_valid():

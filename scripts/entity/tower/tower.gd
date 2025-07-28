@@ -115,7 +115,7 @@ func upgrade():
 
 func attackEnemy():
 	if(is_instance_valid(enemy) && attackController != null && attackController.canAttack(enemy)):
-		attackController.attack(enemy);
+		attackController.attack(enemy, data.getDamage(enemy));
 		var speed = getAttackAnimationSpeed();
 		play_animation(ATTACK_ANIMATION, speed);
 		attacking = true;
@@ -177,7 +177,7 @@ func animation_finished(name: String):
 	match name:
 		ATTACK_ANIMATION:
 			if attacking:
-				attackController.dealDamage(data.getDamage(enemy));
+				attackController.attackAnimFinish(data.getDamage(enemy));
 				regenMana(data.getManaRegen());
 				play_animation_default();
 				attacking = false;

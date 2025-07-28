@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=3 uid="uid://d5g7c6yxmrv4"]
+[gd_scene load_steps=31 format=3 uid="uid://d5g7c6yxmrv4"]
 
 [ext_resource type="Script" path="res://scripts/entity/tower/tower.gd" id="1_mmirn"]
 [ext_resource type="Texture2D" uid="uid://ckv1mcuwniogb" path="res://resources/tower/sprite/test/test_character_idle.png" id="2_l7ruh"]
@@ -9,6 +9,7 @@
 [ext_resource type="Script" path="res://scripts/entity/tower/tower_data.gd" id="3_wlsl0"]
 [ext_resource type="Script" path="res://scripts/entity/attack_controller.gd" id="4_ar3mn"]
 [ext_resource type="Script" path="res://scripts/ui/health_bar.gd" id="7_ue18x"]
+[ext_resource type="PackedScene" uid="uid://bgbx57ye0s2ww" path="res://resources/combat/bullets/test_projectile.tscn" id="9_ln8v2"]
 
 [sub_resource type="Resource" id="Resource_5g4bw"]
 script = ExtResource("2_v1ohr")
@@ -171,6 +172,7 @@ debug_color = Color(0.950515, 1.34766e-06, 0.568223, 0.42)
 
 [node name="AttackController" type="Node" parent="."]
 script = ExtResource("4_ar3mn")
+projectile = ExtResource("9_ln8v2")
 
 [node name="AttackDelayTimer" type="Timer" parent="AttackController"]
 

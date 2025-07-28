@@ -12,7 +12,7 @@ enum EnemyType {Normal, Elite, Boss}
 func setup(hp: int, armor: int, mArmor: int, moveSpeed: int, texture: Texture2D):
 	setTexture(texture);
 	stats = EnemyStat.new(hp, armor, mArmor, moveSpeed);
-	
+
 	original_modulate = sprite.modulate
 
 func _process(_delta):
@@ -26,7 +26,7 @@ func _physics_process(delta):
 func setTexture(image: Texture2D):
 	if(sprite != null && image != null):
 		sprite.texture = image;
-		
+
 func recvDamage(damage: Damage) -> int:
 	sprite.modulate = Color.RED
 
@@ -43,7 +43,7 @@ func recvDamage(damage: Damage) -> int:
 func _on_damage_flash_timeout():
 	if sprite:
 		sprite.modulate = original_modulate
-	
+
 func dead(cause: Damage):
 	onDead.emit(cause);
 	#print("cause of dead: ",cause.source, " ",cause.damage);

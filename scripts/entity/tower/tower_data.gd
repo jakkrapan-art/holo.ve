@@ -26,7 +26,7 @@ var modifiers := {}
 func getStat():
 	var index = level - 1 if level > 0 and level <= (stats.size()) else stats.size() - 1
 	return stats[index]
-	
+
 func getDamage(enemy: Enemy):
 	if(enemy == null):
 		return getStat().damage + damageBuff
@@ -38,7 +38,7 @@ func addPhysicDamageBuff(amount: int, key):
 	if(key):
 		if(modifiers.has(key)):
 			removePhysicDamageBuff(key)
-	
+
 	damageBuff += amount;
 	applyBuff(key, amount);
 
@@ -53,7 +53,7 @@ func removePhysicDamageBuff(key):
 func addAttackBonusPercentBuff(amount: int, key):
 	if key && modifiers.has(key):
 		removeAttackBonusPercentBuff(key);
-	
+
 	damagePercentBuff += amount;
 	applyBuff(key, amount);
 
@@ -66,13 +66,12 @@ func removeAttackBonusPercentBuff(key):
 
 func calculateFinalDamage(baseDamage: float, enemy: Enemy) -> float:
 	var finalDamage = baseDamage
-	
+
 	# Apply each modifier in the array
 	for modifier in attackModifierBuff:
 		finalDamage = modifier.call(finalDamage, enemy)
-	
+
 	#Apply percent buff
-	print("damage: ", getStat().damage, " bunus flat:", damageBuff, " bonus percent: ", damagePercentBuff, " result:", (finalDamage + (finalDamage * damagePercentBuff/100)));
 	finalDamage += finalDamage * damagePercentBuff / 100
 	return finalDamage
 
@@ -119,7 +118,7 @@ func removeAttackSpeedBuff(key):
 func getAttackAnimationSpeed(anim: AnimatedSprite2D, name: String):
 	var stat = getStat();
 	return stat.getAttackAnimationSpeed(anim, name);
-	
+
 func addmanaRegenBuff(amount: float, key):
 	if(key):
 		if(modifiers.has(key)):
@@ -151,7 +150,7 @@ func removeCritChanceBuff(key):
 func levelUp():
 	if level >= stats.size() - 1:
 		return false;
-	
+
 	level = mini(level + 1, maxLevel);
 	return true;
 

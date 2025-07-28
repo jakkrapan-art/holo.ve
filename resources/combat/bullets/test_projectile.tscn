@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3 uid="uid://bgbx57ye0s2ww"]
+
+[ext_resource type="Texture2D" uid="uid://cjniiq3h7lrk0" path="res://resources/combat/bullets/bullet.png" id="1_k8if7"]
+[ext_resource type="Script" path="res://scripts/combat/projectile.gd" id="1_qihmy"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ev5gm"]
+radius = 10.0045
+
+[node name="TestProjectile" type="Area2D"]
+script = ExtResource("1_qihmy")
+speed = 1000.0
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(-30, 0)
+scale = Vector2(10, 10)
+texture = ExtResource("1_k8if7")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+scale = Vector2(10, 10)
+shape = SubResource("CircleShape2D_ev5gm")

@@ -36,7 +36,7 @@ func canAttack(target: Enemy):
 func attack(target: Enemy, damage: int = 0):
 	isReady = false;
 	self.target = target;
-	self.damage = Damage.new(tower, damage, Damage.DamageType.physical);
+	self.damage = Damage.new(tower, damage, Damage.DamageType.PHYSIC);
 
 func attackAnimFinish(damage: int) -> int:
 	if(target == null):

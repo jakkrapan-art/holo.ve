@@ -4,8 +4,9 @@ extends SkillAction
 @export var lifetime: float = 5.0
 @export var count: int = 1
 @export var damageMultiplier: Array[float] = []
-@export var damageType: Damage.DamageType = Damage.DamageType.physical
+@export var damageType: Damage.DamageType = Damage.DamageType.PHYSIC
 @export var projectileTemplate: PackedScene;
+@export var statusEffects: Array[StatusEffect] = [];
 
 func execute(context: SkillContext):
 	for i in count:
@@ -17,7 +18,16 @@ func execute(context: SkillContext):
 		setupProjectile(projectile, i, context)
 
 func setupProjectile(_projectile: Projectile, _i: int, _context: SkillContext):
-	pass
+	addStatusEffects(_projectile);
+
+func addStatusEffects(projectile: Projectile):
+	if not statusEffects || !is_instance_valid(projectile):
+		return
+
+	for effect in statusEffects:
+		var e = effect.duplicate() as StatusEffect
+		if is_instance_valid(effect):
+			projectile.statusEffects.append(e)
 
 func onHit(projectile: Projectile, target: Enemy):
 	if target is Enemy:

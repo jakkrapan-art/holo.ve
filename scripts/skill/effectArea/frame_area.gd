@@ -29,7 +29,7 @@ func damageInArea(delta: float):
 	lastTick = currTick;
 	for enemy in enemyList:
 		if is_instance_valid(enemy):
-			enemy.recvDamage(Damage.new(null, damage, Damage.DamageType.magical));
+			enemy.recvDamage(Damage.new(null, damage, Damage.DamageType.MAGIC));
 		else:
 			enemyList.erase(enemy);
 

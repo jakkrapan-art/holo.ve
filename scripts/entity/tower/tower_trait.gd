@@ -40,7 +40,7 @@ var SYNERGY_BUFFS = {
 	TowerClass.Assassin: [
 		{ "attack_bonus": 5 },
 		{ "attack_bonus": 10 },
-		{ 
+		{
 			"attack_bonus": 50,
 			"attack_speed_bonus": 20
 		}
@@ -58,10 +58,10 @@ var SYNERGY_BUFFS = {
 		{ "syn_attack_percent": 10 }
 	],
 	TowerGeneration.Gen1: [
-		{ 
+		{
 			"on_attack": Callable(self, "starGen1SynergySkill").bind(20, 50)
 		},
-		{ 
+		{
 			"on_attack": Callable(self, "starGen1SynergySkill").bind(60, 50)
 		}
 	],
@@ -105,13 +105,13 @@ func _check_synergy_tiers(synergy_id: int) -> void:
 	var thresholds: Array = SYNERGY_REQUIREMENTS.get(synergy_id, [])
 	var current: int = current_counts.get(synergy_id, 0)
 	var prev_tier: int = active_synergy_tiers.get(synergy_id, -1)
-	
+
 	var new_tier := -1
 
 	for i in thresholds.size():
 		if current >= thresholds[i]:
 			new_tier = i
-	
+
 	if new_tier != prev_tier:
 		if new_tier > prev_tier:
 			for tier in range(prev_tier + 1, new_tier + 1):
@@ -130,7 +130,7 @@ func _check_synergy_tiers(synergy_id: int) -> void:
 func mythSynergyEffect(tower: Tower, regenAmount: int):
 	if(tower == null):
 		return;
-		
+
 	tower.regenMana(regenAmount);
 
 func setStarGen1Damage(damage: int):
@@ -139,12 +139,12 @@ func setStarGen1Damage(damage: int):
 func starGen1SynergySkill(tower: Tower, chance: float, dmgPercent: float):
 	if(tower == null || tower.enemy == null):
 		return;
-		
+
 	var rand = randi_range(0, 100);
 	if(rand > chance):
 		return;
 
-	var metheor = Metheor.new(Damage.new(tower, starGen1Damage * (dmgPercent / 100), Damage.DamageType.magical), tower.enemy.position, 0.5);
+	var metheor = Metheor.new(Damage.new(tower, starGen1Damage * (dmgPercent / 100), Damage.DamageType.MAGIC), tower.enemy.position, 0.5);
 	tower.add_sibling(metheor);
 
 func activeTempusSynergyTier1(missionId: int):
@@ -154,7 +154,7 @@ func activeTempusSynergyTier1(missionId: int):
 		"synergy_id": TowerGeneration.Tempus,
 		"tier": 0
 	}
-	
+
 	mission_completed.emit(missionId, buff);
 
 func activeTempusSynergyTier2(missionId: int):
@@ -164,9 +164,9 @@ func activeTempusSynergyTier2(missionId: int):
 		"synergy_id": TowerGeneration.Tempus,
 		"tier": 1
 	}
-	
+
 	mission_completed.emit(missionId, buff);
-	
+
 func activeTempusSynergyTier3(missionId: int):
 	print("active tempus synergy tier 3");
 	var buff := {
@@ -180,7 +180,7 @@ func activeTempusSynergyTier3(missionId: int):
 		],
 		"tier": 2
 	}
-	
+
 	mission_completed.emit(missionId, buff);
 
 func get_synergy_name(synergy_id: int) -> String:

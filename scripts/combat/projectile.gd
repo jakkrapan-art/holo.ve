@@ -10,6 +10,7 @@ var target_position: Vector2 = Vector2.ZERO
 var move_direction: Vector2 = Vector2.ZERO
 var moveType: ProjectileMoveType = ProjectileMoveType.Direction
 var lifetime: float = 5.0
+var statusEffects: Array[StatusEffect] = []
 
 # for circle movement
 var spawn_position: Vector2 = Vector2.ZERO
@@ -59,6 +60,10 @@ func setup_circle(shooter: Tower, damage: Damage, circle_radius: float = 100.0, 
 	self.circle_angular_speed = angular_speed
 	moveType = ProjectileMoveType.Circle
 	connect("area_entered", Callable(self, "onAreaEntered"))
+
+func setupStatusEffects(statusEffects: Array[StatusEffect]):
+	if statusEffects:
+		self.statusEffects = statusEffects
 
 func _process(delta: float) -> void:
 	match moveType:
@@ -118,12 +123,18 @@ func processLifetime(delta: float):
 
 	lifetime -= delta
 	if lifetime <= 0:
-		print("Projectile expired");
 		if callback and callback.onExpire.is_valid():
 			callback.onExpire.call()
 		queue_free()
 
 func hitTarget(hit_area: EnemyArea):
+	var enemy = hit_area.enemy
+	if enemy and is_instance_valid(enemy):
+		if statusEffects:
+			for effect in statusEffects:
+				if effect and is_instance_valid(effect):
+					enemy.statusEffects.addEffect(effect.duplicate(true))
+
 	if moveType == ProjectileMoveType.Target:
 		if target and is_instance_valid(target) and hit_area == target.area:
 			if callback and callback.onHit.is_valid():
@@ -132,7 +143,7 @@ func hitTarget(hit_area: EnemyArea):
 	else:
 		if hit_area:
 			if callback and callback.onHit.is_valid():
-				callback.onHit.call(self, hit_area.enemy)
+				callback.onHit.call(self, enemy)
 
 func onAreaEntered(area: Area2D):
 	if not is_instance_valid(area) || area == self || area == shooter || not area is EnemyArea:

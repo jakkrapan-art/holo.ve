@@ -9,7 +9,7 @@
 [ext_resource type="Script" path="res://scripts/entity/attack_controller.gd" id="4_ar3mn"]
 [ext_resource type="Resource" uid="uid://h1kpuw8owwy4" path="res://resources/database/skill/gawr_gura_skill.tres" id="4_v5ug8"]
 [ext_resource type="Script" path="res://scripts/ui/health_bar.gd" id="7_ue18x"]
-[ext_resource type="PackedScene" uid="uid://bgbx57ye0s2ww" path="res://resources/combat/bullets/test_projectile.tscn" id="9_ln8v2"]
+[ext_resource type="PackedScene" uid="uid://bgbx57ye0s2ww" path="res://resources/combat/bullets/gawr_gura_skill_projectile.tscn" id="9_ln8v2"]
 
 [sub_resource type="Resource" id="Resource_5g4bw"]
 script = ExtResource("2_v1ohr")

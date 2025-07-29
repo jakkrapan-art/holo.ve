@@ -32,11 +32,9 @@ func _process(delta):
 
 func setup(damage: int):
 	textLabel = $Text as Label
-	print("setup damage number with damage: ", damage, "textLabel: ", textLabel)
 	if textLabel:
 		# Format number with commas (000,000,000 format)
 		textLabel.text = format_number(damage)
-		print("damage: ", damage, " formatted: ", textLabel.text)  # Debug output
 		textLabel.show()
 
 		# Reset properties
@@ -61,7 +59,6 @@ func format_number(number: int) -> String:
 	if number < 0:
 		formatted = "-" + formatted
 
-	print("formatted number: ", formatted)  # Debug output;
 	return formatted
 
 # Optional: Set custom lifetime

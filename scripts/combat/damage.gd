@@ -3,7 +3,7 @@ extends RefCounted
 
 enum DamageType
 {
-	physical, magical
+	PHYSIC, MAGIC
 }
 
 var source: Node2D

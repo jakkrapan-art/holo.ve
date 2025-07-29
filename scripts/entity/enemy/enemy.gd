@@ -5,7 +5,10 @@ class_name Enemy
 @onready var area: Area2D = $Enemy;
 
 @export var stats: EnemyStat;
-var original_modulate: Color
+var originalModulate: Color
+
+var statusEffects: StatusEffectContainer = StatusEffectContainer.new()
+var enableMove: bool = true;
 
 enum EnemyType {Normal, Elite, Boss}
 
@@ -13,15 +16,19 @@ func setup(hp: int, armor: int, mArmor: int, moveSpeed: int, texture: Texture2D)
 	setTexture(texture);
 	stats = EnemyStat.new(hp, armor, mArmor, moveSpeed);
 
-	original_modulate = sprite.modulate
+	originalModulate = sprite.modulate
 
 func _process(_delta):
+	if statusEffects:
+		statusEffects.processEffects(_delta, self)
+
 	if(progress_ratio == 1):
 		onReachEndPoint.emit();
 		queue_free()
 
 func _physics_process(delta):
-	progress_ratio += stats.getMoveSpeed(get_parent() as Path2D) * delta;
+	if enableMove:
+		progress_ratio += stats.getMoveSpeed(get_parent() as Path2D) * delta;
 
 func setTexture(image: Texture2D):
 	if(sprite != null && image != null):
@@ -43,11 +50,10 @@ func recvDamage(damage: Damage) -> int:
 
 func _on_damage_flash_timeout():
 	if sprite:
-		sprite.modulate = original_modulate
+		sprite.modulate = originalModulate
 
 func dead(cause: Damage):
 	onDead.emit(cause);
-	#print("cause of dead: ",cause.source, " ",cause.damage);
 	queue_free();
 
 signal onReachEndPoint();

@@ -4,6 +4,7 @@ extends StatusEffect
 @export var interval: float = 1.0  # Time between position updates
 @export var damage: int = 1
 
+var elapsedTime: float = 0.0
 var lastTriggered: float = 0.0
 
 func _process_effect(delta: float, target: Node) -> void:

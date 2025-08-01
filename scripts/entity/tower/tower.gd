@@ -10,6 +10,7 @@ var isReady = false;
 @export var data: TowerData;
 
 var enableAttack: bool = true;
+var enableRegenMana: bool = true;
 var isOnValidCell: bool = false;
 var inPlaceMode: bool = false;
 
@@ -128,7 +129,7 @@ func useSkill():
 	await skillController.useSkill();
 
 func regenMana(regenAmount: int):
-	if(skillController == null):
+	if(skillController == null || !enableRegenMana):
 		return;
 	skillController.updateMana(regenAmount);
 

@@ -20,4 +20,4 @@ func _process_effect(delta: float, target: Node) -> void:
 		expired = true
 
 func _on_expire(target: Node) -> void:
-	print("%s (Lv.%d) expired on %s" % [level, str(target)])
+	pass

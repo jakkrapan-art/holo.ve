@@ -33,16 +33,16 @@ func _ready():
 	show_popup_panel();
 
 	SpriteLoader.preloadImage("enemy", "res://resources/enemy");
-	
+
 	mission = Mission.new();
-	
+
 	if (towerFactory):
 		towerFactory.setup(Callable(self, "placeTower"), Callable(self, "removeTower"));
 		Utility.ConnectSignal(towerFactory, "onReceiveMission", Callable(mission, "addMission"));
 
 	if (waveController):
 		waveController.setup(mapData.waves, Callable(self, "reducePlayerHp"));
-		
+
 		waveController.connect("onWaveStart", Callable(towerFactory, "onWaveStart"));
 		Utility.ConnectSignal(waveController, "onEnemyDead", Callable(mission, "enemyDeadCheck"));
 
@@ -51,7 +51,7 @@ func placeTower(cell: Vector2):
 
 func removeTower(cell: Vector2):
 	map.addAvailableCell(cell);
-	
+
 func checkValidCell(cell: Vector2):
 	return !map.grids.has(cell);
 func reducePlayerHp(amount: int):

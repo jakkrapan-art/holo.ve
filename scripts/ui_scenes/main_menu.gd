@@ -1,6 +1,8 @@
 extends Control
 
 func _ready():
+	ResourceManager.loadResources();
+
 	# Connect button signals
 	get_node("VBoxContainer/StartButton").pressed.connect(_on_start_pressed)
 	get_node("VBoxContainer/OptionsButton").pressed.connect(_on_options_pressed)

@@ -8,201 +8,196 @@ on:
 
 env:
   GODOT_VERSION: 4.2.2
-  EXPORT_NAME: holo.ve game
+  EXPORT_NAME: holo.ve
 
 jobs:
   export-web:
-    name: Web Export
-    runs-on: ubuntu-20.04
-    # container:
-    #   image: barichello/godot-ci:4.2.2
+    name: Web export
+    runs-on: ubuntu-latest
+    container:
+      image: barichello/godot-ci:4.2.2
     steps:
-      - name: Test
-        run: echo test
-    # steps:
-    #   - name: Checkout
-    #     uses: actions/checkout@v4
-    #     with:
-    #       lfs: true
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          lfs: true
 
-    #   - name: Setup
-    #     run: |
-    #       echo setup
-    #       mkdir -v -p ~/.local/share/godot/export_templates/
-    #       mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
+      - name: Setup
+        run: |
+          mkdir -v -p ~/.local/share/godot/export_templates/
+          mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
 
-    #   - name: Web Build
-    #     run: |
-    #       echo build
-    #       mkdir -v -p build/web
-    #       godot --headless --verbose --export-release "Web" build/web/index.html
+      - name: Web Build
+        run: |
+          mkdir -v -p build/web
+          godot --headless --verbose --export-release "Web" build/web/index.html
 
-    #   - name: Upload Artifact
-    #     uses: actions/upload-artifact@v4
-    #     with:
-    #       name: web
-    #       path: build/web
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: web
+          path: build/web
 
-  # export-windows:
-  #   name: Windows Export
-  #   runs-on: ubuntu-20.04
-  #   container:
-  #     image: barichello/godot-ci:4.2.2
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v4
-  #       with:
-  #         lfs: true
+  export-windows:
+    name: Windows Export
+    runs-on: ubuntu-20.04
+    container:
+      image: barichello/godot-ci:4.2.2
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          lfs: true
 
-  #     - name: Setup
-  #       run: |
-  #         mkdir -v -p ~/.local/share/godot/export_templates/
-  #         mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
+      - name: Setup
+        run: |
+          mkdir -v -p ~/.local/share/godot/export_templates/
+          mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
 
-  #     - name: Windows Build
-  #       run: |
-  #         mkdir -v -p build/windows
-  #         godot --headless --verbose --export-release "Windows Desktop" build/windows/$EXPORT_NAME.exe
+      - name: Windows Build
+        run: |
+          mkdir -v -p build/windows
+          godot --headless --verbose --export-release "Windows Desktop" build/windows/$EXPORT_NAME.exe
 
-  #     - name: Upload Artifact
-  #       uses: actions/upload-artifact@v4
-  #       with:
-  #         name: windows
-  #         path: build/windows
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows
+          path: build/windows
 
-  # export-linux:
-  #   name: Linux Export
-  #   runs-on: ubuntu-20.04
-  #   container:
-  #     image: barichello/godot-ci:4.2.2
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v4
-  #       with:
-  #         lfs: true
+  export-linux:
+    name: Linux Export
+    runs-on: ubuntu-20.04
+    container:
+      image: barichello/godot-ci:4.2.2
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          lfs: true
 
-  #     - name: Setup
-  #       run: |
-  #         mkdir -v -p ~/.local/share/godot/export_templates/
-  #         mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
+      - name: Setup
+        run: |
+          mkdir -v -p ~/.local/share/godot/export_templates/
+          mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
 
-  #     - name: Linux Build
-  #       run: |
-  #         mkdir -v -p build/linux
-  #         godot --headless --verbose --export-release "Linux/X11" build/linux/$EXPORT_NAME.x86_64
+      - name: Linux Build
+        run: |
+          mkdir -v -p build/linux
+          godot --headless --verbose --export-release "Linux/X11" build/linux/$EXPORT_NAME.x86_64
 
-  #     - name: Upload Artifact
-  #       uses: actions/upload-artifact@v4
-  #       with:
-  #         name: linux
-  #         path: build/linux
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux
+          path: build/linux
 
-  # deploy-to-branch:
-  #   name: Deploy to Release Branch
-  #   needs: [export-web, export-windows, export-linux]
-  #   runs-on: ubuntu-latest
-  #   if: github.ref == 'refs/heads/main'
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v4
-  #       with:
-  #         token: ${{ secrets.GITHUB_TOKEN }}
-  #         fetch-depth: 0
+  deploy-to-branch:
+    name: Deploy to Release Branch
+    needs: [export-web, export-windows, export-linux]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
 
-  #     - name: Download all artifacts
-  #       uses: actions/download-artifact@v4
-  #       with:
-  #         path: builds
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: builds
 
-  #     - name: Create release structure
-  #       run: |
-  #         mkdir -p release
-  #         cp -r builds/web release/
-  #         cp -r builds/windows release/
-  #         cp -r builds/linux release/
+      - name: Create release structure
+        run: |
+          mkdir -p release
+          cp -r builds/web release/
+          cp -r builds/windows release/
+          cp -r builds/linux release/
 
-  #         # Create a simple index file
-  #         cat > release/README.md << EOF
-  #         # Game Release
+          # Create a simple index file
+          cat > release/README.md << EOF
+          # Game Release
 
-  #         Built from commit: ${{ github.sha }}
-  #         Build date: $(date)
+          Built from commit: ${{ github.sha }}
+          Build date: $(date)
 
-  #         ## Available Platforms
-  #         - Web: Open web/index.html
-  #         - Windows: Run windows/$EXPORT_NAME.exe
-  #         - Linux: Run linux/$EXPORT_NAME.x86_64
-  #         EOF
+          ## Available Platforms
+          - Web: Open web/index.html
+          - Windows: Run windows/$EXPORT_NAME.exe
+          - Linux: Run linux/$EXPORT_NAME.x86_64
+          EOF
 
-  #     - name: Deploy to release branch
-  #       run: |
-  #         git config --local user.email "action@github.com"
-  #         git config --local user.name "GitHub Action"
+      - name: Deploy to release branch
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
 
-  #         # Create or switch to release branch
-  #         git checkout -B release
+          # Create or switch to release branch
+          git checkout -B release
 
-  #         # Remove old files (except .git)
-  #         find . -maxdepth 1 ! -name '.git' ! -name '.' ! -name 'release' -exec rm -rf {} +
+          # Remove old files (except .git)
+          find . -maxdepth 1 ! -name '.git' ! -name '.' ! -name 'release' -exec rm -rf {} +
 
-  #         # Move new files to root
-  #         mv release/* .
-  #         rmdir release
+          # Move new files to root
+          mv release/* .
+          rmdir release
 
-  #         # Commit and push
-  #         git add .
-  #         git commit -m "Deploy build from ${{ github.sha }}" || exit 0
-  #         git push origin release --force
+          # Commit and push
+          git add .
+          git commit -m "Deploy build from ${{ github.sha }}" || exit 0
+          git push origin release --force
 
-  # deploy-to-gh-pages:
-  #   name: Deploy Web to gh-pages
-  #   needs: export-web
-  #   runs-on: ubuntu-latest
-  #   if: github.ref == 'refs/heads/main'
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v4
-  #       with:
-  #         token: ${{ secrets.GITHUB_TOKEN }}
-  #         fetch-depth: 0
+  deploy-to-gh-pages:
+    name: Deploy Web to gh-pages
+    needs: export-web
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
 
-  #     - name: Download web artifact
-  #       uses: actions/download-artifact@v4
-  #       with:
-  #         name: web
-  #         path: web-build
+      - name: Download web artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: web
+          path: web-build
 
-  #     - name: Deploy to gh-pages branch
-  #       run: |
-  #         git config --local user.email "action@github.com"
-  #         git config --local user.name "GitHub Action"
+      - name: Deploy to gh-pages branch
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
 
-  #         # Switch to gh-pages branch
-  #         git checkout gh-pages
+          # Switch to gh-pages branch
+          git checkout gh-pages
 
-  #         # Remove old files (except .git and any existing website files you want to keep)
-  #         find . -maxdepth 1 ! -name '.git' ! -name '.' ! -name 'web-build' -exec rm -rf {} +
+          # Remove old files (except .git and any existing website files you want to keep)
+          find . -maxdepth 1 ! -name '.git' ! -name '.' ! -name 'web-build' -exec rm -rf {} +
 
-  #         # Move web build files to root
-  #         mv web-build/* .
-  #         rmdir web-build
+          # Move web build files to root
+          mv web-build/* .
+          rmdir web-build
 
-  #         # Add COOP/COEP headers for Godot 4.2 (create .htaccess for Apache or _headers for Netlify)
-  #         cat > .htaccess << EOF
-  #         <IfModule mod_headers.c>
-  #             Header set Cross-Origin-Embedder-Policy "require-corp"
-  #             Header set Cross-Origin-Opener-Policy "same-origin"
-  #         </IfModule>
-  #         EOF
+          # Add COOP/COEP headers for Godot 4.2 (create .htaccess for Apache or _headers for Netlify)
+          cat > .htaccess << EOF
+          <IfModule mod_headers.c>
+              Header set Cross-Origin-Embedder-Policy "require-corp"
+              Header set Cross-Origin-Opener-Policy "same-origin"
+          </IfModule>
+          EOF
 
-  #         # Also create _headers for Netlify/other hosts
-  #         cat > _headers << EOF
-  #         /*
-  #           Cross-Origin-Embedder-Policy: require-corp
-  #           Cross-Origin-Opener-Policy: same-origin
-  #         EOF
+          # Also create _headers for Netlify/other hosts
+          cat > _headers << EOF
+          /*
+            Cross-Origin-Embedder-Policy: require-corp
+            Cross-Origin-Opener-Policy: same-origin
+          EOF
 
-  #         # Commit and push
-  #         git add .
-  #         git commit -m "Deploy web build from commit ${{ github.sha }}" || exit 0
-  #         git push origin gh-pages
+          # Commit and push
+          git add .
+          git commit -m "Deploy web build from commit ${{ github.sha }}" || exit 0
+          git push origin gh-pages

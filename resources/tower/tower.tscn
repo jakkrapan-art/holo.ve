@@ -41,7 +41,7 @@ intialMana = 10
 [sub_resource type="Resource" id="Resource_4fxdq"]
 script = ExtResource("3_wlsl0")
 maxLevel = 3
-towerClass = 100
+towerClass = 101
 generation = 201
 stats = Array[ExtResource("2_v1ohr")]([SubResource("Resource_5g4bw"), SubResource("Resource_6820u"), SubResource("Resource_bjofy")])
 

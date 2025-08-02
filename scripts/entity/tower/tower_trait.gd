@@ -27,7 +27,7 @@ const TOWER_GENERATION_NAMES := {
 # Multi-tier synergy requirements
 const SYNERGY_REQUIREMENTS := {
 	TowerClass.Assassin: [3, 4, 6],
-	TowerClass.Diva: [2, 4],
+	TowerClass.Diva: [2, 3],
 	TowerClass.Hero: [3],
 	TowerGeneration.Myth: [2, 3],
 	TowerGeneration.Gen1: [2, 4],
@@ -46,8 +46,32 @@ var SYNERGY_BUFFS = {
 		}
 	],
 	TowerClass.Diva: [
-		{ "aoe_radius": 1.2 },
-		{ "aoe_radius": 1.5 }
+		{
+			"interval_action":
+			{
+				"interval": 5,
+				"action": "regen_mana",
+				"value": 5,
+				"bonus":
+					{
+						"condition": Callable(self, "checkBonusDivaSynergy"),
+						"value": 10
+					}
+			}
+		},
+		{
+			"interval_action":
+			{
+				"interval": 5,
+				"action": "regen_mana",
+				"value": 10,
+				"bonus":
+					{
+						"condition": Callable(self, "checkBonusDivaSynergy"),
+						"value": 20
+					}
+			}
+		}
 	],
 	TowerClass.Hero: [
 		{ "regen": 5 }
@@ -77,7 +101,7 @@ var SYNERGY_BUFFS = {
 		{ "mission": MissionDetail.new(0, str(TowerGeneration.Tempus) + "kill_enemy", 0, 500, "Kill 500 monsters", Callable(self, "activeTempusSynergyTier1"))},
 		{ "mission": MissionDetail.new(1, str(TowerGeneration.Tempus) + "kill_enemy", 0, 1000, "Kill 1000 monsters", Callable(self, "activeTempusSynergyTier2"))},
 		{ "mission": MissionDetail.new(2, str(TowerGeneration.Tempus) + "kill_enemy", 0, 2000, "Kill 2000 monsters", Callable(self, "activeTempusSynergyTier3"))},
-	]
+	],
 }
 
 var current_counts: Dictionary = {}
@@ -182,6 +206,9 @@ func activeTempusSynergyTier3(missionId: int):
 	}
 
 	mission_completed.emit(missionId, buff);
+
+func checkBonusDivaSynergy(synergy_id):
+	return synergy_id == TowerClass.Diva
 
 func get_synergy_name(synergy_id: int) -> String:
 	return TOWER_CLASS_NAMES.get(synergy_id, TOWER_GENERATION_NAMES.get(synergy_id, "Unknown"))

@@ -125,7 +125,7 @@ func useSkill():
 	await skillController.useSkill();
 
 func regenMana(regenAmount: int):
-	if(skillController == null || !enableRegenMana):
+	if(skillController == null || !enableRegenMana || isMoving):
 		return;
 	skillController.updateMana(regenAmount);
 
@@ -222,6 +222,9 @@ func processActiveBuff(buff: Dictionary, extraKey: String = ""):
 					attackController.addModifier(synergy_id, value)
 			"mission":
 				onReceiveMission.emit(value);
+			"interval_action":
+				var isBonus = (value.get("bonus").condition as Callable).call(synergy_id);
+				addIntervalAction(str(synergy_id), value.interval, value.action, value.value if !isBonus else value.bonus.value);
 			"syn_attack_percent":
 				pass;
 			"tier":
@@ -275,6 +278,31 @@ func clearSynergyBuffs(synergy_id: int):
 					print("Unknown synergy buff key: ", key)
 
 	synergyBuffs.erase(synergy_id)
+
+func addIntervalAction(key,interval: float, action: String, value: float):
+	var callable: Callable;
+	match action:
+		"regen_mana":
+			callable = Callable(self, "regenMana").bind(value);
+
+	if not callable:
+		printerr("invalid interval action: ", action);
+		return
+
+	var exist = find_child(key);
+
+	if(exist):
+		exist.queue_free();
+
+	var timer = Timer.new();
+	timer.name = key;
+	timer.set_wait_time(interval);
+	timer.set_one_shot(false);
+	print("add interval action:", key, "_", interval, "_", action, "_", value);
+	timer.connect("timeout", callable);
+	add_child(timer);
+	timer.start();
+
 
 signal onReceiveMission(mission: MissionDetail);
 signal on_animation_finished(name: String);

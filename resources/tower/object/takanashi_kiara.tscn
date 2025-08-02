@@ -1,96 +1,87 @@
-[gd_scene load_steps=31 format=3 uid="uid://c28dmw5cdwe01"]
+[gd_scene load_steps=30 format=3 uid="uid://2j1jcvfkr5tb"]
 
-[ext_resource type="Script" path="res://scripts/entity/tower/tower.gd" id="1_wsj1i"]
-[ext_resource type="Script" path="res://scripts/entity/tower/tower_data.gd" id="2_d7rl3"]
-[ext_resource type="Script" path="res://scripts/entity/tower/tower_stat.gd" id="3_nwcqj"]
-[ext_resource type="Resource" uid="uid://h1kpuw8owwy4" path="res://resources/database/skill/gawr_gura_skill.tres" id="4_8j206"]
-[ext_resource type="Texture2D" uid="uid://ckv1mcuwniogb" path="res://resources/tower/sprite/test/test_character_idle.png" id="5_15jho"]
-[ext_resource type="Texture2D" uid="uid://cjn5fqq1oxe23" path="res://resources/tower/sprite/test/test_character_attack_n.png" id="6_rijx4"]
-[ext_resource type="Script" path="res://scripts/enemy_detector.gd" id="7_fk8pd"]
-[ext_resource type="Script" path="res://scripts/entity/attack_controller.gd" id="8_y5d8q"]
-[ext_resource type="PackedScene" uid="uid://bgbx57ye0s2ww" path="res://resources/combat/bullets/gawr_gura_skill_projectile.tscn" id="9_y52m2"]
-[ext_resource type="Script" path="res://scripts/ui/health_bar.gd" id="10_1su4y"]
+[ext_resource type="Script" path="res://scripts/entity/tower/tower.gd" id="1_mmirn"]
+[ext_resource type="Texture2D" uid="uid://ckv1mcuwniogb" path="res://resources/tower/sprite/test/test_character_idle.png" id="2_l7ruh"]
+[ext_resource type="Script" path="res://scripts/entity/tower/tower_stat.gd" id="2_v1ohr"]
+[ext_resource type="Script" path="res://scripts/enemy_detector.gd" id="3_57u27"]
+[ext_resource type="Texture2D" uid="uid://cjn5fqq1oxe23" path="res://resources/tower/sprite/test/test_character_attack_n.png" id="3_jmr26"]
+[ext_resource type="Script" path="res://scripts/entity/tower/tower_data.gd" id="3_wlsl0"]
+[ext_resource type="Script" path="res://scripts/entity/attack_controller.gd" id="4_ar3mn"]
+[ext_resource type="Resource" uid="uid://dj2o1hur2jqx3" path="res://resources/database/skill/takanashi_kiara.tres" id="4_qjwfw"]
+[ext_resource type="Script" path="res://scripts/ui/health_bar.gd" id="7_ue18x"]
+[ext_resource type="PackedScene" uid="uid://bgbx57ye0s2ww" path="res://resources/combat/bullets/gawr_gura_skill_projectile.tscn" id="9_ln8v2"]
 
 [sub_resource type="Resource" id="Resource_5g4bw"]
-script = ExtResource("3_nwcqj")
-damage = 80
-attackRange = 2.0
-attackSpeed = 80.0
-mana = 120
+script = ExtResource("2_v1ohr")
+damage = 100
+attackRange = 1.0
+attackSpeed = 90.0
+mana = 50
 manaRegen = 10
-intialMana = 60
+intialMana = 10
 
-[sub_resource type="Resource" id="Resource_jig1x"]
-script = ExtResource("3_nwcqj")
-damage = 120
-attackRange = 2.0
-attackSpeed = 80.0
-mana = 120
+[sub_resource type="Resource" id="Resource_bjofy"]
+script = ExtResource("2_v1ohr")
+damage = 160
+attackRange = 1.0
+attackSpeed = 90.0
+mana = 50
 manaRegen = 10
-intialMana = 60
-
-[sub_resource type="Resource" id="Resource_5caq0"]
-script = ExtResource("3_nwcqj")
-damage = 180
-attackRange = 2.0
-attackSpeed = 80.0
-mana = 120
-manaRegen = 10
-intialMana = 60
+intialMana = 10
 
 [sub_resource type="Resource" id="Resource_4fxdq"]
-script = ExtResource("2_d7rl3")
+script = ExtResource("3_wlsl0")
 maxLevel = 3
-towerClass = 106
+towerClass = 107
 generation = 200
-stats = Array[ExtResource("3_nwcqj")]([SubResource("Resource_5g4bw"), SubResource("Resource_jig1x"), SubResource("Resource_5caq0")])
+stats = Array[ExtResource("2_v1ohr")]([SubResource("Resource_5g4bw"), SubResource("Resource_5g4bw"), SubResource("Resource_bjofy")])
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_t2hop"]
-atlas = ExtResource("5_15jho")
+atlas = ExtResource("2_l7ruh")
 region = Rect2(0, 0, 512, 512)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_3lltj"]
-atlas = ExtResource("5_15jho")
+atlas = ExtResource("2_l7ruh")
 region = Rect2(512, 0, 512, 512)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_atyy5"]
-atlas = ExtResource("5_15jho")
+atlas = ExtResource("2_l7ruh")
 region = Rect2(1024, 0, 512, 512)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ika00"]
-atlas = ExtResource("5_15jho")
+atlas = ExtResource("2_l7ruh")
 region = Rect2(0, 512, 512, 512)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ck5fv"]
-atlas = ExtResource("5_15jho")
+atlas = ExtResource("2_l7ruh")
 region = Rect2(512, 512, 512, 512)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_vswo6"]
-atlas = ExtResource("5_15jho")
+atlas = ExtResource("2_l7ruh")
 region = Rect2(1024, 512, 512, 512)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ksxc6"]
-atlas = ExtResource("6_rijx4")
+atlas = ExtResource("3_jmr26")
 region = Rect2(0, 0, 512, 512)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_3rv7q"]
-atlas = ExtResource("6_rijx4")
+atlas = ExtResource("3_jmr26")
 region = Rect2(512, 0, 512, 512)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_t58d3"]
-atlas = ExtResource("6_rijx4")
+atlas = ExtResource("3_jmr26")
 region = Rect2(1024, 0, 512, 512)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_4qxbl"]
-atlas = ExtResource("6_rijx4")
+atlas = ExtResource("3_jmr26")
 region = Rect2(0, 512, 512, 512)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_y8rj2"]
-atlas = ExtResource("6_rijx4")
+atlas = ExtResource("3_jmr26")
 region = Rect2(512, 512, 512, 512)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_gyle3"]
-atlas = ExtResource("6_rijx4")
+atlas = ExtResource("3_jmr26")
 region = Rect2(1024, 512, 512, 512)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_sj4s8"]
@@ -151,12 +142,11 @@ bg_color = Color(0.2, 0.2, 0.2, 0.329412)
 bg_color = Color(5.10186e-06, 0.546956, 0.761719, 1)
 
 [node name="tower" type="Node2D"]
-script = ExtResource("1_wsj1i")
+script = ExtResource("1_mmirn")
 data = SubResource("Resource_4fxdq")
-skill = ExtResource("4_8j206")
+skill = ExtResource("4_qjwfw")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
-modulate = Color(0, 1, 1, 1)
 sprite_frames = SubResource("SpriteFrames_sj4s8")
 animation = &"n_attack"
 frame = 5
@@ -164,7 +154,7 @@ frame_progress = 1.0
 offset = Vector2(-22.5, -77.5)
 
 [node name="EnemyDetector" type="Area2D" parent="." node_paths=PackedStringArray("collision")]
-script = ExtResource("7_fk8pd")
+script = ExtResource("3_57u27")
 collision = NodePath("CollisionShape2D")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="EnemyDetector"]
@@ -172,8 +162,8 @@ shape = SubResource("CircleShape2D_qi6uv")
 debug_color = Color(0.950515, 1.34766e-06, 0.568223, 0.42)
 
 [node name="AttackController" type="Node" parent="."]
-script = ExtResource("8_y5d8q")
-projectile = ExtResource("9_y52m2")
+script = ExtResource("4_ar3mn")
+projectile = ExtResource("9_ln8v2")
 
 [node name="AttackDelayTimer" type="Timer" parent="AttackController"]
 
@@ -194,7 +184,7 @@ theme_override_styles/background = SubResource("StyleBoxFlat_lqtte")
 theme_override_styles/fill = SubResource("StyleBoxFlat_re4r8")
 value = 72.24
 show_percentage = false
-script = ExtResource("10_1su4y")
+script = ExtResource("7_ue18x")
 
 [connection signal="onEnemyDetected" from="EnemyDetector" to="." method="_onEnemyDetected"]
 [connection signal="timeout" from="AttackController/AttackDelayTimer" to="AttackController" method="_onAttackDelayTimerTimeout"]

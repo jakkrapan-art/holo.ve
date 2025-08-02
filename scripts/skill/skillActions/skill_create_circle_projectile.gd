@@ -7,6 +7,7 @@ extends SkillActionProjectile
 @export var angle_offset: float = 0.0;
 
 func setupProjectile(projectile: Projectile, i: int, context: SkillContext):
-	var tower: Tower = context.user as Tower
-	projectile.setup_circle(tower, Damage.new(tower, (damageMultiplier[tower.data.level - 1]) * tower.data.getDamage(null), damageType), circle_radius, angular_speed, initial_angle + (angle_offset * i), lifetime, ProjectileCallback.new(Callable(self, "onHit"), Callable(), Callable()))
+	var tower: Tower = context.user as Tower;
+	var multi = getDamageMultiplier(context)
+	projectile.setup_circle(tower, Damage.new(tower, multi * tower.data.getDamage(null), damageType), circle_radius, angular_speed, initial_angle + (angle_offset * i), lifetime, ProjectileCallback.new(Callable(self, "onHit"), Callable(), Callable()))
 	super.setupProjectile(projectile, i, context)

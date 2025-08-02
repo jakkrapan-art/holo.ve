@@ -156,6 +156,7 @@ data = SubResource("Resource_4fxdq")
 skill = ExtResource("4_v5ug8")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+modulate = Color(0, 0, 0, 1)
 sprite_frames = SubResource("SpriteFrames_sj4s8")
 animation = &"n_attack"
 frame = 5

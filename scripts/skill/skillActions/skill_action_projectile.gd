@@ -3,7 +3,8 @@ extends SkillAction
 
 @export var lifetime: float = 5.0
 @export var count: int = 1
-@export var damageMultiplier: Array[float] = []
+@export var damageMultiplier: float = 1;
+@export var damageMultiplierParamName: String = "";
 @export var damageType: Damage.DamageType = Damage.DamageType.PHYSIC
 @export var projectileTemplate: PackedScene;
 @export var statusEffects: Array[StatusEffect] = [];
@@ -50,6 +51,10 @@ func onHit(projectile: Projectile, target: Enemy):
 
 	if projectile.lifetime < 0:
 		projectile.queue_free()
+
+func getDamageMultiplier(context: SkillContext):
+	var tower: Tower = context.user as Tower
+	return context.getParameter(damageMultiplierParamName, tower.data.level - 1) if damageMultiplierParamName != "" else damageMultiplier
 
 func onKilled(_projectile: Projectile, _enemy: Enemy):
 	pass

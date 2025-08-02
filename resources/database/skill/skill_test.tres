@@ -12,8 +12,8 @@ animationSpeed = 0.6
 
 [sub_resource type="Resource" id="Resource_hsnqs"]
 script = ExtResource("1_vas75")
-width = null
-height = 3
+width = 3
+height = 1
 
 [sub_resource type="Resource" id="Resource_v8trc"]
 script = ExtResource("2_dhkd2")

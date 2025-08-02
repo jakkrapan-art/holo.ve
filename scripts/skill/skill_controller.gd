@@ -31,6 +31,7 @@ func useSkill():
 
 	var context = SkillContext.new()
 	context.user = user
+	context.extra["parameter"] = skill.parameters
 
 	if user is Tower:
 		(user as Tower).usingSkill = true;

@@ -37,17 +37,14 @@ var ATTACK_ANIMATION = "n_attack";
 var noActionKey = ["synergy_id", "syn_attack_percent", "tier"];
 
 
-func getStat() -> TowerStat:
-	return data.getStat();
-
 func getAttackAnimationSpeed():
-	return getStat().getAttackAnimationSpeed(spr, ATTACK_ANIMATION);
+	return data.getAttackAnimationSpeed(spr, ATTACK_ANIMATION);
 
 func _ready():
 	anim = AnimationController.new(spr, IDLE_ANIMATION, [IDLE_ANIMATION, ATTACK_ANIMATION]);
 	Utility.ConnectSignal(anim,"on_animation_finished", Callable(self, "animation_finished"));
 
-	var stat = getStat();
+	var stat = data.getStat();
 
 	var maxMana = stat.mana;
 	var initMana = stat.intialMana;
@@ -71,7 +68,6 @@ func _ready():
 	isReady = true;
 
 func _process(delta):
-	var stat = getStat();
 	if isMoving:
 		position = GridHelper.snapToGrid(get_viewport().size, get_global_mouse_position());
 		updateTowerState();

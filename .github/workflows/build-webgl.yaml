@@ -40,7 +40,7 @@ jobs:
 
   export-windows:
     name: Windows Export
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     container:
       image: barichello/godot-ci:4.2.2
     steps:
@@ -64,90 +64,6 @@ jobs:
         with:
           name: windows
           path: build/windows
-
-  export-linux:
-    name: Linux Export
-    runs-on: ubuntu-20.04
-    container:
-      image: barichello/godot-ci:4.2.2
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          lfs: true
-
-      - name: Setup
-        run: |
-          mkdir -v -p ~/.local/share/godot/export_templates/
-          mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
-
-      - name: Linux Build
-        run: |
-          mkdir -v -p build/linux
-          godot --headless --verbose --export-release "Linux/X11" build/linux/$EXPORT_NAME.x86_64
-
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: linux
-          path: build/linux
-
-  deploy-to-branch:
-    name: Deploy to Release Branch
-    needs: [export-web, export-windows, export-linux]
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          fetch-depth: 0
-
-      - name: Download all artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: builds
-
-      - name: Create release structure
-        run: |
-          mkdir -p release
-          cp -r builds/web release/
-          cp -r builds/windows release/
-          cp -r builds/linux release/
-
-          # Create a simple index file
-          cat > release/README.md << EOF
-          # Game Release
-
-          Built from commit: ${{ github.sha }}
-          Build date: $(date)
-
-          ## Available Platforms
-          - Web: Open web/index.html
-          - Windows: Run windows/$EXPORT_NAME.exe
-          - Linux: Run linux/$EXPORT_NAME.x86_64
-          EOF
-
-      - name: Deploy to release branch
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-
-          # Create or switch to release branch
-          git checkout -B release
-
-          # Remove old files (except .git)
-          find . -maxdepth 1 ! -name '.git' ! -name '.' ! -name 'release' -exec rm -rf {} +
-
-          # Move new files to root
-          mv release/* .
-          rmdir release
-
-          # Commit and push
-          git add .
-          git commit -m "Deploy build from ${{ github.sha }}" || exit 0
-          git push origin release --force
 
   deploy-to-gh-pages:
     name: Deploy Web to gh-pages

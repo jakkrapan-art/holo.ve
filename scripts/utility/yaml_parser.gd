@@ -1,124 +1,224 @@
 extends Node
 class_name YamlParser
 
-##########
-##Example Usage
-##########
-
-#var out_data = YamlParser.load_data("res://towers_data.yaml")
-
-## If your YAML has multiple top-level sections:
-#print(out_data.keys())  # ["towers", "characters", "levels", etc.]
-
-## Access a section
-#print(out_data["towers"])  # Dictionary of towers
-
-## Example: Accessing a specific tower
-#print(out_data["towers"]["ArrowTower"])
-
-##########
-
-static func load_data(file_path: String) -> Dictionary:
-	var file = FileAccess.open(file_path, FileAccess.READ)
-	if file == null:
+# ----------------------------
+# Main entry
+# ----------------------------
+static func load_data(file_path: String) -> Variant:
+	var f := FileAccess.open(file_path, FileAccess.READ)
+	if f == null:
 		push_error("Failed to open YAML file: %s" % file_path)
-		assert(false, "Critical: Could not open YAML file: %s" % file_path)
 		return {}
 
-	var lines = file.get_as_text().split("\n", false)
-	var result: Dictionary = {}
-	var stack: Array = [{ "dict": result, "indent": -1 }]
-	var indent_unit_length: int = 0
+	var lines: PackedStringArray = f.get_as_text().split("\n", false)
 
-	for line_number in range(lines.size()):
-		var raw_line = lines[line_number]
-		var trimmed_line = raw_line.strip_edges()
+	# Determine root type: Array if first line starts with "-", else Dictionary
+	var first_idx := _next_sig_index(lines, -1)
+	if first_idx == -1:
+		return {}
+	var first_trim := _trim_comment(lines[first_idx]).strip_edges()
+	var root: Variant
+	if first_trim.begins_with("-"):
+		root = []
+	else:
+		root = {}
 
-		if trimmed_line == "" or trimmed_line.begins_with("#"):
+	var stack: Array = [{ "container": root, "indent": -1 }]
+	var indent_unit: int = 0
+
+	for i in range(lines.size()):
+		var raw: String = lines[i]
+		var trimmed: String = _trim_comment(raw).strip_edges()
+		if trimmed == "":
 			continue
 
-		# 🔥 Strict Check: No tabs for indentation
-		var leading_indent = raw_line.substr(0, raw_line.length() - raw_line.lstrip(" ").length())
-		if raw_line.find("\t") != -1 and leading_indent != "":
-			var error_message = "YAML Error at line %d: Tabs used for indentation (not allowed)." % (line_number + 1)
-			push_error(error_message)
-			assert(false, error_message)
+		# --- indentation
+		if raw.find("\t") != -1:
+			_fail(i, "Tabs used for indentation (not allowed).")
+		var indent_spaces := _count_leading_spaces(raw)
+		if indent_unit == 0 and indent_spaces > 0:
+			indent_unit = indent_spaces
+		if indent_unit > 0 and indent_spaces % indent_unit != 0:
+			_fail(i, "Indentation is not consistent.")
+		var level := 0
+		if indent_unit > 0:
+			level = indent_spaces / indent_unit
 
-		# Indentation Level
-		var indent_size = leading_indent.length()
-
-		if indent_unit_length == 0 and indent_size > 0:
-			# First indentation detected → set indent size
-			indent_unit_length = indent_size
-
-		if indent_unit_length > 0 and indent_size % indent_unit_length != 0:
-			var error_message = "YAML Error at line %d: Indentation is not consistent." % (line_number + 1)
-			push_error(error_message)
-			assert(false, error_message)
-
-		var level = 0
-		if indent_unit_length > 0:
-			level = indent_size / indent_unit_length
-
-		# Parse key : value
-		var key = ""
-		var value = ""
-		var inside_quotes = false
-		var colon_index = -1
-
-		for i in range(trimmed_line.length()):
-			var c = trimmed_line[i]
-			if c == '"':
-				inside_quotes = !inside_quotes
-			elif c == ':' and !inside_quotes:
-				colon_index = i
-				break
-
-		if colon_index == -1:
-			continue  # Not a key:value pair, skip
-
-		key = trimmed_line.substr(0, colon_index).strip_edges()
-
-		if key.find("\"") != -1:
-			var error_message = "YAML Error at line %d: Invalid quoted key: %s" % [line_number + 1, key]
-			push_error(error_message)
-			assert(false, error_message)
-
-		if colon_index + 1 >= trimmed_line.length():
-			value = ""
-		else:
-			value = trimmed_line.substr(colon_index + 1).strip_edges()
-
-		var final_value: Variant
-		if value == "":
-			final_value = {}
-		else:
-			final_value = _convert(value)
-
-		# Correct Parent Stack
+		# Unwind stack to correct parent
 		while stack.size() > 0 and level <= stack[-1]["indent"]:
 			stack.pop_back()
+		var parent: Variant = stack[-1]["container"]
 
-		var parent = stack[-1]["dict"]
-		parent[key] = final_value
+		# --- list item
+		if trimmed.begins_with("-"):
+			var after_dash: String = trimmed.substr(1).strip_edges()
 
-		if typeof(final_value) == TYPE_DICTIONARY:
-			stack.append({ "dict": parent[key], "indent": level })
+			if typeof(parent) != TYPE_ARRAY:
+				_fail(i, "List item '-' under a non-list parent. Check indentation and previous 'key:' line.")
 
-	return result
+			if after_dash == "":
+				var next_info := _peek_child(lines, i, indent_spaces)
+				var item_val: Variant
+				if next_info["is_list"]:
+					item_val = []
+				else:
+					item_val = {}
+				parent.append(item_val)
+				stack.append({ "container": item_val, "indent": level })
+				continue
 
-static func _convert(value: Variant) -> Variant:
-	value = str(value).strip_edges()
+			if _has_unquoted_colon(after_dash):
+				var kv := _split_kv(after_dash)
+				var item_dict: Dictionary = {}
+				var val: Variant
+				if kv["value"] == "":
+					var next_info2 := _peek_child(lines, i, indent_spaces)
+					if next_info2["is_list"]:
+						val = []
+					else:
+						val = {}
+				else:
+					val = _convert(kv["value"])
+				item_dict[kv["key"]] = val
+				parent.append(item_dict)
+				stack.append({ "container": item_dict, "indent": level })
+				if typeof(val) in [TYPE_DICTIONARY, TYPE_ARRAY]:
+					stack.append({ "container": val, "indent": level + 1 })
+			else:
+				parent.append(_convert(after_dash))
+			continue
 
-	if value == "true":
+		# --- dictionary entry
+		if not _has_unquoted_colon(trimmed):
+			continue
+		var kv2 := _split_kv(trimmed)
+		var value: Variant
+		if kv2["value"] == "":
+			var next_info3 := _peek_child(lines, i, indent_spaces)
+			if next_info3["is_list"]:
+				value = []
+			else:
+				value = {}
+		else:
+			value = _convert(kv2["value"])
+
+		if typeof(parent) == TYPE_DICTIONARY:
+			parent[kv2["key"]] = value
+		elif typeof(parent) == TYPE_ARRAY:
+			if parent.size() == 0 or typeof(parent[-1]) != TYPE_DICTIONARY:
+				parent.append({})
+			parent[-1][kv2["key"]] = value
+			parent = parent[-1]
+
+		if typeof(value) in [TYPE_DICTIONARY, TYPE_ARRAY]:
+			stack.append({ "container": value, "indent": level })
+
+	return root
+
+
+# ----------------------------
+# Helpers
+# ----------------------------
+static func _fail(line_idx: int, msg: String) -> void:
+	var text := "YAML Error at line %d: %s" % [line_idx + 1, msg]
+	push_error(text)
+	assert(false, text)
+
+
+static func _trim_comment(line: String) -> String:
+	var out := ""
+	var in_s := false
+	var in_d := false
+	for i in range(line.length()):
+		var ch := line.substr(i, 1)
+		if ch == "'" and not in_d:
+			in_s = not in_s
+		elif ch == '"' and not in_s:
+			in_d = not in_d
+		elif ch == "#" and not in_s and not in_d:
+			break
+		out += ch
+	return out
+
+
+static func _count_leading_spaces(s: String) -> int:
+	var n := 0
+	for i in range(s.length()):
+		if s.substr(i, 1) == " ":
+			n += 1
+		else:
+			break
+	return n
+
+
+static func _next_sig_index(lines: PackedStringArray, start_idx: int) -> int:
+	for j in range(start_idx + 1, lines.size()):
+		var t := _trim_comment(lines[j]).strip_edges()
+		if t != "":
+			return j
+	return -1
+
+
+static func _peek_child(lines: PackedStringArray, cur_idx: int, cur_indent_spaces: int) -> Dictionary:
+	var j := cur_idx + 1
+	while j < lines.size():
+		var raw := lines[j]
+		var trimmed := _trim_comment(raw).strip_edges()
+		if trimmed == "":
+			j += 1
+			continue
+		var indent_spaces := _count_leading_spaces(raw)
+		if indent_spaces <= cur_indent_spaces:
+			return { "is_list": false }
+		return { "is_list": trimmed.begins_with("-") }
+	return { "is_list": false }
+
+
+static func _has_unquoted_colon(s: String) -> bool:
+	var in_s := false
+	var in_d := false
+	for i in range(s.length()):
+		var ch := s.substr(i, 1)
+		if ch == "'" and not in_d:
+			in_s = not in_s
+		elif ch == '"' and not in_s:
+			in_d = not in_d
+		elif ch == ":" and not in_s and not in_d:
+			return true
+	return false
+
+
+static func _split_kv(s: String) -> Dictionary:
+	var in_s := false
+	var in_d := false
+	for i in range(s.length()):
+		var ch := s.substr(i, 1)
+		if ch == "'" and not in_d:
+			in_s = not in_s
+		elif ch == '"' and not in_s:
+			in_d = not in_d
+		elif ch == ":" and not in_s and not in_d:
+			var key := s.substr(0, i).strip_edges()
+			var val := s.substr(i + 1).strip_edges()
+			return { "key": key, "value": val }
+	return { "key": s.strip_edges(), "value": "" }
+
+
+static func _convert(v: String) -> Variant:
+	var s := v.strip_edges()
+	if s == "true":
 		return true
-	elif value == "false":
+	if s == "false":
 		return false
-	elif value == "null" or value == "-":
+	if s == "null" or s == "~" or s == "-":
 		return null
-	elif value.is_valid_int():
-		return int(value)
-	elif value.is_valid_float():
-		return float(value)
-	else:
-		return value
+	if s.is_valid_int():
+		return int(s)
+	if s.is_valid_float():
+		return float(s)
+	if s.length() >= 2:
+		var a := s.substr(0, 1)
+		var b := s.substr(s.length() - 1, 1)
+		if (a == '"' and b == '"') or (a == "'" and b == "'"):
+			return s.substr(1, s.length() - 2)
+	return s

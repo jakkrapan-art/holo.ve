@@ -2,12 +2,13 @@
 
 [ext_resource type="Script" path="res://scripts/entity/enemy/enemy.gd" id="1_wei2r"]
 [ext_resource type="Script" path="res://scripts/entity/enemy/enemy_area.gd" id="2_wqjs0"]
-[ext_resource type="Texture2D" uid="uid://qsyir3brjwvm" path="res://resources/enemy/enemy_test.png" id="3_5ljvi"]
+[ext_resource type="Texture2D" uid="uid://icw2jwomfypf" path="res://resources/enemy/basic_map01/normal/baby_garlic/baby_garlic.png" id="3_sr7qx"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_gnwf4"]
 radius = 16.0
 
 [node name="enemy_base" type="PathFollow2D" groups=["enemy"]]
+rotates = false
 loop = false
 script = ExtResource("1_wei2r")
 
@@ -19,6 +20,5 @@ scale = Vector2(3, 3)
 shape = SubResource("CircleShape2D_gnwf4")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-rotation = 1.5708
-scale = Vector2(9, 9)
-texture = ExtResource("3_5ljvi")
+texture = ExtResource("3_sr7qx")
+flip_h = true

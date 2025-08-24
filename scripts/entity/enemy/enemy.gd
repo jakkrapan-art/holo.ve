@@ -8,17 +8,24 @@ class_name Enemy
 var originalModulate: Color
 
 var statusEffects: StatusEffectContainer = StatusEffectContainer.new()
+var skillController: EnemySkillController;
 var enableMove: bool = true;
+
+var initialized: bool = false;
 
 enum EnemyType {Normal, Elite, Boss}
 
-func setup(hp: int, armor: int, mArmor: int, moveSpeed: int, texture: Texture2D):
+func setup(hp: int, armor: int, mArmor: int, moveSpeed: int, texture: Texture2D, skills: Array[Skill] = []):
 	setTexture(texture);
 	stats = EnemyStat.new(hp, armor, mArmor, moveSpeed);
-
 	originalModulate = sprite.modulate
+	skillController = EnemySkillController.new(skills);
+	initialized = true;
 
 func _process(_delta):
+	if(!initialized):
+		return;
+
 	if statusEffects:
 		statusEffects.processEffects(_delta, self)
 
@@ -27,8 +34,19 @@ func _process(_delta):
 		queue_free()
 
 func _physics_process(delta):
+	if(!initialized):
+		return
+
 	if enableMove:
-		progress_ratio += stats.getMoveSpeed(get_parent() as Path2D) * delta;
+		var parent: Path2D = get_parent() as Path2D
+		var moveRatio = stats.getMoveSpeed(parent) * delta;
+		# var curve := (parent).curve
+		var oldPos := global_position
+		progress_ratio += moveRatio;
+		var pos := global_position # sample a little ahead
+		var direction = pos - oldPos;
+		if abs(direction.x) > (GridHelper.CELL_SIZE * 0.01):
+			sprite.flip_h = direction.x > 0;
 
 func setTexture(image: Texture2D):
 	if(sprite != null && image != null):

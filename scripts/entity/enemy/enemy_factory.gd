@@ -3,17 +3,26 @@ class_name EnemyFactory
 
 @export var enemyTemplate: PackedScene;
 
-func getEnemy(type: Enemy.EnemyType):
+func createEnemy(type: Enemy.EnemyType, parent: Node2D, health: int, def: int, mDef: int, moveSpeed: int, texture: Texture2D, skillPool: Array[Skill] = []):
 	if(enemyTemplate == null):
 		return;
-	
+
 	var enemy = enemyTemplate.instantiate() as Enemy;
 	match type:
-		Enemy.EnemyType.Normal:
-			pass;
 		Enemy.EnemyType.Elite:
-			pass;
+			enemy.scale *= 1.25;
 		Enemy.EnemyType.Boss:
-			pass;
-	
+			enemy.scale *= 1.7;
+
+	if(parent != null):
+		parent.add_child(enemy);
+		await get_tree().process_frame
+		enemy.setup(health, def, mDef, moveSpeed, texture);
+
 	return enemy
+
+func addBuff(count: int):
+	pass
+
+func addSkill(count: int):
+	pass

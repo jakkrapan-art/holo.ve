@@ -23,6 +23,8 @@ func _input(event):
 			waveController.start()
 
 func _ready():
+	var b: BossLibrary = BossLibrary.new();
+
 	_load_towers_data() # temp
 	var camera = get_node("Camera2D")
 	camera.make_current()
@@ -42,6 +44,9 @@ func _ready():
 
 	if (waveController):
 		waveController.setup(mapData.waves, Callable(self, "reducePlayerHp"));
+
+		var bossList: Array[BossDBData] = b.getBossList(mapData.mapName);
+		waveController.setBossList(bossList);
 
 		waveController.connect("onWaveStart", Callable(towerFactory, "onWaveStart"));
 		Utility.ConnectSignal(waveController, "onEnemyDead", Callable(mission, "enemyDeadCheck"));

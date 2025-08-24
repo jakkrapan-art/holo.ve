@@ -1,0 +1,30 @@
+- name: Giant Boar
+  texture: giant_boar
+  scale: 1.75
+  stats:
+    hp: 100
+    def: 0
+    mDef: 0
+    moveSpeed: 100
+    skillCount: 3
+    buffCount: 3
+- name: King Salam
+  texture: king_salam
+  scale: 1.75
+  stats:
+    hp: 100
+    def: 0
+    mDef: 0
+    moveSpeed: 100
+    skillCount: 3
+    buffCount: 3
+- name: Boss C
+  texture: boss_c
+  scale: 1.75
+  stats:
+    hp: 100
+    def: 0
+    mDef: 0
+    moveSpeed: 100
+    skillCount: 3
+    buffCount: 3

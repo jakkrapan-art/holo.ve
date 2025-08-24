@@ -38,12 +38,13 @@ const SYNERGY_REQUIREMENTS := {
 # Buffs per tier (indexed by synergy_id and tier index)
 var SYNERGY_BUFFS = {
 	TowerClass.Assassin: [
-		{ "attack_bonus": 5 },
-		{ "attack_bonus": 10 },
 		{
-			"attack_bonus": 50,
-			"attack_speed_bonus": 20
-		}
+			"crit_chance_bonus_percent": 5,
+			"on_critical": Callable(self, "onAssassinCritHit")
+		},
+		{
+			"crit_chance_bonus_percent": 10
+		},
 	],
 	TowerClass.Diva: [
 		{
@@ -74,7 +75,12 @@ var SYNERGY_BUFFS = {
 		}
 	],
 	TowerClass.Hero: [
-		{ "regen": 5 }
+		{
+			# "aura": Callable(self, "heroSynergyEffect")
+		},
+	],
+	TowerClass.Marksman: [
+		{}
 	],
 	TowerGeneration.Gen0: [
 		{ "syn_attack_percent": 4 },

@@ -75,5 +75,5 @@ func _on_option_selected(selection):
 	state = "tower_placement"
 
 func _load_towers_data(): #temp
-	var selected_deck_file_path = "res://resources/database/" + Global.selected_data_file
+	var selected_deck_file_path = "res://resources/database/towers/" + Global.selected_data_file
 	Global.towers_data = YamlParser.load_data(selected_deck_file_path)

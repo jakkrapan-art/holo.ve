@@ -14,7 +14,7 @@ func _ready():
 	_setup_buttons()
 
 func _load_deck():
-	_data = YamlParser.load_data("res://resources/database/decks.yaml")
+	_data = YamlParser.load_data("res://resources/database/decks/decks.yaml")
 	print("Loaded JSON Data: ", _data.keys())
 
 	for deck_name in _data.keys():

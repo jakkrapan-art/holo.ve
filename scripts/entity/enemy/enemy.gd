@@ -7,7 +7,7 @@ class_name Enemy
 @export var stats: EnemyStat;
 var originalModulate: Color
 
-var statusEffects: StatusEffectContainer = StatusEffectContainer.new()
+var statusEffects: StatusEffectContainer;
 var skillController: EnemySkillController;
 var enableMove: bool = true;
 
@@ -19,12 +19,15 @@ func setup(hp: int, armor: int, mArmor: int, moveSpeed: int, texture: Texture2D,
 	setTexture(texture);
 	stats = EnemyStat.new(hp, armor, mArmor, moveSpeed);
 	originalModulate = sprite.modulate
-	skillController = EnemySkillController.new(skills);
+	skillController = EnemySkillController.new(self, skills);
 	initialized = true;
 
 func _process(_delta):
 	if(!initialized):
 		return;
+
+	if skillController:
+		skillController.useSkill();
 
 	if statusEffects:
 		statusEffects.processEffects(_delta, self)
@@ -59,12 +62,17 @@ func recvDamage(damage: Damage) -> int:
 	var timer := get_tree().create_timer(0.3)
 	timer.timeout.connect(_on_damage_flash_timeout)
 
-	var currentHp = stats.updateHealth(-damage.damage)
+	var reduction = stats.damageReduction;
+	var damageVal = damage.damage;
+	print("Damage reduced from ", damage.damage, " to ", damageVal, " due to damage reduction of ", reduction, " percent = ", reduction * 100, "%");
+	if reduction > 0:
+		damageVal = int(damage.damage * (1 - reduction))
+	var currentHp = stats.updateHealth(-damageVal)
 	if currentHp <= 0:
 		dead(damage)
 
-	Utility.show_damage_text(global_position, get_parent(), damage.damage, Color.RED)
-	return damage.damage
+	Utility.show_damage_text(global_position, get_parent(), damageVal, Color.RED)
+	return damageVal
 
 func _on_damage_flash_timeout():
 	if sprite:
@@ -73,6 +81,11 @@ func _on_damage_flash_timeout():
 func dead(cause: Damage):
 	onDead.emit(cause);
 	queue_free();
+
+func addStatusEffect(effect: StatusEffect):
+	if statusEffects == null:
+		statusEffects = StatusEffectContainer.new(self)
+	statusEffects.addEffect(effect)
 
 signal onReachEndPoint();
 signal onDead(cause: Damage);

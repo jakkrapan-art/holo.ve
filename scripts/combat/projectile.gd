@@ -133,7 +133,7 @@ func hitTarget(hit_area: EnemyArea):
 		if statusEffects:
 			for effect in statusEffects:
 				if effect and is_instance_valid(effect):
-					enemy.statusEffects.addEffect(effect.duplicate(true))
+					enemy.addStatusEffect(effect.duplicate(true))
 
 	if moveType == ProjectileMoveType.Target:
 		if target and is_instance_valid(target) and hit_area == target.area:

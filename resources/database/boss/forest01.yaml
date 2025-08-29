@@ -1,30 +1,32 @@
-- name: Giant Boar
-  texture: giant_boar
-  scale: 1.75
-  stats:
-    hp: 100
-    def: 0
-    mDef: 0
-    moveSpeed: 100
-    skillCount: 3
-    buffCount: 3
+# - name: Giant Boar
+#   texture: giant_boar
+#   scale: 1.75
+#   stats:
+#     hp: 100
+#     def: 0
+#     mDef: 0
+#     moveSpeed: 100
+#     skillCount: 3
+#     buffCount: 3
 - name: King Salam
   texture: king_salam
   scale: 1.75
   stats:
-    hp: 100
-    def: 0
-    mDef: 0
-    moveSpeed: 100
+    hp: 5000
+    def: 5
+    mDef: 5
+    moveSpeed: 30
     skillCount: 3
     buffCount: 3
-- name: Boss C
-  texture: boss_c
-  scale: 1.75
-  stats:
-    hp: 100
-    def: 0
-    mDef: 0
-    moveSpeed: 100
-    skillCount: 3
-    buffCount: 3
+  skill:
+    - name: Adaptation
+      cooldown: 20
+      desc: ลดดาเมจที่ได้รับ 10%
+      action:
+        - type: target_self
+        - type: apply_status_effect
+          data:
+            type: DamageReductionBuff
+            duration: 60
+            level: 1
+            reduction: 0.1

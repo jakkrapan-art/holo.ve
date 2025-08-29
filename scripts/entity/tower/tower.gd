@@ -148,7 +148,8 @@ func _onEnemyDetected(enemy: Enemy):
 	if(self.enemy != null || enemy == self.enemy):
 		return;
 
-	clearEnemy();
+	if self.enemy != null:
+		clearEnemy();
 
 	self.enemy = enemy;
 	if(enemy != null):
@@ -156,10 +157,15 @@ func _onEnemyDetected(enemy: Enemy):
 		Utility.ConnectSignal(self.enemy, "onReachEndPoint", Callable(self, "clearEnemy"));
 
 func clearEnemy():
+	if(enemy == null):
+		return;
+
 	enemy = null;
 	play_animation_default();
 	attacking = false;
+
 	usingSkill = false;
+	skillController.cancel();
 
 func play_animation(name: String, speed: float = 1):
 	if(anim != null):
@@ -298,7 +304,6 @@ func addIntervalAction(key,interval: float, action: String, value: float):
 	timer.name = key;
 	timer.set_wait_time(interval);
 	timer.set_one_shot(false);
-	print("add interval action:", key, "_", interval, "_", action, "_", value);
 	timer.connect("timeout", callable);
 	add_child(timer);
 	timer.start();

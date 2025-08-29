@@ -6,21 +6,23 @@ extends Resource
 @export var armor: int = 0;
 @export var mArmor: int = 0;
 @export var moveSpeed: float = 0;
+@export var damageReduction: float = 0.0; # Percentage (0.0 to 1.0)
 
-func _init(hp: int, armor: int, mArmor: int, moveSpeed: float):
+func _init(hp: int, armor: int, mArmor: int, moveSpeed: float, damageReduction: float = 0.0):
 	maxHp = hp;
 	currentHp = hp;
 	self.armor = armor;
 	self.mArmor = mArmor;
 	self.moveSpeed = moveSpeed;
-	
+	self.damageReduction = damageReduction;
+
 func updateHealth(amount: int):
 	currentHp = clamp(currentHp + amount, 0, maxHp);
 	return currentHp;
 
 func getMoveSpeed(path: Path2D):
 	return calculatePathfollowSpeed(path);
-	
+
 func calculatePathfollowSpeed(path: Path2D) -> float:
 	var curve = path.curve
 	if not curve:

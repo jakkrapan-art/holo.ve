@@ -27,6 +27,6 @@
         - type: apply_status_effect
           data:
             type: DamageReductionBuff
-            duration: 60
+            duration: 5
             level: 1
             reduction: 0.1

@@ -6,5 +6,5 @@ extends SkillAction
 func execute(context: SkillContext):
 	if context.target != null && buff != null:
 		for t in context.target:
-			if t.has_method("addStatusEffects"):
+			if t.has_method("addStatusEffect"):
 				t.addStatusEffect(buff.duplicate(true))

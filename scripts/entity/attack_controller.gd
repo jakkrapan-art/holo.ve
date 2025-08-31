@@ -33,19 +33,19 @@ func executeModifier():
 func canAttack(target: Enemy):
 	return is_instance_valid(target) && isReady
 
-func attack(target: Enemy, damage: int = 0):
+func attack(target: Enemy, damage: Damage = Damage.new(null, 0, Damage.DamageType.PHYSIC)):
 	isReady = false;
 	self.target = target;
-	self.damage = Damage.new(tower, damage, Damage.DamageType.PHYSIC);
+	self.damage = damage;
 
-func attackAnimFinish(damage: int) -> int:
+func attackAnimFinish():
 	if(target == null):
-		return 0;
+		return;
 
 	dealDamage(target);
 	# shootProjectile(Callable(self, "dealDamage"));
 	startAttackTimer();
-	return 0
+	return
 
 func shootProjectile(onHit: Callable = Callable()):
 	if(target == null):

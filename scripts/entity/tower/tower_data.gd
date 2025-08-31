@@ -27,7 +27,7 @@ func getStat():
 	var index = level - 1 if level > 0 and level <= (stats.size()) else stats.size() - 1
 	return stats[index]
 
-func getDamage(enemy: Enemy):
+func getDamage(enemy: Enemy) -> Damage:
 	if(enemy == null):
 		return getStat().damage + damageBuff
 
@@ -64,7 +64,7 @@ func removeAttackBonusPercentBuff(key):
 		removeBuff(key, amount);
 	damagePercentBuff -= amount
 
-func calculateFinalDamage(baseDamage: float, enemy: Enemy) -> float:
+func calculateFinalDamage(baseDamage: float, enemy: Enemy) -> Damage:
 	var finalDamage = baseDamage
 
 	# Apply each modifier in the array
@@ -73,7 +73,15 @@ func calculateFinalDamage(baseDamage: float, enemy: Enemy) -> float:
 
 	#Apply percent buff
 	finalDamage += finalDamage * damagePercentBuff / 100
-	return finalDamage
+
+	var critChance = getCritChance();
+	var isCrit = false;
+	if(critChance > 0):
+		if(randi_range(0, 100) <= critChance):
+			finalDamage *= getStat().critMultiplier
+			isCrit = true
+
+	return Damage.new(null, int(finalDamage), Damage.DamageType.PHYSIC, isCrit)
 
 func getAttackRange():
 	return getStat().attackRange + rangeBuff;
@@ -132,6 +140,9 @@ func removemanaRegenBuff(key):
 		amount = modifiers.get(key, 0)
 		removeBuff(key, amount);
 	manaRegenBuff -= amount
+
+func getCritChance():
+	return critChanceBuff + getStat().critChance
 
 func addCritChanceBuff(amount: float, key):
 	if(key):

@@ -71,7 +71,9 @@ func recvDamage(damage: Damage) -> int:
 	if currentHp <= 0:
 		dead(damage)
 
-	Utility.show_damage_text(global_position, get_parent(), damageVal, Color.RED)
+	var dmgColor = Color(1, 1, 1) if not damage.isCritical else Color(1, 0.15, 0)
+
+	Utility.show_damage_text(global_position, get_parent(), damageVal, dmgColor)
 	return damageVal
 
 func _on_damage_flash_timeout():

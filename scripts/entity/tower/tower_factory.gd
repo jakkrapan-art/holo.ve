@@ -123,7 +123,7 @@ func onActivateSynergy(synergy_id: int, tier: int, buff: Dictionary):
 
 			if synergy_id == TowerGeneration.Gen1:
 				isStarGen1 = true;
-				starGen1Damage += tower.data.getDamage(null);
+				starGen1Damage += tower.data.getDamage(null).damage;
 
 		if isStarGen1:
 			towerTrait.setStarGen1Damage(starGen1Damage);

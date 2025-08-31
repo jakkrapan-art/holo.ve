@@ -180,7 +180,7 @@ func animation_finished(name: String):
 	match name:
 		ATTACK_ANIMATION:
 			if attacking:
-				attackController.attackAnimFinish(data.getDamage(enemy));
+				attackController.attackAnimFinish();
 				regenMana(data.getManaRegen());
 				play_animation_default();
 				attacking = false;

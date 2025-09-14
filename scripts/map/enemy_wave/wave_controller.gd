@@ -170,9 +170,9 @@ func checkEndWave():
 
 	endWave();
 
-func enemyDead(cause: Damage):
+func enemyDead(cause: Damage, reward: EnemyReward):
 	reduceEnemyCount();
-	onEnemyDead.emit(cause);
+	onEnemyDead.emit(cause, reward);
 
 func reduceEnemyCount():
 	enemyAliveCount -= 1;

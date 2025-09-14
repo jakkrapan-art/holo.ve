@@ -59,7 +59,7 @@ func _ready():
 		Utility.ConnectSignal(skillController, "on_mana_updated", Callable(self, "update_mana_bar"));
 
 	if(attackController != null):
-		attackController.setup(self, stat.getAttackDelay());
+		attackController.setup(self, Callable(stat, "getAttackDelay"));
 
 	if(enemyDetector != null):
 		enemyDetector.setup(stat.attackRange);
@@ -184,6 +184,7 @@ func animation_finished(name: String):
 				regenMana(data.getManaRegen());
 				play_animation_default();
 				attacking = false;
+				print("attack finish");
 
 	on_animation_finished.emit(name);
 

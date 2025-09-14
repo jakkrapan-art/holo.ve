@@ -7,6 +7,8 @@ class_name Enemy
 @export var stats: EnemyStat;
 var originalModulate: Color
 
+var type: EnemyType = EnemyType.Normal;
+
 var statusEffects: StatusEffectContainer;
 var skillController: EnemySkillController;
 var enableMove: bool = true;
@@ -64,9 +66,9 @@ func recvDamage(damage: Damage) -> int:
 
 	var reduction = stats.damageReduction;
 	var damageVal = damage.damage;
-	print("Damage reduced from ", damage.damage, " to ", damageVal, " due to damage reduction of ", reduction, " percent = ", reduction * 100, "%");
 	if reduction > 0:
 		damageVal = int(damage.damage * (1 - reduction))
+	print("Damage reduced from ", damage.damage, " to ", damageVal, " due to damage reduction of ", reduction, " percent = ", reduction * 100, "%");
 	var currentHp = stats.updateHealth(-damageVal)
 	if currentHp <= 0:
 		dead(damage)
@@ -81,7 +83,8 @@ func _on_damage_flash_timeout():
 		sprite.modulate = originalModulate
 
 func dead(cause: Damage):
-	onDead.emit(cause);
+	var reward = calcurateReward();
+	onDead.emit(cause, reward);
 	queue_free();
 
 func addStatusEffect(effect: StatusEffect):
@@ -89,5 +92,12 @@ func addStatusEffect(effect: StatusEffect):
 		statusEffects = StatusEffectContainer.new(self)
 	statusEffects.addEffect(effect)
 
+func calcurateReward() -> EnemyReward:
+	var evoTokenRand = randi_range(0, 100)
+	var reward = EnemyReward.new(100, 0)
+	if evoTokenRand <= 2:
+		reward.evoToken = 1;
+	return reward
+
 signal onReachEndPoint();
-signal onDead(cause: Damage);
+signal onDead(cause: Damage, reward: EnemyReward);

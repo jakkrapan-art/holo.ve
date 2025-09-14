@@ -9,7 +9,8 @@ var level: int = 1;
 var damageBuff: int = 0;
 var damagePercentBuff: float = 0;
 var rangeBuff: float = 0;
-var attackSpeedBuff: float = 0;
+var attackSpeedBuff: float = 1;
+var attackSpeedDebuff: float = 0;
 var manaRegenBuff: float = 0.0
 var critChanceBuff: float = 0.0
 var meteorProcChanceBuff: float = 0.0
@@ -104,7 +105,7 @@ func getAttackSpeed():
 	return getStat().attackSpeed + attackSpeedBuff;
 
 func getAttackDelay():
-	return getStat().getAttackDelay(attackSpeedBuff);
+	return getStat().getAttackDelay(attackSpeedBuff) * (1 + attackSpeedDebuff);
 
 func getManaRegen():
 	return getStat().manaRegen + manaRegenBuff;
@@ -125,7 +126,7 @@ func removeAttackSpeedBuff(key):
 
 func getAttackAnimationSpeed(anim: AnimatedSprite2D, name: String):
 	var stat = getStat();
-	return stat.getAttackAnimationSpeed(anim, name);
+	return stat.getAttackAnimationSpeed(anim, name) * attackSpeedBuff * (1 - attackSpeedDebuff);
 
 func addmanaRegenBuff(amount: float, key):
 	if(key):

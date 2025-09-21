@@ -1,0 +1,44 @@
+[gd_resource type="Resource" script_class="TowerData" load_steps=6 format=3 uid="uid://im4q6nt4m7x1"]
+
+[ext_resource type="Script" path="res://scripts/entity/tower/tower_data.gd" id="1_vhjkf"]
+[ext_resource type="Script" path="res://scripts/entity/tower/tower_stat.gd" id="2_vwaig"]
+
+[sub_resource type="Resource" id="Resource_5g4bw"]
+script = ExtResource("2_vwaig")
+damage = 100
+attackRange = 1.0
+attackSpeed = 90.0
+critChance = 15.0
+critMultiplier = 1.5
+mana = 10
+manaRegen = 10
+intialMana = 10
+
+[sub_resource type="Resource" id="Resource_6820u"]
+script = ExtResource("2_vwaig")
+damage = 120
+attackRange = 1.0
+attackSpeed = 90.0
+critChance = 15.0
+critMultiplier = 1.5
+mana = 50
+manaRegen = 10
+intialMana = 10
+
+[sub_resource type="Resource" id="Resource_bjofy"]
+script = ExtResource("2_vwaig")
+damage = 160
+attackRange = 1.0
+attackSpeed = 90.0
+critChance = 15.0
+critMultiplier = 1.5
+mana = 50
+manaRegen = 10
+intialMana = 10
+
+[resource]
+script = ExtResource("1_vhjkf")
+maxLevel = 3
+towerClass = 107
+generation = 200
+stats = Array[ExtResource("2_vwaig")]([SubResource("Resource_5g4bw"), SubResource("Resource_6820u"), SubResource("Resource_bjofy")])

@@ -30,3 +30,23 @@
             duration: 5
             level: 1
             reduction: 0.1
+    - name: Slime Fluid
+      cooldown: 40
+      desc: "สร้าง Aura รอบตัว ลดความเร็วการโจมตี 10% ของป้อมในรัศมี 5 ช่อง"
+      action:
+        - type: target_self
+        - type: decrease_atk_spd_area
+          data:
+            duration: 5
+            radius: 5
+            decreaseValue: 0.1
+    - name: King's Command
+      cooldown: 30
+      desc: "มอนเตอร์นรัศมีการบัฟจะได้รับ Move Speed เพิ่มขึ้น 10%  (Non-stackable)  Duration : 5 Sec ในระยะ 5 ช่อง"
+      action:
+        - type: target_self
+        - type: increase_move_spd_area
+          data:
+            duration: 5
+            radius: 5
+            increaseValue: 0.1

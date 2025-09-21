@@ -20,7 +20,7 @@ func _on_apply(target: Node) -> void:
 
 	if(target is Enemy):
 		var enemy := target as Enemy
-		originColor = enemy.sprite.modulate
+		originColor = Color.WHITE;
 
 		var effectColor =  Color(0.2, 0.2, 0.2);
 		enemy.sprite.modulate = effectColor;

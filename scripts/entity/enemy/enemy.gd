@@ -68,7 +68,6 @@ func recvDamage(damage: Damage) -> int:
 	var damageVal = damage.damage;
 	if reduction > 0:
 		damageVal = int(damage.damage * (1 - reduction))
-	print("Damage reduced from ", damage.damage, " to ", damageVal, " due to damage reduction of ", reduction, " percent = ", reduction * 100, "%");
 	var currentHp = stats.updateHealth(-damageVal)
 	if currentHp <= 0:
 		dead(damage)
@@ -98,6 +97,12 @@ func calcurateReward() -> EnemyReward:
 	if evoTokenRand <= 2:
 		reward.evoToken = 1;
 	return reward
+
+func addIncreaseMoveSpeed(value: float, key: String):
+	stats.addMoveSpeedMultiplier(value, key);
+
+func removeIncreaseMoveSpeed(key: String):
+	stats.removeMoveSpeedMultiplier(key);
 
 signal onReachEndPoint();
 signal onDead(cause: Damage, reward: EnemyReward);

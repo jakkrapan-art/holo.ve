@@ -6,7 +6,10 @@ extends Resource
 @export var armor: int = 0;
 @export var mArmor: int = 0;
 @export var moveSpeed: float = 0;
+var moveSpeedMultiplier: float = 1;
 @export var damageReduction: float = 0.0; # Percentage (0.0 to 1.0)
+
+var buffs: Dictionary = {};
 
 func _init(hp: int, armor: int, mArmor: int, moveSpeed: float, damageReduction: float = 0.0):
 	maxHp = hp;
@@ -21,7 +24,7 @@ func updateHealth(amount: int):
 	return currentHp;
 
 func getMoveSpeed(path: Path2D):
-	return calculatePathfollowSpeed(path);
+	return calculatePathfollowSpeed(path) * moveSpeedMultiplier;
 
 func calculatePathfollowSpeed(path: Path2D) -> float:
 	var curve = path.curve
@@ -32,3 +35,11 @@ func calculatePathfollowSpeed(path: Path2D) -> float:
 		return 0.0
 	var totalTime = (100.0 / moveSpeed) * totalSegments
 	return 1.0 / totalTime  # how much progress_ratio to move per second
+
+func addMoveSpeedMultiplier(value: float, key: String):
+	moveSpeedMultiplier += value;
+	buffs[key] = value;
+
+func removeMoveSpeedMultiplier(key: String):
+	moveSpeedMultiplier -= buffs[key];
+	buffs.erase(key);

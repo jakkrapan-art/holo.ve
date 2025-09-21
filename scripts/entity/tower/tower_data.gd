@@ -28,9 +28,9 @@ func getStat():
 	var index = level - 1 if level > 0 and level <= (stats.size()) else stats.size() - 1
 	return stats[index]
 
-func getDamage(enemy: Enemy) -> Damage:
+func getDamage(enemy: Enemy, source: Node2D) -> Damage:
 	if(enemy == null):
-		return getStat().damage + damageBuff
+		return Damage.new(source, getStat().damage + damageBuff, Damage.DamageType.MAGIC);
 
 	var finalDamage = calculateFinalDamage(getStat().damage + damageBuff, enemy);
 	return finalDamage;
@@ -124,18 +124,32 @@ func removeAttackSpeedBuff(key):
 		removeBuff(key, amount);
 	attackSpeedBuff -= amount
 
+func addAttackSpeedDebuff(amount: float, key):
+	if(key):
+		if(modifiers.has(key)):
+			removeAttackSpeedDebuff(key)
+		applyBuff(key, amount);
+	attackSpeedDebuff += amount;
+
+func removeAttackSpeedDebuff(key):
+	var amount = 0;
+	if(modifiers.has(key)):
+		amount = modifiers[key]
+		removeBuff(key, amount);
+	attackSpeedDebuff -= amount
+
 func getAttackAnimationSpeed(anim: AnimatedSprite2D, name: String):
 	var stat = getStat();
 	return stat.getAttackAnimationSpeed(anim, name) * attackSpeedBuff * (1 - attackSpeedDebuff);
 
-func addmanaRegenBuff(amount: float, key):
+func addManaRegenBuff(amount: float, key):
 	if(key):
 		if(modifiers.has(key)):
-			removemanaRegenBuff(key)
+			removeManaRegenBuff(key)
 		applyBuff(key, amount);
 	manaRegenBuff += amount
 
-func removemanaRegenBuff(key):
+func removeManaRegenBuff(key):
 	var amount := 0;
 	if(modifiers.has(key)):
 		amount = modifiers.get(key, 0)

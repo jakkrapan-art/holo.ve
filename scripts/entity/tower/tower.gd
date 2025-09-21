@@ -1,4 +1,4 @@
-extends Node2D
+extends Area2D
 class_name Tower
 
 var isReady = false;
@@ -112,7 +112,7 @@ func upgrade():
 
 func attackEnemy():
 	if(is_instance_valid(enemy) && attackController != null && attackController.canAttack(enemy)):
-		attackController.attack(enemy, data.getDamage(enemy));
+		attackController.attack(enemy, data.getDamage(enemy, self));
 		var speed = getAttackAnimationSpeed();
 		play_animation(ATTACK_ANIMATION, speed);
 		attacking = true;
@@ -184,7 +184,6 @@ func animation_finished(name: String):
 				regenMana(data.getManaRegen());
 				play_animation_default();
 				attacking = false;
-				print("attack finish");
 
 	on_animation_finished.emit(name);
 
@@ -309,6 +308,11 @@ func addIntervalAction(key,interval: float, action: String, value: float):
 	add_child(timer);
 	timer.start();
 
+func addDecreaseAtkSpeed(value: float, key: String = ""):
+	data.addAttackSpeedDebuff(value, key);
+
+func removeDecreaseAtkSpeed(key: String):
+	data.removeAttackSpeedDebuff(key);
 
 signal onReceiveMission(mission: MissionDetail);
 signal on_animation_finished(name: String);

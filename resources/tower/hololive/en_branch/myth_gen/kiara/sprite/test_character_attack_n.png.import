@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cjn5fqq1oxe23"
-path="res://.godot/imported/test_character_attack_n.png-77a86ea02c95361f4c6c058c1641cb2c.ctex"
+path="res://.godot/imported/test_character_attack_n.png-5b7aebc0581fa58d1bcf127406e9cdc2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/tower/hololive/en_branch/myth_gen/kiara/sprite/test_character_attack_n.png"
-dest_files=["res://.godot/imported/test_character_attack_n.png-77a86ea02c95361f4c6c058c1641cb2c.ctex"]
+source_file="res://resources/tower/sprite/test/test_character_attack_n.png"
+dest_files=["res://.godot/imported/test_character_attack_n.png-5b7aebc0581fa58d1bcf127406e9cdc2.ctex"]
 
 [params]
 

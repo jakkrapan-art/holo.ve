@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ckv1mcuwniogb"
-path="res://.godot/imported/test_character_idle.png-6bce8ba52739f5b999a29c7bdbd7e32d.ctex"
+uid="uid://ccdpg7f82g7ld"
+path="res://.godot/imported/skill01.png-a2645e13572df437fc098db914939889.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/tower/hololive/en_branch/myth_gen/kiara/sprite/test_character_idle.png"
-dest_files=["res://.godot/imported/test_character_idle.png-6bce8ba52739f5b999a29c7bdbd7e32d.ctex"]
+source_file="res://resources/tower/hololive/jp_branch/jp01_gen/sora/sprite/skill01.png"
+dest_files=["res://.godot/imported/skill01.png-a2645e13572df437fc098db914939889.ctex"]
 
 [params]
 

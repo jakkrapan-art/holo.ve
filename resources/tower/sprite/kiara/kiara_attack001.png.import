@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ckv1mcuwniogb"
-path="res://.godot/imported/test_character_idle.png-6bce8ba52739f5b999a29c7bdbd7e32d.ctex"
+uid="uid://cr6km3h7gjujy"
+path="res://.godot/imported/kiara_attack001.png-1c11b340e893f425f68cc0baffa61756.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/tower/hololive/en_branch/myth_gen/kiara/sprite/test_character_idle.png"
-dest_files=["res://.godot/imported/test_character_idle.png-6bce8ba52739f5b999a29c7bdbd7e32d.ctex"]
+source_file="res://resources/tower/sprite/kiara/kiara_attack001.png"
+dest_files=["res://.godot/imported/kiara_attack001.png-1c11b340e893f425f68cc0baffa61756.ctex"]
 
 [params]
 

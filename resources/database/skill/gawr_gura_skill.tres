@@ -1,11 +1,9 @@
-[gd_resource type="Resource" script_class="Skill" load_steps=9 format=3 uid="uid://h1kpuw8owwy4"]
+[gd_resource type="Resource" script_class="Skill" load_steps=7 format=3 uid="uid://buce83ni3lmxd"]
 
 [ext_resource type="Script" path="res://scripts/skill/skill.gd" id="1_a4ckf"]
-[ext_resource type="PackedScene" uid="uid://bgbx57ye0s2ww" path="res://resources/combat/bullets/gawr_gura_skill_projectile.tscn" id="1_k4q5d"]
+[ext_resource type="PackedScene" path="res://resources/combat/bullets/gawr_gura_skill_projectile.tscn" id="1_k4q5d"]
 [ext_resource type="Script" path="res://scripts/skill/skillActions/skill_create_circle_projectile.gd" id="1_o6his"]
-[ext_resource type="Script" path="res://scripts/skill/skill_action.gd" id="1_qjo6r"]
 [ext_resource type="Script" path="res://scripts/status_effect/stun_effect.gd" id="3_70xp2"]
-[ext_resource type="Script" path="res://scripts/status_effect/status_effect.gd" id="4_gbm82"]
 
 [sub_resource type="Resource" id="Resource_8jvyw"]
 script = ExtResource("3_70xp2")
@@ -25,13 +23,13 @@ damageMultiplier = 1.0
 damageMultiplierParamName = "damageMultiplier"
 damageType = 1
 projectileTemplate = ExtResource("1_k4q5d")
-statusEffects = Array[ExtResource("4_gbm82")]([SubResource("Resource_8jvyw")])
+statusEffects = Array[Resource("res://scripts/status_effect/status_effect.gd")]([SubResource("Resource_8jvyw")])
 
 [resource]
 script = ExtResource("1_a4ckf")
 name = "Anlantis Trident"
 desc = "Gura ใช้ตรีศูลแห่งแอตแลนติสเรียกพายุคลื่น 4 ลูกในระยะ 1 ช่องห่างจากตัวเอง เป็นเวลา 5 วินาที ศัตรูที่ถูกโจมตีด้วยคลื่นจะได้รับความเสียหาย x% ต่อคลื่น 1 ลูก พร้อมทั้ง Stun ศัตรูเป็นเวลา 0.1 วินาที ในระยะเวลาที่สกิลนี้แสดงผล Gura จะไม่ได้รับ Energy"
-actions = Array[ExtResource("1_qjo6r")]([SubResource("Resource_ou53u")])
+actions = Array[Resource("res://scripts/skill/skill_action.gd")]([SubResource("Resource_ou53u")])
 parameters = {
 "damageMultiplier": [1.2, 1.3, 1.5]
 }

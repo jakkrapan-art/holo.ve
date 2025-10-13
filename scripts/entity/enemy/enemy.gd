@@ -64,7 +64,7 @@ func recvDamage(damage: Damage) -> int:
 	var timer := get_tree().create_timer(0.3)
 	timer.timeout.connect(_on_damage_flash_timeout)
 
-	var reduction = stats.damageReduction;
+	var reduction = stats.getDamageReduction();
 	var damageVal = damage.damage;
 	if reduction > 0:
 		damageVal = int(damage.damage * (1 - reduction))
@@ -103,6 +103,18 @@ func addIncreaseMoveSpeed(value: float, key: String):
 
 func removeIncreaseMoveSpeed(key: String):
 	stats.removeMoveSpeedMultiplier(key);
+
+func addIncreaseDef(value: float, key: String):
+	stats.addArmorPercent(value, key);
+
+func removeIncreaseDef(key: String):
+	stats.removeArmorPercent(key);
+
+func addBlockDamageCount(value: int):
+	stats.blockCount += value;
+
+func setSpeed(value: float):
+	stats.moveSpeed = value;
 
 signal onReachEndPoint();
 signal onDead(cause: Damage, reward: EnemyReward);

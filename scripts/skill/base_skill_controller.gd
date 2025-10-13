@@ -20,16 +20,17 @@ func useSkill():
 			continue;
 		var context = SkillContext.new()
 		context.user = user
+		context.skillName = skill.name
 		context.extra["parameter"] = skill.parameters
+		print("use skill: ", skill.name);
 		await execute_skill_actions(skill, context);
 
 func cancel():
 	cancelled = true;
 
 func execute_skill_actions(skill: Skill, context: SkillContext):
-	if user.has_meta("usingSkill"):
+	if(user is Tower):
 		user.usingSkill = true;
-
 	skill.using = true;
 	for action in skill.actions:
 		if(context.cancel || cancelled):
@@ -38,12 +39,11 @@ func execute_skill_actions(skill: Skill, context: SkillContext):
 
 		context.cancel = false;
 		await action.execute(context)
-	executeModifier();
 	onSuccess(skill);
 
 func resetUsingSkill(skill: Skill):
 	skill.using = false;
-	if user.has_meta("usingSkill"):
+	if(user is Tower):
 		user.usingSkill = skills.any(Callable(self, "checkUsingSkill"));
 
 func onSuccess(skill: Skill):

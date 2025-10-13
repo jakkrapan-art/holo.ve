@@ -52,6 +52,8 @@ func addMoveSpeedMultiplier(value: float, key: String):
 	buffs[key] = value;
 
 func removeMoveSpeedMultiplier(key: String):
+	if(!buffs.has(key)):
+		return;
 	moveSpeedMultiplier -= buffs[key];
 	buffs.erase(key);
 
@@ -63,6 +65,9 @@ func addArmorPercent(value: float, key: String):
 	buffs[key] = value;
 
 func removeArmorPercent(key: String):
+	if(!buffs.has(key)):
+		return;
+
 	extraArmorPercent -= buffs[key];
 	buffs.erase(key);
 
@@ -74,6 +79,9 @@ func addMArmorPercent(value: float, key: String):
 	buffs[key] = value;
 
 func removeMArmorPercent(key: String):
+	if(!buffs.has(key)):
+		return;
+
 	extraMArmorPercent -= buffs[key];
 	buffs.erase(key);
 

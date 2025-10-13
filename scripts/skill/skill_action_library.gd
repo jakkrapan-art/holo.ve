@@ -72,6 +72,15 @@ static func ParseAction(data: Dictionary) -> SkillAction:
 			var skillData = data.get("data", {});
 			var speed = skillData.get("speed", 1.0);
 			skill.speed = speed;
+		"decrease_damage_all_area":
+			skill = DecreaseDamageAllArea.new();
+			var skillData = data.get("data", {});
+			var duration = skillData.get("duration", 3);
+			var radius = skillData.get("radius", 1.0);
+			var decreaseValue = skillData.get("decreaseValue", 0.0);
+			skill.duration = duration;
+			skill.radius = radius;
+			skill.decreaseValue = decreaseValue;
 		_:
 			print("Warning: Unknown skill type:", skillType);
 			return null;

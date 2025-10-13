@@ -8,6 +8,7 @@ var level: int = 1;
 
 var damageBuff: int = 0;
 var damagePercentBuff: float = 0;
+var damagePercentDebuff: float = 0;
 var rangeBuff: float = 0;
 var attackSpeedBuff: float = 1;
 var attackSpeedDebuff: float = 0;
@@ -65,6 +66,20 @@ func removeAttackBonusPercentBuff(key):
 		removeBuff(key, amount);
 	damagePercentBuff -= amount
 
+func addAttackBonusPercentDebuff(amount: int, key):
+	if key && modifiers.has(key):
+		removeAttackBonusPercentDebuff(key);
+
+	damagePercentDebuff += amount;
+	applyBuff(key, amount);
+
+func removeAttackBonusPercentDebuff(key):
+	var amount = 0;
+	if(modifiers.has(key)):
+		amount = modifiers[key]
+		removeBuff(key, amount);
+	damagePercentDebuff -= amount
+
 func calculateFinalDamage(baseDamage: float, enemy: Enemy) -> Damage:
 	var finalDamage = baseDamage
 
@@ -73,7 +88,7 @@ func calculateFinalDamage(baseDamage: float, enemy: Enemy) -> Damage:
 		finalDamage = modifier.call(finalDamage, enemy)
 
 	#Apply percent buff
-	finalDamage += finalDamage * damagePercentBuff / 100
+	finalDamage += (finalDamage * damagePercentBuff / 100) * (1 - damagePercentDebuff)
 
 	var critChance = getCritChance();
 	var isCrit = false;

@@ -314,5 +314,11 @@ func addDecreaseAtkSpeed(value: float, key: String = ""):
 func removeDecreaseAtkSpeed(key: String):
 	data.removeAttackSpeedDebuff(key);
 
+func addDecreaseDmgAllPercent(value: float, key: String = ""):
+	data.addAttackBonusPercentBuff(value, key);
+
+func removeDecreaseDmgAllPercent(key: String):
+	data.removeDecreaseDmgAllPercent(key);
+
 signal onReceiveMission(mission: MissionDetail);
 signal on_animation_finished(name: String);

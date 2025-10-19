@@ -8,8 +8,10 @@ var level: int = 1;
 
 var damageBuff: int = 0;
 var damagePercentBuff: float = 0;
+var damagePercentDebuff: float = 0;
 var rangeBuff: float = 0;
-var attackSpeedBuff: float = 0;
+var attackSpeedBuff: float = 1;
+var attackSpeedDebuff: float = 0;
 var manaRegenBuff: float = 0.0
 var critChanceBuff: float = 0.0
 var meteorProcChanceBuff: float = 0.0
@@ -27,9 +29,9 @@ func getStat():
 	var index = level - 1 if level > 0 and level <= (stats.size()) else stats.size() - 1
 	return stats[index]
 
-func getDamage(enemy: Enemy):
+func getDamage(enemy: Enemy, source: Node2D) -> Damage:
 	if(enemy == null):
-		return getStat().damage + damageBuff
+		return Damage.new(source, getStat().damage + damageBuff, Damage.DamageType.MAGIC);
 
 	var finalDamage = calculateFinalDamage(getStat().damage + damageBuff, enemy);
 	return finalDamage;
@@ -64,7 +66,21 @@ func removeAttackBonusPercentBuff(key):
 		removeBuff(key, amount);
 	damagePercentBuff -= amount
 
-func calculateFinalDamage(baseDamage: float, enemy: Enemy) -> float:
+func addAttackBonusPercentDebuff(amount: int, key):
+	if key && modifiers.has(key):
+		removeAttackBonusPercentDebuff(key);
+
+	damagePercentDebuff += amount;
+	applyBuff(key, amount);
+
+func removeAttackBonusPercentDebuff(key):
+	var amount = 0;
+	if(modifiers.has(key)):
+		amount = modifiers[key]
+		removeBuff(key, amount);
+	damagePercentDebuff -= amount
+
+func calculateFinalDamage(baseDamage: float, enemy: Enemy) -> Damage:
 	var finalDamage = baseDamage
 
 	# Apply each modifier in the array
@@ -72,8 +88,16 @@ func calculateFinalDamage(baseDamage: float, enemy: Enemy) -> float:
 		finalDamage = modifier.call(finalDamage, enemy)
 
 	#Apply percent buff
-	finalDamage += finalDamage * damagePercentBuff / 100
-	return finalDamage
+	finalDamage += (finalDamage * damagePercentBuff / 100) * (1 - damagePercentDebuff)
+
+	var critChance = getCritChance();
+	var isCrit = false;
+	if(critChance > 0):
+		if(randi_range(0, 100) <= critChance):
+			finalDamage *= getStat().critMultiplier
+			isCrit = true
+
+	return Damage.new(null, int(finalDamage), Damage.DamageType.PHYSIC, isCrit)
 
 func getAttackRange():
 	return getStat().attackRange + rangeBuff;
@@ -96,7 +120,7 @@ func getAttackSpeed():
 	return getStat().attackSpeed + attackSpeedBuff;
 
 func getAttackDelay():
-	return getStat().getAttackDelay(attackSpeedBuff);
+	return getStat().getAttackDelay(attackSpeedBuff) * (1 + attackSpeedDebuff);
 
 func getManaRegen():
 	return getStat().manaRegen + manaRegenBuff;
@@ -115,23 +139,40 @@ func removeAttackSpeedBuff(key):
 		removeBuff(key, amount);
 	attackSpeedBuff -= amount
 
-func getAttackAnimationSpeed(anim: AnimatedSprite2D, name: String):
-	var stat = getStat();
-	return stat.getAttackAnimationSpeed(anim, name);
-
-func addmanaRegenBuff(amount: float, key):
+func addAttackSpeedDebuff(amount: float, key):
 	if(key):
 		if(modifiers.has(key)):
-			removemanaRegenBuff(key)
+			removeAttackSpeedDebuff(key)
+		applyBuff(key, amount);
+	attackSpeedDebuff += amount;
+
+func removeAttackSpeedDebuff(key):
+	var amount = 0;
+	if(modifiers.has(key)):
+		amount = modifiers[key]
+		removeBuff(key, amount);
+	attackSpeedDebuff -= amount
+
+func getAttackAnimationSpeed(anim: AnimatedSprite2D, name: String):
+	var stat = getStat();
+	return stat.getAttackAnimationSpeed(anim, name) * attackSpeedBuff * (1 - attackSpeedDebuff);
+
+func addManaRegenBuff(amount: float, key):
+	if(key):
+		if(modifiers.has(key)):
+			removeManaRegenBuff(key)
 		applyBuff(key, amount);
 	manaRegenBuff += amount
 
-func removemanaRegenBuff(key):
+func removeManaRegenBuff(key):
 	var amount := 0;
 	if(modifiers.has(key)):
 		amount = modifiers.get(key, 0)
 		removeBuff(key, amount);
 	manaRegenBuff -= amount
+
+func getCritChance():
+	return critChanceBuff + getStat().critChance
 
 func addCritChanceBuff(amount: float, key):
 	if(key):

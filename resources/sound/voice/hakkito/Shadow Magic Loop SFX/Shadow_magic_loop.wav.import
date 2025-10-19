@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://xhwiuhlfctd0"
+path="res://.godot/imported/Shadow_magic_loop.wav-df28d19b50b05b11907df1630d689d9d.sample"
+
+[deps]
+
+source_file="res://resources/sound/voice/hakkito/Shadow Magic Loop SFX/Shadow_magic_loop.wav"
+dest_files=["res://.godot/imported/Shadow_magic_loop.wav-df28d19b50b05b11907df1630d689d9d.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0

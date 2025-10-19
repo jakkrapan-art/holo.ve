@@ -50,6 +50,7 @@ func _ready():
 
 		waveController.connect("onWaveStart", Callable(towerFactory, "onWaveStart"));
 		Utility.ConnectSignal(waveController, "onEnemyDead", Callable(mission, "enemyDeadCheck"));
+		Utility.ConnectSignal(waveController, "onEnemyDead", Callable(player, "processReward"));
 
 func placeTower(cell: Vector2):
 	map.removeAvailableCell(cell);

@@ -12,13 +12,14 @@ rotates = false
 loop = false
 script = ExtResource("1_wei2r")
 
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, -72)
+texture = ExtResource("3_sr7qx")
+flip_h = true
+
 [node name="Enemy" type="Area2D" parent="." groups=["enemy"]]
 script = ExtResource("2_wqjs0")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Enemy"]
 scale = Vector2(3, 3)
 shape = SubResource("CircleShape2D_gnwf4")
-
-[node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("3_sr7qx")
-flip_h = true

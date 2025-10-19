@@ -30,7 +30,7 @@ func _process(delta):
 		# Move upward
 		textLabel.position.y -= move_speed * delta
 
-func setup(damage: int, color: Color = Color(1, 0, 0)):
+func setup(damage: int):
 	textLabel = $Text as Label
 	if textLabel:
 		# Format number with commas (000,000,000 format)
@@ -38,8 +38,8 @@ func setup(damage: int, color: Color = Color(1, 0, 0)):
 		textLabel.show()
 
 		# Reset properties
+		textLabel.modulate.a = 1.0
 		textLabel.position = Vector2.ZERO
-		textLabel.modulate = color
 
 	# Reset timer
 	elapsed_time = 0.0

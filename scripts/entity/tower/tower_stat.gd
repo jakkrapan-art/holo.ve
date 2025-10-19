@@ -4,8 +4,6 @@ extends Resource
 @export var damage: int = 4
 @export var attackRange: float = 1.0
 @export var attackSpeed: float = 0.5
-@export var critChance: float = 15.0
-@export var critMultiplier: float = 1.5
 @export var mana: int = 100
 @export var manaRegen: int = 10
 @export var intialMana: int = 10
@@ -19,7 +17,7 @@ func getAttackAnimationSpeed(anim: AnimatedSprite2D, name: String):
 	var attack_delay = getAttackDelay();
 	if animation_duration > attack_delay:
 		speed_scale = (animation_duration * 1.01) / attack_delay
-
+	
 	return speed_scale
 
 func getAttackDelay(extraSpeed: float = 0):

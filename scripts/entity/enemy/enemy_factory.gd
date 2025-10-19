@@ -8,16 +8,16 @@ func createEnemy(type: Enemy.EnemyType, parent: Node2D, health: int, def: int, m
 		return;
 
 	var enemy = enemyTemplate.instantiate() as Enemy;
-	# match type:
-	# 	Enemy.EnemyType.Elite:
-	# 		enemy.scale *= 1.25;
-	# 	Enemy.EnemyType.Boss:
-	# 		enemy.scale *= 1.7;
+	match type:
+		Enemy.EnemyType.Elite:
+			enemy.scale *= 1.25;
+		Enemy.EnemyType.Boss:
+			enemy.scale *= 1.7;
 
 	if(parent != null):
 		parent.add_child(enemy);
 		await get_tree().process_frame
-		enemy.setup(health, def, mDef, moveSpeed, texture, skillPool);
+		enemy.setup(health, def, mDef, moveSpeed, texture);
 
 	return enemy
 

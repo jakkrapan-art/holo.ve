@@ -2,16 +2,10 @@ class_name StatusEffectContainer
 
 var effects: Dictionary = {}  # key = effect_type, value = Array[StatusEffect]
 
-var host: Node = null
-
-func _init(host: Node):
-	self.host = host
-
 func addEffect(effect: StatusEffect) -> void:
 	if not effects.has(effect.effectType):
 		effects[effect.effectType] = []
 
-	effect._on_apply(host)
 	effects[effect.effectType].append(effect)
 
 func removeEffect(effect: StatusEffect) -> void:

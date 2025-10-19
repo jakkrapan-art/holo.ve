@@ -17,6 +17,6 @@ static func get_angle_to_target(from_position: Vector2, target_position: Vector2
 
 static func show_damage_text(position: Vector2, parent: Node2D, damage: int, color: Color = Color(1, 0, 0)):
 	var atkNumber = load("res://resources/ui_component/damage_number.tscn").instantiate() as DamageNumber;
-	atkNumber.setup(damage, color);
+	atkNumber.setup(damage);
 	atkNumber.global_position = position;
 	parent.add_child(atkNumber);

@@ -1,7 +1,6 @@
 class_name SkillContext
 extends RefCounted
 
-var skillName: String = "";
 var user: Node = null;
 var target: Array[Node] = [];
 var cancel: bool = false;

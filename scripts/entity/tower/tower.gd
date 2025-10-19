@@ -1,4 +1,4 @@
-extends Area2D
+extends Node2D
 class_name Tower
 
 var isReady = false;
@@ -59,7 +59,7 @@ func _ready():
 		Utility.ConnectSignal(skillController, "on_mana_updated", Callable(self, "update_mana_bar"));
 
 	if(attackController != null):
-		attackController.setup(self, Callable(stat, "getAttackDelay"));
+		attackController.setup(self, stat.getAttackDelay());
 
 	if(enemyDetector != null):
 		enemyDetector.setup(stat.attackRange);
@@ -112,7 +112,7 @@ func upgrade():
 
 func attackEnemy():
 	if(is_instance_valid(enemy) && attackController != null && attackController.canAttack(enemy)):
-		attackController.attack(enemy, data.getDamage(enemy, self));
+		attackController.attack(enemy, data.getDamage(enemy));
 		var speed = getAttackAnimationSpeed();
 		play_animation(ATTACK_ANIMATION, speed);
 		attacking = true;
@@ -148,8 +148,7 @@ func _onEnemyDetected(enemy: Enemy):
 	if(self.enemy != null || enemy == self.enemy):
 		return;
 
-	if self.enemy != null:
-		clearEnemy();
+	clearEnemy();
 
 	self.enemy = enemy;
 	if(enemy != null):
@@ -157,15 +156,10 @@ func _onEnemyDetected(enemy: Enemy):
 		Utility.ConnectSignal(self.enemy, "onReachEndPoint", Callable(self, "clearEnemy"));
 
 func clearEnemy():
-	if(enemy == null):
-		return;
-
 	enemy = null;
 	play_animation_default();
 	attacking = false;
-
 	usingSkill = false;
-	skillController.cancel();
 
 func play_animation(name: String, speed: float = 1):
 	if(anim != null):
@@ -180,7 +174,7 @@ func animation_finished(name: String):
 	match name:
 		ATTACK_ANIMATION:
 			if attacking:
-				attackController.attackAnimFinish();
+				attackController.attackAnimFinish(data.getDamage(enemy));
 				regenMana(data.getManaRegen());
 				play_animation_default();
 				attacking = false;
@@ -304,21 +298,11 @@ func addIntervalAction(key,interval: float, action: String, value: float):
 	timer.name = key;
 	timer.set_wait_time(interval);
 	timer.set_one_shot(false);
+	print("add interval action:", key, "_", interval, "_", action, "_", value);
 	timer.connect("timeout", callable);
 	add_child(timer);
 	timer.start();
 
-func addDecreaseAtkSpeed(value: float, key: String = ""):
-	data.addAttackSpeedDebuff(value, key);
-
-func removeDecreaseAtkSpeed(key: String):
-	data.removeAttackSpeedDebuff(key);
-
-func addDecreaseDmgAllPercent(value: float, key: String = ""):
-	data.addAttackBonusPercentBuff(value, key);
-
-func removeDecreaseDmgAllPercent(key: String):
-	data.removeDecreaseDmgAllPercent(key);
 
 signal onReceiveMission(mission: MissionDetail);
 signal on_animation_finished(name: String);

@@ -22,10 +22,11 @@ func execute(context: SkillContext):
 		var tower: Tower = context.user as Tower
 
 		tower.enableRegenMana = false;
-		tower.usingSkill = false;
+		tower.usingSkill = false
 		tower.skillController.currentMana = 0;
 
 		await context.user.get_tree().create_timer(lifetime).timeout
+		tower.usingSkill = true;
 		tower.enableRegenMana = true
 
 func setupProjectile(_projectile: Projectile, _i: int, _context: SkillContext):

@@ -1,24 +1,57 @@
 class_name SkillController
-extends BaseSkillController
 
 var maxMana := 0.0;
 var currentMana := 0.0;
+var skill: Skill = null;
+var user: Node;
+var modifier: Dictionary = {}
 
 func _init(user: Node,maxMana: float, initialMana: float, skill: Skill):
-	super._init(user, [skill]);
 	self.maxMana = maxMana;
 	currentMana = initialMana;
+	self.skill = skill;
+	self.user = user;
+
+func addModifier(key: int, modifier: Callable):
+	self.modifier[key] = modifier
+
+func removeModifier(key: int):
+	if(!modifier.has(key)):
+		return;
+
+	modifier.erase(key);
 
 func updateMana(amount: float):
 	currentMana = clamp(currentMana + amount, 0, maxMana)
 	on_mana_updated.emit(currentMana);
 
-func canUseSkill() -> bool:
-	return currentMana >= maxMana;
+func useSkill():
+	if(currentMana < maxMana):
+		return;
 
-func onSuccess(skill: Skill):
-	super.onSuccess(skill);
-	updateMana(-currentMana);
+	var context = SkillContext.new()
+	context.user = user
+	context.extra["parameter"] = skill.parameters
+
+	if user is Tower:
+		(user as Tower).usingSkill = true;
+	var success = await execute_skill_actions(context);
+
+	if(success):
+		updateMana(-currentMana);
+		executeModifier();
+
+	if user is Tower:
+		(user as Tower).usingSkill = false;
+
+func execute_skill_actions(context: SkillContext):
+	for action in skill.actions:
+		if(context.cancel):
+			return false;
+
+		context.cancel = false;
+		await action.execute(context)
+	return true;
 
 func executeModifier():
 	for mod in modifier.values():

@@ -1,8 +1,200 @@
-[gd_scene load_steps=2 format=3 uid="uid://5flq6go67abr"]
+[gd_scene load_steps=31 format=3 uid="uid://c28dmw5cdwe01"]
 
-[ext_resource type="PackedScene" uid="uid://d5g7c6yxmrv4" path="res://resources/tower/tower.tscn" id="1_3g3qw"]
+[ext_resource type="Script" path="res://scripts/entity/tower/tower.gd" id="1_wsj1i"]
+[ext_resource type="Script" path="res://scripts/entity/tower/tower_data.gd" id="2_d7rl3"]
+[ext_resource type="Script" path="res://scripts/entity/tower/tower_stat.gd" id="3_nwcqj"]
+[ext_resource type="Resource" uid="uid://h1kpuw8owwy4" path="res://resources/database/skill/gawr_gura_skill.tres" id="4_8j206"]
+[ext_resource type="Texture2D" uid="uid://ckv1mcuwniogb" path="res://resources/tower/sprite/test/test_character_idle.png" id="5_15jho"]
+[ext_resource type="Texture2D" uid="uid://cjn5fqq1oxe23" path="res://resources/tower/sprite/test/test_character_attack_n.png" id="6_rijx4"]
+[ext_resource type="Script" path="res://scripts/enemy_detector.gd" id="7_fk8pd"]
+[ext_resource type="Script" path="res://scripts/entity/attack_controller.gd" id="8_y5d8q"]
+[ext_resource type="PackedScene" uid="uid://bgbx57ye0s2ww" path="res://resources/combat/bullets/gawr_gura_skill_projectile.tscn" id="9_y52m2"]
+[ext_resource type="Script" path="res://scripts/ui/health_bar.gd" id="10_1su4y"]
 
-[node name="tower" instance=ExtResource("1_3g3qw")]
+[sub_resource type="Resource" id="Resource_5g4bw"]
+script = ExtResource("3_nwcqj")
+damage = 80
+attackRange = 2.0
+attackSpeed = 80.0
+mana = 120
+manaRegen = 10
+intialMana = 60
 
-[node name="AnimatedSprite2D" parent="." index="0"]
+[sub_resource type="Resource" id="Resource_jig1x"]
+script = ExtResource("3_nwcqj")
+damage = 120
+attackRange = 2.0
+attackSpeed = 80.0
+mana = 120
+manaRegen = 10
+intialMana = 60
+
+[sub_resource type="Resource" id="Resource_5caq0"]
+script = ExtResource("3_nwcqj")
+damage = 180
+attackRange = 2.0
+attackSpeed = 80.0
+mana = 120
+manaRegen = 10
+intialMana = 60
+
+[sub_resource type="Resource" id="Resource_4fxdq"]
+script = ExtResource("2_d7rl3")
+maxLevel = 3
+towerClass = 106
+generation = 200
+stats = Array[ExtResource("3_nwcqj")]([SubResource("Resource_5g4bw"), SubResource("Resource_jig1x"), SubResource("Resource_5caq0")])
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_t2hop"]
+atlas = ExtResource("5_15jho")
+region = Rect2(0, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3lltj"]
+atlas = ExtResource("5_15jho")
+region = Rect2(512, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_atyy5"]
+atlas = ExtResource("5_15jho")
+region = Rect2(1024, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ika00"]
+atlas = ExtResource("5_15jho")
+region = Rect2(0, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ck5fv"]
+atlas = ExtResource("5_15jho")
+region = Rect2(512, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vswo6"]
+atlas = ExtResource("5_15jho")
+region = Rect2(1024, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ksxc6"]
+atlas = ExtResource("6_rijx4")
+region = Rect2(0, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3rv7q"]
+atlas = ExtResource("6_rijx4")
+region = Rect2(512, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_t58d3"]
+atlas = ExtResource("6_rijx4")
+region = Rect2(1024, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4qxbl"]
+atlas = ExtResource("6_rijx4")
+region = Rect2(0, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_y8rj2"]
+atlas = ExtResource("6_rijx4")
+region = Rect2(512, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gyle3"]
+atlas = ExtResource("6_rijx4")
+region = Rect2(1024, 512, 512, 512)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_sj4s8"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_t2hop")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3lltj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_atyy5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ika00")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ck5fv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vswo6")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 15.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ksxc6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3rv7q")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_t58d3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4qxbl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_y8rj2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gyle3")
+}],
+"loop": false,
+"name": &"n_attack",
+"speed": 12.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_qi6uv"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lqtte"]
+bg_color = Color(0.2, 0.2, 0.2, 0.329412)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_re4r8"]
+bg_color = Color(5.10186e-06, 0.546956, 0.761719, 1)
+
+[node name="tower" type="Node2D"]
+script = ExtResource("1_wsj1i")
+data = SubResource("Resource_4fxdq")
+skill = ExtResource("4_8j206")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 modulate = Color(0, 1, 1, 1)
+sprite_frames = SubResource("SpriteFrames_sj4s8")
+animation = &"n_attack"
+frame = 5
+frame_progress = 1.0
+offset = Vector2(-22.5, -77.5)
+
+[node name="EnemyDetector" type="Area2D" parent="." node_paths=PackedStringArray("collision")]
+script = ExtResource("7_fk8pd")
+collision = NodePath("CollisionShape2D")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EnemyDetector"]
+shape = SubResource("CircleShape2D_qi6uv")
+debug_color = Color(0.950515, 1.34766e-06, 0.568223, 0.42)
+
+[node name="AttackController" type="Node" parent="."]
+script = ExtResource("8_y5d8q")
+projectile = ExtResource("9_y52m2")
+
+[node name="AttackDelayTimer" type="Timer" parent="AttackController"]
+
+[node name="ManaBar" type="ProgressBar" parent="."]
+self_modulate = Color(0.988235, 1, 1, 1)
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -107.0
+offset_top = -240.0
+offset_right = 107.0
+offset_bottom = -213.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/background = SubResource("StyleBoxFlat_lqtte")
+theme_override_styles/fill = SubResource("StyleBoxFlat_re4r8")
+value = 72.24
+show_percentage = false
+script = ExtResource("10_1su4y")
+
+[connection signal="onEnemyDetected" from="EnemyDetector" to="." method="_onEnemyDetected"]
+[connection signal="timeout" from="AttackController/AttackDelayTimer" to="AttackController" method="_onAttackDelayTimerTimeout"]

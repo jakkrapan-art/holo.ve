@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://vkntgith54x1"]
+[gd_scene load_steps=11 format=3 uid="uid://vkntgith54x1"]
 
 [ext_resource type="Script" path="res://scripts/scene/game_scene.gd" id="1_g4ay3"]
 [ext_resource type="PackedScene" uid="uid://ccnrotkl0jnmo" path="res://resources/tiles/tile_map.tscn" id="1_oeytk"]
@@ -10,7 +10,6 @@
 [ext_resource type="PackedScene" uid="uid://ds61ramnlbso3" path="res://resources/player/player.tscn" id="8_7lq66"]
 [ext_resource type="Script" path="res://scripts/entity/tower/tower_factory.gd" id="9_6l060"]
 [ext_resource type="Script" path="res://scripts/game_camera.gd" id="9_x8daq"]
-[ext_resource type="PackedScene" uid="uid://dsshuu1axf1t8" path="res://resources/ui_component/synergy/ui_synergy.tscn" id="11_bbyj5"]
 
 [node name="DevScene" type="Node2D"]
 script = ExtResource("1_g4ay3")
@@ -37,15 +36,3 @@ position = Vector2(78.2871, 18.3039)
 position = Vector2(4797, -1204)
 script = ExtResource("9_x8daq")
 tilemap = NodePath("../TileMap")
-
-[node name="UICanvas" type="CanvasLayer" parent="."]
-
-[node name="UISynergy" parent="UICanvas" instance=ExtResource("11_bbyj5")]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = 159.0
-offset_right = -1152.0
-offset_bottom = -489.0
-grow_horizontal = 2
-grow_vertical = 2

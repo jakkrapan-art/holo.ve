@@ -9,5 +9,5 @@ extends SkillActionProjectile
 func setupProjectile(projectile: Projectile, i: int, context: SkillContext):
 	var tower: Tower = context.user as Tower;
 	var multi = getDamageMultiplier(context)
-	projectile.setup_circle(tower, Damage.new(tower, multi * tower.data.getDamage(null, null).damage, damageType), circle_radius, angular_speed, initial_angle + (angle_offset * i), lifetime, ProjectileCallback.new(Callable(self, "onHit"), Callable(), Callable()))
+	projectile.setup_circle(tower, Damage.new(tower, multi * tower.data.getDamage(null), damageType), circle_radius, angular_speed, initial_angle + (angle_offset * i), lifetime, ProjectileCallback.new(Callable(self, "onHit"), Callable(), Callable()))
 	super.setupProjectile(projectile, i, context)

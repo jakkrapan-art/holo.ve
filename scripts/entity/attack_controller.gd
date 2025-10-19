@@ -4,7 +4,8 @@ class_name AttackController
 @onready var attackDelayTimer = $AttackDelayTimer
 @export var projectile: PackedScene #for test projectile
 
-var getAttackCooldown: Callable;
+var attackCooldown: float = 0;
+var isReady: bool = true;
 
 var tower: Tower;
 var target: Enemy = null;
@@ -12,8 +13,8 @@ var damage: Damage = null;
 
 var modifier: Dictionary = {}
 
-func setup(tower: Tower, getCooldown: Callable):
-	getAttackCooldown = getCooldown;
+func setup(tower: Tower,cooldown: float):
+	attackCooldown = cooldown;
 	self.tower = tower;
 
 func addModifier(key: int, mod: Callable):
@@ -30,18 +31,21 @@ func executeModifier():
 		mod.call(tower);
 
 func canAttack(target: Enemy):
-	return is_instance_valid(target)
+	return is_instance_valid(target) && isReady
 
-func attack(target: Enemy, damage: Damage = Damage.new(null, 0, Damage.DamageType.PHYSIC)):
+func attack(target: Enemy, damage: int = 0):
+	isReady = false;
 	self.target = target;
-	self.damage = damage;
+	self.damage = Damage.new(tower, damage, Damage.DamageType.PHYSIC);
 
-func attackAnimFinish():
+func attackAnimFinish(damage: int) -> int:
 	if(target == null):
-		return;
+		return 0;
 
 	dealDamage(target);
 	# shootProjectile(Callable(self, "dealDamage"));
+	startAttackTimer();
+	return 0
 
 func shootProjectile(onHit: Callable = Callable()):
 	if(target == null):
@@ -75,3 +79,10 @@ func dealDamage(enemy: Enemy = null):
 
 	if (target && target == enemy):
 		target = null;
+
+func startAttackTimer():
+	attackDelayTimer.wait_time = attackCooldown
+	attackDelayTimer.start();
+
+func _onAttackDelayTimerTimeout():
+	isReady = true;

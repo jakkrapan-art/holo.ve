@@ -4,10 +4,7 @@ class_name TowerFactory
 const TowerClass = preload("res://scripts/entity/tower/tower_trait.gd").TowerClass
 const TowerGeneration = preload("res://scripts/entity/tower/tower_trait.gd").TowerGeneration
 
-@onready var uiSynergy: UISynergy = $"../UICanvas/UISynergy"
-
 @export var towerTemplate: PackedScene
-
 var onPlace: Callable
 var onRemove: Callable
 var towerTrait: TowerTrait = TowerTrait.new()
@@ -67,20 +64,8 @@ func GetTower(name: String):
 
 		addTowerToDict(tower, towerSyn)
 
-		if uiSynergy != null:
-			var synName = towerTrait.getSynergyName(towerSyn);
-			if (synName == "Unknown"):
-				printerr("found unknown synergy:", towerSyn);
-				return;
-			# print("setup syn:", synName);
-			if not uiSynergy.hasContent(synName):
-				var maxSyn = towerTrait.getSynergyMaxCount(towerSyn);
-				var minReq = towerTrait.getMinRequirement(towerSyn);
-				uiSynergy.addNewSynergy(synName, minReq, maxSyn);
-
-			uiSynergy.addSynergy(synName);
-
 	towerTrait.add_tower_traits([tower.data.towerClass, tower.data.generation])
+
 	return tower
 
 func ReturnTower(tower: Tower):
@@ -138,7 +123,7 @@ func onActivateSynergy(synergy_id: int, tier: int, buff: Dictionary):
 
 			if synergy_id == TowerGeneration.Gen1:
 				isStarGen1 = true;
-				starGen1Damage += tower.data.getDamage(null, tower).damage;
+				starGen1Damage += tower.data.getDamage(null);
 
 		if isStarGen1:
 			towerTrait.setStarGen1Damage(starGen1Damage);

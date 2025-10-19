@@ -70,7 +70,7 @@ func startNextWave():
 	active = true
 	isBossWave = currWave % bossWaveInterval == 0;
 	if isBossWave:
-		bossRandomIndex = randi_range(0, bossList.size() - 1);
+		bossRandomIndex = randi_range(0, bossList.size());
 
 	spawnEnemy();
 
@@ -90,7 +90,6 @@ func spawnEnemy():
 	var mDef := 0;
 	var moveSpeed := 0;
 	var texture: Texture2D = null;
-	var skills: Array[Skill] = [];
 
 	if (enemyType == Enemy.EnemyType.Boss):
 		var boss = bossList[bossRandomIndex];
@@ -101,7 +100,6 @@ func spawnEnemy():
 		mDef = boss.stats.mDef
 		moveSpeed = boss.stats.moveSpeed
 		isSpawnAllEnemy = true;
-		skills = boss.skills;
 		timer.stop()
 
 	else:
@@ -122,7 +120,7 @@ func spawnEnemy():
 
 		countdownSpawnNextEnemy(waveGroup.spawnInterval);
 
-	var enemy: Enemy = await createEnemyObject(enemyType, health, def, mDef, moveSpeed, texture, skills);
+	var enemy: Enemy = await createEnemyObject(enemyType, health, def, mDef, moveSpeed, texture);
 	spawnedCount += 1;
 	enemyAliveCount += 1;
 
@@ -153,11 +151,11 @@ func connectSignalToEnemy(enemy: Enemy):
 	Utility.ConnectSignal(enemy, "onReachEndPoint", Callable(self, "enemyReachEndPoint").bind(enemy));
 	Utility.ConnectSignal(enemy, "onDead", Callable(self, "enemyDead"));
 
-func createEnemyObject(type: Enemy.EnemyType, health: int, def: int, mDef: int, moveSpeed: int, texture: Texture2D = null, skills: Array[Skill] = []):
+func createEnemyObject(type: Enemy.EnemyType, health: int, def: int, mDef: int, moveSpeed: int, texture: Texture2D = null):
 	if(enemyFactory == null):
 		return;
 
-	var instance = await enemyFactory.createEnemy(type, spawnParent, health, def, mDef, moveSpeed, texture, skills);
+	var instance = await enemyFactory.createEnemy(type, spawnParent, health, def, mDef, moveSpeed, texture);
 	return instance
 
 func enemyReachEndPoint(enemy: Enemy):
@@ -170,9 +168,9 @@ func checkEndWave():
 
 	endWave();
 
-func enemyDead(cause: Damage, reward: EnemyReward):
+func enemyDead(cause: Damage):
 	reduceEnemyCount();
-	onEnemyDead.emit(cause, reward);
+	onEnemyDead.emit(cause);
 
 func reduceEnemyCount():
 	enemyAliveCount -= 1;

@@ -22,7 +22,6 @@ func useSkill():
 		context.user = user
 		context.skillName = skill.name
 		context.extra["parameter"] = skill.parameters
-		print("use skill: ", skill.name);
 		await execute_skill_actions(skill, context);
 
 func cancel():

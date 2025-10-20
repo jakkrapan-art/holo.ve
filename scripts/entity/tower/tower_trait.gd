@@ -149,11 +149,11 @@ func _check_synergy_tiers(synergy_id: int) -> void:
 				buff["tier"] = tier;
 				buff["synergy_id"] = synergy_id  # Mark the buff
 				synergy_activated.emit(synergy_id, tier, buff)
-				print("Synergy activated:", get_synergy_name(synergy_id), "Tier", tier + 1)
+				print("Synergy activated:", getSynergyName(synergy_id), "Tier", tier + 1)
 		elif new_tier < prev_tier:
 			for tier in range(prev_tier, new_tier, -1):
 				synergy_deactivated.emit(synergy_id, tier)
-				print("Synergy deactivated:", get_synergy_name(synergy_id), "Tier", tier + 1)
+				print("Synergy deactivated:", getSynergyName(synergy_id), "Tier", tier + 1)
 
 		active_synergy_tiers[synergy_id] = new_tier
 
@@ -216,8 +216,22 @@ func activeTempusSynergyTier3(missionId: int):
 func checkBonusDivaSynergy(synergy_id):
 	return synergy_id == TowerClass.Diva
 
-func get_synergy_name(synergy_id: int) -> String:
+func getSynergyName(synergy_id: int) -> String:
 	return TOWER_CLASS_NAMES.get(synergy_id, TOWER_GENERATION_NAMES.get(synergy_id, "Unknown"))
+
+func getSynergyMaxCount(synergy_id: int) -> int:
+	var synergyRequirements = SYNERGY_REQUIREMENTS.get(synergy_id, [])
+	if synergyRequirements.is_empty():
+		return 0;
+
+	return synergyRequirements[-1]
+
+func getMinRequirement(synergy_id: int) -> int:
+	var synergyRequirements = SYNERGY_REQUIREMENTS.get(synergy_id, [])
+	if synergyRequirements.is_empty():
+		return 0;
+
+	return synergyRequirements[0]
 
 signal synergy_activated(synergy_id: int, tier: int, buff: Dictionary)
 signal synergy_deactivated(synergy_id: int, tier: int)

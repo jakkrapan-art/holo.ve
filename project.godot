@@ -20,6 +20,11 @@ config/icon="res://icon.svg"
 GridHelper="*res://scripts/utility/grid_helper.gd"
 Global="*res://scripts/global.gd"
 
+[display]
+
+window/stretch/mode="viewport"
+window/stretch/aspect="expand"
+
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/load_map_data/plugin.cfg")

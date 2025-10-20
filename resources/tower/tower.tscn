@@ -196,8 +196,8 @@ skill = ExtResource("4_v5ug8")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_sj4s8")
 animation = &"n_attack"
-frame = 3
-frame_progress = 0.932692
+frame = 7
+frame_progress = 0.641382
 offset = Vector2(-22.5, -77.5)
 
 [node name="EnemyDetector" type="Area2D" parent="." node_paths=PackedStringArray("collision")]
@@ -221,10 +221,10 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -139.1
-offset_top = -352.0
-offset_right = 139.1
-offset_bottom = -315.6
+offset_left = -154.0
+offset_top = 196.0
+offset_right = 106.0
+offset_bottom = 228.0
 grow_horizontal = 2
 grow_vertical = 0
 pivot_offset = Vector2(107, 14)

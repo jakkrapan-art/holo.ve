@@ -1,4 +1,4 @@
-[gd_scene load_steps=36 format=3 uid="uid://d5g7c6yxmrv4"]
+[gd_scene load_steps=38 format=3 uid="uid://d5g7c6yxmrv4"]
 
 [ext_resource type="Script" path="res://scripts/entity/tower/tower.gd" id="1_mmirn"]
 [ext_resource type="Script" path="res://scripts/entity/tower/tower_stat.gd" id="2_v1ohr"]
@@ -10,6 +10,8 @@
 [ext_resource type="Texture2D" uid="uid://bqly2nbmonnoq" path="res://resources/tower/hololive/en_branch/myth_gen/kiara/sprite/kiara_attack001.png" id="6_ouffj"]
 [ext_resource type="Script" path="res://scripts/ui/health_bar.gd" id="7_ue18x"]
 [ext_resource type="PackedScene" uid="uid://bgbx57ye0s2ww" path="res://resources/combat/bullets/gawr_gura_skill_projectile.tscn" id="9_ln8v2"]
+[ext_resource type="Texture2D" uid="uid://cbqnd2tlx4sjh" path="res://resources/ui_component/ui_asset/tower_mana_bg.png" id="10_kkmb5"]
+[ext_resource type="Texture2D" uid="uid://borxx58qwcg8f" path="res://resources/ui_component/ui_asset/tower_mana.png" id="11_solw2"]
 
 [sub_resource type="Resource" id="Resource_5g4bw"]
 script = ExtResource("2_v1ohr")
@@ -178,11 +180,11 @@ animations = [{
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_qi6uv"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lqtte"]
-bg_color = Color(0.2, 0.2, 0.2, 0.329412)
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_nv7an"]
+texture = ExtResource("10_kkmb5")
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_re4r8"]
-bg_color = Color(5.10186e-06, 0.546956, 0.761719, 1)
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_80517"]
+texture = ExtResource("11_solw2")
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_8aot0"]
 
@@ -219,15 +221,15 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -107.0
-offset_top = -383.0
-offset_right = 107.0
-offset_bottom = -355.0
+offset_left = -139.1
+offset_top = -352.0
+offset_right = 139.1
+offset_bottom = -315.6
 grow_horizontal = 2
 grow_vertical = 0
 pivot_offset = Vector2(107, 14)
-theme_override_styles/background = SubResource("StyleBoxFlat_lqtte")
-theme_override_styles/fill = SubResource("StyleBoxFlat_re4r8")
+theme_override_styles/background = SubResource("StyleBoxTexture_nv7an")
+theme_override_styles/fill = SubResource("StyleBoxTexture_80517")
 value = 72.24
 show_percentage = false
 script = ExtResource("7_ue18x")

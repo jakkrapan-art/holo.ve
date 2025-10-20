@@ -3,12 +3,12 @@
 importer="mp3"
 type="AudioStreamMP3"
 uid="uid://dcqx51gcy5pjw"
-path="res://.godot/imported/evo_takanashi_kiara.mp3-0fa2a902b7250afe57a9e63fe956859a.mp3str"
+path="res://.godot/imported/Evo_Takanashi_Kiara.mp3-4289dedeb0625dbd2b24828711b4c17c.mp3str"
 
 [deps]
 
-source_file="res://resources/sound/voice/kiara/evo_takanashi_kiara.mp3"
-dest_files=["res://.godot/imported/evo_takanashi_kiara.mp3-0fa2a902b7250afe57a9e63fe956859a.mp3str"]
+source_file="res://resources/sound/voice/Kiara/Evo_Takanashi_Kiara.mp3"
+dest_files=["res://.godot/imported/Evo_Takanashi_Kiara.mp3-4289dedeb0625dbd2b24828711b4c17c.mp3str"]
 
 [params]
 

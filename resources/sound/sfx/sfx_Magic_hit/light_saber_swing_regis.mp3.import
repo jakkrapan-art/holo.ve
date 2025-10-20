@@ -3,12 +3,12 @@
 importer="mp3"
 type="AudioStreamMP3"
 uid="uid://7jlc362fjba8"
-path="res://.godot/imported/light_saber_swing_regis.mp3-fb3522868688a6017272c9c597d6ed0e.mp3str"
+path="res://.godot/imported/light_saber_swing_regis.mp3-a247298f7b6e58d15a653a52a00be08c.mp3str"
 
 [deps]
 
-source_file="res://resources/sound/sfx/sfx_magic_hit/light_saber_swing_regis.mp3"
-dest_files=["res://.godot/imported/light_saber_swing_regis.mp3-fb3522868688a6017272c9c597d6ed0e.mp3str"]
+source_file="res://resources/sound/sfx/sfx_Magic_hit/light_saber_swing_regis.mp3"
+dest_files=["res://.godot/imported/light_saber_swing_regis.mp3-a247298f7b6e58d15a653a52a00be08c.mp3str"]
 
 [params]
 

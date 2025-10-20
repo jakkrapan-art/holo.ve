@@ -3,12 +3,12 @@
 importer="mp3"
 type="AudioStreamMP3"
 uid="uid://bxh46hmdo034x"
-path="res://.godot/imported/normal_calliope_sickle_slash_2.mp3-0fabba15199f2817f559d2c34fa4bf6a.mp3str"
+path="res://.godot/imported/normal_calliope_sickle_slash_2.mp3-64006cab196ad5bed05b53314a7998c0.mp3str"
 
 [deps]
 
-source_file="res://resources/sound/sfx/sfx_metal_weapon/normal_calliope_sickle_slash_2.mp3"
-dest_files=["res://.godot/imported/normal_calliope_sickle_slash_2.mp3-0fabba15199f2817f559d2c34fa4bf6a.mp3str"]
+source_file="res://resources/sound/sfx/sfx_Metal_Weapon/normal_calliope_sickle_slash_2.mp3"
+dest_files=["res://.godot/imported/normal_calliope_sickle_slash_2.mp3-64006cab196ad5bed05b53314a7998c0.mp3str"]
 
 [params]
 

@@ -3,12 +3,12 @@
 importer="mp3"
 type="AudioStreamMP3"
 uid="uid://cajpav5onvksg"
-path="res://.godot/imported/greeting_ame_hello(keep).mp3-0fa4c0af34bb118fc069a8db3f5166b9.mp3str"
+path="res://.godot/imported/greeting_ame_hello(keep).mp3-5907186de28aa62487459989639ff983.mp3str"
 
 [deps]
 
-source_file="res://resources/sound/voice/ame/greeting_ame_hello(keep).mp3"
-dest_files=["res://.godot/imported/greeting_ame_hello(keep).mp3-0fa4c0af34bb118fc069a8db3f5166b9.mp3str"]
+source_file="res://resources/sound/voice/Ame/greeting_ame_hello(keep).mp3"
+dest_files=["res://.godot/imported/greeting_ame_hello(keep).mp3-5907186de28aa62487459989639ff983.mp3str"]
 
 [params]
 

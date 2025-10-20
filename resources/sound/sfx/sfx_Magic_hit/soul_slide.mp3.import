@@ -3,12 +3,12 @@
 importer="mp3"
 type="AudioStreamMP3"
 uid="uid://bxo4ljwxkwy8l"
-path="res://.godot/imported/soul_slide.mp3-e61f34ebe638734fea598a20605b6a72.mp3str"
+path="res://.godot/imported/soul_slide.mp3-29fbef21d14bba35e200c40c8b1b4e72.mp3str"
 
 [deps]
 
-source_file="res://resources/sound/sfx/sfx_magic_hit/soul_slide.mp3"
-dest_files=["res://.godot/imported/soul_slide.mp3-e61f34ebe638734fea598a20605b6a72.mp3str"]
+source_file="res://resources/sound/sfx/sfx_Magic_hit/soul_slide.mp3"
+dest_files=["res://.godot/imported/soul_slide.mp3-29fbef21d14bba35e200c40c8b1b4e72.mp3str"]
 
 [params]
 

@@ -3,12 +3,12 @@
 importer="mp3"
 type="AudioStreamMP3"
 uid="uid://bsspeko204eqw"
-path="res://.godot/imported/greeting_ina.mp3-6eba146fbfb559952c8a76b91b31f1ac.mp3str"
+path="res://.godot/imported/Greeting_ina.mp3-04b8ce897eda5f999c200fa9cf800781.mp3str"
 
 [deps]
 
-source_file="res://resources/sound/voice/ina/greeting_ina.mp3"
-dest_files=["res://.godot/imported/greeting_ina.mp3-6eba146fbfb559952c8a76b91b31f1ac.mp3str"]
+source_file="res://resources/sound/voice/Ina/Greeting_ina.mp3"
+dest_files=["res://.godot/imported/Greeting_ina.mp3-04b8ce897eda5f999c200fa9cf800781.mp3str"]
 
 [params]
 

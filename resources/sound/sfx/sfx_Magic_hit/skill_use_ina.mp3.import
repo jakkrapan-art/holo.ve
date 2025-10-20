@@ -3,12 +3,12 @@
 importer="mp3"
 type="AudioStreamMP3"
 uid="uid://m3plhvvpucw"
-path="res://.godot/imported/skill_use_ina.mp3-37c264abea440b58e0176547462736dd.mp3str"
+path="res://.godot/imported/skill_use_ina.mp3-f9ce103d4b80aca9fb15035f7a0b9515.mp3str"
 
 [deps]
 
-source_file="res://resources/sound/sfx/sfx_magic_hit/skill_use_ina.mp3"
-dest_files=["res://.godot/imported/skill_use_ina.mp3-37c264abea440b58e0176547462736dd.mp3str"]
+source_file="res://resources/sound/sfx/sfx_Magic_hit/skill_use_ina.mp3"
+dest_files=["res://.godot/imported/skill_use_ina.mp3-f9ce103d4b80aca9fb15035f7a0b9515.mp3str"]
 
 [params]
 

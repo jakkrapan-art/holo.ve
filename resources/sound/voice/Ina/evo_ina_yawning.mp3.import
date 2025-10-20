@@ -3,12 +3,12 @@
 importer="mp3"
 type="AudioStreamMP3"
 uid="uid://drxy3x2ition7"
-path="res://.godot/imported/evo_ina_yawning.mp3-5929b37308556acfc40bbc15544b3910.mp3str"
+path="res://.godot/imported/EVO_ina_yawning.mp3-5c0c89566554ab723b794369a289cf94.mp3str"
 
 [deps]
 
-source_file="res://resources/sound/voice/ina/evo_ina_yawning.mp3"
-dest_files=["res://.godot/imported/evo_ina_yawning.mp3-5929b37308556acfc40bbc15544b3910.mp3str"]
+source_file="res://resources/sound/voice/Ina/EVO_ina_yawning.mp3"
+dest_files=["res://.godot/imported/EVO_ina_yawning.mp3-5c0c89566554ab723b794369a289cf94.mp3str"]
 
 [params]
 

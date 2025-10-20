@@ -3,12 +3,12 @@
 importer="mp3"
 type="AudioStreamMP3"
 uid="uid://cjgpwp7y06i0v"
-path="res://.godot/imported/spear_hit_axel.mp3-a95b0e0907260f1bdad3195e53689fa1.mp3str"
+path="res://.godot/imported/spear_hit_axel.mp3-25d2204736ad2270452331e8358d4a27.mp3str"
 
 [deps]
 
-source_file="res://resources/sound/sfx/sfx_metal_weapon/spear_hit_axel.mp3"
-dest_files=["res://.godot/imported/spear_hit_axel.mp3-a95b0e0907260f1bdad3195e53689fa1.mp3str"]
+source_file="res://resources/sound/sfx/sfx_Metal_Weapon/spear_hit_axel.mp3"
+dest_files=["res://.godot/imported/spear_hit_axel.mp3-25d2204736ad2270452331e8358d4a27.mp3str"]
 
 [params]
 

@@ -3,12 +3,12 @@
 importer="mp3"
 type="AudioStreamMP3"
 uid="uid://n2u4808qttvj"
-path="res://.godot/imported/skill_bloom.mp3-b196af6bfaac332e3e596d4dbd49e1db.mp3str"
+path="res://.godot/imported/skill_bloom.mp3-754a2d3a5c268943d3796bd971b95cca.mp3str"
 
 [deps]
 
-source_file="res://resources/sound/sfx/sfx_magic_hit/skill_bloom.mp3"
-dest_files=["res://.godot/imported/skill_bloom.mp3-b196af6bfaac332e3e596d4dbd49e1db.mp3str"]
+source_file="res://resources/sound/sfx/sfx_Magic_hit/skill_bloom.mp3"
+dest_files=["res://.godot/imported/skill_bloom.mp3-754a2d3a5c268943d3796bd971b95cca.mp3str"]
 
 [params]
 

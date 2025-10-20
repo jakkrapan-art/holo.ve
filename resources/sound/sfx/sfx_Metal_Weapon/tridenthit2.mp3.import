@@ -3,12 +3,12 @@
 importer="mp3"
 type="AudioStreamMP3"
 uid="uid://ciwpwkl4hhfu6"
-path="res://.godot/imported/tridenthit2.mp3-0acb62c9889dba814f304e1571c4f823.mp3str"
+path="res://.godot/imported/tridenthit2.mp3-45e40eb50e56208149b2cc793868eb40.mp3str"
 
 [deps]
 
-source_file="res://resources/sound/sfx/sfx_metal_weapon/tridenthit2.mp3"
-dest_files=["res://.godot/imported/tridenthit2.mp3-0acb62c9889dba814f304e1571c4f823.mp3str"]
+source_file="res://resources/sound/sfx/sfx_Metal_Weapon/tridenthit2.mp3"
+dest_files=["res://.godot/imported/tridenthit2.mp3-45e40eb50e56208149b2cc793868eb40.mp3str"]
 
 [params]
 

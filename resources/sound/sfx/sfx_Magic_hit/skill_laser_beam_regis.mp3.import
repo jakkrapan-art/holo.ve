@@ -3,12 +3,12 @@
 importer="mp3"
 type="AudioStreamMP3"
 uid="uid://depnx3c5tvkic"
-path="res://.godot/imported/skill_laser_beam_regis.mp3-eb308551deadaa193efa740dc687cc7a.mp3str"
+path="res://.godot/imported/skill_laser_beam_regis.mp3-677f30e0bc3b8f2254e8846bf41875da.mp3str"
 
 [deps]
 
-source_file="res://resources/sound/sfx/sfx_magic_hit/skill_laser_beam_regis.mp3"
-dest_files=["res://.godot/imported/skill_laser_beam_regis.mp3-eb308551deadaa193efa740dc687cc7a.mp3str"]
+source_file="res://resources/sound/sfx/sfx_Magic_hit/skill_laser_beam_regis.mp3"
+dest_files=["res://.godot/imported/skill_laser_beam_regis.mp3-677f30e0bc3b8f2254e8846bf41875da.mp3str"]
 
 [params]
 

@@ -3,12 +3,12 @@
 importer="mp3"
 type="AudioStreamMP3"
 uid="uid://bnnonmv5grbhp"
-path="res://.godot/imported/greeting_gura_domo_same_desu.mp3-2bf80085cd3e4201a1e86c56444e55bd.mp3str"
+path="res://.godot/imported/Greeting_gura_domo_same_desu.mp3-9a31ab4c4519fc21d96b769b547ab3e8.mp3str"
 
 [deps]
 
-source_file="res://resources/sound/voice/gura/greeting_gura_domo_same_desu.mp3"
-dest_files=["res://.godot/imported/greeting_gura_domo_same_desu.mp3-2bf80085cd3e4201a1e86c56444e55bd.mp3str"]
+source_file="res://resources/sound/voice/Gura/Greeting_gura_domo_same_desu.mp3"
+dest_files=["res://.godot/imported/Greeting_gura_domo_same_desu.mp3-9a31ab4c4519fc21d96b769b547ab3e8.mp3str"]
 
 [params]
 

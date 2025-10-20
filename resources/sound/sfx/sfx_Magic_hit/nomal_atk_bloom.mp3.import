@@ -3,12 +3,12 @@
 importer="mp3"
 type="AudioStreamMP3"
 uid="uid://clk36wu40bit"
-path="res://.godot/imported/nomal_atk_bloom.mp3-df541bc66a1293d6393ea1acea441564.mp3str"
+path="res://.godot/imported/nomal_atk_bloom.mp3-0f5e909d9048906b90009fe08bf3982d.mp3str"
 
 [deps]
 
-source_file="res://resources/sound/sfx/sfx_magic_hit/nomal_atk_bloom.mp3"
-dest_files=["res://.godot/imported/nomal_atk_bloom.mp3-df541bc66a1293d6393ea1acea441564.mp3str"]
+source_file="res://resources/sound/sfx/sfx_Magic_hit/nomal_atk_bloom.mp3"
+dest_files=["res://.godot/imported/nomal_atk_bloom.mp3-0f5e909d9048906b90009fe08bf3982d.mp3str"]
 
 [params]
 

@@ -3,12 +3,12 @@
 importer="mp3"
 type="AudioStreamMP3"
 uid="uid://mno6ld3uykvw"
-path="res://.godot/imported/evo_axel.mp3-4f1a15104044969fb8ad3305432b37d7.mp3str"
+path="res://.godot/imported/evo_axel.mp3-ee63364fb8d3d20a3f0dd4f30a819cee.mp3str"
 
 [deps]
 
-source_file="res://resources/sound/voice/axel_syrios/evo_axel.mp3"
-dest_files=["res://.godot/imported/evo_axel.mp3-4f1a15104044969fb8ad3305432b37d7.mp3str"]
+source_file="res://resources/sound/voice/axel_Syrios/evo_axel.mp3"
+dest_files=["res://.godot/imported/evo_axel.mp3-ee63364fb8d3d20a3f0dd4f30a819cee.mp3str"]
 
 [params]
 

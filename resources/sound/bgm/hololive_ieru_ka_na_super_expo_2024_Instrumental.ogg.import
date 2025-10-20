@@ -3,12 +3,12 @@
 importer="oggvorbisstr"
 type="AudioStreamOggVorbis"
 uid="uid://dshm57ltn5l4n"
-path="res://.godot/imported/hololive_ieru_ka_na_super_expo_2024_Instrumental.ogg-5f9bccf3de85699aa765555cf888d621.oggvorbisstr"
+path="res://.godot/imported/hololive_ieru_ka_na_SUPER_EXPO_2024_Instrumental.ogg-98b5ffbfba394fbb81b51c4bd343f1c3.oggvorbisstr"
 
 [deps]
 
-source_file="res://resources/sound/bgm/hololive_ieru_ka_na_super_expo_2024_Instrumental.ogg"
-dest_files=["res://.godot/imported/hololive_ieru_ka_na_super_expo_2024_Instrumental.ogg-5f9bccf3de85699aa765555cf888d621.oggvorbisstr"]
+source_file="res://resources/sound/bgm/hololive_ieru_ka_na_SUPER_EXPO_2024_Instrumental.ogg"
+dest_files=["res://.godot/imported/hololive_ieru_ka_na_SUPER_EXPO_2024_Instrumental.ogg-98b5ffbfba394fbb81b51c4bd343f1c3.oggvorbisstr"]
 
 [params]
 

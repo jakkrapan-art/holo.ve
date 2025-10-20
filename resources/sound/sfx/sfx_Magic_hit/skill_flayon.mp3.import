@@ -3,12 +3,12 @@
 importer="mp3"
 type="AudioStreamMP3"
 uid="uid://cslgtxvu2dopq"
-path="res://.godot/imported/skill_flayon.mp3-49c4582edbf0b2e60f71a040939abdbf.mp3str"
+path="res://.godot/imported/skill_flayon.mp3-3da3757f8ee760ff6b24dd53e6e3b0f5.mp3str"
 
 [deps]
 
-source_file="res://resources/sound/sfx/sfx_magic_hit/skill_flayon.mp3"
-dest_files=["res://.godot/imported/skill_flayon.mp3-49c4582edbf0b2e60f71a040939abdbf.mp3str"]
+source_file="res://resources/sound/sfx/sfx_Magic_hit/skill_flayon.mp3"
+dest_files=["res://.godot/imported/skill_flayon.mp3-3da3757f8ee760ff6b24dd53e6e3b0f5.mp3str"]
 
 [params]
 

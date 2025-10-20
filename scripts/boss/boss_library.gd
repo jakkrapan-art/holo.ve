@@ -21,24 +21,7 @@ func _init():
 
 			var bossSkills: Array[Skill] = [];
 			if bd.has("skill") and bd.skill.size() > 0:
-				for skill in bd.skill:
-					var cooldown = skill.get("cooldown", 1.0);
-					var skillName = skill.get("name", "Unnamed Skill");
-					var desc = skill.get("desc", "");
-					var actions: Array[SkillAction] = [];
-					var actionList = skill.get("action", []);
-					for actionData in actionList:
-						var action = SkillActionLibrary.ParseAction(actionData);
-						if action != null:
-							actions.append(action);
-						else:
-							print("Warning: Failed to parse action in skill", skillName, " for boss", name);
-
-					var s = EnemySkill.new(skillName, desc, actions, {}, cooldown);
-					if s != null:
-						bossSkills.append(s);
-					else:
-						print("Warning: Skill", s, "not found for boss", name);
+				bossSkills = SkillUtility.ParseSkill(bd.skill);
 
 			var bossDBData = BossDBData.new(name, texture, bd.scale, bd.stats, bossSkills);
 			bossList.append(bossDBData);

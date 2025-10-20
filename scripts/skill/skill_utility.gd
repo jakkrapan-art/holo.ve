@@ -1,8 +1,30 @@
-class_name SkillActionLibrary
+class_name SkillUtility
 
 var skillParser: Dictionary = {
 
 };
+
+static func ParseSkill(skillDataList: Array) -> Array[Skill]:
+	var result: Array[Skill] = [];
+	for skill in skillDataList:
+		var cooldown = skill.get("cooldown", 1.0);
+		var skillName = skill.get("name", "Unnamed Skill");
+		var desc = skill.get("desc", "");
+		var actions: Array[SkillAction] = [];
+		var actionList = skill.get("action", []);
+		for actionData in actionList:
+			var action = ParseAction(actionData);
+			if action != null:
+				actions.append(action);
+			else:
+				print("Warning: Failed to parse action in skill", skillName);
+
+		var s = EnemySkill.new(skillName, desc, actions, {}, cooldown);
+		if s != null:
+			result.append(s);
+		else:
+			print("Warning: Skill", s, "not found");
+	return result
 
 static func ParseAction(data: Dictionary) -> SkillAction:
 	var skillType = data.get("type", "");

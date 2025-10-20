@@ -3,12 +3,12 @@
 importer="mp3"
 type="AudioStreamMP3"
 uid="uid://kmwv8atjwgu"
-path="res://.godot/imported/tridentmiss1.mp3-5c287551e44f0a43d766d90f8155bff5.mp3str"
+path="res://.godot/imported/tridentmiss1.mp3-8077a9195cb059373d93cf44ffa9fe6c.mp3str"
 
 [deps]
 
-source_file="res://resources/sound/sfx/sfx_Metal_Weapon/tridentmiss1.mp3"
-dest_files=["res://.godot/imported/tridentmiss1.mp3-5c287551e44f0a43d766d90f8155bff5.mp3str"]
+source_file="res://resources/sound/sfx/sfx_metal_weapon/tridentmiss1.mp3"
+dest_files=["res://.godot/imported/tridentmiss1.mp3-8077a9195cb059373d93cf44ffa9fe6c.mp3str"]
 
 [params]
 

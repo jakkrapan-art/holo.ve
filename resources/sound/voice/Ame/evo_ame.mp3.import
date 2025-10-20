@@ -3,12 +3,12 @@
 importer="mp3"
 type="AudioStreamMP3"
 uid="uid://chehk5qey38eg"
-path="res://.godot/imported/Evo_Ame.mp3-6908c1880d4067bbc98fc066d1739083.mp3str"
+path="res://.godot/imported/evo_ame.mp3-d268b67752aced4fa1386366a5556923.mp3str"
 
 [deps]
 
-source_file="res://resources/sound/voice/Ame/Evo_Ame.mp3"
-dest_files=["res://.godot/imported/Evo_Ame.mp3-6908c1880d4067bbc98fc066d1739083.mp3str"]
+source_file="res://resources/sound/voice/ame/evo_ame.mp3"
+dest_files=["res://.godot/imported/evo_ame.mp3-d268b67752aced4fa1386366a5556923.mp3str"]
 
 [params]
 

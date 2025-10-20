@@ -3,12 +3,12 @@
 importer="mp3"
 type="AudioStreamMP3"
 uid="uid://cptjumsa01utk"
-path="res://.godot/imported/nomal_great_sword_atk.mp3-645b0b0fbf1a02db0f669d02efe2a92d.mp3str"
+path="res://.godot/imported/nomal_great_sword_atk.mp3-f98fa30dcf35d3847f0ca871724f71d0.mp3str"
 
 [deps]
 
-source_file="res://resources/sound/sfx/sfx_Metal_Weapon/nomal_great_sword_atk.mp3"
-dest_files=["res://.godot/imported/nomal_great_sword_atk.mp3-645b0b0fbf1a02db0f669d02efe2a92d.mp3str"]
+source_file="res://resources/sound/sfx/sfx_metal_weapon/nomal_great_sword_atk.mp3"
+dest_files=["res://.godot/imported/nomal_great_sword_atk.mp3-f98fa30dcf35d3847f0ca871724f71d0.mp3str"]
 
 [params]
 

@@ -3,12 +3,12 @@
 importer="mp3"
 type="AudioStreamMP3"
 uid="uid://bkdo13eswiedi"
-path="res://.godot/imported/Greeting_Banzoin_Hakka.mp3-c0f5fca02628cd68c3fde811ba53e693.mp3str"
+path="res://.godot/imported/greeting_banzoin_hakka.mp3-40904448404e23e4714690090d863009.mp3str"
 
 [deps]
 
-source_file="res://resources/sound/voice/hakkito/Greeting_Banzoin_Hakka.mp3"
-dest_files=["res://.godot/imported/Greeting_Banzoin_Hakka.mp3-c0f5fca02628cd68c3fde811ba53e693.mp3str"]
+source_file="res://resources/sound/voice/hakkito/greeting_banzoin_hakka.mp3"
+dest_files=["res://.godot/imported/greeting_banzoin_hakka.mp3-40904448404e23e4714690090d863009.mp3str"]
 
 [params]
 

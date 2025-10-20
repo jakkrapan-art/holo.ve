@@ -3,12 +3,12 @@
 importer="mp3"
 type="AudioStreamMP3"
 uid="uid://cehglkpv75bru"
-path="res://.godot/imported/wood_Hit01.mp3-45e91ffe79bdf071bcac874ab40deec7.mp3str"
+path="res://.godot/imported/wood_hit01.mp3-6277ab509d8ec66b6cf2aeb73d20f1ed.mp3str"
 
 [deps]
 
-source_file="res://resources/sound/sfx/sfx_Wood_Hit/wood_Hit01.mp3"
-dest_files=["res://.godot/imported/wood_Hit01.mp3-45e91ffe79bdf071bcac874ab40deec7.mp3str"]
+source_file="res://resources/sound/sfx/sfx_wood_hit/wood_hit01.mp3"
+dest_files=["res://.godot/imported/wood_hit01.mp3-6277ab509d8ec66b6cf2aeb73d20f1ed.mp3str"]
 
 [params]
 

@@ -3,12 +3,12 @@
 importer="mp3"
 type="AudioStreamMP3"
 uid="uid://bfs1sq1j5t7rn"
-path="res://.godot/imported/greeting_axel.mp3-e28a4771f0de3510a220abb4c2076a7c.mp3str"
+path="res://.godot/imported/greeting_axel.mp3-494fc690cdf201b80c7a69dd09112f09.mp3str"
 
 [deps]
 
-source_file="res://resources/sound/voice/axel_Syrios/greeting_axel.mp3"
-dest_files=["res://.godot/imported/greeting_axel.mp3-e28a4771f0de3510a220abb4c2076a7c.mp3str"]
+source_file="res://resources/sound/voice/axel_syrios/greeting_axel.mp3"
+dest_files=["res://.godot/imported/greeting_axel.mp3-494fc690cdf201b80c7a69dd09112f09.mp3str"]
 
 [params]
 

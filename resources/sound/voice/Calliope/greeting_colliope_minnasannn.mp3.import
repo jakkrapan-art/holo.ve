@@ -3,12 +3,12 @@
 importer="mp3"
 type="AudioStreamMP3"
 uid="uid://b8fm8sk68spmn"
-path="res://.godot/imported/Greeting_Colliope_MinnaSannn.mp3-380d7035e5bbb2219cbc9b3f09150e6d.mp3str"
+path="res://.godot/imported/greeting_colliope_minnasannn.mp3-61b03282b509e89dded566fd6fba119f.mp3str"
 
 [deps]
 
-source_file="res://resources/sound/voice/Calliope/Greeting_Colliope_MinnaSannn.mp3"
-dest_files=["res://.godot/imported/Greeting_Colliope_MinnaSannn.mp3-380d7035e5bbb2219cbc9b3f09150e6d.mp3str"]
+source_file="res://resources/sound/voice/calliope/greeting_colliope_minnasannn.mp3"
+dest_files=["res://.godot/imported/greeting_colliope_minnasannn.mp3-61b03282b509e89dded566fd6fba119f.mp3str"]
 
 [params]
 

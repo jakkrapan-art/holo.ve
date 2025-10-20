@@ -3,12 +3,12 @@
 importer="mp3"
 type="AudioStreamMP3"
 uid="uid://1jry8s8hniue"
-path="res://.godot/imported/EVO_Colliope_Sumimasen.mp3-ad85b01344f0b2d740e6977880730735.mp3str"
+path="res://.godot/imported/evo_colliope_sumimasen.mp3-45e21414dd6a620341c2d7d5af223196.mp3str"
 
 [deps]
 
-source_file="res://resources/sound/voice/Calliope/EVO_Colliope_Sumimasen.mp3"
-dest_files=["res://.godot/imported/EVO_Colliope_Sumimasen.mp3-ad85b01344f0b2d740e6977880730735.mp3str"]
+source_file="res://resources/sound/voice/calliope/evo_colliope_sumimasen.mp3"
+dest_files=["res://.godot/imported/evo_colliope_sumimasen.mp3-45e21414dd6a620341c2d7d5af223196.mp3str"]
 
 [params]
 

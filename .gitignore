@@ -1,5 +1,18 @@
-# Godot 4+ specific ignores
+# Godot-specific files
+.import/
+*.import
+export.cfg
+export_presets.cfg
+
 .godot/
 *.tmp
 app
 .qodo
+
+# Mono-specific (if you use C#)
+.mono/
+data_*/
+
+# System-specific
+.DS_Store
+Thumbs.db

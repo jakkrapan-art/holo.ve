@@ -110,6 +110,9 @@ func spawnEnemy():
 		mDef = waveGroup.mDef
 		moveSpeed = waveGroup.moveSpeed
 		texture = enemyTextures.get(waveGroup.texture, null)
+		skills = []
+		for skill in waveGroup.skill:
+			skills.append(Utility.deep_duplicate_resource(skill))
 
 		groupSpawnCount += 1;
 
@@ -154,6 +157,7 @@ func connectSignalToEnemy(enemy: Enemy):
 	Utility.ConnectSignal(enemy, "onDead", Callable(self, "enemyDead"));
 
 func createEnemyObject(type: Enemy.EnemyType, health: int, def: int, mDef: int, moveSpeed: int, texture: Texture2D = null, skills: Array[Skill] = []):
+
 	if(enemyFactory == null):
 		return;
 

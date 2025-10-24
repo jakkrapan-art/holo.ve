@@ -1,0 +1,163 @@
+mapName: "forest01"
+width: 0
+height: 0
+waves:
+  - waveTime: 60.0
+    groupList:
+      - texture: "Salam"
+        health: 1
+        def: 1.0
+        mDef: 1.0
+        moveSpeed: 80.0
+        count: 20
+        spawnInterval: 0.2
+        skill:
+          - name: Fast Move
+            cooldown: 2
+            desc: "มอนเตอร์ในรัศมีการบัฟจะได้รับ Move Speed เพิ่มขึ้น 2%  (Non-stackable)  Duration : 1 Sec ในระยะ 1 ช่อง"
+            action:
+              - type: target_self
+              - type: increase_move_spd_area
+                data:
+                  duration: 1
+                  radius: 1
+                  increaseValue: 0.02
+
+  - waveTime: 60.0
+    groupList:
+      - texture: "Rolling_Stone"
+        health: 80
+        def: 1.0
+        mDef: 1.0
+        moveSpeed: 20.0
+        count: 20
+        spawnInterval: 0.2
+
+  - waveTime: 60.0
+    groupList:
+      - texture: "Goblin"
+        health: 120
+        def: 1.0
+        mDef: 1.0
+        moveSpeed: 40.0
+        count: 20
+        spawnInterval: 0.2
+      - texture: "Armored_Goblin"
+        health: 500
+        def: 1.0
+        mDef: 1.0
+        moveSpeed: 10.0
+        count: 20
+        spawnInterval: 0.2
+
+  - waveTime: 60.0
+    groupList:
+      - texture: "Armored_Salam"
+        health: 150
+        def: 1.0
+        mDef: 1.0
+        moveSpeed: 40.0
+        count: 20
+        spawnInterval: 0.2
+      - texture: "Armored_Goblin"
+        health: 500
+        def: 1.0
+        mDef: 1.0
+        moveSpeed: 10.0
+        count: 20
+        spawnInterval: 0.2
+
+  - waveTime: 60.0
+    groupList:
+      - texture: "King_Salam"
+        health: 5000
+        def: 5.0
+        mDef: 5.0
+        moveSpeed: 30.0
+        count: 20
+        spawnInterval: 0.2
+
+  - waveTime: 60.0
+    groupList:
+      - texture: "Baby_Garlic"
+        health: 300
+        def: 1.0
+        mDef: 1.0
+        moveSpeed: 60.0
+        count: 20
+        spawnInterval: 0.2
+
+  - waveTime: 60.0
+    groupList:
+      - texture: "Baby_Garlic"
+        health: 300
+        def: 1.0
+        mDef: 1.0
+        moveSpeed: 60.0
+        count: 20
+        spawnInterval: 0.2
+      - texture: "Wild_Boar"
+        health: 400
+        def: 1.0
+        mDef: 1.0
+        moveSpeed: 40.0
+        count: 20
+        spawnInterval: 0.2
+
+  - waveTime: 60.0
+    groupList:
+      - texture: "Baby_Garlic"
+        health: 300
+        def: 1.0
+        mDef: 1.0
+        moveSpeed: 60.0
+        count: 20
+        spawnInterval: 0.2
+      - texture: "Wild_Boar"
+        health: 400
+        def: 1.0
+        mDef: 1.0
+        moveSpeed: 40.0
+        count: 20
+        spawnInterval: 0.2
+      - texture: "Flying_Flower"
+        health: 2000
+        def: 10.0
+        mDef: 1.0
+        moveSpeed: 40.0
+        count: 20
+        spawnInterval: 0.2
+
+  - waveTime: 60.0
+    groupList:
+      - texture: "Wild_Boar"
+        health: 400
+        def: 1.0
+        mDef: 1.0
+        moveSpeed: 40.0
+        count: 20
+        spawnInterval: 0.2
+      - texture: "Flying_Flower"
+        health: 2000
+        def: 10.0
+        mDef: 1.0
+        moveSpeed: 40.0
+        count: 20
+        spawnInterval: 0.2
+      - texture: "Armored_Boar"
+        health: 5000
+        def: 1.0
+        mDef: 10.0
+        moveSpeed: 30.0
+        count: 20
+        spawnInterval: 0.2
+
+  - waveTime: 60.0
+    groupList:
+      - texture: "Giant_Boar"
+        health: 20000
+        def: 5.0
+        mDef: 5.0
+        moveSpeed: 100.0
+        count: 20
+        spawnInterval: 0.2

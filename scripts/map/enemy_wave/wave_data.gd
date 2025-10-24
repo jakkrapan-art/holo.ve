@@ -1,8 +1,8 @@
 class_name WaveData
-extends Resource
+extends RefCounted
 
-@export var waveTime: float = 60
-@export var groupList: Array[WaveEnemyGroup]
+var waveTime: float = 60
+var groupList: Array[WaveEnemyGroup]
 
 func addGroup(group: WaveEnemyGroup):
 	self.groupList.append(group);

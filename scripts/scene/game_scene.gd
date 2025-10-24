@@ -7,7 +7,7 @@ var PopupPanelScene = preload("res://resources/ui_component/tower_select.tscn");
 @onready var waveController: WaveController = $WaveController;
 @onready var player: Player = $Player
 @onready var map: Map = $TileMap
-@export var mapData: MapData = null;
+# @export var mapData: MapData = null;
 @onready var towerFactory: TowerFactory = $TowerFactory;
 
 var mission: Mission = null;
@@ -43,7 +43,10 @@ func _ready():
 		Utility.ConnectSignal(towerFactory, "onReceiveMission", Callable(mission, "addMission"));
 
 	if (waveController):
-		waveController.setup(mapData.waves, Callable(self, "reducePlayerHp"));
+		var mapRaw = YamlParser.load_data("res://resources/database/map/" + Global.selected_map_file);
+		var mapData: MapData= MapParser.ParseData(mapRaw);
+		var waves = mapData.waves;
+		waveController.setup(waves, Callable(self, "reducePlayerHp"));
 
 		var bossList: Array[BossDBData] = b.getBossList(mapData.mapName);
 		waveController.setBossList(bossList);

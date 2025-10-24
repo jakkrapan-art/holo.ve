@@ -1,15 +1,16 @@
 class_name WaveEnemyGroup
-extends Resource
+extends RefCounted
 
-@export var texture: String
-@export var health: int
-@export var def: float
-@export var mDef: float
-@export var moveSpeed: float
-@export var count: int
-@export var spawnInterval: float = 0.2
+var texture: String
+var health: int
+var def: float
+var mDef: float
+var moveSpeed: float
+var count: int
+var spawnInterval: float = 0.2
+var skill: Array[Skill] = []
 
-func setup(texture: String, health: int,def: float, mDef: float, moveSpeed: float, count: int, spawnInterval: float = 0.2):
+func setup(texture: String, health: int,def: float, mDef: float, moveSpeed: float, count: int, spawnInterval: float = 0.2, skillData: Array[Skill] = []):
 	self.texture = texture;
 	self.health = health;
 	self.moveSpeed = moveSpeed;
@@ -17,3 +18,4 @@ func setup(texture: String, health: int,def: float, mDef: float, moveSpeed: floa
 	self.mDef = mDef;
 	self.count = count;
 	self.spawnInterval = spawnInterval;
+	self.skill = skillData;

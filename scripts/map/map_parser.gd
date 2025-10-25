@@ -9,6 +9,10 @@ static func ParseData(data: Dictionary) -> MapData:
 	for waveDict in waveRaw:
 		var waveData: WaveData = WaveData.new();
 		waveData.waveTime = waveDict.get("waveTime", 60);
+		waveData.isBossWave = waveDict.get("boss", false);
+		if(waveData.isBossWave):
+			mapData.waves.append(waveData);
+			continue;
 		var groupRaw = waveDict.get("groupList", []);
 		for groupDict in groupRaw:
 			var group: WaveEnemyGroup = WaveEnemyGroup.new();
@@ -20,8 +24,9 @@ static func ParseData(data: Dictionary) -> MapData:
 			group.count = groupDict.get("count", 20);
 			group.spawnInterval = groupDict.get("spawnInterval", 1);
 			var skillDataRaw = groupDict.get("skill", []);
-			var skillDataArray: Array[Skill] = SkillUtility.ParseSkill(skillDataRaw);
-			group.skill = skillDataArray;
+			if(skillDataRaw != null && skillDataRaw is Array && skillDataRaw.size() > 0):
+				var skillDataArray: Array[Skill] = SkillUtility.ParseSkill(skillDataRaw);
+				group.skill = skillDataArray;
 			waveData.addGroup(group);
 		mapData.waves.append(waveData);
 	return mapData;

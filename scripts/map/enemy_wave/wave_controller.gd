@@ -13,7 +13,6 @@ var enemyTextures: Dictionary = {};
 
 var active: bool = false
 var currWave: int = 0
-var bossWaveInterval: int = 2;
 var bossList: Array[BossDBData] = [];
 var waveData: WaveData = null
 
@@ -68,10 +67,11 @@ func startNextWave():
 	var data: WaveData = waveDatas[currWave - 1] as WaveData
 	waveData = data
 	active = true
-	isBossWave = currWave % bossWaveInterval == 0;
+	isBossWave = data.isBossWave;
 	if isBossWave:
 		bossRandomIndex = randi_range(0, bossList.size() - 1);
 
+	print("wave: ", currWave, " isBossWave: ", isBossWave);
 	spawnEnemy();
 
 func endWave():
@@ -79,11 +79,10 @@ func endWave():
 	nextWaveTimer.start()
 
 func spawnEnemy():
-	if(currentGroupIndex >= waveData.groupList.size()):
+	if(currentGroupIndex >= waveData.groupList.size() && !isBossWave):
 		return;
 
 	var enemyType := Enemy.EnemyType.Boss if isBossWave else Enemy.EnemyType.Normal
-	var waveGroup = waveData.groupList[currentGroupIndex];
 
 	var health := 0;
 	var def := 0;
@@ -94,7 +93,7 @@ func spawnEnemy():
 
 	if (enemyType == Enemy.EnemyType.Boss):
 		var boss = bossList[bossRandomIndex];
-
+		print("boss:", boss, " index:", bossRandomIndex);
 		texture = boss.texture;
 		health = boss.stats.hp
 		def = boss.stats.def
@@ -105,6 +104,7 @@ func spawnEnemy():
 		timer.stop()
 
 	else:
+		var waveGroup = waveData.groupList[currentGroupIndex];
 		health = waveGroup.health
 		def = waveGroup.def
 		mDef = waveGroup.mDef

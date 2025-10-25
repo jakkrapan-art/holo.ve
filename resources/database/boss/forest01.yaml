@@ -29,7 +29,7 @@
           data:
             duration: 5
             radius: 5
-            decreaseValue: 0.1
+            value: 0.1
     - name: King's Command
       cooldown: 30
       desc: "มอนเตอร์นรัศมีการบัฟจะได้รับ Move Speed เพิ่มขึ้น 10%  (Non-stackable)  Duration : 5 Sec ในระยะ 5 ช่อง"
@@ -39,29 +39,7 @@
           data:
             duration: 5
             radius: 5
-            increaseValue: 0.1
-- name: Flying Flower
-  texture: flying_flower
-  scale: 1
-  stats:
-    hp: 5000
-    def: 5
-    mDef: 5
-    moveSpeed: 30
-    skillCount: 3
-    buffCount: 3
-  skill:
-    - name: Sweat Spore
-      cooldown: 1
-      desc: เพิ่ม def ให้ตนเอง 5%
-      action:
-        - type: target_self
-        - type: apply_status_effect
-          data:
-            type: IncreaseDefBuff
-            duration: 1
-            level: 1
-            increaseValue: 5
+            value: 0.1
 - name: Giant Boar
   texture: giant_boar
   scale: 1

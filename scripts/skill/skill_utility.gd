@@ -10,6 +10,7 @@ static func ParseSkill(skillDataList: Array) -> Array[Skill]:
 		var cooldown = skill.get("cooldown", 1.0);
 		var skillName = skill.get("name", "Unnamed Skill");
 		var desc = skill.get("desc", "");
+		var oneTime = skill.get("oneTime", false);
 		var actions: Array[SkillAction] = [];
 		var actionList = skill.get("action", []);
 		for actionData in actionList:
@@ -19,7 +20,7 @@ static func ParseSkill(skillDataList: Array) -> Array[Skill]:
 			else:
 				print("Warning: Failed to parse action in skill", skillName);
 
-		var s = EnemySkill.new(skillName, desc, actions, {}, cooldown);
+		var s = EnemySkill.new(skillName, desc, actions, {}, oneTime, cooldown);
 		if s != null:
 			result.append(s);
 		else:
@@ -61,7 +62,7 @@ static func ParseAction(data: Dictionary) -> SkillAction:
 			skill = SkillActionDecreaseAtkSpdArea.new();
 			var skillData = data.get("data", {});
 			var duration = skillData.get("duration", 0);
-			var decreaseValue = skillData.get("decreaseValue", 0.0);
+			var decreaseValue = skillData.get("value", 0.0);
 			var radius = skillData.get("radius", 0.0);
 			skill.duration = duration;
 			skill.decreaseValue = decreaseValue;
@@ -70,7 +71,7 @@ static func ParseAction(data: Dictionary) -> SkillAction:
 			skill = SkillActionIncreaseMoveSpdArea.new();
 			var skillData = data.get("data", {});
 			var duration = skillData.get("duration", 0);
-			var increaseValue = skillData.get("increaseValue", 0.0);
+			var increaseValue = skillData.get("value", 0.0);
 			var radius = skillData.get("radius", 0.0);
 			skill.duration = duration;
 			skill.increaseValue = increaseValue;
@@ -79,7 +80,7 @@ static func ParseAction(data: Dictionary) -> SkillAction:
 			skill = SkillActionIncreaseDefArea.new();
 			var skillData = data.get("data", {});
 			var duration = skillData.get("duration", 0);
-			var increaseValue = skillData.get("increaseValue", 0.0);
+			var increaseValue = skillData.get("value", 0.0);
 			var radius = skillData.get("radius", 0.0);
 			skill.duration = duration;
 			skill.increaseValue = increaseValue;
@@ -103,6 +104,10 @@ static func ParseAction(data: Dictionary) -> SkillAction:
 			skill.duration = duration;
 			skill.radius = radius;
 			skill.decreaseValue = decreaseValue;
+		"block_damage":
+			skill = SkillActionBlockDamage.new();
+			var skillData = data.get("data", {});
+			skill.blockCount = skillData.get("count", 0);
 		_:
 			print("Warning: Unknown skill type:", skillType);
 			return null;

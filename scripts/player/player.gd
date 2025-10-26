@@ -10,6 +10,8 @@ var wallet: Wallet;
 var ui: PlayerUI;
 @export var uiTemplate: PackedScene;
 
+var currencyUI: CurrencyUI;
+
 func _ready():
 	setup(1000);
 
@@ -19,8 +21,10 @@ func setup(hp: int):
 
 	createUI();
 
-	wallet = Wallet.new();
+	wallet = Wallet.new(Callable(self, "updateGoldUI"), Callable(self, "updateEvoTokenUI"));
 	inventory = Inventory.new();
+
+	currencyUI = $"../GameUI/CurrencyUI"
 
 func createUI():
 	if(!uiTemplate.can_instantiate()):
@@ -65,3 +69,11 @@ func getEvoToken():
 
 func useEvoToken(value: int):
 	wallet.updateEvoToken(-value);
+
+func updateEvoTokenUI(value: int):
+	if currencyUI:
+		currencyUI.updateEssenceOfMem(value);
+
+func updateGoldUI(value: int):
+	if currencyUI:
+		currencyUI.updateGold(value);

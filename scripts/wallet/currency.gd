@@ -15,10 +15,10 @@ func _init(id: int, name: String, desc: String, icon: Texture2D, value: int) -> 
 	self.icon = icon
 	self.value = value
 
-func update(value: int):
-	self.value = value;
+func update(updateAmount: int):
+	self.value += updateAmount;
 	for key in onUpdate:
-		onUpdate[key].call(value);
+		onUpdate[key].call(self.value);
 
 func subscribeOnUpdate(key: String, callable: Callable):
 	onUpdate[key] = callable;

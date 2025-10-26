@@ -7,7 +7,7 @@ class_name Enemy
 @export var stats: EnemyStat;
 var originalModulate: Color
 
-var type: EnemyType = EnemyType.Normal;
+var enemyType: EnemyType = EnemyType.Normal;
 
 var statusEffects: StatusEffectContainer;
 var skillController: EnemySkillController;
@@ -17,7 +17,8 @@ var initialized: bool = false;
 
 enum EnemyType {Normal, Elite, Boss}
 
-func setup(hp: int, armor: int, mArmor: int, moveSpeed: int, texture: Texture2D, skills: Array[Skill] = []):
+func setup(enemyType: EnemyType, hp: int, armor: int, mArmor: int, moveSpeed: int, texture: Texture2D, skills: Array[Skill] = []):
+	self.enemyType = enemyType;
 	setTexture(texture);
 	stats = EnemyStat.new(hp, armor, mArmor, moveSpeed);
 	originalModulate = sprite.modulate
@@ -92,9 +93,9 @@ func addStatusEffect(effect: StatusEffect):
 	statusEffects.addEffect(effect)
 
 func calcurateReward() -> EnemyReward:
-	var evoTokenRand = randi_range(0, 100)
+	# var evoTokenRand = randi_range(0, 100)
 	var reward = EnemyReward.new(100, 0)
-	if evoTokenRand <= 2:
+	if enemyType == EnemyType.Boss:
 		reward.evoToken = 1;
 	return reward
 

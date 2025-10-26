@@ -1,0 +1,186 @@
+[gd_scene load_steps=11 format=3 uid="uid://bcyr1l11fwy7"]
+
+[ext_resource type="PackedScene" uid="uid://dsshuu1axf1t8" path="res://resources/ui_component/synergy/ui_synergy.tscn" id="1_hk82f"]
+[ext_resource type="Script" path="res://scripts/ui/currency.gd" id="2_rqmfg"]
+[ext_resource type="FontFile" uid="uid://vc6emo5px8ld" path="res://resources/ui_component/font/Roboto-Regular.ttf" id="3_pj1e5"]
+[ext_resource type="Texture2D" uid="uid://cf3nmxx0u8fwt" path="res://resources/ui_asset/UIExport_0001s_0003_Group-39.png" id="4_7yvjc"]
+[ext_resource type="Texture2D" uid="uid://bnilym5a3spel" path="res://resources/ui_asset/UIExport_0001s_0005_Layer-33.png" id="5_r4mlk"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vvh1m"]
+corner_radius_top_left = 120
+corner_radius_top_right = 120
+corner_radius_bottom_right = 120
+corner_radius_bottom_left = 120
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uyb7r"]
+bg_color = Color(0.6, 0.254902, 0.6, 1)
+corner_radius_top_left = 100
+corner_radius_top_right = 100
+corner_radius_bottom_right = 100
+corner_radius_bottom_left = 100
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_17la3"]
+bg_color = Color(0, 0, 0, 0.521569)
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 22
+corner_radius_bottom_left = 22
+
+[sub_resource type="LabelSettings" id="LabelSettings_wwulf"]
+font = ExtResource("3_pj1e5")
+font_size = 43
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_2pl84"]
+texture = ExtResource("4_7yvjc")
+
+[node name="GameUI" type="CanvasLayer"]
+
+[node name="UISynergy" parent="." instance=ExtResource("1_hk82f")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 159.0
+offset_right = -1152.0
+offset_bottom = -489.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PlayerUI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -272.0
+offset_top = -296.0
+offset_right = -36.0
+offset_bottom = -60.0
+grow_horizontal = 0
+grow_vertical = 0
+size_flags_horizontal = 8
+size_flags_vertical = 8
+
+[node name="Player" type="Control" parent="PlayerUI"]
+custom_minimum_size = Vector2(236, 236)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 0
+size_flags_vertical = 2
+
+[node name="Panel" type="Panel" parent="PlayerUI/Player"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_vvh1m")
+
+[node name="PlayerSkill" type="Control" parent="PlayerUI"]
+custom_minimum_size = Vector2(166, 166)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -182.0
+offset_top = -22.0
+offset_right = -16.0
+offset_bottom = 144.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+
+[node name="Panel" type="Panel" parent="PlayerUI/PlayerSkill"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_uyb7r")
+
+[node name="CurrencyUI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -312.0
+offset_top = -400.0
+offset_right = -32.0
+offset_bottom = -308.0
+grow_horizontal = 0
+grow_vertical = 0
+script = ExtResource("2_rqmfg")
+
+[node name="EssenseOfMem" type="Control" parent="CurrencyUI"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -92.0
+offset_top = -46.0
+offset_bottom = 46.0
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="ValuePanel" type="Panel" parent="CurrencyUI/EssenseOfMem"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -176.0
+offset_top = -22.0
+offset_right = -80.0
+offset_bottom = 22.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_17la3")
+
+[node name="Amount" type="Label" parent="CurrencyUI/EssenseOfMem/ValuePanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "0"
+label_settings = SubResource("LabelSettings_wwulf")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="IconPanel" type="Panel" parent="CurrencyUI/EssenseOfMem"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_2pl84")
+
+[node name="TextureRect" type="TextureRect" parent="CurrencyUI/EssenseOfMem/IconPanel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -24.0
+offset_top = -32.0
+offset_right = 36.0
+offset_bottom = 37.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("5_r4mlk")

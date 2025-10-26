@@ -1,8 +1,7 @@
-[gd_scene load_steps=12 format=3 uid="uid://vkntgith54x1"]
+[gd_scene load_steps=11 format=3 uid="uid://vkntgith54x1"]
 
 [ext_resource type="Script" path="res://scripts/scene/game_scene.gd" id="1_g4ay3"]
 [ext_resource type="PackedScene" uid="uid://ccnrotkl0jnmo" path="res://resources/tiles/tile_map.tscn" id="1_oeytk"]
-[ext_resource type="Resource" uid="uid://cpvebyys8omu2" path="res://resources/database/map/forest01.tres" id="2_0xmbs"]
 [ext_resource type="PackedScene" uid="uid://difnmx527n7co" path="res://resources/systems/wave_controller.tscn" id="2_7iogr"]
 [ext_resource type="Script" path="res://scripts/entity/enemy/enemy_factory.gd" id="5_o6btn"]
 [ext_resource type="PackedScene" uid="uid://d5g7c6yxmrv4" path="res://resources/tower/tower.tscn" id="6_3t1m6"]
@@ -10,11 +9,10 @@
 [ext_resource type="PackedScene" uid="uid://ds61ramnlbso3" path="res://resources/player/player.tscn" id="8_7lq66"]
 [ext_resource type="Script" path="res://scripts/entity/tower/tower_factory.gd" id="9_6l060"]
 [ext_resource type="Script" path="res://scripts/game_camera.gd" id="9_x8daq"]
-[ext_resource type="PackedScene" uid="uid://dsshuu1axf1t8" path="res://resources/ui_component/synergy/ui_synergy.tscn" id="11_bbyj5"]
+[ext_resource type="PackedScene" uid="uid://bcyr1l11fwy7" path="res://resources/ui_component/game_ui.tscn" id="10_xgghs"]
 
 [node name="DevScene" type="Node2D"]
 script = ExtResource("1_g4ay3")
-mapData = ExtResource("2_0xmbs")
 
 [node name="TileMap" parent="." instance=ExtResource("1_oeytk")]
 rotation = 4.46638e-06
@@ -38,14 +36,4 @@ position = Vector2(4797, -1204)
 script = ExtResource("9_x8daq")
 tilemap = NodePath("../TileMap")
 
-[node name="UICanvas" type="CanvasLayer" parent="."]
-
-[node name="UISynergy" parent="UICanvas" instance=ExtResource("11_bbyj5")]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = 159.0
-offset_right = -1152.0
-offset_bottom = -489.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="GameUI" parent="." instance=ExtResource("10_xgghs")]

@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="Skill" load_steps=9 format=3 uid="uid://bl71eiprj6o1n"]
+
+[ext_resource type="Script" path="res://scripts/skill/skill_action.gd" id="1_m65x2"]
+[ext_resource type="Script" path="res://scripts/skill/skillActions/skill_action_play_anim.gd" id="2_sdt8o"]
+[ext_resource type="Script" path="res://scripts/skill/skillActions/skill_action_find_multiple_in_range.gd" id="3_w1eap"]
+[ext_resource type="Script" path="res://scripts/skill/skillActions/skill_action_attack.gd" id="4_lsdrn"]
+[ext_resource type="Script" path="res://scripts/skill/skill.gd" id="5_pkyhc"]
+
+[sub_resource type="Resource" id="Resource_hsnqs"]
+script = ExtResource("3_w1eap")
+width = 3
+height = 1
+
+[sub_resource type="Resource" id="Resource_jcgif"]
+script = ExtResource("2_sdt8o")
+animationName = "n_attack"
+animationSpeed = 0.6
+
+[sub_resource type="Resource" id="Resource_v8trc"]
+script = ExtResource("4_lsdrn")
+damage = 100
+damageType = 0
+
+[resource]
+script = ExtResource("5_pkyhc")
+name = "Skill"
+desc = "Just a skill"
+oneTimeUse = false
+actions = Array[ExtResource("1_m65x2")]([SubResource("Resource_hsnqs"), SubResource("Resource_jcgif"), SubResource("Resource_v8trc")])
+parameters = {}

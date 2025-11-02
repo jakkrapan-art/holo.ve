@@ -1,10 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://bxqc4bxa77f5m"]
+[gd_scene load_steps=4 format=3 uid="uid://bxqc4bxa77f5m"]
 
 [ext_resource type="PackedScene" uid="uid://d5g7c6yxmrv4" path="res://resources/tower/tower.tscn" id="1_xjsp0"]
 [ext_resource type="Resource" uid="uid://im4q6nt4m7x1" path="res://resources/tower/data/takanashi_kiara_data.tres" id="2_q2hg3"]
+[ext_resource type="Resource" uid="uid://bl71eiprj6o1n" path="res://resources/database/skill/takanashi_kiara_skill.tres" id="3_4hs0i"]
 
 [node name="tower" instance=ExtResource("1_xjsp0")]
 data = ExtResource("2_q2hg3")
-
-[node name="AnimatedSprite2D" parent="." index="0"]
-modulate = Color(0.286275, 1, 1, 1)
+skill = ExtResource("3_4hs0i")

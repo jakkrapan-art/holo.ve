@@ -18,9 +18,7 @@ func _input(event):
 	if state == "tower_placement" and event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		t.exitPlaceMode();
 		t = null;
-		state = "wave"
-		if(waveController):
-			waveController.start()
+		startWave();
 
 func _ready():
 	var b: BossLibrary = BossLibrary.new();
@@ -84,6 +82,10 @@ func show_popup_panel():
 func _on_option_selected(selection):
 	print("Selected:", selection)
 	var tower: Tower = towerFactory.GetTower(selection);
+	if(tower == null):
+		startWave();
+		return;
+
 	tower.enterPlaceMode();
 	add_child(tower);
 	t = tower
@@ -92,3 +94,8 @@ func _on_option_selected(selection):
 func _load_towers_data(): #temp
 	var selected_deck_file_path = "res://resources/database/towers/" + Global.selected_data_file
 	Global.towers_data = YamlParser.load_data(selected_deck_file_path)
+
+func startWave():
+	state = "wave"
+	if(waveController):
+		waveController.start()

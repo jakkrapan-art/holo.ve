@@ -11,6 +11,7 @@ const TowerGeneration = preload("res://scripts/entity/tower/tower_trait.gd").Tow
 var onPlace: Callable
 var onRemove: Callable
 var towerTrait: TowerTrait = TowerTrait.new()
+var towersByName: Dictionary = {}
 var towers: Dictionary = {}
 var activeSynergies: Dictionary = {}
 var activeMissionBuff: Dictionary = {}
@@ -35,6 +36,12 @@ func GetTower(name: String):
 
 	if (resource == null):
 		return null
+
+	if (towersByName.has(name)):
+		var t = towersByName.get(name);
+		if (t != null):
+			t.upgrade();
+			return null;
 
 	var tower: Tower = resource.instantiate() as Tower
 	tower.setup(name, onPlace, onRemove)
@@ -65,7 +72,7 @@ func GetTower(name: String):
 					for syn in synergyArray:
 						checkAndProcessActiveMissionSyn.call(syn, tier, missionBuff);
 
-		addTowerToDict(tower, towerSyn)
+		addTowerToDict(name, tower, towerSyn)
 
 		if uiSynergy != null:
 			var synName = towerTrait.getSynergyName(towerSyn);
@@ -99,9 +106,12 @@ func ReturnTower(tower: Tower):
 	towerTrait.remove_tower_traits(traits)
 	tower.queue_free()
 
-func addTowerToDict(tower: Tower, key: int):
+func addTowerToDict(name: String, tower: Tower, key: int):
 	if key <= 0:  # Skip invalid keys
 		return
+
+	if not towersByName.has(name):
+		towersByName[name] = tower
 
 	var list: Array = towers.get(key, [])
 	if(list.find(tower) >= 0):

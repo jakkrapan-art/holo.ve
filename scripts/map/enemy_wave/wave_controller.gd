@@ -1,7 +1,8 @@
 extends Node
 class_name WaveController
 
-var waveDatas: Array[WaveData] = []
+var data: WaveControllerData = null;
+
 @onready var timer: Timer = $SpawnTimer
 @onready var nextWaveTimer: Timer = $NextWaveDelayTimer
 
@@ -27,8 +28,6 @@ var currentGroupIndex: int = 0
 var enemyAliveCount: int = 0;
 var isSpawnAllEnemy: bool = false;
 
-var onEnemyReachEndPoint: Callable;
-
 func _ready():
 	spawnParent = map.path
 
@@ -41,9 +40,8 @@ func _input(event):
 		elif event.keycode == KEY_3:
 			testSpawnBoss(2);
 
-func setup(waveDatas: Array[WaveData], onEnemyReachEndpoint: Callable):
-	self.waveDatas = waveDatas;
-	self.onEnemyReachEndPoint = onEnemyReachEndpoint;
+func setup(data: WaveControllerData):
+	self.data = data;
 	enemyTextures = SpriteLoader.getSpriteGroup("enemy");
 
 func setBossList(list: Array[BossDBData]):
@@ -56,7 +54,7 @@ func start():
 	onWaveStart.emit();
 
 func startNextWave():
-	if(currWave >= waveDatas.size()):
+	if(currWave >= data.waveDatas.size()):
 		return
 	spawnedCount = 0
 	currWave += 1
@@ -64,10 +62,10 @@ func startNextWave():
 	groupSpawnCount = 0;
 	isSpawnAllEnemy = false;
 
-	var data: WaveData = waveDatas[currWave - 1] as WaveData
-	waveData = data
+	var wData: WaveData = data.waveDatas[currWave - 1] as WaveData
+	waveData = wData
 	active = true
-	isBossWave = data.isBossWave;
+	isBossWave = wData.isBossWave;
 	if isBossWave:
 		bossRandomIndex = randi_range(0, bossList.size() - 1);
 
@@ -75,8 +73,7 @@ func startNextWave():
 	spawnEnemy();
 
 func endWave():
-	nextWaveTimer.wait_time = 5
-	nextWaveTimer.start()
+	data.onWaveEnd.call();
 
 func spawnEnemy():
 	if(currentGroupIndex >= waveData.groupList.size() && !isBossWave):
@@ -165,8 +162,7 @@ func createEnemyObject(type: Enemy.EnemyType, health: int, def: int, mDef: int, 
 	return instance
 
 func enemyReachEndPoint(enemy: Enemy):
-	onEnemyReachEndPoint.call(5);
-	pass
+	data.onEnemyReachEndpoint.call(5);
 
 func checkEndWave():
 	if(!isSpawnAllEnemy || enemyAliveCount > 0):

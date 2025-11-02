@@ -46,7 +46,13 @@ func _ready():
 		var mapRaw = YamlParser.load_data("res://resources/database/map/" + Global.selected_map_file);
 		var mapData: MapData= MapParser.ParseData(mapRaw);
 		var waves = mapData.waves;
-		waveController.setup(waves, Callable(self, "reducePlayerHp"));
+
+		var waveControllerData: WaveControllerData = WaveControllerData.new();
+		waveControllerData.waveDatas = waves;
+		waveControllerData.onEnemyReachEndpoint = Callable(self, "reducePlayerHp");
+		waveControllerData.onWaveEnd = Callable(self, "show_popup_panel");
+
+		waveController.setup(waveControllerData);
 
 		var bossList: Array[BossDBData] = b.getBossList(mapData.mapName);
 		waveController.setBossList(bossList);

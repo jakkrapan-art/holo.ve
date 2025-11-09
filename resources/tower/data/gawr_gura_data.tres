@@ -1,6 +1,7 @@
-[gd_resource type="Resource" script_class="TowerData" load_steps=6 format=3 uid="uid://cdqobt685vlwd"]
+[gd_resource type="Resource" script_class="TowerData" load_steps=7 format=3 uid="uid://cdqobt685vlwd"]
 
 [ext_resource type="Script" path="res://scripts/entity/tower/tower_data.gd" id="1_atmyf"]
+[ext_resource type="Resource" uid="uid://h1kpuw8owwy4" path="res://resources/database/skill/gawr_gura_skill.tres" id="2_sc53j"]
 [ext_resource type="Script" path="res://scripts/entity/tower/tower_stat.gd" id="2_ybydr"]
 
 [sub_resource type="Resource" id="Resource_5g4bw"]
@@ -42,3 +43,7 @@ maxLevel = 3
 towerClass = 101
 generation = 201
 stats = Array[ExtResource("2_ybydr")]([SubResource("Resource_5g4bw"), SubResource("Resource_6820u"), SubResource("Resource_bjofy")])
+skill = ExtResource("2_sc53j")
+level = 0
+isEvolved = false
+evolutionCost = 0

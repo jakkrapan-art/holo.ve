@@ -8,7 +8,9 @@ enum TARGET_TYPE {ENEMY, FRIENDLY}
 @export var oneTimeUse: bool = false
 @export var actions: Array[SkillAction] = []
 @export var parameters: Dictionary = {}
+
 var using = false;
+var disable = false;
 
 func _init(name:String="Skill", desc:String="Just a skill", actions:Array[SkillAction]=[], parameters:Dictionary={}, oneTimeUse: bool = false):
 	self.name = name;
@@ -17,5 +19,9 @@ func _init(name:String="Skill", desc:String="Just a skill", actions:Array[SkillA
 	self.parameters = parameters;
 	self.oneTimeUse = oneTimeUse;
 
+func use():
+	if oneTimeUse:
+		disable = true;
+
 func isReady():
-	return !using;
+	return !using && !disable;

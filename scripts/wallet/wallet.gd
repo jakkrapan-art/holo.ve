@@ -11,12 +11,12 @@ func updateGold(value: int):
 	print("update gold", value);
 	gold.update(value);
 
-func getGold():
+func getGold() -> int:
 	return gold.value;
 
 func updateEvoToken(amount: int):
 	print("update evo token", amount);
 	evoToken.update(amount);
 
-func getEvoToken():
+func getEvoToken() -> int:
 	return evoToken.value;

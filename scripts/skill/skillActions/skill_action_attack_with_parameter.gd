@@ -6,7 +6,7 @@ class_name SkillActionAttackWithParameter
 
 func execute(context: SkillContext):
 	var tower: Tower = context.user as Tower
-	var damageMultiplier: float = context.getParameter(parameterName, tower.data.level)
+	var damageMultiplier: float = context.getParameter(parameterName, tower.data._level)
 
 	for target in context.target:
 		if is_instance_valid(target) && target.has_method("recvDamage"):

@@ -71,9 +71,12 @@ func reducePlayerHp(amount: int):
 	player.updateHp(-amount);
 
 func show_popup_panel():
-	var popup = PopupPanelScene.instantiate()
+	var popup: UITowerSelect = PopupPanelScene.instantiate() as UITowerSelect;
 	# Ensure it's added to the UI layer, not just as a child of the 2D scene
 	get_tree().current_scene.add_child(popup)
+	var evoToken = player.wallet.getEvoToken();
+
+	popup.setup(towerFactory.getEvolutionList());
 
 	# Connect function "_on_option_selected" to the signal "tower_select"
 	popup.tower_select.connect(Callable(self, "_on_option_selected"))
@@ -81,10 +84,20 @@ func show_popup_panel():
 # Handle the selection from the popup
 func _on_option_selected(selection):
 	print("Selected:", selection)
-	var tower: Tower = towerFactory.GetTower(selection);
+	var tower: Tower = towerFactory.getTower(selection);
 	if(tower == null):
 		startWave();
 		return;
+
+	if(tower.canEvolve()):
+		# check currency
+		var evoToken = player.wallet.getEvoToken();
+		var cost = tower.data.evolutionCost;
+		if(evoToken >= cost):
+			towerFactory.evolutionTower(selection);
+			player.wallet.updateEvoToken(-cost);
+			startWave();
+			return;
 
 	tower.enterPlaceMode();
 	add_child(tower);

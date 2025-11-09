@@ -43,6 +43,7 @@ func calculatePathfollowSpeed(path: Path2D) -> float:
 func getDamageReduction() -> float:
 	if(blockCount > 0):
 		blockCount -= 1
+		print("block remain:", blockCount);
 		return 1
 
 	return clamp(damageReduction, 0.0, 0.9);

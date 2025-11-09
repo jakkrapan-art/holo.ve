@@ -21,7 +21,6 @@ var anim: AnimationController;
 var attacking: bool = false;
 var usingSkill: bool = false;
 
-@export var skill: Skill;
 var skillController: SkillController
 @onready var manaBar = $ManaBar
 
@@ -53,7 +52,7 @@ func _ready():
 		manaBar.setup(maxMana, false);
 		manaBar.updateValue(initMana);
 
-	skillController = SkillController.new(self,maxMana, initMana, skill);
+	skillController = SkillController.new(self,maxMana, initMana, data.skill);
 
 	if(skillController != null):
 		Utility.ConnectSignal(skillController, "on_mana_updated", Callable(self, "update_mana_bar"));
@@ -109,6 +108,15 @@ func exitPlaceMode():
 
 func upgrade():
 	return data.levelUp()
+
+func evolve():
+	return data.evolve()
+
+func canEvolve():
+	return data.level >= data.maxLevel && !data.isEvolved;
+
+func isEvolved():
+	return data.isEvolved
 
 func attackEnemy():
 	if(is_instance_valid(enemy) && attackController != null && attackController.canAttack(enemy)):

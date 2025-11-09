@@ -13,8 +13,15 @@ var onRemove: Callable
 var towerTrait: TowerTrait = TowerTrait.new()
 var towersByName: Dictionary = {}
 var towers: Dictionary = {}
+var _evolutionList: Array[String] = []
+var _evolvedList: Array[String] = []
 var activeSynergies: Dictionary = {}
 var activeMissionBuff: Dictionary = {}
+
+# getter
+func getEvolutionList() -> Array[String]:
+	var result = _evolutionList.filter(func(x): return x not in _evolvedList)
+	return _evolutionList
 
 enum TowerId {
 	Test
@@ -28,7 +35,7 @@ func setup(onPlace: Callable, onRemove: Callable):
 	Utility.ConnectSignal(towerTrait, "synergy_deactivated", Callable(self, "onDeactivateSynergy"));
 	Utility.ConnectSignal(towerTrait, "mission_completed", Callable(self, "onMissionCompleted"));
 
-func GetTower(name: String):
+func getTower(name: String):
 	var resource = ResourceManager.getTower(name);
 
 	if(resource == null && towerTemplate != null):
@@ -41,7 +48,11 @@ func GetTower(name: String):
 		var t = towersByName.get(name);
 		if (t != null):
 			t.upgrade();
-			return null;
+			if(t.canEvolve() && not t.isEvolved()):
+				_evolutionList.append(name);
+				return t;
+			else:
+				return null;
 
 	var tower: Tower = resource.instantiate() as Tower
 	tower.setup(name, onPlace, onRemove)
@@ -90,7 +101,7 @@ func GetTower(name: String):
 	towerTrait.add_tower_traits([tower.data.towerClass, tower.data.generation])
 	return tower
 
-func ReturnTower(tower: Tower):
+func returnTower(tower: Tower):
 	if(tower == null):
 		return
 
@@ -131,6 +142,16 @@ func removeTowerFromDict(tower: Tower, key: int):
 
 	list.remove_at(index)
 	towers[key] = list
+
+func evolutionTower(name: String):
+	var tower = towersByName.get(name, null);
+	if tower == null:
+		return
+
+	var success = tower.evolve();
+	if success:
+		_evolutionList.erase(name);
+		_evolvedList.append(name);
 
 func onActivateSynergy(synergy_id: int, tier: int, buff: Dictionary):
 	if not activeSynergies.has(synergy_id):

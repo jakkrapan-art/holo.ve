@@ -53,7 +53,7 @@ func onHit(projectile: Projectile, target: Enemy):
 
 func getDamageMultiplier(context: SkillContext):
 	var tower: Tower = context.user as Tower
-	return context.getParameter(damageMultiplierParamName, tower.data.level - 1) if damageMultiplierParamName != "" else damageMultiplier
+	return context.getParameter(damageMultiplierParamName, tower.data._level - 1) if damageMultiplierParamName != "" else damageMultiplier
 
 func onKilled(_projectile: Projectile, _enemy: Enemy):
 	pass

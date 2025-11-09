@@ -46,6 +46,7 @@ func resetUsingSkill(skill: Skill):
 		user.usingSkill = skills.any(Callable(self, "checkUsingSkill"));
 
 func onSuccess(skill: Skill):
+	skill.use();
 	resetUsingSkill(skill);
 
 func checkUsingSkill(skill:Skill) -> bool:

@@ -9,7 +9,7 @@ waves:
         def: 1
         mDef: 1
         moveSpeed: 20
-        count: 1
+        count: 50
         spawnInterval: 0.2
 
   - waveTime: 60.0
@@ -19,7 +19,7 @@ waves:
         def: 1
         mDef: 1
         moveSpeed: 20
-        count: 1
+        count: 50
         spawnInterval: 0.2
 
   - waveTime: 60.0
@@ -29,7 +29,7 @@ waves:
         def: 1
         mDef: 1
         moveSpeed: 40
-        count: 1
+        count: 50
         spawnInterval: 0.2
       - texture: "Armored_Goblin"
         health: 500

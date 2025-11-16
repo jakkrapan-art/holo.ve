@@ -4,7 +4,7 @@ extends BaseSkillController
 var maxMana := 0.0;
 var currentMana := 0.0;
 
-func _init(user: Node,maxMana: float, initialMana: float, skill: Skill):
+func _init(user: Node, maxMana: float, initialMana: float, skill: Skill):
 	super._init(user, [skill]);
 	self.maxMana = maxMana;
 	currentMana = initialMana;

@@ -13,15 +13,18 @@ var onRemove: Callable
 var towerTrait: TowerTrait = TowerTrait.new()
 var towersByName: Dictionary = {}
 var towers: Dictionary = {}
-var _evolutionList: Array[String] = []
+var _evolutionList: Dictionary = {}
 var _evolvedList: Array[String] = []
 var activeSynergies: Dictionary = {}
 var activeMissionBuff: Dictionary = {}
 
 # getter
-func getEvolutionList() -> Array[String]:
-	var result = _evolutionList.filter(func(x): return x not in _evolvedList)
-	return _evolutionList
+func getEvolutionList(evoToken: int) -> Array[String]:
+	var result: Array = []
+	for key in _evolutionList:
+		if _evolutionList[key] >= evoToken:
+			result.append(key)
+	return result
 
 enum TowerId {
 	Test
@@ -49,7 +52,7 @@ func getTower(name: String):
 		if (t != null):
 			t.upgrade();
 			if(t.canEvolve() && not t.isEvolved()):
-				_evolutionList.append(name);
+				_evolutionList[name] = t.data.evolutionCost;
 				return t;
 			else:
 				return null;

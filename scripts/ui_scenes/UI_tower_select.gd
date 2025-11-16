@@ -1,4 +1,4 @@
-extends Node
+extends CanvasLayer
 class_name UITowerSelect
 
 # Signal to send selection back to the stage
@@ -6,13 +6,35 @@ signal tower_select(num_select)
 
 var _dealer: RandomCardsDealer;
 var test_deck = ['1','2','3','4','5']
+@onready var refreshText: Label = $CanvasLayer/PopupPanel/Panel/RefreshButton/RefreshText
+var refreshLeft = 0;
+var maxRefresh = 0;
 
-func setup(evolutionList: Array[String]):
+
+func _ready() -> void:
+	setupRefreshText(refreshLeft, maxRefresh);
+
+func setup(evolutionList: Array[String], maxRefresh: int = 0):
 	print("Deck passed in:", Global.selected_deck)
 	print("tower_data: ", Global.towers_data.keys())
+	self.refreshLeft = maxRefresh;
+	self.maxRefresh = maxRefresh;
 	_setup_buttons(evolutionList);
 	var refresh_button = get_node("CanvasLayer/PopupPanel/Panel/RefreshButton")
-	refresh_button.pressed.connect(Callable(self, "_setup_buttons").bind(evolutionList))
+	refresh_button.pressed.connect(Callable(self, "refreshList").bind(evolutionList))
+
+	setupRefreshText(refreshLeft, maxRefresh)
+
+func setupRefreshText(refreshCount: int, maxRefresh: int):
+	if(refreshText):
+		refreshText.text = str(refreshCount) + "/" + str(maxRefresh)
+
+func refreshList(evolutionList: Array[String]):
+	if(refreshLeft <= 0):
+		return
+	refreshLeft -= 1;
+	_setup_buttons(evolutionList);
+	setupRefreshText(refreshLeft, maxRefresh)
 
 func _setup_buttons(evolutionList: Array):
 	var cards: Array = []

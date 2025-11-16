@@ -2,7 +2,7 @@ extends Node2D;
 class_name GameScene;
 
 # Load the pop-up panel scene
-var PopupPanelScene = preload("res://resources/ui_component/tower_select.tscn");
+var PopupPanelScene = preload("res://resources/ui_component/tower_select/tower_select.tscn");
 
 @onready var waveController: WaveController = $WaveController;
 @onready var player: Player = $Player
@@ -76,7 +76,7 @@ func show_popup_panel():
 	get_tree().current_scene.add_child(popup)
 	var evoToken = player.wallet.getEvoToken();
 
-	popup.setup(towerFactory.getEvolutionList());
+	popup.setup(towerFactory.getEvolutionList(evoToken), 1);
 
 	# Connect function "_on_option_selected" to the signal "tower_select"
 	popup.tower_select.connect(Callable(self, "_on_option_selected"))
@@ -97,7 +97,9 @@ func _on_option_selected(selection):
 			towerFactory.evolutionTower(selection);
 			player.wallet.updateEvoToken(-cost);
 			startWave();
-			return;
+		else:
+			show_popup_panel();
+		return;
 
 	tower.enterPlaceMode();
 	add_child(tower);

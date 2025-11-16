@@ -1,0 +1,61 @@
+[gd_scene load_steps=6 format=3 uid="uid://hrwu7jmu4yv"]
+
+[ext_resource type="Script" path="res://scripts/ui_scenes/tower_select_button.gd" id="1_3b5ak"]
+[ext_resource type="FontFile" uid="uid://vc6emo5px8ld" path="res://resources/ui_component/font/Roboto-Regular.ttf" id="2_oispt"]
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_wd61a"]
+resource_name = "tower_buttons"
+
+[sub_resource type="ImageTexture" id="ImageTexture_cu4c3"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_aoexc"]
+font = ExtResource("2_oispt")
+font_size = 24
+
+[node name="UITowerChoice" type="Button"]
+custom_minimum_size = Vector2(220, 285)
+offset_right = 220.0
+offset_bottom = 285.0
+size_flags_horizontal = 6
+size_flags_vertical = 4
+button_group = SubResource("ButtonGroup_wd61a")
+script = ExtResource("1_3b5ak")
+
+[node name="BG" type="TextureButton" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture_normal = SubResource("ImageTexture_cu4c3")
+
+[node name="TowerImage" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TowerName" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -110.0
+offset_top = 4.27499
+offset_right = 110.0
+offset_bottom = 63.015
+grow_horizontal = 2
+grow_vertical = 0
+text = "Tower_A"
+label_settings = SubResource("LabelSettings_aoexc")
+horizontal_alignment = 1
+vertical_alignment = 1

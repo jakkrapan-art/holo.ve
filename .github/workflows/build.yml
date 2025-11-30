@@ -1,0 +1,113 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  GODOT_VERSION: "4.3-stable"
+
+jobs:
+  build_webgl:
+    name: Build WebGL (HTML5)
+    runs-on: ubuntu-latest
+    outputs:
+      web_path: ${{ steps.export_web.outputs.web_dir }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Godot (Linux)
+        run: |
+          set -eux
+          GODOT_ZIP="https://downloads.tuxfamily.org/godotengine/4.3/Godot_v4.3-stable_linux.x86_64.zip"
+          wget -q "$GODOT_ZIP" -O godot.zip
+          unzip -q godot.zip -d godot
+          chmod +x godot/Godot_v4.3-stable_linux.x86_64
+          mv godot/Godot_v4.3-stable_linux.x86_64 ./godot
+
+      - name: Install export templates
+        run: |
+          set -eux
+          # Download export templates for Godot 4.3 (adjust if you use a different version)
+          TEMPLATES_URL="https://downloads.tuxfamily.org/godotengine/4.3/Godot_v4.3-stable_export_templates.tpz"
+          wget -q "$TEMPLATES_URL" -O templates.tpz
+          mkdir -p ~/.local/share/godot/templates/4.3.stable
+          unzip -q templates.tpz -d ~/.local/share/godot/templates/4.3.stable
+
+      - name: Export Web (HTML5)
+        id: export_web
+        run: |
+          set -eux
+          # Ensure your Export Preset name for Web is exactly "HTML5" (adjust if different)
+          mkdir -p build/web
+          ./godot --headless --export "HTML5" build/web/index.html
+          echo "web_dir=build/web" >> $GITHUB_OUTPUT
+
+      - name: Upload Web artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: webgl-build
+          path: build/web
+
+  deploy_webgl:
+    name: Deploy WebGL to gh-pages
+    needs: build_webgl
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download Web artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: webgl-build
+
+      - name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./webgl-build
+          # You can change the target branch or set a custom cname
+          # publish_branch: gh-pages
+
+  build_pc:
+    name: Build Windows PC (.exe)
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Godot (Windows)
+        run: |
+          powershell -Command "Set-StrictMode -Version Latest"
+          powershell -Command "$url = 'https://downloads.tuxfamily.org/godotengine/4.3/Godot_v4.3-stable_win64.exe.zip'; Invoke-WebRequest -Uri $url -OutFile godot_win.zip"
+          powershell -Command "Expand-Archive -LiteralPath godot_win.zip -DestinationPath . -Force"
+          # The downloaded exe will be named something like 'Godot_v4.3-stable_win64.exe'
+
+      - name: Export Windows build
+        run: |
+          powershell -Command "& .\Godot_v4.3-stable_win64.exe --export \"Windows Desktop\" .\build\pc\game.exe"
+        shell: powershell
+
+      - name: Package Windows build
+        run: |
+          powershell -Command "New-Item -ItemType Directory -Force -Path build\pc\package"
+          powershell -Command "Copy-Item -Path build\pc\* -Destination build\pc\package -Recurse -Force"
+        shell: powershell
+
+      - name: Upload PC artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pc-build
+          path: build/pc/package
+
+# Notes:
+# - This workflow assumes Godot 4.3 export preset names are "HTML5" and "Windows Desktop".
+#   Adjust those names to match the Export Presets in your Godot project (Project -> Export).
+# - The workflow downloads Godot and the 4.3 export templates. If you use another Godot version,
+#   change the download URLs accordingly.
+# - The Windows export runs on a Windows runner and produces a .exe. Make sure your export
+#   preset is configured to include any required .pck or resources, or use the "Embed PCK"
+#   option in the preset so a single exe is produced.

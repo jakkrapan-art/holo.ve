@@ -71,12 +71,16 @@ func reducePlayerHp(amount: int):
 	player.updateHp(-amount);
 
 func show_popup_panel():
+	print("PopupPanelScene:", PopupPanelScene);
 	var popup: UITowerSelect = PopupPanelScene.instantiate() as UITowerSelect;
+	print("popup after create: ", popup);
 	# Ensure it's added to the UI layer, not just as a child of the 2D scene
-	get_tree().current_scene.add_child(popup)
+	get_tree().root.add_child(popup)
 	var evoToken = player.wallet.getEvoToken();
+	var evoList = towerFactory.getEvolutionList(evoToken);
+	var excludeList: Array = evoList.exclude + towerFactory._evolvedList;
 
-	popup.setup(towerFactory.getEvolutionList(evoToken), 1);
+	popup.setup(evoList.canEvolve, excludeList, evoToken, 1);
 
 	# Connect function "_on_option_selected" to the signal "tower_select"
 	popup.tower_select.connect(Callable(self, "_on_option_selected"))
@@ -84,27 +88,39 @@ func show_popup_panel():
 # Handle the selection from the popup
 func _on_option_selected(selection):
 	print("Selected:", selection)
-	var tower: Tower = towerFactory.getTower(selection);
-	if(tower == null):
+	selection = "gawr_gura"
+	var evoToken = player.wallet.getEvoToken();
+	var result = towerFactory.getTower(selection, evoToken);
+
+	if(result == null):
 		startWave();
 		return;
 
-	if(tower.canEvolve()):
-		# check currency
-		var evoToken = player.wallet.getEvoToken();
-		var cost = tower.data.evolutionCost;
-		if(evoToken >= cost):
+	match result.state:
+		GetTowerResult.State.New:
+			# Enter build mode with the new tower
+			result.tower.enterPlaceMode();
+			add_child(result.tower);
+			t = result.tower
+			state = "tower_placement"
+
+		# GetTowerResult.State.Evolve:
+		# 	# Check if have enough evo tokens to evolve
+		# 	var evoToken = player.wallet.getEvoToken();
+		# 	var cost = result.tower.data.evolutionCost;
+		# 	if(evoToken >= cost):
+		# 	else:
+		# 		show_popup_panel();
+
+		GetTowerResult.State.Upgrade:
+			startWave();
+
+		GetTowerResult.State.Evolve:
 			towerFactory.evolutionTower(selection);
+
+			var cost = result.tower.data.evolutionCost;
 			player.wallet.updateEvoToken(-cost);
 			startWave();
-		else:
-			show_popup_panel();
-		return;
-
-	tower.enterPlaceMode();
-	add_child(tower);
-	t = tower
-	state = "tower_placement"
 
 func _load_towers_data(): #temp
 	var selected_deck_file_path = "res://resources/database/towers/" + Global.selected_data_file

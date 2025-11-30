@@ -19,12 +19,28 @@ var activeSynergies: Dictionary = {}
 var activeMissionBuff: Dictionary = {}
 
 # getter
-func getEvolutionList(evoToken: int) -> Array[String]:
-	var result: Array = []
+func getEvolutionList(evoToken: int):
+	if (_evolutionList.size() == 0):
+		return {"canEvolve": [], "exclude": []}
+
+	var cannotEvolveList: Array = []
+	var canEvolveList: Array = []
+
 	for key in _evolutionList:
-		if _evolutionList[key] >= evoToken:
-			result.append(key)
-	return result
+		var data: TowerData = _evolutionList[key]
+		if data == null:
+			continue
+		# Only include towers that are not yet evolved and whose cost is affordable
+		if not data.isEvolved:
+			if data.evolutionCost > evoToken:
+				cannotEvolveList.append(key)
+				continue
+
+			var tName: String = key
+			var level: int = data.level
+			var evolutionCost: int = data.evolutionCost
+			canEvolveList.append(TowerSelectData.new(tName, level, evolutionCost))
+	return {"canEvolve": canEvolveList, "exclude": cannotEvolveList}
 
 enum TowerId {
 	Test
@@ -38,7 +54,7 @@ func setup(onPlace: Callable, onRemove: Callable):
 	Utility.ConnectSignal(towerTrait, "synergy_deactivated", Callable(self, "onDeactivateSynergy"));
 	Utility.ConnectSignal(towerTrait, "mission_completed", Callable(self, "onMissionCompleted"));
 
-func getTower(name: String):
+func getTower(name: String, evoToken: int = 0) -> GetTowerResult:
 	var resource = ResourceManager.getTower(name);
 
 	if(resource == null && towerTemplate != null):
@@ -47,17 +63,28 @@ func getTower(name: String):
 	if (resource == null):
 		return null
 
+	var result: GetTowerResult = GetTowerResult.new()
+
 	if (towersByName.has(name)):
-		var t = towersByName.get(name);
+		var t = towersByName.get(name, null);
 		if (t != null):
+			if(t.data.level >= t.data.maxLevel && !t.isEvolved() && t.data.evolutionCost >= evoToken):
+				result.state = GetTowerResult.State.Evolve;
+				result.tower = t;
+				return result;
+
 			t.upgrade();
+			result.tower = t;
+			result.state = GetTowerResult.State.Upgrade;
+
 			if(t.canEvolve() && not t.isEvolved()):
-				_evolutionList[name] = t.data.evolutionCost;
-				return t;
-			else:
-				return null;
+				_evolutionList[name] = t.data;
+
+			return result;
 
 	var tower: Tower = resource.instantiate() as Tower
+	result.state = GetTowerResult.State.New
+	result.tower = tower;
 	tower.setup(name, onPlace, onRemove)
 	Utility.ConnectSignal(tower, "onReceiveMission", Callable(self, "towerReceiveMission"));
 	for towerSyn in [tower.data.towerClass, tower.data.generation]:
@@ -102,7 +129,7 @@ func getTower(name: String):
 			uiSynergy.addSynergy(synName);
 
 	towerTrait.add_tower_traits([tower.data.towerClass, tower.data.generation])
-	return tower
+	return result
 
 func returnTower(tower: Tower):
 	if(tower == null):

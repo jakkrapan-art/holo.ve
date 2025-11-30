@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=3 uid="uid://85bdkeqylhs1"]
 
-[ext_resource type="Script" path="res://scripts/ui_scenes/UI_tower_select.gd" id="1_504d6"]
+[ext_resource type="Script" path="res://scripts/ui/tower_select/UI_tower_select.gd" id="1_bpqk6"]
 [ext_resource type="PackedScene" uid="uid://hrwu7jmu4yv" path="res://resources/ui_component/tower_select/ui_tower_choice.tscn" id="2_aglq3"]
 [ext_resource type="PackedScene" uid="uid://dw5lqajy7casy" path="res://resources/systems/random_cards_dealer.tscn" id="3_8dqrm"]
 
@@ -16,9 +16,10 @@ resource_name = "tower_buttons"
 [sub_resource type="LabelSettings" id="LabelSettings_brjdl"]
 font_size = 24
 
-[node name="TowerSelect" type="CanvasLayer"]
-layer = 2
-script = ExtResource("1_504d6")
+[node name="TowerSelect" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_bpqk6")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 layer = 2
@@ -54,15 +55,15 @@ grow_horizontal = 2
 grow_vertical = 2
 alignment = 1
 
-[node name="UITowerChoice" parent="CanvasLayer/PopupPanel/Panel/HBoxContainer" groups=["tower_buttons"] instance=ExtResource("2_aglq3")]
+[node name="UITowerChoice" parent="CanvasLayer/PopupPanel/Panel/HBoxContainer" instance=ExtResource("2_aglq3")]
 layout_mode = 2
 button_group = SubResource("ButtonGroup_1o2il")
 
-[node name="UITowerChoice2" parent="CanvasLayer/PopupPanel/Panel/HBoxContainer" groups=["tower_buttons"] instance=ExtResource("2_aglq3")]
+[node name="UITowerChoice2" parent="CanvasLayer/PopupPanel/Panel/HBoxContainer" instance=ExtResource("2_aglq3")]
 layout_mode = 2
 button_group = SubResource("ButtonGroup_yuxle")
 
-[node name="UITowerChoice3" parent="CanvasLayer/PopupPanel/Panel/HBoxContainer" groups=["tower_buttons"] instance=ExtResource("2_aglq3")]
+[node name="UITowerChoice3" parent="CanvasLayer/PopupPanel/Panel/HBoxContainer" instance=ExtResource("2_aglq3")]
 layout_mode = 2
 button_group = SubResource("ButtonGroup_lxnua")
 

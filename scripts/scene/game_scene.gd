@@ -13,6 +13,7 @@ var PopupPanelScene = preload("res://resources/ui_component/tower_select/tower_s
 var mission: Mission = null;
 var t: Tower = null
 var state: String = ""
+var _popup_open: bool = false
 
 func _input(event):
 	if state == "tower_placement" and event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
@@ -71,9 +72,13 @@ func reducePlayerHp(amount: int):
 	player.updateHp(-amount);
 
 func show_popup_panel():
-	print("PopupPanelScene:", PopupPanelScene);
+	# Prevent opening multiple popups if this function is called repeatedly
+	if _popup_open:
+		print("show_popup_panel: popup already open, ignoring duplicate call")
+		return
+
 	var popup: UITowerSelect = PopupPanelScene.instantiate() as UITowerSelect;
-	print("popup after create: ", popup);
+	_popup_open = true
 	# Ensure it's added to the UI layer, not just as a child of the 2D scene
 	get_tree().root.add_child(popup)
 	var evoToken = player.wallet.getEvoToken();
@@ -85,10 +90,18 @@ func show_popup_panel():
 	# Connect function "_on_option_selected" to the signal "tower_select"
 	popup.tower_select.connect(Callable(self, "_on_option_selected"))
 
+	# When the popup is closed/freed, allow it to be opened again
+	Utility.ConnectSignal(popup, "tree_exited", Callable(self, "_on_popup_closed"));
+
+	return
+
+func _on_popup_closed():
+	_popup_open = false
+
 # Handle the selection from the popup
 func _on_option_selected(selection):
+	# selection = "gawr_gura"
 	print("Selected:", selection)
-	selection = "gawr_gura"
 	var evoToken = player.wallet.getEvoToken();
 	var result = towerFactory.getTower(selection, evoToken);
 

@@ -14,6 +14,7 @@ var enemyTextures: Dictionary = {};
 
 var active: bool = false
 var currWave: int = 0
+var endWaveCalled: bool = false
 var bossList: Array[BossDBData] = [];
 var waveData: WaveData = null
 
@@ -61,6 +62,7 @@ func startNextWave():
 	currentGroupIndex = 0;
 	groupSpawnCount = 0;
 	isSpawnAllEnemy = false;
+	endWaveCalled = false;
 
 	var wData: WaveData = data.waveDatas[currWave - 1] as WaveData
 	waveData = wData
@@ -73,6 +75,10 @@ func startNextWave():
 	spawnEnemy();
 
 func endWave():
+	if endWaveCalled:
+		return;
+
+	endWaveCalled = true;
 	data.onWaveEnd.call();
 
 func spawnEnemy():
@@ -167,7 +173,6 @@ func enemyReachEndPoint(enemy: Enemy):
 func checkEndWave():
 	if(!isSpawnAllEnemy || enemyAliveCount > 0):
 		return;
-
 	endWave();
 
 func enemyDead(cause: Damage, reward: EnemyReward):

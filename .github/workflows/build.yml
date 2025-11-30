@@ -80,11 +80,13 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Godot (Windows)
+        shell: powershell
         run: |
-          powershell -Command "Set-StrictMode -Version Latest"
-          powershell -Command "$url = 'https://downloads.tuxfamily.org/godotengine/4.3/Godot_v4.3-stable_win64.exe.zip'; Invoke-WebRequest -Uri $url -OutFile godot_win.zip"
-          powershell -Command "Expand-Archive -LiteralPath godot_win.zip -DestinationPath . -Force"
-          # The downloaded exe will be named something like 'Godot_v4.3-stable_win64.exe'
+          Set-StrictMode -Version Latest
+          $url = 'https://downloads.tuxfamily.org/godotengine/4.3/Godot_v4.3-stable_win64.exe.zip'
+          Invoke-WebRequest -Uri $url -OutFile 'godot_win.zip'
+          Expand-Archive -LiteralPath 'godot_win.zip' -DestinationPath . -Force
+          Write-Host "Extracted files:"; Get-ChildItem -Name
 
       - name: Export Windows build
         run: |

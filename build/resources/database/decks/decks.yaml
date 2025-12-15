@@ -1,0 +1,13 @@
+Tempest:
+  name: Tempest
+  sprite: Tempest.png
+  architype: Holostars
+  data_file: towers_Tempest.yaml
+  branch: en
+
+Myth:
+  name: Myth
+  sprite: Myth.png
+  architype: Hololive
+  data_file: towers_Myth.yaml
+  branch: en

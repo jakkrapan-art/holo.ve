@@ -1,0 +1,232 @@
+[gd_resource type="Resource" script_class="MapData" load_steps=31 format=3 uid="uid://cpvebyys8omu2"]
+
+[ext_resource type="Script" path="res://scripts/map/map_data.gd" id="1_631rn"]
+[ext_resource type="Script" path="res://scripts/map/enemy_wave/wave_enemy_group.gd" id="2_l0el1"]
+[ext_resource type="Script" path="res://scripts/map/enemy_wave/wave_data.gd" id="3_7fv6k"]
+
+[sub_resource type="Resource" id="Resource_sl7v0"]
+script = ExtResource("2_l0el1")
+texture = "Salam"
+health = 1
+def = 1.0
+mDef = 1.0
+moveSpeed = 80.0
+count = 20
+spawnInterval = 0.2
+
+[sub_resource type="Resource" id="Resource_icytc"]
+script = ExtResource("3_7fv6k")
+waveTime = 60.0
+groupList = Array[ExtResource("2_l0el1")]([SubResource("Resource_sl7v0")])
+
+[sub_resource type="Resource" id="Resource_nkme2"]
+script = ExtResource("2_l0el1")
+texture = "Rolling_Stone"
+health = 80
+def = 1.0
+mDef = 1.0
+moveSpeed = 20.0
+count = 20
+spawnInterval = 0.2
+
+[sub_resource type="Resource" id="Resource_pxx0i"]
+script = ExtResource("3_7fv6k")
+waveTime = 60.0
+groupList = Array[ExtResource("2_l0el1")]([SubResource("Resource_nkme2")])
+
+[sub_resource type="Resource" id="Resource_bjhod"]
+script = ExtResource("2_l0el1")
+texture = "Goblin"
+health = 120
+def = 1.0
+mDef = 1.0
+moveSpeed = 40.0
+count = 20
+spawnInterval = 0.2
+
+[sub_resource type="Resource" id="Resource_k03nk"]
+script = ExtResource("2_l0el1")
+texture = "Armored_Goblin"
+health = 500
+def = 1.0
+mDef = 1.0
+moveSpeed = 10.0
+count = 20
+spawnInterval = 0.2
+
+[sub_resource type="Resource" id="Resource_kb8e1"]
+script = ExtResource("3_7fv6k")
+waveTime = 60.0
+groupList = Array[ExtResource("2_l0el1")]([SubResource("Resource_bjhod"), SubResource("Resource_k03nk")])
+
+[sub_resource type="Resource" id="Resource_pwhhd"]
+script = ExtResource("2_l0el1")
+texture = "Armored_Salam"
+health = 150
+def = 1.0
+mDef = 1.0
+moveSpeed = 40.0
+count = 20
+spawnInterval = 0.2
+
+[sub_resource type="Resource" id="Resource_1r186"]
+script = ExtResource("2_l0el1")
+texture = "Armored_Goblin"
+health = 500
+def = 1.0
+mDef = 1.0
+moveSpeed = 10.0
+count = 20
+spawnInterval = 0.2
+
+[sub_resource type="Resource" id="Resource_2a06q"]
+script = ExtResource("3_7fv6k")
+waveTime = 60.0
+groupList = Array[ExtResource("2_l0el1")]([SubResource("Resource_pwhhd"), SubResource("Resource_1r186")])
+
+[sub_resource type="Resource" id="Resource_hbu15"]
+script = ExtResource("2_l0el1")
+texture = "King_Salam"
+health = 5000
+def = 5.0
+mDef = 5.0
+moveSpeed = 30.0
+count = 20
+spawnInterval = 0.2
+
+[sub_resource type="Resource" id="Resource_exkrn"]
+script = ExtResource("3_7fv6k")
+waveTime = 60.0
+groupList = Array[ExtResource("2_l0el1")]([SubResource("Resource_hbu15")])
+
+[sub_resource type="Resource" id="Resource_3adj3"]
+script = ExtResource("2_l0el1")
+texture = "Baby_Garlic"
+health = 300
+def = 1.0
+mDef = 1.0
+moveSpeed = 60.0
+count = 20
+spawnInterval = 0.2
+
+[sub_resource type="Resource" id="Resource_f204n"]
+script = ExtResource("3_7fv6k")
+waveTime = 60.0
+groupList = Array[ExtResource("2_l0el1")]([SubResource("Resource_3adj3")])
+
+[sub_resource type="Resource" id="Resource_610by"]
+script = ExtResource("2_l0el1")
+texture = "Baby_Garlic"
+health = 300
+def = 1.0
+mDef = 1.0
+moveSpeed = 60.0
+count = 20
+spawnInterval = 0.2
+
+[sub_resource type="Resource" id="Resource_jsvwd"]
+script = ExtResource("2_l0el1")
+texture = "Wild_Boar"
+health = 400
+def = 1.0
+mDef = 1.0
+moveSpeed = 40.0
+count = 20
+spawnInterval = 0.2
+
+[sub_resource type="Resource" id="Resource_6r0b7"]
+script = ExtResource("3_7fv6k")
+waveTime = 60.0
+groupList = Array[ExtResource("2_l0el1")]([SubResource("Resource_610by"), SubResource("Resource_jsvwd")])
+
+[sub_resource type="Resource" id="Resource_4si84"]
+script = ExtResource("2_l0el1")
+texture = "Baby_Garlic"
+health = 300
+def = 1.0
+mDef = 1.0
+moveSpeed = 60.0
+count = 20
+spawnInterval = 0.2
+
+[sub_resource type="Resource" id="Resource_3pgvm"]
+script = ExtResource("2_l0el1")
+texture = "Wild_Boar"
+health = 400
+def = 1.0
+mDef = 1.0
+moveSpeed = 40.0
+count = 20
+spawnInterval = 0.2
+
+[sub_resource type="Resource" id="Resource_pv1b3"]
+script = ExtResource("2_l0el1")
+texture = "Flying_Flower"
+health = 2000
+def = 10.0
+mDef = 1.0
+moveSpeed = 40.0
+count = 20
+spawnInterval = 0.2
+
+[sub_resource type="Resource" id="Resource_4sk7g"]
+script = ExtResource("3_7fv6k")
+waveTime = 60.0
+groupList = Array[ExtResource("2_l0el1")]([SubResource("Resource_4si84"), SubResource("Resource_3pgvm"), SubResource("Resource_pv1b3")])
+
+[sub_resource type="Resource" id="Resource_pfdq7"]
+script = ExtResource("2_l0el1")
+texture = "Wild_Boar"
+health = 400
+def = 1.0
+mDef = 1.0
+moveSpeed = 40.0
+count = 20
+spawnInterval = 0.2
+
+[sub_resource type="Resource" id="Resource_i3qfp"]
+script = ExtResource("2_l0el1")
+texture = "Flying_Flower"
+health = 2000
+def = 10.0
+mDef = 1.0
+moveSpeed = 40.0
+count = 20
+spawnInterval = 0.2
+
+[sub_resource type="Resource" id="Resource_e6p21"]
+script = ExtResource("2_l0el1")
+texture = "Armored_Boar"
+health = 5000
+def = 1.0
+mDef = 10.0
+moveSpeed = 30.0
+count = 20
+spawnInterval = 0.2
+
+[sub_resource type="Resource" id="Resource_16oig"]
+script = ExtResource("3_7fv6k")
+waveTime = 60.0
+groupList = Array[ExtResource("2_l0el1")]([SubResource("Resource_pfdq7"), SubResource("Resource_i3qfp"), SubResource("Resource_e6p21")])
+
+[sub_resource type="Resource" id="Resource_fa6gy"]
+script = ExtResource("2_l0el1")
+texture = "Giant_Boar"
+health = 20000
+def = 5.0
+mDef = 5.0
+moveSpeed = 100.0
+count = 20
+spawnInterval = 0.2
+
+[sub_resource type="Resource" id="Resource_8rnvk"]
+script = ExtResource("3_7fv6k")
+waveTime = 60.0
+groupList = Array[ExtResource("2_l0el1")]([SubResource("Resource_fa6gy")])
+
+[resource]
+script = ExtResource("1_631rn")
+mapName = "forest01"
+width = 0
+height = 0
+waves = Array[ExtResource("3_7fv6k")]([SubResource("Resource_icytc"), SubResource("Resource_pxx0i"), SubResource("Resource_kb8e1"), SubResource("Resource_2a06q"), SubResource("Resource_exkrn"), SubResource("Resource_f204n"), SubResource("Resource_6r0b7"), SubResource("Resource_4sk7g"), SubResource("Resource_16oig"), SubResource("Resource_8rnvk")])

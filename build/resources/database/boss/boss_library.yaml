@@ -1,0 +1,12 @@
+- map: forest01
+  fileName: forest01
+  skillPool:
+    - name: skillA
+      variable:
+        - damage: 100
+    - name: skillB
+      variable:
+        - damage: 100
+    - name: skillC
+      variable:
+        - damage: 100

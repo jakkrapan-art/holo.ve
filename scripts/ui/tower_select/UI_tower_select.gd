@@ -15,16 +15,11 @@ func _ready() -> void:
 	setupRefreshText(refreshLeft, maxRefresh);
 
 func setup(evolutionList: Array, excludeList: Array, evoToken: int = 0, maxRefresh: int = 0):
-	print("Deck passed in:", Global.selected_deck)
-	print("tower_data: ", Global.towers_data.keys())
-
-	maxRefresh = 10000;
-
 	self.refreshLeft = maxRefresh;
 	self.maxRefresh = maxRefresh;
 	_setup_buttons(evolutionList, excludeList, evoToken);
 	var refresh_button = get_node("CanvasLayer/PopupPanel/Panel/RefreshButton")
-	refresh_button.pressed.connect(Callable(self, "refreshList").bind(evolutionList, evoToken))
+	refresh_button.pressed.connect(Callable(self, "refreshList").bind(evolutionList, excludeList, evoToken))
 
 	setupRefreshText(refreshLeft, maxRefresh)
 

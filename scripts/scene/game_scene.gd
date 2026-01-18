@@ -17,6 +17,9 @@ var _popup_open: bool = false
 
 func _input(event):
 	if state == "tower_placement" and event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		if(t != null && !t.isOnValidCell):
+			return;
+
 		t.exitPlaceMode();
 		t = null;
 		startWave();

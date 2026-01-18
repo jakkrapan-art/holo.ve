@@ -6,6 +6,7 @@ var radius: float = 3
 
 var target: Enemy = null
 var enemyInRange: Array[Enemy] = []
+var enableDrawRange: bool = false
 
 signal onEnemyDetected(enemy: Enemy)
 signal onRemoveTarget()
@@ -19,7 +20,13 @@ func setup(radius: float):
 	connect("area_entered", Callable(self, "onCollisionHit"))
 	connect("area_exited", Callable(self, "onCollisionExit"))
 
+func setEnabledDrawRange(value: bool):
+	enableDrawRange = value
+
 func _draw():
+	if not enableDrawRange:
+		return
+
 	var circleColor = Color.SPRING_GREEN
 	circleColor.a = 0.25
 
@@ -66,12 +73,12 @@ func updateTarget():
 				best = enemy
 				currentDistance = 0
 				break;
-				
+
 			var distance = position.distance_to(enemy.position)
 			if distance < currentDistance || currentDistance == -1:
 				currentDistance = distance
 				best = enemy
-	
+
 	if(best == target):
 		return;
 	setTarget(best)

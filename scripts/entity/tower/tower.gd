@@ -16,6 +16,8 @@ var inPlaceMode: bool = false;
 
 @onready var attackController: AttackController = $AttackController;
 @onready var enemyDetector: EnemyDetector = $EnemyDetector;
+@onready var levelLabel: Label = $LevelLabel;
+
 var anim: AnimationController;
 
 var attacking: bool = false;
@@ -63,6 +65,9 @@ func _ready():
 	if(enemyDetector != null):
 		enemyDetector.setup(stat.attackRange);
 		Utility.ConnectSignal(enemyDetector, "onRemoveTarget", Callable(self, "clearEnemy"))
+		if inPlaceMode:
+			showAttackRange(true);
+	
 
 	isReady = true;
 
@@ -77,10 +82,6 @@ func _process(delta):
 
 	if enableAttack && !attacking && !usingSkill:
 		attackEnemy();
-
-func _input(event):
-	if event is InputEventKey and event.pressed and event.keycode == KEY_S:
-		pass
 
 func setup(id: String, onPlace: Callable, onRemove: Callable):
 	self.onPlace = onPlace;
@@ -104,13 +105,22 @@ func exitPlaceMode():
 	inPlaceMode = false;
 
 	var cell = GridHelper.WorldToCell(position);
+	showAttackRange(false);
 	onPlace.call(cell);
 
 func upgrade():
-	return data.levelUp()
+	var success = data.levelUp()
+	print("upgrade to level ", data.level);
+	if levelLabel:
+		levelLabel.text = str(data.level)
+
+	return success
 
 func evolve():
-	return data.evolve()
+	var success = data.evolve()
+	if levelLabel && success:
+		levelLabel.text = str(data.level) + "E"
+	return success
 
 func canEvolve():
 	return data.level >= data.maxLevel && !data.isEvolved;
@@ -315,6 +325,10 @@ func addIntervalAction(key,interval: float, action: String, value: float):
 	timer.connect("timeout", callable);
 	add_child(timer);
 	timer.start();
+
+func showAttackRange(show: bool):
+	if enemyDetector != null:
+		enemyDetector.setEnabledDrawRange(show);
 
 func addDecreaseAtkSpeed(value: float, key: String = ""):
 	data.addAttackSpeedDebuff(value, key);

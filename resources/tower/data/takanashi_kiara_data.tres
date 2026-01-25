@@ -11,7 +11,7 @@ attackRange = 1.0
 attackSpeed = 90.0
 critChance = 15.0
 critMultiplier = 1.5
-mana = 10
+mana = 50
 manaRegen = 10
 intialMana = 10
 

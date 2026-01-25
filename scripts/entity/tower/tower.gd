@@ -21,6 +21,7 @@ var inPlaceMode: bool = false;
 var anim: AnimationController;
 
 var attacking: bool = false;
+var lastAttackTime: float = 0.0;
 var usingSkill: bool = false;
 
 var skillController: SkillController
@@ -67,7 +68,7 @@ func _ready():
 		Utility.ConnectSignal(enemyDetector, "onRemoveTarget", Callable(self, "clearEnemy"))
 		if inPlaceMode:
 			showAttackRange(true);
-	
+
 
 	isReady = true;
 
@@ -128,12 +129,26 @@ func canEvolve():
 func isEvolved():
 	return data.isEvolved
 
+var attackCount: int = 0;
+
 func attackEnemy():
+	var delay = data.getAttackDelay();
+	if (lastAttackTime + delay > (Time.get_ticks_msec() / 1000.00)):
+		return;
+
 	if(is_instance_valid(enemy) && attackController != null && attackController.canAttack(enemy)):
+		attackCount += 1;
+		lastAttackTime = Time.get_ticks_msec() / 1000.00;
+
 		attackController.attack(enemy, data.getDamage(enemy, self));
 		var speed = getAttackAnimationSpeed();
-		play_animation(ATTACK_ANIMATION, speed);
+		# play_animation(ATTACK_ANIMATION, speed);
 		attacking = true;
+		# if attacking:
+		attackController.attackAnimFinish();
+		regenMana(data.getManaRegen());
+		await get_tree().create_timer(data.getAttackDelay()).timeout
+		attacking = false;
 	elif(!is_instance_valid(enemy)):
 		clearEnemy();
 
@@ -200,8 +215,8 @@ func animation_finished(name: String):
 			if attacking:
 				attackController.attackAnimFinish();
 				regenMana(data.getManaRegen());
-				play_animation_default();
 				attacking = false;
+				play_animation_default();
 
 	on_animation_finished.emit(name);
 

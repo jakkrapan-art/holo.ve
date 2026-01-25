@@ -24,7 +24,7 @@ func _ready():
 	
 	# Use the larger value to ensure the entire map fits
 	var zoom_factor = max(zoom_x, zoom_y)
-	zoom_factor *= 1.15;
+	zoom_factor *= 1;
 	
 	zoom = Vector2(zoom_factor, zoom_factor)
 	

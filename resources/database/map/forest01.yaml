@@ -4,21 +4,21 @@ height: 0
 waves:
   - waveTime: 60.0
     groupList:
-      - texture: "Salam"
+      - texture: "salam"
         health: 60
         def: 1
         mDef: 1
         moveSpeed: 20
-        count: 1
-        spawnInterval: 0.2
+        count: 20
+        spawnInterval: 3
 
   - waveTime: 60.0
     groupList:
-      - texture: "Rolling_Stone"
+      - texture: "rolling_stone"
         health: 80
         def: 1
         mDef: 1
-        moveSpeed: 20
+        moveSpeed: 100
         count: 1
         spawnInterval: 0.2
 
@@ -28,10 +28,11 @@ waves:
         health: 120
         def: 1
         mDef: 1
-        moveSpeed: 40
+        moveSpeed: 140
         count: 1
         spawnInterval: 0.2
-      - texture: "Armored_Goblin"
+
+      - texture: "armored_goblin"
         health: 500
         def: 1
         mDef: 1
@@ -48,16 +49,18 @@ waves:
               - type: block_damage
                 data:
                   count: 1
+                  
   - waveTime: 60.0
     groupList:
-      - texture: "Armored_Salam"
+      - texture: "armored_salam"
         health: 150
         def: 1
         mDef: 1
         moveSpeed: 40
         count: 60
         spawnInterval: 0.2
-      - texture: "Armored_Goblin"
+
+      - texture: "armored_goblin"
         health: 500
         def: 1
         mDef: 1
@@ -80,48 +83,48 @@ waves:
 
   - waveTime: 60.0
     groupList:
-      - texture: "Baby_Garlic"
+      - texture: "baby_garlic"
         health: 300
         def: 1
         mDef: 1
-        moveSpeed: 60
+        moveSpeed: 100
         count: 60
         spawnInterval: 0.2
 
   - waveTime: 60.0
     groupList:
-      - texture: "Baby_Garlic"
+      - texture: "baby_garlic"
         health: 300
         def: 1
         mDef: 1
-        moveSpeed: 60
+        moveSpeed: 100
         count: 40
         spawnInterval: 0.2
-      - texture: "Wild_Boar"
+      - texture: "wild_boar"
         health: 400
         def: 1
         mDef: 1
-        moveSpeed: 40
+        moveSpeed: 100
         count: 40
         spawnInterval: 0.2
 
   - waveTime: 60.0
     groupList:
-      - texture: "Baby_Garlic"
+      - texture: "baby_garlic"
         health: 300
         def: 1
         mDef: 1
         moveSpeed: 60
         count: 40
         spawnInterval: 0.2
-      - texture: "Wild_Boar"
+      - texture: "wild_boar"
         health: 400
         def: 1
         mDef: 1
         moveSpeed: 40
         count: 40
         spawnInterval: 0.2
-      - texture: "Flying_Flower"
+      - texture: "flying_flower"
         health: 2000
         def: 10
         mDef: 1
@@ -143,14 +146,14 @@ waves:
 
   - waveTime: 60.0
     groupList:
-      - texture: "Wild_Boar"
+      - texture: "wild_boar"
         health: 400
         def: 1
         mDef: 1
         moveSpeed: 40
         count: 60
         spawnInterval: 0.2
-      - texture: "Flying_Flower"
+      - texture: "flying_flower"
         health: 2000
         def: 10
         mDef: 1

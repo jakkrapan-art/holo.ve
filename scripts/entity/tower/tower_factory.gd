@@ -4,7 +4,7 @@ class_name TowerFactory
 const TowerClass = preload("res://scripts/entity/tower/tower_trait.gd").TowerClass
 const TowerGeneration = preload("res://scripts/entity/tower/tower_trait.gd").TowerGeneration
 
-@onready var uiSynergy: UISynergy = $"../UICanvas/UISynergy"
+@onready var uiSynergy: UISynergy = $"../GameUI/UISynergy"
 
 @export var towerTemplate: PackedScene
 

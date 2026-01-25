@@ -1,16 +1,27 @@
-[gd_scene load_steps=11 format=3 uid="uid://bcyr1l11fwy7"]
+[gd_scene load_steps=14 format=3 uid="uid://bcyr1l11fwy7"]
 
 [ext_resource type="PackedScene" uid="uid://dsshuu1axf1t8" path="res://resources/ui_component/synergy/ui_synergy.tscn" id="1_hk82f"]
+[ext_resource type="Texture2D" uid="uid://0ui1xvgwta5e" path="res://resources/ui_asset/UIExport_0000s_0001s_0000_Group-52.png" id="2_38sba"]
 [ext_resource type="Script" path="res://scripts/ui/currency.gd" id="2_rqmfg"]
 [ext_resource type="FontFile" uid="uid://vc6emo5px8ld" path="res://resources/ui_component/font/Roboto-Regular.ttf" id="3_pj1e5"]
 [ext_resource type="Texture2D" uid="uid://cf3nmxx0u8fwt" path="res://resources/ui_asset/UIExport_0001s_0003_Group-39.png" id="4_7yvjc"]
 [ext_resource type="Texture2D" uid="uid://bnilym5a3spel" path="res://resources/ui_asset/UIExport_0001s_0005_Layer-33.png" id="5_r4mlk"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vvh1m"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_c4to1"]
 corner_radius_top_left = 120
 corner_radius_top_right = 120
 corner_radius_bottom_right = 120
 corner_radius_bottom_left = 120
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vvh1m"]
+bg_color = Color(0.844813, 0.488226, 0.419488, 1)
+corner_radius_top_left = 120
+corner_radius_top_right = 120
+corner_radius_bottom_right = 120
+corner_radius_bottom_left = 120
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_xsu78"]
+texture = ExtResource("2_38sba")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uyb7r"]
 bg_color = Color(0.6, 0.254902, 0.6, 1)
@@ -78,7 +89,29 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_c4to1")
+
+[node name="ManagerImg" type="Panel" parent="PlayerUI/Player"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = 22.955
+offset_right = -4.0
+offset_bottom = -1.045
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_vvh1m")
+
+[node name="Frame" type="Panel" parent="PlayerUI/Player"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_xsu78")
 
 [node name="PlayerSkill" type="Control" parent="PlayerUI"]
 custom_minimum_size = Vector2(166, 166)

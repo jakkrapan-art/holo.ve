@@ -12,6 +12,8 @@ var spawnParent: Node2D = null;
 var enemyTextures: Dictionary = {};
 @onready var enemyFactory: EnemyFactory = $"../EnemyFactory";
 
+@onready var waveCounterText: Label = $"../GameUI/WaveCounter/Text"
+
 var active: bool = false
 var currWave: int = 0
 var endWaveCalled: bool = false
@@ -71,10 +73,11 @@ func startNextWave():
 	if isBossWave:
 		bossRandomIndex = randi_range(0, bossList.size() - 1);
 
-	print("wave: ", currWave, " isBossWave: ", isBossWave);
 	spawnEnemy();
+	updateUI();
 
 func endWave():
+	print("End Wave ", currWave);
 	if endWaveCalled:
 		return;
 
@@ -103,6 +106,7 @@ func spawnEnemy():
 		mDef = boss.stats.mDef
 		moveSpeed = boss.stats.moveSpeed
 		isSpawnAllEnemy = true;
+		print("spawn boss: ", isSpawnAllEnemy);
 		skills = boss.skills;
 		timer.stop()
 
@@ -122,9 +126,12 @@ func spawnEnemy():
 		if(groupSpawnCount >= waveGroup.count):
 			currentGroupIndex += 1;
 			groupSpawnCount = 0;
+			# if(currentGroupIndex < waveData.groupList.size()):
+			# 	waveGroup = waveData.groupList[currentGroupIndex];
 
 		if(currentGroupIndex >= waveData.groupList.size()):
 			isSpawnAllEnemy = true
+			print("wave ", currWave, " spawn all enemy to true: ", isSpawnAllEnemy, " group index: ", currentGroupIndex, " group spawn count: ", groupSpawnCount, "group size: ", waveGroup.count, " wave group size: ", waveData.groupList.size());
 
 		countdownSpawnNextEnemy(waveGroup.spawnInterval);
 
@@ -133,6 +140,10 @@ func spawnEnemy():
 	enemyAliveCount += 1;
 
 	connectSignalToEnemy(enemy);
+
+func updateUI():
+	if waveCounterText != null:
+		waveCounterText.text = "wave " + str(currWave)
 
 func testSpawnBoss(index: int = -1):
 	if(bossList.size() == 0):
@@ -171,9 +182,10 @@ func enemyReachEndPoint(enemy: Enemy):
 	data.onEnemyReachEndpoint.call(5);
 
 func checkEndWave():
-	if(!isSpawnAllEnemy || enemyAliveCount > 0):
-		return;
-	endWave();
+	print("check end wave called");
+	if(isSpawnAllEnemy && enemyAliveCount == 0):
+		print("end wave: " + str(isSpawnAllEnemy) + " alive: " + str(enemyAliveCount))
+		endWave();
 
 func enemyDead(cause: Damage, reward: EnemyReward):
 	reduceEnemyCount();

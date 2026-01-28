@@ -10,7 +10,7 @@ waves:
         mDef: 1
         moveSpeed: 20
         count: 60
-        spawnInterval: 1
+        spawnInterval: 1  #interval = count/60 (60 = 60 second)
 
   - waveTime: 60.0
     groupList:

@@ -2,7 +2,7 @@ mapName: "forest01"
 width: 0
 height: 0
 waves:
-  - waveTime: 60.0
+  - waveTime: 60.0 #wave1
     groupList:
       - texture: "salam"
         health: 60
@@ -12,7 +12,7 @@ waves:
         count: 60
         spawnInterval: 1  #interval = count/60 (60 = 60 second)
 
-  - waveTime: 60.0
+  - waveTime: 60.0  #wave2
     groupList:
       - texture: "rolling_stone"
         health: 80
@@ -22,7 +22,7 @@ waves:
         count: 60
         spawnInterval: 1
 
-  - waveTime: 60.0
+  - waveTime: 60.0  #wave3
     groupList:
       - texture: "Goblin"
         health: 120
@@ -50,7 +50,7 @@ waves:
                 data:
                   count: 1
                   
-  - waveTime: 60.0
+  - waveTime: 60.0  #wave4
     groupList:
       - texture: "armored_salam"
         health: 150
@@ -78,10 +78,10 @@ waves:
                 data:
                   count: 1
 
-  - waveTime: 60.0
+  - waveTime: 60.0  #wave5
     boss: true
 
-  - waveTime: 60.0
+  - waveTime: 60.0  #wave6
     groupList:
       - texture: "baby_garlic"
         health: 300
@@ -91,7 +91,7 @@ waves:
         count: 60
         spawnInterval: 1
 
-  - waveTime: 60.0
+  - waveTime: 60.0  #wave7
     groupList:
       - texture: "baby_garlic"
         health: 300
@@ -109,7 +109,7 @@ waves:
         count: 40
         spawnInterval: 1.5
 
-  - waveTime: 60.0
+  - waveTime: 60.0  #wave8
     groupList:
       - texture: "baby_garlic"
         health: 300
@@ -147,7 +147,7 @@ waves:
                   level: 1
                   increaseValue: 5
 
-  - waveTime: 60.0
+  - waveTime: 60.0  #wave9
     groupList:
       - texture: "wild_boar"
         health: 400
@@ -198,5 +198,5 @@ waves:
                   radius: 1
                   value: 2.5
 
-  - waveTime: 60.0
+  - waveTime: 60.0  #wave10
     boss: true

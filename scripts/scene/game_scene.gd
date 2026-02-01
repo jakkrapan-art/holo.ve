@@ -22,6 +22,8 @@ func _input(event):
 
 		t.exitPlaceMode();
 		t = null;
+		if(map != null):
+			map.toggle_grid(false);
 		startWave();
 
 func _ready():
@@ -116,6 +118,8 @@ func _on_option_selected(selection):
 		GetTowerResult.State.New:
 			# Enter build mode with the new tower
 			result.tower.enterPlaceMode();
+			if(map != null):
+				map.toggle_grid(true);
 			add_child(result.tower);
 			t = result.tower
 			state = "tower_placement"

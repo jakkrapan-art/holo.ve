@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://ccnrotkl0jnmo"]
+[gd_scene load_steps=22 format=3 uid="uid://ccnrotkl0jnmo"]
 
 [ext_resource type="Texture2D" uid="uid://dhrxbu6vewft2" path="res://resources/tiles/Bush_FB_tile.png" id="1_tpmca"]
 [ext_resource type="Texture2D" uid="uid://nfv1i5ydobrb" path="res://resources/tiles/OBJ01.png" id="1_v0y5x"]
@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://cxkuvheslu0n7" path="res://resources/tiles/OBJ04.png" id="6_r3m74"]
 [ext_resource type="Script" path="res://scripts/map/path_bake_auto.gd" id="8_nw8xb"]
 [ext_resource type="Texture2D" uid="uid://dflugtxnbke75" path="res://resources/tiles/LightAnimation01.png" id="8_wce3f"]
+[ext_resource type="Script" path="res://scripts/map/available_grid_drawer.gd" id="10_y0try"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_k166p"]
 texture = ExtResource("1_v0y5x")
@@ -978,3 +979,6 @@ libraries = {
 [node name="LightAnimation01" type="Sprite2D" parent="AnimationPlayer"]
 position = Vector2(4353, 4971)
 texture = ExtResource("8_wce3f")
+
+[node name="GridDrawer" type="Node2D" parent="."]
+script = ExtResource("10_y0try")

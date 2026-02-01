@@ -4,23 +4,23 @@ height: 0
 waves:
   - waveTime: 60.0
     groupList:
-      - texture: "Salam"
+      - texture: "salam"
         health: 60
         def: 1
         mDef: 1
         moveSpeed: 20
-        count: 1
-        spawnInterval: 0.2
+        count: 60
+        spawnInterval: 1  #interval = count/60 (60 = 60 second)
 
   - waveTime: 60.0
     groupList:
-      - texture: "Rolling_Stone"
+      - texture: "rolling_stone"
         health: 80
         def: 1
         mDef: 1
         moveSpeed: 20
-        count: 1
-        spawnInterval: 0.2
+        count: 60
+        spawnInterval: 1
 
   - waveTime: 60.0
     groupList:
@@ -29,15 +29,16 @@ waves:
         def: 1
         mDef: 1
         moveSpeed: 40
-        count: 1
-        spawnInterval: 0.2
-      - texture: "Armored_Goblin"
+        count: 60
+        spawnInterval: 1
+
+      - texture: "armored_goblin"
         health: 500
         def: 1
         mDef: 1
-        moveSpeed: 10
-        count: 1
-        spawnInterval: 0.2
+        moveSpeed: 20
+        count: 5
+        spawnInterval: 12
         skill:
           - name: Wooden Shield
             cooldown: 0
@@ -48,22 +49,24 @@ waves:
               - type: block_damage
                 data:
                   count: 1
+                  
   - waveTime: 60.0
     groupList:
-      - texture: "Armored_Salam"
+      - texture: "armored_salam"
         health: 150
         def: 1
         mDef: 1
         moveSpeed: 40
         count: 60
-        spawnInterval: 0.2
-      - texture: "Armored_Goblin"
+        spawnInterval: 1
+
+      - texture: "armored_goblin"
         health: 500
         def: 1
         mDef: 1
-        moveSpeed: 10
-        count: 10
-        spawnInterval: 0.2
+        moveSpeed: 20
+        count: 5
+        spawnInterval: 12
         skill:
           - name: Wooden Shield
             cooldown: 0
@@ -80,54 +83,57 @@ waves:
 
   - waveTime: 60.0
     groupList:
-      - texture: "Baby_Garlic"
+      - texture: "baby_garlic"
         health: 300
         def: 1
         mDef: 1
         moveSpeed: 60
         count: 60
-        spawnInterval: 0.2
+        spawnInterval: 1
 
   - waveTime: 60.0
     groupList:
-      - texture: "Baby_Garlic"
+      - texture: "baby_garlic"
+        health: 300
+        def: 1
+        mDef: 1
+        moveSpeed: 60
+        count: 60
+        spawnInterval: 1
+
+      - texture: "wild_boar"
+        health: 400
+        def: 1
+        mDef: 1
+        moveSpeed: 80
+        count: 40
+        spawnInterval: 1.5
+
+  - waveTime: 60.0
+    groupList:
+      - texture: "baby_garlic"
         health: 300
         def: 1
         mDef: 1
         moveSpeed: 60
         count: 40
         spawnInterval: 0.2
-      - texture: "Wild_Boar"
-        health: 400
-        def: 1
-        mDef: 1
-        moveSpeed: 40
-        count: 40
-        spawnInterval: 0.2
 
-  - waveTime: 60.0
-    groupList:
-      - texture: "Baby_Garlic"
-        health: 300
-        def: 1
-        mDef: 1
-        moveSpeed: 60
-        count: 40
-        spawnInterval: 0.2
-      - texture: "Wild_Boar"
+      - texture: "wild_boar"
         health: 400
         def: 1
         mDef: 1
-        moveSpeed: 40
+        moveSpeed: 80
         count: 40
-        spawnInterval: 0.2
-      - texture: "Flying_Flower"
+        spawnInterval: 1.5
+        
+      - texture: "flying_flower"
         health: 2000
         def: 10
         mDef: 1
         moveSpeed: 40
         count: 10
-        spawnInterval: 0.2
+        spawnInterval: 6
         skill:
           - name: Sweat Spore
             cooldown: 1
@@ -143,20 +149,21 @@ waves:
 
   - waveTime: 60.0
     groupList:
-      - texture: "Wild_Boar"
+      - texture: "wild_boar"
         health: 400
         def: 1
         mDef: 1
-        moveSpeed: 40
-        count: 60
-        spawnInterval: 0.2
-      - texture: "Flying_Flower"
+        moveSpeed: 80
+        count: 40
+        spawnInterval: 1.5
+
+      - texture: "flying_flower"
         health: 2000
         def: 10
         mDef: 1
         moveSpeed: 40
         count: 10
-        spawnInterval: 0.2
+        spawnInterval: 6
         skill:
           - name: Sweat Spore
             cooldown: 0
@@ -170,13 +177,14 @@ waves:
                   duration: 10000
                   level: 1
                   increaseValue: 5
-      - texture: "Armored_Boar"
+
+      - texture: "armored_boar"
         health: 5000
         def: 1
         mDef: 10
-        moveSpeed: 30
+        moveSpeed: 40
         count: 5
-        spawnInterval: 0.2
+        spawnInterval: 12
         skill:
           - name: Protector Aura
             cooldown: 0

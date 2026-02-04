@@ -136,17 +136,18 @@ waves:
         spawnInterval: 6
         skill:
           - name: Sweat Spore
-            cooldown: 1
+            cooldown: 0
+            oneTime: true
             desc: เพิ่ม def ให้ตนเอง 5%
             action:
               - type: target_self
               - type: apply_status_effect
                 data:
                   type: IncreaseDefBuff
-                  duration: 1
+                  duration: 10000
                   level: 1
                   increaseValue: 5
-
+                  
   - waveTime: 60.0  #wave9
     groupList:
       - texture: "wild_boar"

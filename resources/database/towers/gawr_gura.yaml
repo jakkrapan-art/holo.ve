@@ -7,8 +7,8 @@ skill: "res://resources/database/skill/gawr_gura_skill.tres"
 
 stats:
   - damage: 80
-    attackRange: 2.0
-    attackSpeed: 120
+    attackRange: 1.0
+    attackSpeed: 80
     mana: 120
     manaRegen: 10
     intialMana: 60
@@ -16,8 +16,8 @@ stats:
     critMultiplier: 1.5
 
   - damage: 120
-    attackRange: 2.0
-    attackSpeed: 120
+    attackRange: 1.0
+    attackSpeed: 80
     mana: 120
     manaRegen: 10
     intialMana: 60
@@ -25,8 +25,8 @@ stats:
     critMultiplier: 1.5
 
   - damage: 180
-    attackRange: 2.0
-    attackSpeed: 120
+    attackRange: 1.0
+    attackSpeed: 80
     mana: 120
     manaRegen: 10
     intialMana: 60

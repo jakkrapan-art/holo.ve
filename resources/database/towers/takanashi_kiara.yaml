@@ -8,7 +8,7 @@ skill: "res://resources/database/skill/takanashi_kiara_skill.tres"
 stats:
   - damage: 100
     attackRange: 1.0
-    attackSpeed: 110.0
+    attackSpeed: 90.0
     mana: 50
     manaRegen: 10
     intialMana: 10
@@ -17,7 +17,7 @@ stats:
 
   - damage: 120
     attackRange: 1.0
-    attackSpeed: 110.0
+    attackSpeed: 90.0
     mana: 50
     manaRegen: 10
     intialMana: 10
@@ -26,7 +26,7 @@ stats:
 
   - damage: 160
     attackRange: 1.0
-    attackSpeed: 110.0
+    attackSpeed: 90.0
     mana: 50
     manaRegen: 10
     intialMana: 10

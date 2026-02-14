@@ -1,7 +1,8 @@
-[gd_scene load_steps=16 format=3 uid="uid://cbvsli7h2xgda"]
+[gd_scene load_steps=17 format=3 uid="uid://cbvsli7h2xgda"]
 
-[ext_resource type="Texture2D" uid="uid://ctoggex1gqn4" path="res://resources/tower/sprite/manager/a_chan/manestand.png" id="1_sa5fc"]
-[ext_resource type="Texture2D" uid="uid://ckv1mcuwniogb" path="res://resources/tower/sprite/test/test_character_idle.png" id="2_gh881"]
+[ext_resource type="Texture2D" uid="uid://ctoggex1gqn4" path="res://resources/manager/a_chan/sprite/manestand.png" id="1_sa5fc"]
+[ext_resource type="Texture2D" uid="uid://ckv1mcuwniogb" path="res://resources/tower/hololive/en_branch/myth_gen/kiara/sprite/test_character_idle.png" id="2_gh881"]
+[ext_resource type="Script" path="res://scripts/entity/manager.gd" id="3_e3kds"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_cmnq7"]
 atlas = ExtResource("1_sa5fc")
@@ -103,4 +104,6 @@ animations = [{
 [node name="AnimatedSprite2D_a_chan" type="AnimatedSprite2D"]
 sprite_frames = SubResource("SpriteFrames_e7eyb")
 animation = &"a_chan"
-frame_progress = 0.205039
+frame_progress = 0.667521
+script = ExtResource("3_e3kds")
+animationName = "a_chan"

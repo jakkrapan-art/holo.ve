@@ -6,3 +6,6 @@
 
 [node name="AnimatedSprite2D" parent="." index="0"]
 modulate = Color(0, 0.537255, 1, 1)
+animation = &"idle"
+frame = 0
+frame_progress = 0.0

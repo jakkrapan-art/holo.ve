@@ -55,3 +55,17 @@ static func deep_duplicate_resource(resource: Resource) -> Resource:
 				copy.set(prop_name, new_dict)
 
 	return copy
+
+static func parse_tower_trait_enum(enum_dict: Dictionary, value: String):
+	if typeof(value) != TYPE_STRING:
+		push_error("Invalid enum value type: " + str(value))
+		return 0
+
+	var target := value.to_lower()
+
+	for key in enum_dict.keys():
+		if key.to_lower() == target:
+			return enum_dict[key]
+
+	push_error("Enum value not found: " + value)
+	return 0

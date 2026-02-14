@@ -1,0 +1,34 @@
+maxLevel: 3 # tower max level
+towerClass: diva # tower class (Assassin, Diva, Hero, King, Marksman, Robotic, SpellCaster, Warrior)
+generation: tempus # tower generation (Myth, Tempus, Gen0, Gen1, Indo1)
+evolutionCost: 1 # ค่า evolution
+
+skill: "res://resources/database/skill/gawr_gura_skill.tres" #tower skill file path (เดี๋ยวอัปเดตเป็น yaml ให้อีกที)
+
+stats:
+  - damage: 80 # ค่าพลังโจมตี
+    attackRange: 2.0 #ระยะการตี (cell)
+    attackSpeed: 80.0 #ความเร็วการโจมตี
+    critChance: 15.0
+    critMultiplier: 1.5
+    mana: 120 # ค่า mana สูงสุด
+    manaRegen: 10 # ค่า mana รีเจน ต่อการตี 1 ที
+    intialMana: 60 # ค่า mana เริ่มต้น
+
+  - damage: 120
+    attackRange: 2.0
+    attackSpeed: 80.0
+    critChance: 15.0
+    critMultiplier: 1.5
+    mana: 120
+    manaRegen: 10
+    intialMana: 60
+
+  - damage: 180
+    attackRange: 2.0
+    attackSpeed: 80.0
+    critChance: 15.0
+    critMultiplier: 1.5
+    mana: 120
+    manaRegen: 10
+    intialMana: 60

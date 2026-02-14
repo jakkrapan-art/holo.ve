@@ -1,0 +1,45 @@
+maxLevel: 3
+towerClass: warrior
+generation: myth
+evolutionCost: 1
+
+skill: "res://resources/database/skill/takanashi_kiara_skill.tres"
+
+stats:
+  - damage: 100
+    attackRange: 1.0
+    attackSpeed: 90.0
+    critChance: 15.0
+    critMultiplier: 1.5
+    mana: 50
+    manaRegen: 10
+    intialMana: 10
+
+  - damage: 120
+    attackRange: 1.0
+    attackSpeed: 90.0
+    critChance: 15.0
+    critMultiplier: 1.5
+    mana: 50
+    manaRegen: 10
+    intialMana: 10
+
+  - damage: 160
+    attackRange: 1.0
+    attackSpeed: 90.0
+    critChance: 15.0
+    critMultiplier: 1.5
+    mana: 50
+    manaRegen: 10
+    intialMana: 10
+
+# Optional (only if tower has evolution stats)
+# evolutionStat:
+#   damage: 250
+#   attackRange: 1.2
+#   attackSpeed: 110.0
+#   critChance: 25.0
+#   critMultiplier: 2.0
+#   mana: 80
+#   manaRegen: 15
+#   intialMana: 20

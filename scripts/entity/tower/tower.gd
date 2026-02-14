@@ -7,7 +7,7 @@ var isReady = false;
 @export var isMoving: bool = false;
 
 @export var id: String;
-@export var data: TowerData;
+var data: TowerData;
 
 var enableAttack: bool = true;
 var enableRegenMana: bool = true;
@@ -88,6 +88,9 @@ func setup(id: String, onPlace: Callable, onRemove: Callable):
 	self.onPlace = onPlace;
 	self.name = name;
 	self.onRemove = onRemove;
+
+	var towerData = TowerDataLoader.load_data("res://resources/database/towers/" , id.to_lower());
+	self.data = towerData;
 
 func enterPlaceMode():
 	isMoving = true;

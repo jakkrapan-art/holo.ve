@@ -1,0 +1,34 @@
+maxLevel: 3
+towerClass: diva
+generation: tempus
+evolutionCost: 1
+
+skill: "res://resources/database/skill/gawr_gura_skill.tres"
+
+stats:
+  - damage: 80
+    attackRange: 2.0
+    attackSpeed: 80.0
+    critChance: 15.0
+    critMultiplier: 1.5
+    mana: 120
+    manaRegen: 10
+    intialMana: 60
+
+  - damage: 120
+    attackRange: 2.0
+    attackSpeed: 80.0
+    critChance: 15.0
+    critMultiplier: 1.5
+    mana: 120
+    manaRegen: 10
+    intialMana: 60
+
+  - damage: 180
+    attackRange: 2.0
+    attackSpeed: 80.0
+    critChance: 15.0
+    critMultiplier: 1.5
+    mana: 120
+    manaRegen: 10
+    intialMana: 60

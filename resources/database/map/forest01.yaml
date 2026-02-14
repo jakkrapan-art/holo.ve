@@ -24,7 +24,7 @@ waves:
 
   - waveTime: 60.0  #wave3
     groupList:
-      - texture: "Goblin"
+      - texture: "goblin"
         health: 120
         def: 1
         mDef: 1

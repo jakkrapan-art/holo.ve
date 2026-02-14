@@ -38,7 +38,7 @@ func _ready():
 
 	show_popup_panel();
 
-	SpriteLoader.preloadImage("enemy", "res://resources/enemy");
+	SpriteLoader.preloadEnemy("res://resources/enemy/basic_map01/normal");
 
 	mission = Mission.new();
 

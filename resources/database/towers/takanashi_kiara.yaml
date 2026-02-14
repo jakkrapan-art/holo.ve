@@ -8,30 +8,41 @@ skill: "res://resources/database/skill/takanashi_kiara_skill.tres"
 stats:
   - damage: 100
     attackRange: 1.0
-    attackSpeed: 90.0
-    critChance: 15.0
-    critMultiplier: 1.5
+    attackSpeed: 110.0
     mana: 50
     manaRegen: 10
     intialMana: 10
+    critChance: 0
+    critMultiplier: 1.5
 
   - damage: 120
     attackRange: 1.0
-    attackSpeed: 90.0
-    critChance: 15.0
-    critMultiplier: 1.5
+    attackSpeed: 110.0
     mana: 50
     manaRegen: 10
     intialMana: 10
+    critChance: 0
+    critMultiplier: 1.5
 
   - damage: 160
     attackRange: 1.0
-    attackSpeed: 90.0
-    critChance: 15.0
-    critMultiplier: 1.5
+    attackSpeed: 110.0
     mana: 50
     manaRegen: 10
     intialMana: 10
+    critChance: 0
+    critMultiplier: 1.5
+
+# evolutionStat:
+#   - damage: 300
+#     attackRange: 1.0
+#     attackSpeed: 120.0
+#     mana: 80
+#     manaRegen: 10
+#     intialMana: 40
+#     critChance: 0
+#     critMultiplier: 1.5
+
 
 # Optional (only if tower has evolution stats)
 # evolutionStat:

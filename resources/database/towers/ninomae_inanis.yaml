@@ -1,0 +1,44 @@
+maxLevel: 3
+towerClass: SpellCaster
+generation: myth
+evolutionCost: 1
+
+skill: "res://resources/database/skill/gawr_gura_skill.tres"
+
+stats:
+  - damage: 140
+    attackRange: 4.0
+    attackSpeed: 140
+    mana: 100
+    intialMana: 60
+    manaRegen: 10
+    critChance: 0
+    critMultiplier: 1.5
+
+  - damage: 160
+    attackRange: 4.0
+    attackSpeed: 140
+    mana: 100
+    intialMana: 60
+    manaRegen: 10
+    critChance: 0
+    critMultiplier: 1.5
+
+  - damage: 200
+    attackRange: 4.0
+    attackSpeed: 140
+    mana: 100
+    intialMana: 60
+    manaRegen: 10
+    critChance: 0
+    critMultiplier: 1.5
+
+# evolutionStat:
+#   - damage: 500
+#     attackRange: 4.0
+#     attackSpeed: 120
+#     mana: 100
+#     intialMana: 60
+#     manaRegen: 10
+#     critChance: 0
+#     critMultiplier: 1.5

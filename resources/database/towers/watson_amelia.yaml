@@ -1,0 +1,44 @@
+maxLevel: 3
+towerClass: Marksman
+generation: myth
+evolutionCost: 1
+
+skill: "res://resources/database/skill/gawr_gura_skill.tres"
+
+stats:
+  - damage: 150
+    attackRange: 5.0
+    attackSpeed: 80
+    mana: 100
+    intialMana: 80
+    manaRegen: 10
+    critChance: 0
+    critMultiplier: 1.5
+
+  - damage: 175
+    attackRange: 5.0
+    attackSpeed: 80
+    mana: 100
+    intialMana: 80
+    manaRegen: 10
+    critChance: 0
+    critMultiplier: 1.5
+
+  - damage: 225
+    attackRange: 5.0
+    attackSpeed: 80
+    mana: 100
+    intialMana: 80
+    manaRegen: 10
+    critChance: 0
+    critMultiplier: 1.5
+
+# evolutionStat:
+#   - damage: 300
+#     attackRange: 5.0
+#     attackSpeed: 50
+#     mana: 120
+#     intialMana: 80
+#     manaRegen: 10
+#     critChance: 0
+#     critMultiplier: 1.5

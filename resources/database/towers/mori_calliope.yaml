@@ -1,5 +1,5 @@
 maxLevel: 3
-towerClass: SpellCaster
+towerClass: Assassin
 generation: myth
 evolutionCost: 1
 
@@ -8,38 +8,37 @@ skill: "res://resources/database/skill/gawr_gura_skill.tres"
 stats:
   - damage: 80
     attackRange: 2.0
-    attackSpeed: 120
-    mana: 120
+    attackSpeed: 100
+    mana: 40
+    intialMana: 10
     manaRegen: 10
-    intialMana: 60
     critChance: 0
     critMultiplier: 1.5
 
-  - damage: 120
+  - damage: 100
     attackRange: 2.0
-    attackSpeed: 120
-    mana: 120
+    attackSpeed: 100
+    mana: 40
+    intialMana: 10
     manaRegen: 10
-    intialMana: 60
     critChance: 0
     critMultiplier: 1.5
 
-  - damage: 180
+  - damage: 140
     attackRange: 2.0
-    attackSpeed: 120
-    mana: 120
+    attackSpeed: 100
+    mana: 40
+    intialMana: 10
     manaRegen: 10
-    intialMana: 60
     critChance: 0
     critMultiplier: 1.5
 
   # - evolutionStat:
-  #   damage: 240
+  #   damage: 200
   #   attackRange: 2.0
-  #   attackSpeed: 100.0
-  #   mana: 120
+  #   attackSpeed: 70
+  #   mana: 80
+  #   intialMana: 40
   #   manaRegen: 10
-  #   intialMana: 80
   #   critChance: 0
   #   critMultiplier: 1.5
-

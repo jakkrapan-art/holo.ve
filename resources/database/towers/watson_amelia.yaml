@@ -33,12 +33,12 @@ stats:
     critChance: 0
     critMultiplier: 1.5
 
-# evolutionStat:
-#   - damage: 300
-#     attackRange: 5.0
-#     attackSpeed: 50
-#     mana: 120
-#     intialMana: 80
-#     manaRegen: 10
-#     critChance: 0
-#     critMultiplier: 1.5
+evolutionStat:
+  damage: 350
+  attackRange: 5.0
+  attackSpeed: 140
+  mana: 120
+  manaRegen: 10
+  intialMana: 80
+  critChance: 50.0
+  critMultiplier: 1.5

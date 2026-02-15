@@ -33,15 +33,15 @@ stats:
     critChance: 0
     critMultiplier: 1.5
 
-# evolutionStat:
-#   - damage: 300
-#     attackRange: 1.0
-#     attackSpeed: 120.0
-#     mana: 80
-#     manaRegen: 10
-#     intialMana: 40
-#     critChance: 0
-#     critMultiplier: 1.5
+evolutionStat:
+  damage: 300
+  attackRange: 1.0
+  attackSpeed: 110
+  mana: 80
+  manaRegen: 10
+  intialMana: 40
+  critChance: 50.0
+  critMultiplier: 1.5
 
 
 # Optional (only if tower has evolution stats)

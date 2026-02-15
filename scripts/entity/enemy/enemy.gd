@@ -84,7 +84,7 @@ func _on_damage_flash_timeout():
 
 func dead(cause: Damage):
 	var reward = calcurateReward();
-	onDead.emit(cause, reward);
+	onDead.emit(self, cause, reward);
 	queue_free();
 
 func addStatusEffect(effect: StatusEffect):

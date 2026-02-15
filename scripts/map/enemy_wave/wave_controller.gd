@@ -30,6 +30,7 @@ var currentGroupIndex: int = 0
 
 var enemyAliveCount: int = 0;
 var isSpawnAllEnemy: bool = false;
+var deadList: Array[Enemy] = [];
 
 func _ready():
 	spawnParent = map.path
@@ -82,6 +83,7 @@ func endWave():
 		return;
 
 	endWaveCalled = true;
+	deadList.clear();
 	data.onWaveEnd.call();
 
 func spawnEnemy():
@@ -137,7 +139,9 @@ func spawnEnemy():
 
 	var enemy: Enemy = await createEnemyObject(enemyType, health, def, mDef, moveSpeed, texture, skills);
 	spawnedCount += 1;
+	print("[before] spawn enemy: ", enemyAliveCount);
 	enemyAliveCount += 1;
+	print("[after] spawn enemy: ", enemyAliveCount);
 
 	connectSignalToEnemy(enemy);
 
@@ -182,12 +186,16 @@ func enemyReachEndPoint(enemy: Enemy):
 	data.onEnemyReachEndpoint.call(5);
 
 func checkEndWave():
-	print("check end wave called");
+	print("check end wave called alive: " + str(enemyAliveCount) + " is spawn all: " + str(isSpawnAllEnemy));
 	if(isSpawnAllEnemy && enemyAliveCount == 0):
 		print("end wave: " + str(isSpawnAllEnemy) + " alive: " + str(enemyAliveCount))
 		endWave();
 
-func enemyDead(cause: Damage, reward: EnemyReward):
+func enemyDead(enemy: Enemy, cause: Damage, reward: EnemyReward):
+	if(deadList.has(enemy)):
+		return
+
+	deadList.append(enemy);
 	reduceEnemyCount();
 	onEnemyDead.emit(cause, reward);
 

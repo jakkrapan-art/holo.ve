@@ -3,7 +3,6 @@ class_name WaveController
 
 var data: WaveControllerData = null;
 
-@onready var timer: Timer = $SpawnTimer
 @onready var nextWaveTimer: Timer = $NextWaveDelayTimer
 
 @export var map: Map = null;
@@ -23,10 +22,7 @@ var waveData: WaveData = null
 var isBossWave:bool = false;
 var bossRandomIndex: int = -1;
 
-var spawnedCount: int = 0
-
-var groupSpawnCount: int = 0
-var currentGroupIndex: int = 0
+var groupSpawnRemain: Dictionary = {}
 
 var enemyAliveCount: int = 0;
 var isSpawnAllEnemy: bool = false;
@@ -60,10 +56,7 @@ func start():
 func startNextWave():
 	if(currWave >= data.waveDatas.size()):
 		return
-	spawnedCount = 0
 	currWave += 1
-	currentGroupIndex = 0;
-	groupSpawnCount = 0;
 	isSpawnAllEnemy = false;
 	endWaveCalled = false;
 
@@ -74,7 +67,11 @@ func startNextWave():
 	if isBossWave:
 		bossRandomIndex = randi_range(0, bossList.size() - 1);
 
-	spawnEnemy();
+	if isBossWave:
+		spawnBoss();
+	else:
+		setupSpawnTask()
+
 	updateUI();
 
 func endWave():
@@ -86,64 +83,59 @@ func endWave():
 	deadList.clear();
 	data.onWaveEnd.call();
 
-func spawnEnemy():
-	if(currentGroupIndex >= waveData.groupList.size() && !isBossWave):
-		return;
+func setupSpawnTask():
+	print("wave data: ", waveData, " wave index:", currWave);
+	for group in range(0, waveData.groupList.size()):
+		spawnEnemyTask(group);
 
-	var enemyType := Enemy.EnemyType.Boss if isBossWave else Enemy.EnemyType.Normal
+func spawnEnemyTask(groupIndex: int):
+	var groupData = waveData.groupList[groupIndex]
+	var interval = groupData.spawnInterval;
+	var remain = groupData.count;
 
-	var health := 0;
-	var def := 0;
-	var mDef := 0;
-	var moveSpeed := 0;
-	var texture: Texture2D = null;
-	var skills: Array[Skill] = [];
+	groupSpawnRemain[groupIndex] = remain
+	while remain > 0:
+		spawnEnemy(groupIndex);
+		remain -= 1;
+		groupSpawnRemain[groupIndex] = remain
 
-	if (enemyType == Enemy.EnemyType.Boss):
-		var boss = bossList[bossRandomIndex];
-		print("boss:", boss, " index:", bossRandomIndex);
-		texture = boss.texture;
-		health = boss.stats.hp
-		def = boss.stats.def
-		mDef = boss.stats.mDef
-		moveSpeed = boss.stats.moveSpeed
-		isSpawnAllEnemy = true;
-		print("spawn boss: ", isSpawnAllEnemy);
-		skills = boss.skills;
-		timer.stop()
+		if remain == 0:
+			groupSpawnRemain.erase(groupIndex)
+			isSpawnAllEnemy = groupSpawnRemain.size() == 0
 
-	else:
-		var waveGroup = waveData.groupList[currentGroupIndex];
-		health = waveGroup.health
-		def = waveGroup.def
-		mDef = waveGroup.mDef
-		moveSpeed = waveGroup.moveSpeed
-		texture = enemyTextures.get(waveGroup.texture, null)
-		skills = []
-		for skill in waveGroup.skill:
-			skills.append(Utility.deep_duplicate_resource(skill))
+		await get_tree().create_timer(interval).timeout
 
-		groupSpawnCount += 1;
+func spawnEnemy(groupIndex: int):
+	var waveGroup = waveData.groupList[groupIndex];
 
-		if(groupSpawnCount >= waveGroup.count):
-			currentGroupIndex += 1;
-			groupSpawnCount = 0;
-			# if(currentGroupIndex < waveData.groupList.size()):
-			# 	waveGroup = waveData.groupList[currentGroupIndex];
+	var health = waveGroup.health
+	var def = waveGroup.def
+	var mDef = waveGroup.mDef
+	var moveSpeed = waveGroup.moveSpeed
+	var texture = enemyTextures.get(waveGroup.texture, null)
+	var skills: Array[Skill] = []
+	for skill in waveGroup.skill:
+		skills.append(Utility.deep_duplicate_resource(skill))
 
-		if(currentGroupIndex >= waveData.groupList.size()):
-			isSpawnAllEnemy = true
-			print("wave ", currWave, " spawn all enemy to true: ", isSpawnAllEnemy, " group index: ", currentGroupIndex, " group spawn count: ", groupSpawnCount, "group size: ", waveGroup.count, " wave group size: ", waveData.groupList.size());
-
-		countdownSpawnNextEnemy(waveGroup.spawnInterval);
-
-	var enemy: Enemy = await createEnemyObject(enemyType, health, def, mDef, moveSpeed, texture, skills);
-	spawnedCount += 1;
-	print("[before] spawn enemy: ", enemyAliveCount);
+	var enemy: Enemy = await createEnemyObject(Enemy.EnemyType.Normal, health, def, mDef, moveSpeed, texture, skills);
 	enemyAliveCount += 1;
-	print("[after] spawn enemy: ", enemyAliveCount);
 
 	connectSignalToEnemy(enemy);
+
+func spawnBoss():
+	var bossData = bossList[bossRandomIndex];
+	var texture = bossData.texture;
+	var health = bossData.stats.hp
+	var def = bossData.stats.def
+	var mDef = bossData.stats.mDef
+	var moveSpeed = bossData.stats.moveSpeed
+	var skills = bossData.skills;
+
+	isSpawnAllEnemy = true;
+	var boss: Enemy = await createEnemyObject(Enemy.EnemyType.Boss, health, def, mDef, moveSpeed, texture, skills);
+	enemyAliveCount += 1;
+
+	connectSignalToEnemy(boss);
 
 func updateUI():
 	if waveCounterText != null:
@@ -187,7 +179,7 @@ func enemyReachEndPoint(enemy: Enemy):
 
 func checkEndWave():
 	print("check end wave called alive: " + str(enemyAliveCount) + " is spawn all: " + str(isSpawnAllEnemy));
-	if(isSpawnAllEnemy && enemyAliveCount == 0):
+	if(isSpawnAllEnemy && enemyAliveCount <= 0):
 		print("end wave: " + str(isSpawnAllEnemy) + " alive: " + str(enemyAliveCount))
 		endWave();
 
@@ -203,21 +195,8 @@ func reduceEnemyCount():
 	enemyAliveCount -= 1;
 	checkEndWave();
 
-func countdownSpawnNextEnemy(waitTime: float):
-	# timer.one_shot = true;
-	timer.wait_time = waitTime;
-	timer.start()
-
 func _on_next_wave_delay_timer_timeout():
 	startNextWave()
-
-func _on_spawn_timer_timeout():
-	if (waveData == null):
-		return
-	if (!active):
-		timer.stop()
-		return
-	spawnEnemy()
 
 signal onWaveStart();
 signal onEnemyDead(cause: Damage);

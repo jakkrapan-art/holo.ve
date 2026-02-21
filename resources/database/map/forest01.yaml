@@ -117,7 +117,7 @@ waves:
         mDef: 1
         moveSpeed: 60
         count: 40
-        spawnInterval: 0.2
+        spawnInterval: 1.5
 
       - texture: "wild_boar"
         health: 400

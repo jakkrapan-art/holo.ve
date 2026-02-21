@@ -8,6 +8,7 @@ var isReady = false;
 
 @export var id: String;
 var data: TowerData;
+var towerName: String = "";
 
 var enableAttack: bool = true;
 var enableRegenMana: bool = true;
@@ -87,6 +88,7 @@ func _process(delta):
 func setup(id: String, onPlace: Callable, onRemove: Callable):
 	self.onPlace = onPlace;
 	self.name = name;
+	towerName = name;
 	self.onRemove = onRemove;
 
 	var towerData = TowerDataLoader.load_data("res://resources/database/towers/" , id.to_lower());
@@ -193,6 +195,7 @@ func _onEnemyDetected(enemy: Enemy):
 		Utility.ConnectSignal(self.enemy, "onReachEndPoint", Callable(self, "clearEnemy"));
 
 func clearEnemy():
+	print("clear enemy");
 	if(enemy == null):
 		return;
 

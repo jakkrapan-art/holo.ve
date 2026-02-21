@@ -12,7 +12,12 @@ signal onEnemyDetected(enemy: Enemy)
 signal onRemoveTarget()
 
 func setup(radius: float):
-	self.radius = radius + 0.5;
+	self.radius = radius + 0.5
+
+	# 🔥 Make shape unique so it won't affect other towers
+	if collision and collision.shape:
+		collision.shape = collision.shape.duplicate()
+
 	var circle = collision.shape as CircleShape2D
 	if circle:
 		circle.radius = self.radius * GridHelper.CELL_SIZE
@@ -21,6 +26,7 @@ func setup(radius: float):
 	connect("area_exited", Callable(self, "onCollisionExit"))
 
 func setEnabledDrawRange(value: bool):
+	value = true;
 	enableDrawRange = value
 
 func _draw():
@@ -82,6 +88,7 @@ func updateTarget():
 	if(best == target):
 		return;
 	setTarget(best)
+
 	onEnemyDetected.emit(best)
 
 func setTarget(enemy: Enemy):

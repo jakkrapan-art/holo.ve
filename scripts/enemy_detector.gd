@@ -26,7 +26,6 @@ func setup(radius: float):
 	connect("area_exited", Callable(self, "onCollisionExit"))
 
 func setEnabledDrawRange(value: bool):
-	value = true;
 	enableDrawRange = value
 
 func _draw():

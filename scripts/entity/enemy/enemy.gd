@@ -105,11 +105,11 @@ func addIncreaseMoveSpeed(value: float, key: String):
 func removeIncreaseMoveSpeed(key: String):
 	stats.removeMoveSpeedMultiplier(key);
 
-func addIncreaseDef(value: float, key: String):
-	stats.addArmorPercent(value, key);
+func addIncreaseDefPercent(value: float, key: String):
+	stats.addDefPercent(value, key);
 
-func removeIncreaseDef(key: String):
-	stats.removeArmorPercent(key);
+func removeIncreaseDefPercent(key: String):
+	stats.removeDefPercent(key);
 
 func addBlockDamageCount(value: int):
 	stats.blockCount += value;

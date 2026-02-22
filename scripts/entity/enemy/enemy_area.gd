@@ -13,7 +13,7 @@ func addBlockDamageCount(value: int):
 	enemy.addBlockDamageCount(value);
 
 func addIncreaseDef(value: float, key: String):
-	enemy.addArmorPercent(value, key);
+	enemy.addIncreaseDefPercent(value, key);
 
 func removeIncreaseDef(key: String):
-	enemy.removeArmorPercent(key);
+	enemy.removeIncreaseDefPercent(key);

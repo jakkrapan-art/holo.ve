@@ -19,9 +19,9 @@ func _on_apply(target: Node, buffKey: String = "") -> void:
 	self.buffKey = buffKey if buffKey != "" else ""
 	if target.stats != null && target.stats is EnemyStat:
 		var stats := target.stats as EnemyStat
-		stats.addArmorPercent(increaseAmount, buffKey);
+		stats.addDefPercent(increaseAmount, buffKey);
 
 func _on_expire(target: Node) -> void:
 	if target.stats != null && target.stats is EnemyStat:
 		var stats:= target.stats as EnemyStat
-		stats.removeArmorPercent(self.buffKey);
+		stats.removeDefPercent(self.buffKey);

@@ -24,6 +24,8 @@ static func preloadImage(group: String, path: String):
 
 static func preloadEnemy(mapName: String, types: Array[String]) -> void:
 	var enemyPrefix = "res://resources/enemy";
+	var loaded: Dictionary = {}
+
 	for type in types:
 		var path: String = enemyPrefix + "/" + mapName + "/" + type;
 		var dir := DirAccess.open(path)
@@ -31,7 +33,6 @@ static func preloadEnemy(mapName: String, types: Array[String]) -> void:
 			push_error("Failed to open directory: %s" % path)
 			return
 
-		var loaded: Dictionary = {}
 
 		dir.list_dir_begin()
 		var folder := dir.get_next()
@@ -63,8 +64,9 @@ static func preloadEnemy(mapName: String, types: Array[String]) -> void:
 
 		dir.list_dir_end()
 
-		# Store ALL enemies here (as you requested)
-		_sprites["enemy"] = loaded
+	# Store ALL enemies here (as you requested)
+	_sprites["enemy"] = loaded
+	print("loaded: " + str(loaded));
 
 static func getSpriteGroup(group: String):
 	if(!_sprites.has(group)):

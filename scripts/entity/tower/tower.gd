@@ -195,7 +195,6 @@ func _onEnemyDetected(enemy: Enemy):
 		Utility.ConnectSignal(self.enemy, "onReachEndPoint", Callable(self, "clearEnemy"));
 
 func clearEnemy():
-	print("clear enemy");
 	if(enemy == null):
 		return;
 

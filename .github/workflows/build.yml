@@ -18,7 +18,7 @@ jobs:
       - name: Setup Godot
         uses: lihop/setup-godot@v3
         with:
-          version: "4.3-stable"
+          version: "{GODOT_VERSION}-stable"
           export-templates: true
 
       - name: Create Build Directory
@@ -37,7 +37,7 @@ jobs:
     name: Web export
     runs-on: ubuntu-latest
     container:
-      image: barichello/godot-ci:4.3
+      image: barichello/godot-ci:{GODOT_VERSION}
     steps:
       - name: Checkout
         uses: actions/checkout@v4

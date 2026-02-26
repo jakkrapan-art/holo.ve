@@ -1,6 +1,10 @@
 name: Auto Build Client CI/CD
 on: [push]
 
+env:
+  GODOT_VERSION: 4.3
+  EXPORT_NAME: holo.ve
+
 jobs:
   export-windows:
     runs-on: ubuntu-latest  # You can build Windows .exe on Linux runners!

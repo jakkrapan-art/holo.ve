@@ -1,0 +1,144 @@
+name: Auto Build Client CI/CD
+on: [push]
+
+env:
+  GODOT_VERSION: 4.3
+  EXPORT_NAME: holo.ve
+
+jobs:
+  export-windows:
+    runs-on: ubuntu-latest
+    name: Export Windows
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Clean build directory
+        run: rm -rf build
+
+      - name: Setup Godot
+        uses: lihop/setup-godot@v3
+        with:
+          version: ${{ env.GODOT_VERSION }}-stable
+          export-templates: true
+
+      - name: Create Build Directory
+        run: mkdir -v -p build/windows
+
+      - name: Windows Export
+        run: godot --headless --export-release "Windows Desktop" build/windows/holo_ve.exe
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-build
+          path: build/windows
+
+  export-web:
+    name: Web export
+    runs-on: ubuntu-latest
+    container:
+      image: barichello/godot-ci:4.3
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Setup
+        run: |
+          mkdir -v -p ~/.local/share/godot/export_templates/
+          mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
+
+      - name: Web Build
+        run: |
+          mkdir -v -p build/web
+          godot --headless --verbose --export-release "Web" build/web/index.html
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: web
+          path: build/web
+
+  # export-windows:
+  #   name: Windows Export
+  #   runs-on: ubuntu-latest
+  #   container:
+  #     image: barichello/godot-ci:4.3
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+  #       with:
+  #         lfs: true
+
+  #     - name: Setup
+  #       run: |
+  #         mkdir -v -p ~/.local/share/godot/export_templates/
+  #         mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
+
+  #     - name: Windows Build
+  #       run: |
+  #         mkdir -v -p build/windows
+  #         godot --headless --verbose --export-release "Windows Desktop" build/windows/$EXPORT_NAME.exe
+
+  #     - name: Upload Artifact
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: windows
+  #         path: build/windows
+
+  deploy-to-gh-pages:
+    name: Deploy Web to gh-pages
+    needs: export-web
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Download web artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: web
+          path: web-build
+
+      - name: Deploy to gh-pages branch
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+
+          # Switch to gh-pages branch
+          git checkout gh-pages
+
+          # Remove old files (except .git and any existing website files you want to keep)
+          find . -maxdepth 1 ! -name '.git' ! -name '.' ! -name 'web-build' -exec rm -rf {} +
+
+          # Move web build files to root
+          mv web-build/* .
+          rmdir web-build
+
+          # Add COOP/COEP headers for Godot 4.2 (create .htaccess for Apache or _headers for Netlify)
+          cat > .htaccess << EOF
+          <IfModule mod_headers.c>
+              Header set Cross-Origin-Embedder-Policy "require-corp"
+              Header set Cross-Origin-Opener-Policy "same-origin"
+          </IfModule>
+          EOF
+
+          # Also create _headers for Netlify/other hosts
+          cat > _headers << EOF
+          /*
+            Cross-Origin-Embedder-Policy: require-corp
+            Cross-Origin-Opener-Policy: same-origin
+          EOF
+
+          # Commit and push
+          git add .
+          git commit -m "Deploy web build from commit ${{ github.sha }}" || exit 0
+          git push origin gh-pages

@@ -37,6 +37,8 @@ jobs:
     name: Web export
     runs-on: ubuntu-latest
     container:
+      env:
+        GODOT_VERSION: 4.3
       image: barichello/godot-ci:{GODOT_VERSION}
     steps:
       - name: Checkout

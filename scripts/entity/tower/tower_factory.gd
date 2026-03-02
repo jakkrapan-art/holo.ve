@@ -263,6 +263,14 @@ func processGen0Buff():
 		var buff: Dictionary = {"synergy_id": TowerGeneration.Gen0, "attack_bonus": (buffDmgPercent * towerList.size())};
 		t.processActiveBuff(buff)
 
+func getTowerUpgradeData():
+	var owned: Dictionary = {}
+	for tName in towersByName.keys():
+		var tower = towersByName[tName]
+		if tower != null:
+			owned[tName] = TowerSelectData.new(tName, tower.data.level + (1 if not tower.canEvolve() else 0), tower.data.evolutionCost)
+	return owned
+
 func towerReceiveMission(mission: MissionDetail):
 	onReceiveMission.emit(mission);
 

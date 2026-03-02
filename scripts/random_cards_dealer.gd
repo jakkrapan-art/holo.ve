@@ -15,6 +15,9 @@ func get_random_cards(deck, count: int = 3) -> Array:
 	var selected_cards = shuffled_deck.slice(0, count);
 	var result: Array[TowerSelectData] = []
 	for card in selected_cards:
-		result.append(TowerSelectData.new(card, 1, 0))
+		if(card is TowerSelectData):
+			result.append(card)
+		else:
+			result.append(TowerSelectData.new(card, 1, 0))
 
 	return result  # Get the first 3 random cards

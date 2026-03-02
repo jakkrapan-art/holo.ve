@@ -23,50 +23,30 @@ static func preloadImage(group: String, path: String):
 	dir.list_dir_end();
 
 static func preloadEnemy(mapName: String, types: Array[String]) -> void:
-	var enemyPrefix = "res://resources/enemy";
+	var enemyPrefix := "res://resources/enemy"
 	var loaded: Dictionary = {}
 
+	var enemyNames = YamlParser.load_data(enemyPrefix + "/" + mapName + "/enemy_list.yaml");
+
 	for type in types:
-		var path: String = enemyPrefix + "/" + mapName + "/" + type;
-		var dir := DirAccess.open(path)
-		if dir == null:
-			push_error("Failed to open directory: %s" % path)
-			return
+		for enemy in enemyNames:
+			var full_path := "%s/%s/%s/%s/%s.png" % [
+				enemyPrefix,
+				mapName,
+				type,
+				enemy,
+				enemy
+			]
 
+			if ResourceLoader.exists(full_path):
+				var texture: Texture2D = load(full_path)
+				loaded[enemy] = texture
+				print("Loaded: ", full_path)
+			else:
+				push_warning("Missing texture: " + full_path)
 
-		dir.list_dir_begin()
-		var folder := dir.get_next()
-
-		while folder != "":
-			# Skip system entries
-			if folder != "." and folder != ".." and dir.current_is_dir():
-				var sub_path := path + "/" + folder
-				print("preload: " + sub_path);
-				var sub_dir := DirAccess.open(sub_path)
-
-				if sub_dir:
-					sub_dir.list_dir_begin()
-					var file := sub_dir.get_next()
-
-					while file != "":
-						if !sub_dir.current_is_dir() and file.ends_with(".png"):
-							var full_path := sub_path + "/" + file
-							var texture: Texture2D = load(full_path)
-
-							# key = file name without .png
-							loaded[folder] = texture
-
-						file = sub_dir.get_next()
-
-					sub_dir.list_dir_end()
-
-			folder = dir.get_next()
-
-		dir.list_dir_end()
-
-	# Store ALL enemies here (as you requested)
 	_sprites["enemy"] = loaded
-	print("loaded: " + str(loaded));
+	print("loaded: ", loaded)
 
 static func getSpriteGroup(group: String):
 	if(!_sprites.has(group)):

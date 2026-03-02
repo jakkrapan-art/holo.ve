@@ -38,7 +38,7 @@ func _ready():
 
 	show_popup_panel();
 
-	SpriteLoader.preloadEnemy("basic_map01", ["elite", "normal"]);
+	SpriteLoader.preloadEnemy("forest01", ["elite", "normal"]);
 
 	mission = Mission.new();
 
@@ -89,8 +89,8 @@ func show_popup_panel():
 	var evoToken = player.wallet.getEvoToken();
 	var evoList = towerFactory.getEvolutionList(evoToken);
 	var excludeList: Array = evoList.exclude + towerFactory._evolvedList;
-
-	popup.setup(evoList.canEvolve, excludeList, evoToken, 1);
+	var ownedList: Dictionary = towerFactory.getTowerUpgradeData();
+	popup.setup(ownedList, evoList.canEvolve, excludeList, evoToken, 1);
 
 	# Connect function "_on_option_selected" to the signal "tower_select"
 	popup.tower_select.connect(Callable(self, "_on_option_selected"))

@@ -14,12 +14,12 @@ var maxRefresh = 0;
 func _ready() -> void:
 	setupRefreshText(refreshLeft, maxRefresh);
 
-func setup(evolutionList: Array, excludeList: Array, evoToken: int = 0, maxRefresh: int = 0):
+func setup(ownedList: Dictionary, evolutionList: Array, excludeList: Array, evoToken: int = 0, maxRefresh: int = 0):
 	self.refreshLeft = maxRefresh;
 	self.maxRefresh = maxRefresh;
-	_setup_buttons(evolutionList, excludeList, evoToken);
+	_setup_buttons(ownedList, evolutionList, excludeList, evoToken);
 	var refresh_button = get_node("CanvasLayer/PopupPanel/Panel/RefreshButton")
-	refresh_button.pressed.connect(Callable(self, "refreshList").bind(evolutionList, excludeList, evoToken))
+	refresh_button.pressed.connect(Callable(self, "refreshList").bind(ownedList, evolutionList, excludeList, evoToken))
 
 	setupRefreshText(refreshLeft, maxRefresh)
 
@@ -27,14 +27,14 @@ func setupRefreshText(refreshCount: int, maxRefresh: int):
 	if(refreshText):
 		refreshText.text = str(refreshCount) + "/" + str(maxRefresh)
 
-func refreshList(evolutionList: Array, excludeList: Array, evoToken: int = 0):
+func refreshList(ownedList: Dictionary, evolutionList: Array, excludeList: Array, evoToken: int = 0):
 	if(refreshLeft <= 0):
 		return
 	refreshLeft -= 1;
-	_setup_buttons(evolutionList, excludeList, evoToken);
+	_setup_buttons(ownedList, evolutionList, excludeList, evoToken);
 	setupRefreshText(refreshLeft, maxRefresh)
 
-func _setup_buttons(evolutionList: Array, excludeList: Array, evoToken: int = 0):
+func _setup_buttons(ownedList: Dictionary, evolutionList: Array, excludeList: Array, evoToken: int = 0):
 	var cards: Array = []
 
 	# Show valid evolution towers first
@@ -48,7 +48,12 @@ func _setup_buttons(evolutionList: Array, excludeList: Array, evoToken: int = 0)
 		var available_towers = []
 		for t in Global.towers_data.keys():
 			if not excludeList.has(t.to_lower()) and not evolutionList.has(t):
-				available_towers.append(t)
+				if(ownedList.has(t)):
+					var owned = ownedList.get(t, null);
+					if (owned != null):
+						available_towers.append(owned)
+				else:
+					available_towers.append(t)
 		finalList.append_array(_dealer.get_random_cards(available_towers, remain))
 		cards = finalList
 

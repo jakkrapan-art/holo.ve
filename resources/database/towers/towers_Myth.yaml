@@ -1,4 +1,4 @@
-Takanashi_Kiara:
+Takanashi Kiara:
   '1': # This is comment
     Attack_Type: Physical
     Attack: 100
@@ -89,7 +89,8 @@ Takanashi_Kiara:
     Debuff: '-'
     Trigger_Count: 9.4
     Estimated_DPS: 17248
-Mori_Calliope:
+
+Mori Calliope:
   '1':
     Attack_Type: Physical
     Attack: 80
@@ -181,7 +182,8 @@ Mori_Calliope:
     Debuff: '-'
     Trigger_Count: 6.15
     Estimated_DPS: 10.1
-Ninomae_Ina_Nis:
+
+Ninomae Ina'Nis:
   '1':
     Attack_Type: Magical
     Attack: 140
@@ -274,7 +276,8 @@ Ninomae_Ina_Nis:
     Debuff: Movement Slow
     Trigger_Count: 5.48
     Estimated_DPS: 52440
-Gawr_Gura:
+
+Gawr Gura:
   '1':
     Attack_Type: Magical
     Attack: 80
@@ -369,7 +372,8 @@ Gawr_Gura:
     Debuff: Stun
     Trigger_Count: 5.67
     Estimated_DPS: 36160
-Watson_Amelia:
+
+Watson Amelia:
   '1':
     Attack_Type: Physical
     Attack: 150

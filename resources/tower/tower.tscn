@@ -3,12 +3,12 @@
 [ext_resource type="Script" path="res://scripts/entity/tower/tower.gd" id="1_mmirn"]
 [ext_resource type="Script" path="res://scripts/enemy_detector.gd" id="3_57u27"]
 [ext_resource type="Script" path="res://scripts/entity/attack_controller.gd" id="4_ar3mn"]
-[ext_resource type="Texture2D" uid="uid://dmpnj237q8ew7" path="res://resources/tower/hololive/en_branch/myth_gen/kiara/sprite/kiara_stand001.png" id="5_puk85"]
-[ext_resource type="Texture2D" uid="uid://720xpq3t0twm" path="res://resources/tower/hololive/en_branch/myth_gen/kiara/sprite/kiara_attack001.png" id="6_ouffj"]
+[ext_resource type="Texture2D" uid="uid://bu7gfhhydso7c" path="res://resources/tower/hololive/en_branch/myth_gen/kiara/sprite/kiara_stand001.png" id="5_puk85"]
+[ext_resource type="Texture2D" uid="uid://bqly2nbmonnoq" path="res://resources/tower/hololive/en_branch/myth_gen/kiara/sprite/kiara_attack001.png" id="6_ouffj"]
 [ext_resource type="Script" path="res://scripts/ui/health_bar.gd" id="7_ue18x"]
 [ext_resource type="PackedScene" uid="uid://bgbx57ye0s2ww" path="res://resources/combat/bullets/gawr_gura_skill_projectile.tscn" id="9_ln8v2"]
-[ext_resource type="Texture2D" uid="uid://pmye1u8obb5u" path="res://resources/ui_component/ui_asset/tower_mana_bg.png" id="10_kkmb5"]
-[ext_resource type="Texture2D" uid="uid://dmr2pswyc5os7" path="res://resources/ui_component/ui_asset/tower_mana.png" id="11_solw2"]
+[ext_resource type="Texture2D" uid="uid://cbqnd2tlx4sjh" path="res://resources/ui_component/ui_asset/tower_mana_bg.png" id="10_kkmb5"]
+[ext_resource type="Texture2D" uid="uid://borxx58qwcg8f" path="res://resources/ui_component/ui_asset/tower_mana.png" id="11_solw2"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_3ssdp"]
 atlas = ExtResource("5_puk85")
@@ -145,7 +145,7 @@ texture = ExtResource("11_solw2")
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_8aot0"]
 
-[node name="tower" type="Area2D"]
+[node name="tower2" type="Area2D"]
 script = ExtResource("1_mmirn")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]

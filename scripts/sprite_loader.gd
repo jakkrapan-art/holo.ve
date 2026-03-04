@@ -30,7 +30,7 @@ static func preloadEnemy(mapName: String, types: Array[String]) -> void:
 
 	for type in types:
 		for enemy in enemyNames:
-			var full_path := "%s/%s/%s/%s/%s" % [
+			var full_path := "%s/%s/%s/%s/%s.png" % [
 				enemyPrefix,
 				mapName,
 				type,

@@ -14,7 +14,7 @@ func _init():
 		# var skillPool = [];
 		for bd in bossDatas:
 			var name = bd.name;
-			var texturePath = "res://resources/enemy/basic_map01/boss/" + bd.texture + "/" + bd.texture + ".png";
+			var texturePath = "res://resources/enemy/forest01/boss/" + bd.texture + "/" + bd.texture + ".png";
 			var texture = load(texturePath);
 			if texture == null:
 				print("Error: Failed to load texture at path:", texturePath);

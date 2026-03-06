@@ -50,7 +50,7 @@ func _setup_buttons(ownedList: Dictionary, evolutionList: Array, excludeList: Ar
 			if not excludeList.has(t.to_lower()) and not evolutionList.has(t):
 				if(ownedList.has(t)):
 					var owned = ownedList.get(t, null);
-					if (owned != null):
+					if (owned != null && available_towers.find(owned) == -1):
 						available_towers.append(owned)
 				else:
 					available_towers.append(t)

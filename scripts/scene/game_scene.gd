@@ -30,6 +30,7 @@ func _ready():
 	var b: BossLibrary = BossLibrary.new();
 
 	_load_towers_data() # temp
+	ResourceManager.loadResources();
 	var camera = get_node("Camera2D")
 	camera.make_current()
 	print("Camera forced to current:", camera.is_current())
@@ -38,7 +39,7 @@ func _ready():
 
 	show_popup_panel();
 
-	SpriteLoader.preloadEnemy("forest01", ["elite", "normal"]);
+	ResourceManager.preloadEnemy("forest01", ["boss","elite", "normal"]);
 
 	mission = Mission.new();
 
@@ -90,7 +91,8 @@ func show_popup_panel():
 	var evoList = towerFactory.getEvolutionList(evoToken);
 	var excludeList: Array = evoList.exclude + towerFactory._evolvedList;
 	var ownedList: Dictionary = towerFactory.getTowerUpgradeData();
-	popup.setup(ownedList, evoList.canEvolve, excludeList, evoToken, 1);
+	popup.setup(ownedList, evoList.canEvolve
+	, excludeList, evoToken, 1);
 
 	# Connect function "_on_option_selected" to the signal "tower_select"
 	popup.tower_select.connect(Callable(self, "_on_option_selected"))

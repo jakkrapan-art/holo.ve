@@ -2,25 +2,28 @@ class_name GameResource
 
 var collection: Dictionary = {};
 
-func _init(path: String):
-	loadResource(path);
+func _init(prefix: String, resourceList: Array):
+	loadResource(prefix, resourceList);
 
-func loadResource(path: String):
-	var dir = DirAccess.open(path);
-	for file in dir.get_files():
-		if !file.ends_with(".tscn"):
-			continue;
+func loadResource(prefix: String, resourceList: Array):
+	for resource in resourceList:
+		var full_path := "%s/%s.tscn" % [
+			prefix,
+			resource.to_lower()
+		]
 
-		var key = file.replace(".tscn", "");
+		if(ResourceLoader.exists(full_path)):
+			var key = resource.to_lower();
+			if(collection.has(key)):
+				continue;
 
-		if(collection.has(key)):
-			continue;
+			var r = load(full_path);
+			if r:
+				collection[key] = r;
+		else:
+			push_warning("Missing resource: " + full_path)
 
-		var resource = load(path + "/" + file);
-		if resource:
-			collection[key] = resource;
-
-	print("Loaded resources. path: ", path, " count: ", collection.size(), " keys: ", collection.keys());
+	print("Loaded resources. prefix: ", prefix, " count: ", collection.size(), " keys: ", collection.keys());
 
 func getResource(key: String):
 	return collection.get(key, null);

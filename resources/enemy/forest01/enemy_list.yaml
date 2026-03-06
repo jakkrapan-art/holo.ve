@@ -1,11 +1,14 @@
-- giant_voar
-- king_salam
-- armored_salam
-- armored_goblin
-- armored_boar
-- flying_flower
-- baby_garlic
-- goblin
-- rolling_stone
-- salam
-- wild_boar
+boss:
+  - giant_boar
+  - king_salam
+elite:
+  - armored_goblin
+  - armored_boar
+  - flying_flower
+normal:
+  - armored_salam
+  - baby_garlic
+  - goblin
+  - rolling_stone
+  - salam
+  - wild_boar

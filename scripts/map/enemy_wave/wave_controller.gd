@@ -42,7 +42,7 @@ func _input(event):
 
 func setup(data: WaveControllerData):
 	self.data = data;
-	enemyTextures = SpriteLoader.getSpriteGroup("enemy");
+	enemyTextures = ResourceManager.getSpriteGroup("enemy");
 
 func setBossList(list: Array[BossDBData]):
 	bossList = list;

@@ -1,7 +1,6 @@
 extends Control
 
 func _ready():
-	ResourceManager.loadResources();
 	var btn_normal_pic = load("res://resources/ui_component/ui_asset/button_off.png")
 	var btn_press_pic = load("res://resources/ui_component/ui_asset/button_on.png")
 
@@ -12,11 +11,11 @@ func _ready():
 	option.pressed.connect(_on_options_pressed)
 	var exit = get_node("VBoxContainer/ExitButton")
 	exit.pressed.connect(_on_exit_pressed)
-	
+
 	_set_btn_image(start, btn_normal_pic, btn_press_pic)
 	_set_btn_image(option, btn_normal_pic, btn_press_pic)
 	_set_btn_image(exit, btn_normal_pic, btn_press_pic)
-	
+
 func _set_btn_image(btn, normal, press):
 	btn.texture_normal = normal
 	btn.texture_pressed = press

@@ -19,12 +19,12 @@ func _load_deck():
 
 	for deck_name in _data.keys():
 		var deck_info = _data[deck_name]
-		
+
 		var deck_choice = preload("res://resources/ui_component/deck_choice.tscn").instantiate()
-		
+
 		deck_choice.set_deck_info(deck_name, deck_info)
 		deck_choice.deck_selected.connect(_on_deck_selected)
-		
+
 		$MainPanel/DeckContainer.add_child(deck_choice)
 
 func _setup_filters():
@@ -60,12 +60,11 @@ func _on_deck_selected(deck_name: String):
 	_selected_deck = _data[deck_name]
 	print("Selected Deck:", _selected_deck)
 	$Start.disabled = false
-	
+
 func _on_confirm():
 	print("Deck selected:", _selected_deck)
 	Global.selected_deck = _selected_deck["name"]
 	Global.selected_data_file = _selected_deck["data_file"]
-	#print("Character selected:", characters[current_character_index])
 	get_tree().change_scene_to_file("res://scenes/dev_scene.tscn")
 
 func _on_exit():

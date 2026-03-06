@@ -1,8 +1,8 @@
 Tempest:
-  name: Tempest
+  name: Tempus
   sprite: Tempest.png
   architype: Holostars
-  data_file: towers_Tempest.yaml
+  data_file: towers_tempus.yaml
   branch: en
 
 Myth:

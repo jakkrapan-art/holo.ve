@@ -1,4 +1,4 @@
-Takanashi Kiara:
+Regis Altare:
   '1': # This is comment
     Attack_Type: Physical
     Attack: 100
@@ -90,7 +90,7 @@ Takanashi Kiara:
     Trigger_Count: 9.4
     Estimated_DPS: 17248
 
-Mori Calliope:
+Axel Syrios:
   '1':
     Attack_Type: Physical
     Attack: 80
@@ -183,7 +183,7 @@ Mori Calliope:
     Trigger_Count: 6.15
     Estimated_DPS: 10.1
 
-Ninomae Ina'Nis:
+Gavis Bettel:
   '1':
     Attack_Type: Magical
     Attack: 140
@@ -277,7 +277,7 @@ Ninomae Ina'Nis:
     Trigger_Count: 5.48
     Estimated_DPS: 52440
 
-Gawr Gura:
+GMachina X Flayon:
   '1':
     Attack_Type: Magical
     Attack: 80
@@ -373,7 +373,95 @@ Gawr Gura:
     Trigger_Count: 5.67
     Estimated_DPS: 36160
 
-Watson Amelia:
+Banzoin Hakka:
+  '1':
+    Attack_Type: Physical
+    Attack: 150
+    Delay: 80
+    Interval: 8.33
+    Attack_Speed: 120
+    Range: 5
+    Max_Energy: 100
+    Start_Energy: 80
+    Critical_Chance: 0
+    Critical_Damage: 150
+    Generation_(Trait1): Myth
+    Class_(Trait2): Marksman
+    Skill_Name: Time Traveler I
+    Skill_Type: Active
+    Skill_Mechanic: Self
+    Skill_Desc: Amelia ใช้นาฬิกาแห่งเวลาเพิ่มความเร็วในการโจมตี x% ให้กับตนเอง เป็นเวลา
+      4 วินาที
+    Skill_Variable_X: 5
+    Buff: Attack Speed Increase
+    Debuff: '-'
+    Trigger_Count: 7.96
+  '2':
+    Attack_Type: Physical
+    Attack: 175
+    Delay: 80
+    Interval: 8.33
+    Attack_Speed: 120
+    Range: 5
+    Max_Energy: 100
+    Start_Energy: 80
+    Critical_Chance: 0
+    Critical_Damage: 150
+    Generation_(Trait1): Myth
+    Class_(Trait2): Marksman
+    Skill_Name: Time Traveler II
+    Skill_Type: Active
+    Skill_Mechanic: Self
+    Skill_Desc: ''
+    Skill_Variable_X: 7
+    Buff: Attack Speed Increase
+    Debuff: '-'
+    Trigger_Count: 7.96
+  '3':
+    Attack_Type: Physical
+    Attack: 225
+    Delay: 80
+    Interval: 8.33
+    Attack_Speed: 120
+    Range: 5
+    Max_Energy: 100
+    Start_Energy: 80
+    Critical_Chance: 0
+    Critical_Damage: 150
+    Generation_(Trait1): Myth
+    Class_(Trait2): Marksman
+    Skill_Name: Time Traveler III
+    Skill_Type: Active
+    Skill_Mechanic: Self
+    Skill_Desc: ''
+    Skill_Variable_X: 10
+    Buff: Attack Speed Increase
+    Debuff: '-'
+    Trigger_Count: 7.96
+  evolution:
+    Attack_Type: Physical
+    Attack: 350
+    Delay: 50
+    Interval: 8.0
+    Attack_Speed: 150
+    Range: 5
+    Max_Energy: 120
+    Start_Energy: 80
+    Critical_Chance: 0
+    Critical_Damage: 150
+    Generation_(Trait1): Myth
+    Class_(Trait2): Marksman
+    Skill_Name: Elementary my dear
+    Skill_Type: Active
+    Skill_Mechanic: Self AOE
+    Skill_Desc: Amelia ใช้นาฬิกาแห่งเวลาเพิ่มความเร็วในการโจมตี x% ให้กับตนเองและยูนิตรอบๆ
+      ตัวในระยะ 1 ช่อง และทำให้ตนเองได้รับโอกาสคริติคอล 100% เป็นเวลา 4 วินาที
+    Skill_Variable_X: 10
+    Buff: Attack Speed Increase
+    Debuff: '-'
+    Trigger_Count: 8.0
+
+Josuiji Shinri:
   '1':
     Attack_Type: Physical
     Attack: 150

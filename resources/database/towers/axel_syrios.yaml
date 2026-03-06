@@ -1,0 +1,56 @@
+maxLevel: 3
+towerClass: warrior
+generation: tempus
+evolutionCost: 1
+
+skill: "res://resources/database/skill/takanashi_kiara_skill.tres"
+
+stats:
+  - damage: 180
+    attackRange: 1.0
+    attackSpeed: 80
+    mana: 30
+    manaRegen: 10
+    intialMana: 0
+    critChance: 0
+    critMultiplier: 1.5
+
+  - damage: 200
+    attackRange: 1.0
+    attackSpeed: 80
+    mana: 30
+    manaRegen: 10
+    intialMana: 0
+    critChance: 0
+    critMultiplier: 1.5
+
+  - damage: 240
+    attackRange: 1.0
+    attackSpeed: 80
+    mana: 30
+    manaRegen: 10
+    intialMana: 0
+    critChance: 0
+    critMultiplier: 1.5
+
+evolutionStat:
+  damage: 340
+  attackRange: 1.0
+  attackSpeed: 80
+  mana: 30
+  manaRegen: 10
+  intialMana: 0
+  critChance: 50.0
+  critMultiplier: 1.5
+
+
+# Optional (only if tower has evolution stats)
+# evolutionStat:
+#   damage: 250
+#   attackRange: 1.2
+#   attackSpeed: 110.0
+#   critChance: 25.0
+#   critMultiplier: 2.0
+#   mana: 80
+#   manaRegen: 15
+#   intialMana: 20

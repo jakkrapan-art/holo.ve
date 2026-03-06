@@ -1,0 +1,56 @@
+maxLevel: 3
+towerClass: robotic
+generation: myth
+evolutionCost: 1
+
+skill: "res://resources/database/skill/takanashi_kiara_skill.tres"
+
+stats:
+  - damage: 100
+    attackRange: 2.0
+    attackSpeed: 100
+    mana: 100
+    manaRegen: 10
+    intialMana: 60
+    critChance: 0
+    critMultiplier: 1.5
+
+  - damage: 125
+    attackRange: 2.0
+    attackSpeed: 100
+    mana: 100
+    manaRegen: 10
+    intialMana: 60
+    critChance: 0
+    critMultiplier: 1.5
+
+  - damage: 175
+    attackRange: 2.0
+    attackSpeed: 100
+    mana: 100
+    manaRegen: 10
+    intialMana: 60
+    critChance: 0
+    critMultiplier: 1.5
+
+evolutionStat:
+  damage: 400
+  attackRange: 4.0
+  attackSpeed: 20
+  mana: 100
+  manaRegen: 10
+  intialMana: 80
+  critChance: 50.0
+  critMultiplier: 1.5
+
+
+# Optional (only if tower has evolution stats)
+# evolutionStat:
+#   damage: 250
+#   attackRange: 1.2
+#   attackSpeed: 110.0
+#   critChance: 25.0
+#   critMultiplier: 2.0
+#   mana: 80
+#   manaRegen: 15
+#   intialMana: 20

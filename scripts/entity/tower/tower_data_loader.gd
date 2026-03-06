@@ -25,8 +25,8 @@ static func load_data(prefix: String, name: String) -> TowerData:
 	tower.maxLevel = data.get("maxLevel", 1)
 
 	# Parse enum safely (string or int)
-	tower.towerClass = Utility.parse_tower_trait_enum(TowerData.TowerClass, data.get("towerClass", "Assassin"))
-	tower.generation = Utility.parse_tower_trait_enum(TowerData.TowerGeneration, data.get("generation", "Myth"))
+	tower.towerClass = Utility.parse_string_to_enum(TowerData.TowerClass, data.get("towerClass", "Assassin"))
+	tower.generation = Utility.parse_string_to_enum(TowerData.TowerGeneration, data.get("generation", "Myth"))
 
 	tower.evolutionCost = data.get("evolutionCost", 1)
 

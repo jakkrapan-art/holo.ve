@@ -1,6 +1,8 @@
 extends Control
 
 func _ready():
+	AudioManager.playMusic(SoundDatabase.BGM_NAME.main)
+
 	var btn_normal_pic = load("res://resources/ui_component/ui_asset/button_off.png")
 	var btn_press_pic = load("res://resources/ui_component/ui_asset/button_on.png")
 

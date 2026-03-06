@@ -28,6 +28,7 @@ var _modifiers := {}
 @export var evolutionStat: TowerStat;
 
 @export var skill: Skill;
+var attack_sound: String = "hit";
 
 func getStat():
 	if(!_isEvolved):

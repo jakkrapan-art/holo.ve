@@ -134,23 +134,16 @@ func canEvolve():
 func isEvolved():
 	return data.isEvolved
 
-var attackCount: int = 0;
-
 func attackEnemy():
 	var delay = data.getAttackDelay();
 	if (lastAttackTime + delay > (Time.get_ticks_msec() / 1000.00)):
 		return;
 
 	if(is_instance_valid(enemy) && attackController != null && attackController.canAttack(enemy)):
-		attackCount += 1;
 		lastAttackTime = Time.get_ticks_msec() / 1000.00;
 
-		attackController.attack(enemy, data.getDamage(enemy, self));
-		var speed = getAttackAnimationSpeed();
-		# play_animation(ATTACK_ANIMATION, speed);
+		attackController.attack(enemy, data.getDamage(enemy, self), data.attack_sound);
 		attacking = true;
-		# if attacking:
-		attackController.attackAnimFinish();
 		regenMana(data.getManaRegen());
 		await get_tree().create_timer(data.getAttackDelay()).timeout
 		attacking = false;

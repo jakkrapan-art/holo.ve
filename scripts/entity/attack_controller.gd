@@ -7,8 +7,6 @@ class_name AttackController
 var getAttackCooldown: Callable;
 
 var tower: Tower;
-var target: Enemy = null;
-var damage: Damage = null;
 
 var modifier: Dictionary = {}
 
@@ -32,46 +30,41 @@ func executeModifier():
 func canAttack(target: Enemy):
 	return is_instance_valid(target)
 
-func attack(target: Enemy, damage: Damage = Damage.new(null, 0, Damage.DamageType.PHYSIC)):
-	self.target = target;
-	self.damage = damage;
-
-func attackAnimFinish():
+func attack(target: Enemy, damage: Damage = Damage.new(null, 0, Damage.DamageType.PHYSIC), sound: String = ""):
 	if(target == null):
 		return;
 
-	dealDamage(target);
-	# shootProjectile(Callable(self, "dealDamage"));
+	dealDamage(target, damage);
 
-func shootProjectile(onHit: Callable = Callable()):
-	if(target == null):
-		return;
+	if(sound != ""):
+		AudioManager.playSfx(Utility.parse_string_to_enum(SoundDatabase.SFX_NAME, sound));
 
-	var p: Projectile = projectile.instantiate() as Projectile;
-	p.global_position = tower.global_position;
-	get_tree().root.add_child(p);
+# func shootProjectile(onHit: Callable = Callable()):
+# 	if(target == null):
+# 		return;
 
-	var rand: int = randi_range(0, 2)
-	# print("rand result:", rand);
-	match rand:
-		0:
-			p.setupTarget(tower, target, damage, -1, ProjectileCallback.new(onHit, Callable(), Callable()));
-		3:
-			p.setupTargetPosition(tower, target.global_position, damage, -1, ProjectileCallback.new(onHit, Callable(), Callable()));
-		2:
-			p.setup_direction(tower, target.global_position - tower.global_position, damage, -1, ProjectileCallback.new(onHit, Callable(), Callable()));
-		1:
-			p.setup_circle(tower, damage, 1 * GridHelper.CELL_SIZE, 180.0, 0, 5, ProjectileCallback.new(onHit, Callable(), Callable()));
-		_:
-			print(rand, " type: ", typeof(rand));
+# 	var p: Projectile = projectile.instantiate() as Projectile;
+# 	p.global_position = tower.global_position;
+# 	get_tree().root.add_child(p);
 
-func dealDamage(enemy: Enemy = null):
+# 	var rand: int = randi_range(0, 2)
+# 	# print("rand result:", rand);
+# 	match rand:
+# 		0:
+# 			p.setupTarget(tower, target, damage, -1, ProjectileCallback.new(onHit, Callable(), Callable()));
+# 		3:
+# 			p.setupTargetPosition(tower, target.global_position, damage, -1, ProjectileCallback.new(onHit, Callable(), Callable()));
+# 		2:
+# 			p.setup_direction(tower, target.global_position - tower.global_position, damage, -1, ProjectileCallback.new(onHit, Callable(), Callable()));
+# 		1:
+# 			p.setup_circle(tower, damage, 1 * GridHelper.CELL_SIZE, 180.0, 0, 5, ProjectileCallback.new(onHit, Callable(), Callable()));
+# 		_:
+# 			print(rand, " type: ", typeof(rand));
+
+func dealDamage(enemy: Enemy = null, damage: Damage = null):
 	if(!enemy):
 		return;
 
 	if (enemy && enemy.has_method("recvDamage")):
 		enemy.recvDamage(damage);
 		executeModifier();
-
-	if (target && target == enemy):
-		target = null;

@@ -1,8 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://bo4bbs0wdfgmg"]
-
-[ext_resource type="PackedScene" uid="uid://d5g7c6yxmrv4" path="res://resources/tower/tower.tscn" id="1_ji1kq"]
-
-[node name="tower" instance=ExtResource("1_ji1kq")]
-
-[node name="AnimatedSprite2D" parent="." index="0"]
-modulate = Color(0.521569, 0, 0.776471, 1)

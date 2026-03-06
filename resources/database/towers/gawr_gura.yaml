@@ -4,7 +4,7 @@ generation: myth
 evolutionCost: 1
 
 skill: "res://resources/database/skill/gawr_gura_skill.tres"
-attack_sound: "hit" # ชื่อเสียงที่ใช้ตอนโจมตี (ต้องตรงกับใน sound_map.yaml)
+attack_sound: "hit" # ชื่อเสียงที่ใช้ตอนโจมตี
 
 stats:
   - damage: 80

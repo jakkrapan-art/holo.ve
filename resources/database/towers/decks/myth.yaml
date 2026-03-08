@@ -1,0 +1,20 @@
+takanashi_kiara:
+  name: Takanashi Kiara
+  sprite: Kiara.png
+  data_name: takanashi_kiara
+mori_calliope:
+  name: Mori Calliope
+  sprite: Calliope.png
+  data_name: mori_calliope
+ninomae_inanis:
+  name: Ninomae Ina'Nis
+  sprite: Ina.png
+  data_name: ninomae_inanis
+gawr_gura:
+  name: Gawr Gura
+  sprite: Gura.png
+  data_name: gawr_gura
+watson_amelia:
+  name: Watson Amelia
+  sprite: Amelia.png
+  data_name: watson_amelia

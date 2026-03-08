@@ -1,0 +1,16 @@
+Regis Altare:
+  name: Regis Altare
+  sprite: Regis.png
+  data_name: regis_altare
+Axel Syrios:
+  name: Axel Syrios
+  sprite: Axel.png
+  data_name: axel_syrios
+Ninomae Ina'Nis:
+  name: Ninomae Ina'Nis
+  sprite: Ina.png
+  data_name: ninomae_inanis
+Josuiji Shinri:
+  name: Josuiji Shinri
+  sprite: Josuiji.png
+  data_name: josuiji_shinri

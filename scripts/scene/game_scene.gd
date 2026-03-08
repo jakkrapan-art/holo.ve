@@ -145,8 +145,10 @@ func _on_option_selected(selection):
 			startWave();
 
 func _load_towers_data(): #temp
-	var selected_deck_file_path = "res://resources/database/towers/" + Global.selected_data_file
-	Global.towers_data = YamlParser.load_data(selected_deck_file_path)
+	var selected_deck_file_path = "res://resources/database/towers/decks/" + Global.selected_data_file
+	var towerDataList = YamlParser.load_data(selected_deck_file_path)
+	print("Loaded tower data list: ", towerDataList)
+	Global.towers_data = towerDataList
 
 func startWave():
 	state = "wave"

@@ -13,7 +13,13 @@ static var _sprites: Dictionary = {}
 # -----------------------------
 
 static func loadResources():
-	towerCollection = GameResource.new(towerDirPrefix, Global.towers_data.keys())
+	var towerDatas = [];
+	for k in Global.towers_data.keys():
+		var data = Global.towers_data.get(k, null)
+		if(data != null):
+			towerDatas.append(data.data_name)
+
+	towerCollection = GameResource.new(towerDirPrefix, towerDatas)
 
 static func getTower(key: String):
 	if towerCollection == null:

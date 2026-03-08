@@ -9,7 +9,7 @@ mori_calliope:
 ninomae_inanis:
   name: Ninomae Ina'Nis
   sprite: Ina.png
-  data_name: ninomae_inanis
+  data_name: ninomae_ina_nis
 gawr_gura:
   name: Gawr Gura
   sprite: Gura.png

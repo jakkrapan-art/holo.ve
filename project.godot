@@ -18,7 +18,7 @@ config/icon="res://icon.svg"
 [autoload]
 
 GridHelper="*res://scripts/utility/grid_helper.gd"
-Global="*res://scripts/global.gd"
+TowerCenter="*res://scripts/tower_center.gd"
 AudioManager="*res://scripts/audio/audio_manager.gd"
 
 [display]

@@ -7,11 +7,12 @@ func _init(prefix: String, resourceList: Array):
 
 func loadResource(prefix: String, resourceList: Array):
 	for resource in resourceList:
-		var full_path := "%s/%s.tscn" % [
+		var full_path := "%s%s.tscn" % [
 			prefix,
 			resource.to_lower()
 		]
-
+		
+		print("full path:", full_path)
 		if(ResourceLoader.exists(full_path)):
 			var key = resource.to_lower();
 			if(collection.has(key)):
@@ -26,4 +27,5 @@ func loadResource(prefix: String, resourceList: Array):
 	print("Loaded resources. prefix: ", prefix, " count: ", collection.size(), " keys: ", collection.keys());
 
 func getResource(key: String):
+	print("get resource:", key);
 	return collection.get(key, null);

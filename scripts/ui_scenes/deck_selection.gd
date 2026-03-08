@@ -63,8 +63,8 @@ func _on_deck_selected(deck_name: String):
 
 func _on_confirm():
 	print("Deck selected:", _selected_deck)
-	Global.selected_deck = _selected_deck["name"]
-	Global.selected_data_file = _selected_deck["data_file"]
+	TowerCenter.selected_deck = _selected_deck["name"]
+	TowerCenter.selected_data_file = _selected_deck["data_file"]
 	get_tree().change_scene_to_file("res://scenes/dev_scene.tscn")
 
 func _on_exit():

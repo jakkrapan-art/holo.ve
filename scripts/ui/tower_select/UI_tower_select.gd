@@ -46,7 +46,7 @@ func _setup_buttons(ownedList: Dictionary, evolutionList: Array, excludeList: Ar
 			_dealer = $RandomCardsDealer
 		var finalList = evolutionList.duplicate()
 		var available_towers = []
-		var towerNames = Global.getTowerNames();
+		var towerNames = TowerCenter.getTowerNames();
 		for t in towerNames:
 			if not excludeList.has(t.to_lower()) and not evolutionList.has(t):
 				if(ownedList.has(t)):

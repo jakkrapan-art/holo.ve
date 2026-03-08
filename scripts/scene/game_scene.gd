@@ -48,7 +48,7 @@ func _ready():
 		Utility.ConnectSignal(towerFactory, "onReceiveMission", Callable(mission, "addMission"));
 
 	if (waveController):
-		var mapRaw = YamlParser.load_data("res://resources/database/map/" + Global.selected_map_file);
+		var mapRaw = YamlParser.load_data("res://resources/database/map/" + TowerCenter.selected_map_file);
 		var mapData: MapData= MapParser.ParseData(mapRaw);
 		var waves = mapData.waves;
 
@@ -109,8 +109,13 @@ func _on_popup_closed():
 func _on_option_selected(selection):
 	# selection = "gawr_gura"
 	print("Selected:", selection)
+	var towers = TowerCenter.getTowerDataByName(selection);
+	if(towers == null):
+		print("Error: Tower data not found for selection:", selection)
+		return
+
 	var evoToken = player.wallet.getEvoToken();
-	var result = towerFactory.getTower(selection, evoToken);
+	var result = towerFactory.getTower(towers.data_name, evoToken);
 
 	if(result == null):
 		startWave();
@@ -145,10 +150,9 @@ func _on_option_selected(selection):
 			startWave();
 
 func _load_towers_data(): #temp
-	var selected_deck_file_path = "res://resources/database/towers/decks/" + Global.selected_data_file
+	var selected_deck_file_path = "res://resources/database/towers/decks/" + TowerCenter.selected_data_file
 	var towerDataList = YamlParser.load_data(selected_deck_file_path)
-	print("Loaded tower data list: ", towerDataList)
-	Global.towers_data = towerDataList
+	TowerCenter.setTowerData(towerDataList);
 
 func startWave():
 	state = "wave"

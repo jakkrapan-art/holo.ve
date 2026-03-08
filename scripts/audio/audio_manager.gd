@@ -14,20 +14,27 @@ var bgm: Dictionary = {}
 var voice: Dictionary = {}
 
 const SFX_POOL_SIZE = 10
+const VOICE_POOL_SIZE = 5
 
 func _ready():
 	preloadAudio();
 	# music player
 	music_player = AudioStreamPlayer.new()
-	music_player.bus = "Music"
+	music_player.bus = "bgm"
 	add_child(music_player)
 
 	# create sfx pool
 	for i in SFX_POOL_SIZE:
 		var player = AudioStreamPlayer.new()
-		player.bus = "SFX"
+		player.bus = "sfx"
 		add_child(player)
 		sfx_players.append(player)
+	# create voice pool
+	for i in VOICE_POOL_SIZE:
+		var player = AudioStreamPlayer.new()
+		player.bus = "voice"
+		add_child(player)
+		voice_players.append(player)
 
 func preloadAudio():
 	var sfxList = SoundDatabase.sfx.keys()
@@ -59,9 +66,7 @@ func preloadAudio():
 		var filePath = SoundDatabase.voice[key]
 		var fullPath = voicePrefix + filePath
 		var sound = ResourceLoader.load(fullPath)
-		print("Loaded Voice: ", fullPath, " for key: ", key)
 		if sound:
-			print("Successfully loaded Voice: ", key)
 			voice[key] = sound
 		else:
 			push_warning("Failed to load Voice: " + fullPath)
@@ -88,6 +93,19 @@ func playSfx(sfx_name: SoundDatabase.SFX_NAME):
 		return
 
 	for player in sfx_players:
+		if !player.playing:
+			player.stream = stream
+			player.play()
+			return
+
+func playVoice(voice_name: SoundDatabase.VOICE_NAME):
+	var stream = voice.get(voice_name)
+
+	if stream == null:
+		push_warning("Voice not found: " + str(voice_name))
+		return
+
+	for player in voice_players:
 		if !player.playing:
 			player.stream = stream
 			player.play()

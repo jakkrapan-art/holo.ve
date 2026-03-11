@@ -14,12 +14,11 @@ static var _sprites: Dictionary = {}
 
 static func loadResources():
 	var towerDatas = [];
-	for k in TowerCenter.towers_data.keys():
-		var data = TowerCenter.towers_data.get(k, null)
+	for k in TowerCenter._towers_data.keys():
+		var data = TowerCenter._towers_data.get(k, null)
 		if(data != null):
 			towerDatas.append(data.data_name)
 
-	print("tower datas:", towerDatas);
 	towerCollection = GameResource.new(towerDirPrefix, towerDatas)
 
 static func getTower(key: String):
@@ -32,29 +31,16 @@ static func getTower(key: String):
 # SPRITE SYSTEM (from SpriteLoader)
 # -----------------------------
 
-static func preloadImage(group: String, path: String):
-	var dir = DirAccess.open(path)
-	if !dir:
-		print("Failed to open directory:", path)
-		return
+static func loadImage(group, key, path):
+	var fullPath = "%s%s" % [resourcePrefix, path]
+	var texture: Texture2D = load(fullPath)
+	print("Loaded image: ", fullPath, ", group: ", group, ", key: ", key, ", res:", texture);
+	if(texture):
+		if(_sprites.has(group) == false):
+			_sprites[group] = {}
+		_sprites[group][key] = texture
 
-	dir.list_dir_begin()
-
-	var file_name = dir.get_next()
-	var loaded: Dictionary = {}
-
-	while file_name != "":
-		if !dir.current_is_dir() and file_name.ends_with(".png"):
-			var image_path = path + "/" + file_name
-			var texture = load(image_path)
-			loaded[file_name.substr(0, file_name.length() - 4)] = texture
-
-		file_name = dir.get_next()
-
-	_sprites[group] = loaded
-
-	dir.list_dir_end()
-
+	return texture
 
 static func preloadEnemy(mapName: String, types: Array[String]) -> void:
 	var enemyPrefix := "res://resources/enemy"
@@ -88,3 +74,8 @@ static func getSpriteGroup(group: String):
 	if !_sprites.has(group):
 		return null
 	return _sprites[group]
+
+static func getSprite(group: String, key: String):
+	if !_sprites.has(group):
+		return null
+	return _sprites[group].get(key, null)

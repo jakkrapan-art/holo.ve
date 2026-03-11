@@ -148,7 +148,7 @@ func attackEnemy():
 		if(spr):
 			spr.flip_h = attackDir == Global.DIRECTION.RIGHT
 
-		attackController.attack(enemy, attackDir, data.getDamage(enemy, self), data.attack_sound);
+		attackController.attack(enemy, attackDir, data.getDamage(enemy, self), data.attack_sound, data.attack_vfx);
 		attacking = true;
 		regenMana(data.getManaRegen());
 		await get_tree().create_timer(data.getAttackDelay()).timeout

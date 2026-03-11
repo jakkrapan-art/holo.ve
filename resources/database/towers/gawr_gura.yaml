@@ -4,7 +4,8 @@ generation: myth
 evolutionCost: 1
 
 skill: "res://resources/database/skill/gawr_gura_skill.tres"
-attack_sound: "hit" # ชื่อเสียงที่ใช้ตอนโจมตี
+attack_sound: "hit" # ชื่อเสียงที่ใช้ตอนโจมตี (เป็น enum ใน sound_database.gd SFX_NAME)
+attack_vfx: "blue" # ชื่อ VFX ที่ใช้ตอนโจมตี (เป็น enum ใน attack_vfx.gd AttackVFXName)
 
 stats:
   - damage: 80

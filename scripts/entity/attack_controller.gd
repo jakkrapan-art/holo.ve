@@ -30,7 +30,7 @@ func executeModifier():
 func canAttack(target: Enemy):
 	return is_instance_valid(target)
 
-func attack(target: Enemy, direction: Global.DIRECTION, damage: Damage = Damage.new(null, 0, Damage.DamageType.PHYSIC), sound: String = ""):
+func attack(target: Enemy, direction: Global.DIRECTION, damage: Damage = Damage.new(null, 0, Damage.DamageType.PHYSIC), sound: String = "", vfx: String = ""):
 	if(target == null):
 		return;
 
@@ -40,8 +40,7 @@ func attack(target: Enemy, direction: Global.DIRECTION, damage: Damage = Damage.
 		AudioManager.playSfx(Utility.parse_string_to_enum(SoundDatabase.SFX_NAME, sound));
 
 	if true:
-		var dir = target.global_position.x - tower.global_position.x;
-		AttackVfx.play_vfx("atk", self.tower.global_position, direction, get_tree().current_scene);
+		AttackVfx.play_vfx(Utility.parse_string_to_enum(AttackVfx.AttackVFXName, vfx), self.tower.global_position, direction, get_tree().current_scene);
 
 # func shootProjectile(onHit: Callable = Callable()):
 # 	if(target == null):

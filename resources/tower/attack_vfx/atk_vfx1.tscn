@@ -1,0 +1,67 @@
+[gd_scene load_steps=11 format=3 uid="uid://dim5tdwputwun"]
+
+[ext_resource type="Texture2D" uid="uid://b8d1cb0j7k6yu" path="res://resources/tower/hololive/en_branch/myth_gen/kiara/sprite/kiara_vfx01.png" id="1_sd1ux"]
+[ext_resource type="Script" path="res://scripts/combat/attack_vfx_object.gd" id="2_5foq4"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_53gdh"]
+atlas = ExtResource("1_sd1ux")
+region = Rect2(0, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gydjw"]
+atlas = ExtResource("1_sd1ux")
+region = Rect2(512, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tqwb1"]
+atlas = ExtResource("1_sd1ux")
+region = Rect2(1024, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_un4pl"]
+atlas = ExtResource("1_sd1ux")
+region = Rect2(0, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kdha8"]
+atlas = ExtResource("1_sd1ux")
+region = Rect2(512, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_drwms"]
+atlas = ExtResource("1_sd1ux")
+region = Rect2(1024, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vjag7"]
+atlas = ExtResource("1_sd1ux")
+region = Rect2(0, 1024, 512, 512)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_livcf"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_53gdh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gydjw")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tqwb1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_un4pl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kdha8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_drwms")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vjag7")
+}],
+"loop": false,
+"name": &"default",
+"speed": 20.0
+}]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D"]
+sprite_frames = SubResource("SpriteFrames_livcf")
+frame = 6
+frame_progress = 1.0
+script = ExtResource("2_5foq4")

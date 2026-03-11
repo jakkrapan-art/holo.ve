@@ -142,7 +142,13 @@ func attackEnemy():
 	if(is_instance_valid(enemy) && attackController != null && attackController.canAttack(enemy)):
 		lastAttackTime = Time.get_ticks_msec() / 1000.00;
 
-		attackController.attack(enemy, data.getDamage(enemy, self), data.attack_sound);
+		var targetDir = (enemy.global_position - global_position).normalized().x;
+		var attackDir = Global.DIRECTION.LEFT if targetDir < 0 else Global.DIRECTION.RIGHT
+
+		if(spr):
+			spr.flip_h = attackDir == Global.DIRECTION.RIGHT
+
+		attackController.attack(enemy, attackDir, data.getDamage(enemy, self), data.attack_sound);
 		attacking = true;
 		regenMana(data.getManaRegen());
 		await get_tree().create_timer(data.getAttackDelay()).timeout

@@ -18,30 +18,6 @@ var _evolvedList: Array[String] = []
 var activeSynergies: Dictionary = {}
 var activeMissionBuff: Dictionary = {}
 
-# getter
-func getEvolutionList(evoToken: int):
-	if (_evolutionList.size() == 0):
-		return {"canEvolve": [], "exclude": []}
-
-	var cannotEvolveList: Array = []
-	var canEvolveList: Array = []
-
-	for key in _evolutionList:
-		var data: TowerData = _evolutionList[key]
-		if data == null:
-			continue
-		# Only include towers that are not yet evolved and whose cost is affordable
-		if not data.isEvolved:
-			if data.evolutionCost > evoToken:
-				cannotEvolveList.append(key)
-				continue
-
-			var tName: String = key
-			var level: int = data.level
-			var evolutionCost: int = data.evolutionCost
-			canEvolveList.append(TowerSelectData.new(tName, level, evolutionCost))
-	return {"canEvolve": canEvolveList, "exclude": cannotEvolveList}
-
 enum TowerId {
 	Test
 }
@@ -262,14 +238,6 @@ func processGen0Buff():
 	for t: Tower in towerList:
 		var buff: Dictionary = {"synergy_id": TowerGeneration.Gen0, "attack_bonus": (buffDmgPercent * towerList.size())};
 		t.processActiveBuff(buff)
-
-func getTowerUpgradeData():
-	var owned: Dictionary = {}
-	for tName in towersByName.keys():
-		var tower = towersByName[tName]
-		if tower != null:
-			owned[tName] = TowerSelectData.new(tName, tower.data.level + (1 if not tower.canEvolve() else 0), tower.data.evolutionCost)
-	return owned
 
 func towerReceiveMission(mission: MissionDetail):
 	onReceiveMission.emit(mission);

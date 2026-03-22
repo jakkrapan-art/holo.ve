@@ -118,4 +118,4 @@ func setSpeed(value: float):
 	stats.moveSpeed = value;
 
 signal onReachEndPoint();
-signal onDead(cause: Damage, reward: EnemyReward);
+signal onDead(enemy: Enemy,cause: Damage, reward: EnemyReward);

@@ -88,11 +88,7 @@ func show_popup_panel():
 	# Ensure it's added to the UI layer, not just as a child of the 2D scene
 	get_tree().root.add_child(popup)
 	var evoToken = player.wallet.getEvoToken();
-	var evoList = towerFactory.getEvolutionList(evoToken);
-	var excludeList: Array = evoList.exclude + towerFactory._evolvedList;
-	var ownedList: Dictionary = towerFactory.getTowerUpgradeData();
-	popup.setup(ownedList, evoList.canEvolve
-	, excludeList, evoToken, 1);
+	popup.setup(evoToken, 1);
 
 	# Connect function "_on_option_selected" to the signal "tower_select"
 	popup.tower_select.connect(Callable(self, "_on_option_selected"))
@@ -109,13 +105,16 @@ func _on_popup_closed():
 func _on_option_selected(selection):
 	# selection = "gawr_gura"
 	print("Selected:", selection)
-	var towers = TowerCenter.getTowerDataByName(selection);
-	if(towers == null):
+	var tower = TowerCenter.getTowerDataByName(selection);
+	if(tower == null):
 		print("Error: Tower data not found for selection:", selection)
 		return
 
+	TowerCenter.upgradeTowerLevelByName(selection);
 	var evoToken = player.wallet.getEvoToken();
-	var result = towerFactory.getTower(towers.data_name, evoToken);
+	var result = towerFactory.getTower(tower.data_name, evoToken);
+
+	print("result:", result, " state:", result.state);
 
 	if(result == null):
 		startWave();
@@ -152,6 +151,11 @@ func _on_option_selected(selection):
 func _load_towers_data(): #temp
 	var selected_deck_file_path = "res://resources/database/towers/decks/" + TowerCenter.selected_data_file
 	var towerDataList = YamlParser.load_data(selected_deck_file_path)
+	for key in towerDataList:
+		var towerData = towerDataList[key]
+		var data = TowerDataLoader.load_data("res://resources/database/towers/" , towerData.data_name.to_lower());
+		towerData.data = data
+
 	TowerCenter.setTowerData(towerDataList);
 
 func startWave():

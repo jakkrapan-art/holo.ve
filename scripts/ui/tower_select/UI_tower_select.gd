@@ -14,12 +14,12 @@ var maxRefresh = 0;
 func _ready() -> void:
 	setupRefreshText(refreshLeft, maxRefresh);
 
-func setup(ownedList: Dictionary, evolutionList: Array, excludeList: Array, evoToken: int = 0, maxRefresh: int = 0):
+func setup(evoToken: int = 0, maxRefresh: int = 0):
 	self.refreshLeft = maxRefresh;
 	self.maxRefresh = maxRefresh;
-	_setup_buttons(ownedList, evolutionList, excludeList, evoToken);
+	_setup_buttons(evoToken);
 	var refresh_button = get_node("CanvasLayer/PopupPanel/Panel/RefreshButton")
-	refresh_button.pressed.connect(Callable(self, "refreshList").bind(ownedList, evolutionList, excludeList, evoToken))
+	refresh_button.pressed.connect(Callable(self, "refreshList").bind(evoToken))
 
 	setupRefreshText(refreshLeft, maxRefresh)
 
@@ -27,36 +27,41 @@ func setupRefreshText(refreshCount: int, maxRefresh: int):
 	if(refreshText):
 		refreshText.text = str(refreshCount) + "/" + str(maxRefresh)
 
-func refreshList(ownedList: Dictionary, evolutionList: Array, excludeList: Array, evoToken: int = 0):
+func refreshList(evoToken: int = 0):
 	if(refreshLeft <= 0):
 		return
 	refreshLeft -= 1;
-	_setup_buttons(ownedList, evolutionList, excludeList, evoToken);
+	_setup_buttons(evoToken);
 	setupRefreshText(refreshLeft, maxRefresh)
 
-func _setup_buttons(ownedList: Dictionary, evolutionList: Array, excludeList: Array, evoToken: int = 0):
+func _setup_buttons(evoToken: int = 0):
 	var cards: Array = []
 
 	# Show valid evolution towers first
-	if(evolutionList.size() >= 3):
-		cards = evolutionList
-	else:
-		var remain: int = 3 - evolutionList.size();
-		if (!_dealer):
-			_dealer = $RandomCardsDealer
-		var finalList = evolutionList.duplicate()
-		var available_towers = []
-		var towerNames = TowerCenter.getTowerNames();
-		for t in towerNames:
-			if not excludeList.has(t.to_lower()) and not evolutionList.has(t):
-				if(ownedList.has(t)):
-					var owned = ownedList.get(t, null);
-					if (owned != null && available_towers.find(owned) == -1):
-						available_towers.append(owned)
-				else:
-					available_towers.append(t)
-		finalList.append_array(_dealer.get_random_cards(available_towers, remain))
-		cards = finalList
+	var remain: int = 3;
+	if (!_dealer):
+		_dealer = $RandomCardsDealer
+	var finalList = []
+
+	var evoList = TowerCenter.getEvolutionList(3);
+	for tName in evoList:
+		var d = TowerCenter.getTowerSelectDataByName(tName);
+		var level = d.level;
+		var evolutionCost = d.evoCost;
+
+		if(TowerCenter.validateSelectTower(tName, evoToken)):
+			finalList.append(TowerSelectData.new(tName, level, evolutionCost))
+
+	remain -= finalList.size()
+	var available_towers = [] #initial
+	var towerNames = TowerCenter.getTowerNames();
+	for t in towerNames:
+		if (!available_towers.has(t) && !evoList.has(t)):
+			available_towers.append(t)
+
+	print("available towers: ", available_towers);
+	finalList.append_array(_dealer.get_random_cards(available_towers, remain, evoToken))
+	cards = finalList
 
 	var buttons = get_tree().get_nodes_in_group("tower_buttons")
 	for button: TowerSelectButton in buttons:

@@ -50,7 +50,7 @@ func onCollisionHit(area: Area2D):
 		var eArea = area as EnemyArea
 		if eArea and eArea.enemy and not enemyInRange.has(eArea.enemy):
 			enemyInRange.append(eArea.enemy)
-			updateTarget()
+			updateTarget(null, null, null)
 
 func onCollisionExit(area: Area2D):
 	if area.is_in_group("enemy"):
@@ -61,9 +61,9 @@ func onCollisionExit(area: Area2D):
 				removeTarget()
 
 			enemyInRange.erase(enemy)
-			updateTarget()
+			updateTarget(null, null, null)
 
-func updateTarget():
+func updateTarget(_enemy, _cause, _reward):
 	if enemyInRange.size() == 0:
 		setTarget(null)
 		onEnemyDetected.emit(null)

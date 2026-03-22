@@ -10,6 +10,7 @@ func _ready():
 	add_to_group("tower_buttons")  # Ensures buttons register correctly
 
 func setup(name: String, sprite, level: int, evolutionCost: int):
+	print("name:", name, ", sprite:", sprite, ", level:", level, ", evolutionCost:", evolutionCost);
 	if(!towerNameText):
 		towerNameText = $TowerName
 

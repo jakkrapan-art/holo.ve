@@ -14,7 +14,6 @@ func setup(radius: float = 2.0, duration: float = 5.0, callback: EffectAreaCallb
 	_base_setup(circle_shape, callback);
 	collisionShape.scale = Vector2.ONE * radius;
 	endTime = Time.get_ticks_msec() + (duration * 1000)
-	print("shape:", collisionShape, " shape scale:", collisionShape.scale, " radius:", radius, "cell size:", GridHelper.CELL_SIZE)
 	self.drawColor = drawColor
 	self.radius = radius
 	self.duration = duration

@@ -91,8 +91,13 @@ func setup(id: String, onPlace: Callable, onRemove: Callable):
 	towerName = name;
 	self.onRemove = onRemove;
 
-	var towerData = TowerDataLoader.load_data("res://resources/database/towers/" , id.to_lower());
-	self.data = towerData;
+	var towerData = TowerCenter._towers_data.get(id.to_lower(), null);
+
+	if towerData == null:
+		printerr("tower data not found: " + id);
+		return;
+
+	self.data = towerData.data;
 
 func enterPlaceMode():
 	isMoving = true;
@@ -154,7 +159,7 @@ func attackEnemy():
 		await get_tree().create_timer(data.getAttackDelay()).timeout
 		attacking = false;
 	elif(!is_instance_valid(enemy)):
-		clearEnemy();
+		clearEnemy(null, null, null);
 
 func useSkill():
 	if(skillController == null):
@@ -186,14 +191,14 @@ func _onEnemyDetected(enemy: Enemy):
 		return;
 
 	if self.enemy != null:
-		clearEnemy();
+		clearEnemy(null, null, null);
 
 	self.enemy = enemy;
 	if(enemy != null):
 		Utility.ConnectSignal(self.enemy, "onDead", Callable(self, "clearEnemy"));
 		Utility.ConnectSignal(self.enemy, "onReachEndPoint", Callable(self, "clearEnemy"));
 
-func clearEnemy():
+func clearEnemy(_enemy, _cause, _reward):
 	if(enemy == null):
 		return;
 

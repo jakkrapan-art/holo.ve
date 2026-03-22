@@ -106,6 +106,9 @@ func spawnEnemyTask(groupIndex: int):
 		await get_tree().create_timer(interval).timeout
 
 func spawnEnemy(groupIndex: int):
+	if(groupIndex >= waveData.groupList.size()):
+		return;
+
 	var waveGroup = waveData.groupList[groupIndex];
 
 	var health = waveGroup.health
@@ -189,7 +192,7 @@ func enemyDead(enemy: Enemy, cause: Damage, reward: EnemyReward):
 
 	deadList.append(enemy);
 	reduceEnemyCount();
-	onEnemyDead.emit(cause, reward);
+	onEnemyDead.emit(enemy, cause, reward);
 
 func reduceEnemyCount():
 	enemyAliveCount -= 1;
@@ -199,4 +202,4 @@ func _on_next_wave_delay_timer_timeout():
 	startNextWave()
 
 signal onWaveStart();
-signal onEnemyDead(cause: Damage);
+signal onEnemyDead(enemy: Enemy, cause: Damage, reward: EnemyReward);

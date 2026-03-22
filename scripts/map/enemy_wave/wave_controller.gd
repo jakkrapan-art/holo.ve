@@ -59,6 +59,7 @@ func startNextWave():
 	currWave += 1
 	isSpawnAllEnemy = false;
 	endWaveCalled = false;
+	groupSpawnRemain.clear()
 
 	var wData: WaveData = data.waveDatas[currWave - 1] as WaveData
 	waveData = wData
@@ -85,6 +86,11 @@ func endWave():
 
 func setupSpawnTask():
 	print("wave data: ", waveData, " wave index:", currWave);
+	# Initialize remaining counts early so end-wave checks don't trigger before all groups have been registered.
+	for group in range(0, waveData.groupList.size()):
+		var groupData = waveData.groupList[group]
+		groupSpawnRemain[group] = groupData.count
+
 	for group in range(0, waveData.groupList.size()):
 		spawnEnemyTask(group);
 
@@ -100,10 +106,9 @@ func spawnEnemyTask(groupIndex: int):
 		groupSpawnRemain[groupIndex] = remain
 
 		if remain == 0:
-			groupSpawnRemain.erase(groupIndex)
-			isSpawnAllEnemy = groupSpawnRemain.size() == 0
-
-		await get_tree().create_timer(interval).timeout
+			isSpawnAllEnemy = _allGroupsSpawned()
+		else:
+			await get_tree().create_timer(interval).timeout
 
 func spawnEnemy(groupIndex: int):
 	if(groupIndex >= waveData.groupList.size()):
@@ -180,11 +185,25 @@ func createEnemyObject(type: Enemy.EnemyType, health: int, def: int, mDef: int, 
 func enemyReachEndPoint(enemy: Enemy):
 	data.onEnemyReachEndpoint.call(5);
 
+func _allGroupsSpawned() -> bool:
+	if waveData == null:
+		return false
+	for group in range(0, waveData.groupList.size()):
+		if groupSpawnRemain.get(group, 0) > 0:
+			return false
+	return true
+
 func checkEndWave():
 	print("check end wave called alive: " + str(enemyAliveCount) + " is spawn all: " + str(isSpawnAllEnemy));
-	if(isSpawnAllEnemy && enemyAliveCount <= 0):
-		print("end wave: " + str(isSpawnAllEnemy) + " alive: " + str(enemyAliveCount))
-		endWave();
+
+	if isBossWave:
+		if isSpawnAllEnemy && enemyAliveCount <= 0:
+			endWave()
+	else:
+		if isSpawnAllEnemy && enemyAliveCount <= 0 && _allGroupsSpawned():
+			print("end wave: " + str(isSpawnAllEnemy) + " alive: " + str(enemyAliveCount))
+			groupSpawnRemain.clear()
+			endWave()
 
 func enemyDead(enemy: Enemy, cause: Damage, reward: EnemyReward):
 	if(deadList.has(enemy)):

@@ -94,7 +94,7 @@ func addStatusEffect(effect: StatusEffect):
 
 func calcurateReward() -> EnemyReward:
 	# var evoTokenRand = randi_range(0, 100)
-	var reward = EnemyReward.new(100, 0)
+	var reward = EnemyReward.new(0, 0)
 	if enemyType == EnemyType.Boss:
 		reward.evoToken = 1;
 	return reward

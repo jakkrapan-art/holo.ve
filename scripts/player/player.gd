@@ -51,7 +51,7 @@ func checkItemAmount(item: InventoryItem) -> bool:
 	var targetItem = inventory.getItemAmount(item.id);
 	return targetItem.stack >= item.stack;
 
-func processReward(__, reward: EnemyReward):
+func processReward(_enemy, _cause, reward: EnemyReward):
 	if(reward == null):
 		return;
 

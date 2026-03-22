@@ -52,7 +52,7 @@ func updateMissionProgressByKeyword(keyword, amount: int):
 func getMission(id: int) -> MissionDetail:
 	return missionList.get(id, null);
 
-func enemyDeadCheck(cause: Damage, _reward):
+func enemyDeadCheck(_enemy,cause: Damage, _reward):
 	updateMissionProgressByKeyword("kill_enemy", 1);
 	if(cause.source is Tower):
 		var tower: Tower = cause.source as Tower

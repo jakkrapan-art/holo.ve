@@ -88,7 +88,7 @@ func show_popup_panel():
 	# Ensure it's added to the UI layer, not just as a child of the 2D scene
 	get_tree().root.add_child(popup)
 	var evoToken = player.wallet.getEvoToken();
-	popup.setup(evoToken, 1);
+	popup.setup(evoToken, 1000);
 
 	# Connect function "_on_option_selected" to the signal "tower_select"
 	popup.tower_select.connect(Callable(self, "_on_option_selected"))

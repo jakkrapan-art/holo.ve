@@ -44,7 +44,7 @@ func getAttackAnimationSpeed():
 	return data.getAttackAnimationSpeed(spr, ATTACK_ANIMATION);
 
 func _ready():
-	anim = AnimationController.new(spr, IDLE_ANIMATION, [IDLE_ANIMATION, ATTACK_ANIMATION]);
+	anim = AnimationController.new(spr, IDLE_ANIMATION, [IDLE_ANIMATION, ATTACK_ANIMATION, "skill_1", "skill_2"]);
 	Utility.ConnectSignal(anim,"on_animation_finished", Callable(self, "animation_finished"));
 
 	var stat = data.getStat();
@@ -203,11 +203,7 @@ func clearEnemy(_enemy, _cause, _reward):
 		return;
 
 	enemy = null;
-	play_animation_default();
 	attacking = false;
-
-	usingSkill = false;
-	skillController.cancel();
 
 func play_animation(name: String, speed: float = 1):
 	if(anim != null):
@@ -221,7 +217,8 @@ func play_animation_default():
 func animation_finished(name: String):
 	match name:
 		_:
-			play_animation_default();
+			pass;
+			# play_animation_default();
 
 	on_animation_finished.emit(name);
 

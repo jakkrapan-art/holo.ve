@@ -10,7 +10,7 @@ static func CellToWorld(cell_position: Vector2i) -> Vector2:
 	# Add half cell size to center the position in the world
 	return Vector2(cell_position.x * CELL_SIZE + CELL_SIZE / 2, cell_position.y * CELL_SIZE + CELL_SIZE / 2)
 
-	
+
 static func snapToGrid(screenSize, position):
 	var gridX = floor(position.x / CELL_SIZE) * CELL_SIZE + CELL_SIZE / 2
 	var gridY = floor(position.y / CELL_SIZE) * CELL_SIZE + CELL_SIZE / 2

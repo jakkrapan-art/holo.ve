@@ -30,11 +30,6 @@ static func load_data(prefix: String, name: String) -> TowerData:
 
 	tower.evolutionCost = data.get("evolutionCost", 1)
 
-	# Load skill resource
-	var skill_path: String = data.get("skill", "")
-	if skill_path != "":
-		tower.skill = load(skill_path)
-
 	# Load stats array
 	var stat_list: Array[TowerStat] = []
 	for stat_dict in data.get("stats", []):
@@ -69,4 +64,21 @@ static func load_data(prefix: String, name: String) -> TowerData:
 
 	tower.attack_sound = data.get("attack_sound", "default");
 	tower.attack_vfx = data.get("attack_vfx", "default");
+	var skillData = data.get("skill", {"actions": []});
+	var skill = Skill.new();
+	var skillActions: Array[SkillAction] = [];
+	for act in skillData.actions:
+		var action = SkillUtility.ParseAction(act);
+		if action != null:
+			skillActions.append(action);
+		else:
+			print("Warning: Failed to parse action in skill for tower", name);
+
+	skill.actions = skillActions;
+	skill.name = skillData.get("name", "Unnamed Skill");
+	skill.desc = skillData.get("desc", "");
+	skill.parameters = skillData.get("parameters", {});
+
+	tower.skill = skill
+
 	return tower

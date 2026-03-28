@@ -97,9 +97,6 @@ func _detect():
 					discovered[enemy_candidate] = true
 					enemies.append(enemy_candidate)
 
-	# Debug logging
-	print("Hitbox: global", global_position, "size", _size, "overlap_areas", get_overlapping_areas().size(), "overlap_bodies", get_overlapping_bodies().size(), "final", enemies.size())
-
 	# Call callback
 	if _callback:
 		_callback.call(enemies)

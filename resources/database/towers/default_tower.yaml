@@ -3,7 +3,7 @@ towerClass: diva # tower class (Assassin, Diva, Hero, King, Marksman, Robotic, S
 generation: tempus # tower generation (Myth, Tempus, Gen0, Gen1, Indo1)
 evolutionCost: 1 # ค่า evolution
 
-skill: "res://resources/database/skill/gawr_gura_skill.tres" #tower skill file path (เดี๋ยวอัปเดตเป็น yaml ให้อีกที)
+# skill: "res://resources/database/skill/gawr_gura_skill.tres" #tower skill file path (เดี๋ยวอัปเดตเป็น yaml ให้อีกที)
 attack_sound: "hit" # ชื่อเสียงที่ใช้ตอนโจมตี
 stats:
   - damage: 80 # ค่าพลังโจมตี
@@ -32,3 +32,22 @@ stats:
     mana: 120
     manaRegen: 10
     intialMana: 60
+
+skill:
+  name: "Skill"
+  desc: "Just a skill"
+  actions:
+    - type: find_multi_enemy
+      data:
+        width: 3
+        height: 1
+    - type: play_animation
+      data:
+        animation: "n_attack"
+    - type: attack
+      data:
+        damage: 100
+        damage_type: physic
+    - type: play_animation
+      data:
+        animation: "idle"

@@ -3,6 +3,7 @@ class_name SkillActionFindMultipleInRange
 
 @export var width: int = 1 # Width in cells
 @export var height: int = 2 # Height in cells
+var cancel_when_empty: bool = true
 
 var target_group: String = "enemy" # Group name for potential targets
 var max_attempt := 1
@@ -19,7 +20,8 @@ func execute(context: SkillContext):
 			attempt += 1
 			await context.user.get_tree().process_frame
 
-	if attempt >= max_attempt && context.target.is_empty():
+	if attempt >= max_attempt && context.target.is_empty() && cancel_when_empty:
+		print("[cancel] target count: ", context.target.size(), " cancel_when_empty: ", cancel_when_empty) # Debug log
 		context.cancel = true
 
 func find_targets_in_rotated_range(context: SkillContext):
@@ -56,7 +58,6 @@ func _on_hitbox_detected(enemies: Array, context: SkillContext, user_position: V
 		return
 
 	var valid_targets = []
-	print("detected enemy:", enemies.size());
 	for enemy in enemies:
 		if not enemy or not enemy is Node2D:
 			continue

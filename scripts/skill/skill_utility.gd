@@ -54,8 +54,6 @@ static func ParseAction(data: Dictionary) -> SkillAction:
 			skill.buff = buff;
 		"attack_with_param":
 			pass;
-		"attack":
-			pass;
 		"target_self":
 			skill = SkillActionSetTargetSelf.new();
 		"decrease_atk_spd_area":
@@ -108,6 +106,36 @@ static func ParseAction(data: Dictionary) -> SkillAction:
 			skill = SkillActionBlockDamage.new();
 			var skillData = data.get("data", {});
 			skill.blockCount = skillData.get("count", 0);
+		"play_animation":
+			skill = SkillActionPlayAnimation.new();
+			var skillData = data.get("data", {});
+			skill.animationName = skillData.get("animation", "");
+		"attack":
+			skill = SkillActionAttack.new();
+			var skillData = data.get("data", {});
+			skill.damage = skillData.get("damage", 0);
+			skill.damageType = Utility.parse_string_to_enum(Damage.DamageType, skillData.get("damage_type", "physic"))
+		"clear_enemy":
+			skill = SkillActionClearEnemy.new();
+		"find_multi_enemy":
+			skill = SkillActionFindMultipleInRange.new();
+			var skillData = data.get("data", {});
+			skill.width = skillData.get("width", 1);
+			skill.height = skillData.get("height", 1);
+			skill.cancel_when_empty = skillData.get("cancel_when_empty", true);
+		"create_circle_projectile":
+			skill = SkillCreateCircleProjectile.new();
+			var skillData = data.get("data", {});
+			skill.circle_radius = skillData.get("radius", 1.0);
+			skill.count = skillData.get("count", 1);
+			skill.angular_speed = skillData.get("angular_speed", 90.0);
+			skill.initial_angle = skillData.get("initial_angle", 0.0);
+			skill.angle_offset = skillData.get("angle_offset", 0.0);
+			skill.lifetime = skillData.get("lifetime", 1.0);
+			skill.damageMultiplier = skillData.get("damage_multiplier", 1.0);
+			skill.damageType = Utility.parse_string_to_enum(Damage.DamageType, skillData.get("damage_type", "physic"));
+			skill.damageMultiplierParamName = skillData.get("damage_multiplier_param_name", "damageMultiplier");
+			skill.projectileTemplate = load(skillData.get("projectile", "res://resources/combat/bullets/gawr_gura_skill_projectile.tscn"));
 		_:
 			print("Warning: Unknown skill type:", skillType);
 			return null;

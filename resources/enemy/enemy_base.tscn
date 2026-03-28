@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/entity/enemy/enemy.gd" id="1_wei2r"]
 [ext_resource type="Script" path="res://scripts/entity/enemy/enemy_area.gd" id="2_wqjs0"]
-[ext_resource type="Texture2D" uid="uid://icw2jwomfypf" path="res://resources/enemy/forest01/normal/baby_garlic/baby_garlic.png" id="3_sr7qx"]
+[ext_resource type="Texture2D" uid="uid://dm22s75aqe0qh" path="res://resources/enemy/forest01/normal/baby_garlic/baby_garlic.png" id="3_sr7qx"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_gnwf4"]
 radius = 16.0

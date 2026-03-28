@@ -30,6 +30,7 @@ var _modifiers := {}
 @export var skill: Skill;
 var attack_sound: String = "hit";
 var attack_vfx: String = "atk";
+var open_sound: String = "open";
 
 func getStat():
 	if(!_isEvolved):

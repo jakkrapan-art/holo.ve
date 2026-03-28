@@ -119,6 +119,8 @@ func exitPlaceMode():
 	showAttackRange(false);
 	onPlace.call(cell);
 
+	AudioManager.playVoice(Utility.parse_string_to_enum(SoundDatabase.VOICE_NAME, data.open_sound))
+
 func upgrade():
 	var success = data.levelUp()
 	print("upgrade to level ", data.level);

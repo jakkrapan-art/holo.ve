@@ -4,7 +4,9 @@ generation: tempus # tower generation (Myth, Tempus, Gen0, Gen1, Indo1)
 evolutionCost: 1 # ค่า evolution
 
 # skill: "res://resources/database/skill/gawr_gura_skill.tres" #tower skill file path (เดี๋ยวอัปเดตเป็น yaml ให้อีกที)
-attack_sound: "hit" # ชื่อเสียงที่ใช้ตอนโจมตี
+attack_sound: "hit" # ชื่อเสียงที่ใช้ตอนโจมตี\
+open_sound: "open" # ชื่อเสียงที่ใช้ตอนเปิดตัว (เป็น enum ใน sound_database.gd VOICE_NAME)
+
 stats:
   - damage: 80 # ค่าพลังโจมตี
     attackRange: 2.0 #ระยะการตี (cell)

@@ -27,37 +27,49 @@ func find_targets_in_rotated_range(context: SkillContext):
 		return
 
 	var user_position = context.user.global_position
-	var user_rotation = 0;
+	var user_rotation = 0.0
 	if context.user is Tower:
 		var tower := context.user as Tower
 		if tower.enemy == null:
-			return;
-
+			return
 		user_rotation = get_user_rotation(tower, tower.enemy)
 
 	# Calculate actual dimensions from cell counts
-	var actual_width = width * GridHelper.CELL_SIZE
-	var actual_height = height * GridHelper.CELL_SIZE
+	var cellSize = GridHelper.CELL_SIZE
+	var actual_width = width * cellSize + (cellSize * 0.5) # Add half cell size for better coverage
+	var actual_height = height * cellSize + (cellSize * 0.5) # Add half cell size for better coverage
 
-	# Get all nodes in the target group
-	var all_targets = context.user.get_tree().get_nodes_in_group(target_group);
+	# Offset so that rectangle starts at user position and extends forward
+	var local_offset = Vector2(0, actual_height * 0.5)
+
+	# Place the hitbox at the user origin
+	var hitbox_position = user_position
+
+	# Parent the hitbox to ensure it's in the scene tree for physics checks
+	var parent_node = context.user.get_parent() if context.user.get_parent() else context.user.get_tree().current_scene
+
+	var callback = Callable(self, "_on_hitbox_detected").bind(context, user_position)
+	Hitbox.create(actual_width, actual_height, callback, hitbox_position, parent_node, user_rotation, local_offset)
+
+func _on_hitbox_detected(enemies: Array, context: SkillContext, user_position: Vector2):
+	if not context:
+		return
+
 	var valid_targets = []
-
-	for target in all_targets:
-		if not target or not target is Node2D:
+	print("detected enemy:", enemies.size());
+	for enemy in enemies:
+		if not enemy or not enemy is Node2D:
 			continue
 
-		if is_target_in_rotated_rectangle(user_position, user_rotation, target.global_position, actual_width, actual_height):
-			var distance = user_position.distance_to(target.global_position)
-			valid_targets.append({
-				"target": target,
-				"distance": distance
-			})
+		var distance = user_position.distance_to(enemy.global_position)
+		valid_targets.append({
+			"target": enemy,
+			"distance": distance
+		})
 
 	# Sort by distance (closest first)
 	valid_targets.sort_custom(func(a, b): return a.distance < b.distance)
 
-	# Add all targets (no limit)
 	for target_data in valid_targets:
 		context.target.append(target_data.target)
 
@@ -113,11 +125,12 @@ func debug_draw(canvas_item: CanvasItem, context: SkillContext, color: Color = C
 		return
 
 	var tower := context.user as Tower
-	var user_position = GridHelper.WorldToCell(context.user.global_position)
-	if(tower.enemy == null):
-		return;
+	var grid_helper_script = preload("res://scripts/utility/grid_helper.gd")
+	var user_position = grid_helper_script.WorldToCell(context.user.global_position)
+	if tower.enemy == null:
+		return
 
-	var user_rotation = get_user_rotation(tower, tower.enemy);
+	var user_rotation = get_user_rotation(tower, tower.enemy)
 	var actual_width = width * GridHelper.CELL_SIZE;
 	var actual_height = height * GridHelper.CELL_SIZE;
 

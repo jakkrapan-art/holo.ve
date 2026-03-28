@@ -220,12 +220,8 @@ func play_animation_default():
 
 func animation_finished(name: String):
 	match name:
-		ATTACK_ANIMATION:
-			if attacking:
-				attackController.attackAnimFinish();
-				regenMana(data.getManaRegen());
-				attacking = false;
-				play_animation_default();
+		_:
+			play_animation_default();
 
 	on_animation_finished.emit(name);
 

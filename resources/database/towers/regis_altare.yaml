@@ -3,7 +3,42 @@ towerClass: hero
 generation: tempus
 evolutionCost: 1
 
-skill: "res://resources/database/skill/takanashi_kiara_skill.tres"
+# skill: "res://resources/database/skill/takanashi_kiara_skill.tres"
+skill:
+  name: "Skill"
+  desc: "Just a skill"
+  actions:
+    - type: find_multi_enemy
+      data:
+        width: 3
+        height: 1
+        cancel_when_empty: true
+    - type: play_animation
+      data:
+        animation: "skill_1"
+    - type: attack
+      data:
+        damage: 100
+        damage_type: physical
+    - type: clear_enemy
+    - type: find_multi_enemy
+      data:
+        width: 1
+        height: 3
+        cancel_when_empty: false
+    - type: play_animation
+      data:
+        animation: "skill_2"
+    - type: delay
+      data:
+        delay: 0.5
+    - type: attack
+      data:
+        damage: 150
+        damage_type: magic
+    - type: play_animation
+      data:
+        animation: "idle"
 
 stats:
   - damage: 80

@@ -17,7 +17,7 @@ var inPlaceMode: bool = false;
 
 @onready var attackController: AttackController = $AttackController;
 @onready var enemyDetector: EnemyDetector = $EnemyDetector;
-@onready var levelLabel: Label = $LevelLabel;
+@onready var towerStar: TowerStarUI = $TowerStarUI;
 
 var anim: AnimationController;
 
@@ -70,6 +70,8 @@ func _ready():
 		if inPlaceMode:
 			showAttackRange(true);
 
+	if(towerStar != null):
+		towerStar.setStar(data.level);
 
 	isReady = true;
 
@@ -123,16 +125,14 @@ func exitPlaceMode():
 
 func upgrade():
 	var success = data.levelUp()
-	print("upgrade to level ", data.level);
-	if levelLabel:
-		levelLabel.text = str(data.level)
-
+	setTowerStar(data.level);
 	return success
 
 func evolve():
 	var success = data.evolve()
-	if levelLabel && success:
-		levelLabel.text = str(data.level) + "E"
+	if(success):
+		setTowerStar(4);
+
 	return success
 
 func canEvolve():
@@ -348,6 +348,10 @@ func addIntervalAction(key,interval: float, action: String, value: float):
 func showAttackRange(show: bool):
 	if enemyDetector != null:
 		enemyDetector.setEnabledDrawRange(show);
+
+func setTowerStar(tier: int):
+	if(towerStar != null):
+		towerStar.setStar(tier);
 
 func addDecreaseAtkSpeed(value: float, key: String = ""):
 	data.addAttackSpeedDebuff(value, key);

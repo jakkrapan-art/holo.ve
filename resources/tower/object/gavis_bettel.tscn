@@ -1,8 +1,8 @@
 [gd_scene load_steps=35 format=3 uid="uid://bvck8pckyhg7q"]
 
 [ext_resource type="PackedScene" uid="uid://d5g7c6yxmrv4" path="res://resources/tower/tower.tscn" id="1_gej2t"]
-[ext_resource type="Texture2D" uid="uid://ceoauadu1f8vr" path="res://resources/tower/holostars/en_branch/tempus_gen/altare/sprite/altare_idle01.png" id="2_m1gp8"]
-[ext_resource type="Texture2D" uid="uid://dbi3fhaogsvke" path="res://resources/tower/holostars/en_branch/tempus_gen/altare/sprite/altare_skill01.png" id="3_tiy5b"]
+[ext_resource type="Texture2D" uid="uid://bfbfkuyiuagqe" path="res://resources/tower/holostars/en_branch/tempus_gen/altare/sprite/altare_idle01.png" id="2_m1gp8"]
+[ext_resource type="Texture2D" uid="uid://dktbbqaul02lq" path="res://resources/tower/holostars/en_branch/tempus_gen/altare/sprite/altare_skill01.png" id="3_tiy5b"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_vaq7n"]
 atlas = ExtResource("2_m1gp8")

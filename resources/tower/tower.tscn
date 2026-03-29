@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=3 uid="uid://d5g7c6yxmrv4"]
+[gd_scene load_steps=36 format=3 uid="uid://d5g7c6yxmrv4"]
 
 [ext_resource type="Script" path="res://scripts/entity/tower/tower.gd" id="1_mmirn"]
 [ext_resource type="Script" path="res://scripts/enemy_detector.gd" id="3_57u27"]
@@ -8,7 +8,12 @@
 [ext_resource type="Script" path="res://scripts/ui/health_bar.gd" id="7_ue18x"]
 [ext_resource type="PackedScene" uid="uid://bgbx57ye0s2ww" path="res://resources/combat/bullets/gawr_gura_skill_projectile.tscn" id="9_ln8v2"]
 [ext_resource type="Texture2D" uid="uid://cbqnd2tlx4sjh" path="res://resources/ui_component/ui_asset/tower_mana_bg.png" id="10_kkmb5"]
+[ext_resource type="Texture2D" uid="uid://bar4qgr0pl3gv" path="res://resources/ui_asset/tower_lv01.png" id="10_l8pee"]
+[ext_resource type="Script" path="res://scripts/entity/tower/tower_star_ui.gd" id="10_yjhyn"]
+[ext_resource type="Texture2D" uid="uid://ndlhq3e4mum4" path="res://resources/ui_asset/tower_lv02.png" id="11_bs2od"]
 [ext_resource type="Texture2D" uid="uid://borxx58qwcg8f" path="res://resources/ui_component/ui_asset/tower_mana.png" id="11_solw2"]
+[ext_resource type="Texture2D" uid="uid://digl7uikp7edf" path="res://resources/ui_asset/tower_lv03.png" id="12_1hg78"]
+[ext_resource type="Texture2D" uid="uid://c8yl87pbtbt6j" path="res://resources/ui_asset/tower_lv04.png" id="13_rihwy"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_3ssdp"]
 atlas = ExtResource("5_puk85")
@@ -194,6 +199,61 @@ metadata/_edit_use_anchors_ = true
 [node name="Hitbox" type="CollisionShape2D" parent="."]
 scale = Vector2(12, 12)
 shape = SubResource("CircleShape2D_8aot0")
+
+[node name="TowerStarUI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -216.0
+offset_top = -452.0
+offset_right = -156.0
+offset_bottom = -392.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("10_yjhyn")
+
+[node name="1" type="TextureRect" parent="TowerStarUI"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("10_l8pee")
+
+[node name="2" type="TextureRect" parent="TowerStarUI"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("11_bs2od")
+
+[node name="3" type="TextureRect" parent="TowerStarUI"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("12_1hg78")
+
+[node name="4" type="TextureRect" parent="TowerStarUI"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("13_rihwy")
 
 [connection signal="onEnemyDetected" from="EnemyDetector" to="." method="_onEnemyDetected"]
 [connection signal="timeout" from="AttackController/AttackDelayTimer" to="AttackController" method="_onAttackDelayTimerTimeout"]

@@ -10,6 +10,9 @@ var _own_towers: Dictionary = {}
 
 var _canEvoList = [];
 
+var MAX_LEVEL = "Max";
+var EVOLVED = "Evolved";
+
 #var selected_deck: String = ""
 var selected_deck: String = "Myth" #temporary
 var selected_data_file: String = "myth.yaml" #temporary
@@ -57,7 +60,7 @@ func getTowerSelectDataByName(name: String):
 
 	var data = _own_towers.get(name.to_lower(), null);
 	if(data != null):
-		return {"level": data.level, "evoCost": data.evoCost if data.level is String and data.level == "Max" else 0}
+		return {"level": data.level, "evoCost": data.evoCost if data.level is String and data.level == MAX_LEVEL else 0}
 
 	return {"level":0, "evoCost":0}
 
@@ -67,7 +70,7 @@ func validateSelectTower(name: String, evoToken: int):
 
 	var data = _own_towers.get(name.to_lower(), null);
 	if(data != null):
-		if(data.level is String and (data.level == "Evolved" or (data.level == "Max" and data.evoCost > evoToken))):
+		if(data.level is String and (data.level == EVOLVED or (data.level == MAX_LEVEL and data.evoCost > evoToken))):
 			return false
 
 		return true
@@ -94,15 +97,15 @@ func upgradeTowerLevelByName(name: String):
 	var data = _own_towers.get(name.to_lower(), null);
 	if(data != null):
 		if(data.level is String):
-			if(data.level == "Evolved"):
+			if(data.level == EVOLVED):
 				return
-			if(data.level == "Max"):
-				data.level = "Evolved";
+			if(data.level == MAX_LEVEL):
+				data.level = EVOLVED;
 				_canEvoList.erase(name);
 		else:
 			data.level += 1
 			if(data.level >= data.maxLevel):
-				data.level = "Max";
+				data.level = MAX_LEVEL;
 				_canEvoList.append(name);
 	else:
 		var tData = getTowerDataByName(name);

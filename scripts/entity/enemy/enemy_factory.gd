@@ -15,6 +15,8 @@ func createEnemy(type: Enemy.EnemyType, parent: Node2D, health: int, def: int, m
 	# 		enemy.scale *= 1.7;
 	if(parent != null):
 		parent.add_child(enemy);
+		parent.move_child(enemy, 0);
+
 		await get_tree().process_frame
 		enemy.setup(type, health, def, mDef, moveSpeed, texture, skillPool);
 

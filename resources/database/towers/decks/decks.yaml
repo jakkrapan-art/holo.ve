@@ -1,13 +1,13 @@
 Tempest:
   name: Tempus
   sprite: Tempest.png
-  architype: Holostars
+  group: Holostars
   data_file: tempus.yaml
   branch: en
 
 Myth:
   name: Myth
   sprite: Myth.png
-  architype: Hololive
+  group: Hololive
   data_file: myth.yaml
   branch: en

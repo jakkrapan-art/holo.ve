@@ -9,8 +9,8 @@ var current_character_index: int = 0
 
 func _ready():
 	_load_deck();
-	#_setup_filters()
-	#_display_character()
+	_setup_gen_filter()
+	_setup_branch_filter()
 	_setup_buttons()
 
 func _load_deck():
@@ -27,9 +27,20 @@ func _load_deck():
 
 		$MainPanel/DeckContainer.add_child(deck_choice)
 
-func _setup_filters():
-	for filter_button in %FilterButtons.get_children():
-		filter_button.pressed.connect(Callable(self, "_on_filter_pressed").bind(filter_button.name))
+func _setup_gen_filter():
+	var genGroupBtn = $MainPanel/GenGroupContainer.get_children();
+
+	for filter_button in genGroupBtn:
+		filter_button.pressed.connect(Callable(self, "_on_gen_filter_pressed").bind(filter_button.name))
+
+	if(genGroupBtn.size() > 0): # Set default filter to first button's group
+		_on_gen_filter_pressed(genGroupBtn[0].name);
+
+func _setup_branch_filter():
+	var branchGroupBtn = $MainPanel/BranchFilterContainer.get_children();
+
+	for filter_button in branchGroupBtn:
+		filter_button.pressed.connect(Callable(self, "_on_branch_filter_pressed").bind(filter_button.name.to_lower()))
 
 func _display_character():
 	var char = characters[current_character_index]
@@ -43,10 +54,21 @@ func _setup_buttons():
 	#%NextButton.pressed.connect(_on_next_character)
 	#%PrevButton.pressed.connect(_on_prev_character)
 
-func _on_filter_pressed(filter_type: String):
+func _on_gen_filter_pressed(target_gen: String):
 	# Filter decks by type (Fast, Strong, Trick)
-	for deck_button in %StarDecks.get_children() + %PlatinumDecks.get_children():
-		deck_button.visible = deck_button.deck_type == filter_type
+	print("Filter pressed:", target_gen)
+	for deck_button in $MainPanel/DeckContainer.get_children():
+		print("Checking deck:", deck_button.group, "against filter:", target_gen)
+		deck_button.visible = deck_button.group == target_gen
+		print("Deck visible:", deck_button.visible)
+
+func _on_branch_filter_pressed(target_branch: String):
+	# Filter decks by branch (EN, JP, KR)
+	print("Branch filter pressed:", target_branch)
+	for deck_button in $MainPanel/DeckContainer.get_children():
+		print("Checking deck:", deck_button.branch, "against filter:", target_branch)
+		deck_button.visible = deck_button.branch == target_branch
+		print("Deck visible:", deck_button.visible)
 
 func _on_next_character():
 	current_character_index = (current_character_index + 1) % characters.size()

@@ -39,7 +39,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "Hololive"
 
-[node name="Holostar" type="Button" parent="MainPanel/GenGroupContainer"]
+[node name="Holostars" type="Button" parent="MainPanel/GenGroupContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Holo star"
@@ -51,22 +51,22 @@ offset_top = 44.0
 offset_right = 734.0
 offset_bottom = 478.0
 
-[node name="FilterContainer" type="VBoxContainer" parent="MainPanel"]
+[node name="BranchFilterContainer" type="VBoxContainer" parent="MainPanel"]
 layout_mode = 2
 offset_left = -27.0
 offset_top = 73.0
 offset_right = 36.0
 offset_bottom = 273.0
 
-[node name="JP" type="Button" parent="MainPanel/FilterContainer"]
+[node name="JP" type="Button" parent="MainPanel/BranchFilterContainer"]
 layout_mode = 2
 text = "JP"
 
-[node name="EN" type="Button" parent="MainPanel/FilterContainer"]
+[node name="EN" type="Button" parent="MainPanel/BranchFilterContainer"]
 layout_mode = 2
 text = "EN"
 
-[node name="ID" type="Button" parent="MainPanel/FilterContainer"]
+[node name="ID" type="Button" parent="MainPanel/BranchFilterContainer"]
 layout_mode = 2
 text = "ID"
 

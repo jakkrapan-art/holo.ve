@@ -84,6 +84,12 @@ func endWave():
 	deadList.clear();
 	data.onWaveEnd.call();
 
+	if(currWave >= data.waveDatas.size()):
+		print("All waves completed!");
+		var ui = UIEndDemo.create();
+		if(ui):
+			get_tree().current_scene.add_child(ui);
+
 func setupSpawnTask():
 	print("wave data: ", waveData, " wave index:", currWave);
 	# Initialize remaining counts early so end-wave checks don't trigger before all groups have been registered.

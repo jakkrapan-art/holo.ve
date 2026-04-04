@@ -1,0 +1,90 @@
+[gd_scene load_steps=5 format=3 uid="uid://cnsib2ews3jhv"]
+
+[ext_resource type="Script" path="res://scripts/ui/ui_end_demo.gd" id="1_5pc8m"]
+[ext_resource type="FontFile" uid="uid://vc6emo5px8ld" path="res://resources/ui_component/font/Roboto-Regular.ttf" id="2_favob"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_ndtfq"]
+font = ExtResource("2_favob")
+font_size = 87
+
+[sub_resource type="LabelSettings" id="LabelSettings_fdmgt"]
+font = ExtResource("2_favob")
+font_size = 27
+
+[node name="ui_end_demo" type="CanvasLayer"]
+script = ExtResource("1_5pc8m")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="Panel" parent="Control"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -400.0
+offset_top = -225.0
+offset_right = 400.0
+offset_bottom = 225.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -66.0
+offset_top = -21.0
+offset_right = 66.0
+offset_bottom = 21.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="MainText" type="Label" parent="Control/Panel/VBoxContainer"]
+layout_mode = 2
+text = "End of Demo"
+label_settings = SubResource("LabelSettings_ndtfq")
+horizontal_alignment = 1
+
+[node name="ButtonContainer" type="HBoxContainer" parent="Control/Panel"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -100.0
+offset_top = -127.365
+offset_right = 100.0
+offset_bottom = -47.365
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="MainMenuBtn" type="Button" parent="Control/Panel/ButtonContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Control/Panel/ButtonContainer/MainMenuBtn"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Main Menu"
+label_settings = SubResource("LabelSettings_fdmgt")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[connection signal="pressed" from="Control/Panel/ButtonContainer/MainMenuBtn" to="." method="_onMainMenuPressed"]

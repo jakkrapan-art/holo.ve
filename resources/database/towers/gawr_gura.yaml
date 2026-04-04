@@ -6,6 +6,8 @@ evolutionCost: 1
 # skill: "res://resources/database/skill/gawr_gura_skill.tres"
 attack_sound: "hit_gura"
 open_sound: "debut_gura"
+attack_vfx: "blue" # ชื่อ VFX ที่ใช้ตอนโจมตี (เป็น enum ใน attack_vfx.gd AttackVFXName)
+
 skill:
   name: "Skill"
   desc: "Just a skill"
@@ -26,9 +28,6 @@ skill:
         damage_multiplier: 1.0
         damage_type: "magic"
         damage_multiplier_param_name: "damageMultiplier"
-
-attack_sound: "hit" # ชื่อเสียงที่ใช้ตอนโจมตี (เป็น enum ใน sound_database.gd SFX_NAME)
-attack_vfx: "blue" # ชื่อ VFX ที่ใช้ตอนโจมตี (เป็น enum ใน attack_vfx.gd AttackVFXName)
 
 stats:
   - damage: 80

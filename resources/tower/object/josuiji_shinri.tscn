@@ -241,6 +241,6 @@ animations = [{
 [node name="AnimatedSprite2D" parent="." index="0"]
 modulate = Color(1, 1, 0.423529, 1)
 sprite_frames = SubResource("SpriteFrames_si38b")
-animation = &"idle"
-frame = 6
-frame_progress = 0.20227
+animation = &"skill"
+frame = 0
+frame_progress = 0.0

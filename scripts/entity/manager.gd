@@ -5,4 +5,4 @@ extends AnimatedSprite2D
 var animationController: AnimationController;
 
 func _ready() -> void:
-	animationController = AnimationController.new(self, animationName, ["a_chan"]);
+	animationController = AnimationController.new(self, animationName);

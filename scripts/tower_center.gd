@@ -1,6 +1,7 @@
 extends Node
 
 var _towers_data: Dictionary
+var _default_tower_data: Object;
 var _towers_data_by_name: Dictionary
 
 var _tower_portrait: Dictionary
@@ -30,16 +31,25 @@ func setTowerData(datas: Dictionary):
 			_tower_portrait[data.data_name] = portrait
 			_tower_portrait_by_name[data.name.to_lower()] = portrait
 
+func setDefaultTowerData(data):
+	_default_tower_data = data
+
 func preloadPortrait(name: String):
 	return ResourceManager.loadImage("portrait", name, "tower/portrait/" + name + ".png")
 
 func getTowerData(key: String):
+	if(key == "default"):
+		return _default_tower_data;
+
 	if _towers_data == null:
 		return null
 
 	return _towers_data.get(key, null)
 
 func getTowerDataByName(name: String):
+	if(name == "default"):
+		return _default_tower_data;
+
 	if _towers_data_by_name == null:
 		return null
 

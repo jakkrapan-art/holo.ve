@@ -21,7 +21,6 @@ func execute(context: SkillContext):
 			await context.user.get_tree().process_frame
 
 	if attempt >= max_attempt && context.target.is_empty() && cancel_when_empty:
-		print("[cancel] target count: ", context.target.size(), " cancel_when_empty: ", cancel_when_empty) # Debug log
 		context.cancel = true
 
 func find_targets_in_rotated_range(context: SkillContext):

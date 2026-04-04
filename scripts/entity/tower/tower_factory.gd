@@ -35,7 +35,8 @@ func getTower(name: String, evoToken: int = 0) -> GetTowerResult:
 
 	if(resource == null && towerTemplate != null):
 		resource = towerTemplate
-
+	
+	print("resource:", resource, " towerTemplate:", towerTemplate);
 	if (resource == null):
 		return null
 
@@ -59,6 +60,12 @@ func getTower(name: String, evoToken: int = 0) -> GetTowerResult:
 			return result;
 
 	var tower: Tower = resource.instantiate() as Tower
+	if(tower.data == null):
+		var tData = TowerCenter.getTowerDataByName("default");
+		if(tData == null):
+			return null
+		tower.data = tData
+
 	result.state = GetTowerResult.State.New
 	result.tower = tower;
 	tower.setup(name, onPlace, onRemove)

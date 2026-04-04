@@ -156,7 +156,10 @@ func _load_towers_data(): #temp
 		var data = TowerDataLoader.load_data("res://resources/database/towers/" , towerData.data_name.to_lower());
 		towerData.data = data
 
+
 	TowerCenter.setTowerData(towerDataList);
+	var default = TowerDataLoader.load_data("res://resources/database/towers/" , "default_tower");
+	TowerCenter.setDefaultTowerData(default);
 
 func startWave():
 	state = "wave"

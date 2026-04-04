@@ -44,7 +44,7 @@ func getAttackAnimationSpeed():
 	return data.getAttackAnimationSpeed(spr, ATTACK_ANIMATION);
 
 func _ready():
-	anim = AnimationController.new(spr, IDLE_ANIMATION, [IDLE_ANIMATION, ATTACK_ANIMATION, "skill_1", "skill_2"]);
+	anim = AnimationController.new(spr, IDLE_ANIMATION);
 	Utility.ConnectSignal(anim,"on_animation_finished", Callable(self, "animation_finished"));
 
 	var stat = data.getStat();

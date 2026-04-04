@@ -30,14 +30,18 @@ func cancel():
 func execute_skill_actions(skill: Skill, context: SkillContext):
 	if(user is Tower):
 		user.usingSkill = true;
+
+	var i = 0;
 	skill.using = true;
 	for action in skill.actions:
+		print("cancelled: ", cancelled, " i: ", i, " action: ", action);
 		if(context.cancel || cancelled):
 			resetUsingSkill(skill);
 			return
 
 		context.cancel = false;
 		await action.execute(context)
+		i += 1;
 	onSuccess(skill);
 
 func resetUsingSkill(skill: Skill):

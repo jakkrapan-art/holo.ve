@@ -4,6 +4,8 @@ generation: myth
 evolutionCost: 1
 
 # skill: "res://resources/database/skill/gawr_gura_skill.tres"
+attack_sound: "hit_ina"
+open_sound: "debut_ina"
 skill:
   name: "Skill"
   desc: "Just a skill"

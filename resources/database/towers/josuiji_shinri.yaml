@@ -4,6 +4,8 @@ generation: tempus
 evolutionCost: 1
 
 # skill: "res://resources/database/skill/takanashi_kiara_skill.tres"
+attack_sound: "hit_shinri"
+open_sound: "debut_shinri"
 skill:
   name: "Skill"
   desc: "Just a skill"

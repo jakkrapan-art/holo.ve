@@ -53,15 +53,15 @@ static var sfx: Dictionary = { #สิ่งนั้นคือไฟล์ไ
 }
 
 static var voice: Dictionary = { #ตอนนี้ยังไม่เปิดใช้นะ แต่ใส่เผื่อมาก่อน //เสียงเปิดตัว (ขอเป็น debut_voice)
-	VOICE_NAME.debut_syrios: "voice/gura/greeting_gura(keep).mp3",
-	VOICE_NAME.debut_hakka: "voice/gura/greeting_gura(keep).mp3",
-	VOICE_NAME.debut_bettel: "voice/gura/greeting_gura(keep).mp3",
-	VOICE_NAME.debut_gura: "voice/gura/greeting_gura(keep).mp3",
-	VOICE_NAME.debut_shinri: "voice/gura/greeting_gura(keep).mp3",
-	VOICE_NAME.debut_flayon: "voice/gura/greeting_gura(keep).mp3",
-	VOICE_NAME.debut_caliope: "voice/gura/greeting_gura(keep).mp3",
-	VOICE_NAME.debut_ina: "voice/gura/greeting_gura(keep).mp3",
-	VOICE_NAME.debut_altare: "voice/gura/greeting_gura(keep).mp3",
-	VOICE_NAME.debut_kiara: "voice/gura/greeting_gura(keep).mp3",
-	VOICE_NAME.debut_amelia: "voice/gura/greeting_gura(keep).mp3"
-} 
+	VOICE_NAME.debut_syrios: "gura/greeting_gura(keep).mp3",
+	VOICE_NAME.debut_hakka: "gura/greeting_gura(keep).mp3",
+	VOICE_NAME.debut_bettel: "gura/greeting_gura(keep).mp3",
+	VOICE_NAME.debut_gura: "gura/greeting_gura(keep).mp3",
+	VOICE_NAME.debut_shinri: "gura/greeting_gura(keep).mp3",
+	VOICE_NAME.debut_flayon: "gura/greeting_gura(keep).mp3",
+	VOICE_NAME.debut_caliope: "gura/greeting_gura(keep).mp3",
+	VOICE_NAME.debut_ina: "gura/greeting_gura(keep).mp3",
+	VOICE_NAME.debut_altare: "gura/greeting_gura(keep).mp3",
+	VOICE_NAME.debut_kiara: "gura/greeting_gura(keep).mp3",
+	VOICE_NAME.debut_amelia: "gura/greeting_gura(keep).mp3"
+}

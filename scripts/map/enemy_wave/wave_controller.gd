@@ -82,13 +82,14 @@ func endWave():
 
 	endWaveCalled = true;
 	deadList.clear();
-	data.onWaveEnd.call();
 
 	if(currWave >= data.waveDatas.size()):
 		print("All waves completed!");
 		var ui = UIEndDemo.create();
 		if(ui):
 			get_tree().current_scene.add_child(ui);
+	else:
+		data.onWaveEnd.call();
 
 func setupSpawnTask():
 	print("wave data: ", waveData, " wave index:", currWave);

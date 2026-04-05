@@ -135,6 +135,18 @@ static func ParseAction(data: Dictionary) -> SkillAction:
 			skill.damageMultiplier = skillData.get("damage_multiplier", 1.0);
 			skill.damageType = Utility.parse_string_to_enum(Damage.DamageType, skillData.get("damage_type", "physic"));
 			skill.damageMultiplierParamName = skillData.get("damage_multiplier_param_name", "damageMultiplier");
+			var statusEffects: Array[StatusEffect] = [];
+			var statusEffectDataList = skillData.get("status_effects", []);
+			if(statusEffectDataList.size() > 0):
+				print("data list:", statusEffectDataList, ", skill data keys:", skillData.keys());
+				for statusEffectData in statusEffectDataList:
+					print("parsing status effect data: ", statusEffectData);
+					var se: StatusEffect = StatusEffectUtility.ParseStatusEffect(statusEffectData);
+					if se:
+						statusEffects.append(se);
+				print("skill statusEffects:", skill.statusEffects);
+				print("status effect ", statusEffects)
+				skill.statusEffects = statusEffects;
 			skill.projectileTemplate = load(skillData.get("projectile", "res://resources/combat/bullets/gawr_gura_skill_projectile.tscn"));
 		_:
 			print("Warning: Unknown skill type:", skillType);

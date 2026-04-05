@@ -9,6 +9,7 @@ class_name StatusEffect
 var triggeredTime: float = 0.0
 var applied: bool = false;
 var expired: bool = false;
+var appliedTarget: Node = null
 
 func _init(duration: float = 5.0, level: int = 1, effectType: String = ""):
 	self.duration = duration
@@ -20,12 +21,16 @@ func _process_effect(delta: float, target: Node) -> void:
 		triggeredTime = Time.get_ticks_msec() / 1000.0
 		applied = true
 
-	if triggeredTime + duration <= Time.get_ticks_msec() / 1000.0:
-		_on_expire(target)
-		expired = true
+func checkExpired() -> bool:
+	if triggeredTime + duration > Time.get_ticks_msec() / 1000.0:
+		return false;
+	_on_expire(appliedTarget)
+	expired = true
+	print("effect expired: ", effectType, " time used: ", Time.get_ticks_msec() / 1000.0 - triggeredTime)
+	return expired
 
 func _on_apply(target: Node) -> void:
-	pass
+	appliedTarget = target
 
 func _on_expire(target: Node) -> void:
 	pass

@@ -31,7 +31,7 @@ func processEffects(delta: float, enemy: Enemy) -> void:
 
 		# Check all effects for expiration
 		for effect: StatusEffect in effects[effect_type]:
-			if effect.expired:
+			if effect.checkExpired():
 				expiredEffects.append(effect)
 
 	# Remove expired effects

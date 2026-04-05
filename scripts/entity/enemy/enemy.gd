@@ -29,11 +29,11 @@ func _process(_delta):
 	if(!initialized):
 		return;
 
-	if skillController:
-		skillController.useSkill();
-
 	if statusEffects:
 		statusEffects.processEffects(_delta, self)
+
+	if skillController:
+		skillController.useSkill();
 
 	if(progress_ratio == 1):
 		onReachEndPoint.emit();

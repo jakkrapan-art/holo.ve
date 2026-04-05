@@ -28,6 +28,9 @@ skill:
         damage_multiplier: 1.0
         damage_type: "magic"
         damage_multiplier_param_name: "damageMultiplier"
+        status_effects:
+          - type: "stun"
+            duration: 1
 
 stats:
   - damage: 80

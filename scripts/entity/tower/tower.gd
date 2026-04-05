@@ -189,7 +189,7 @@ func updateSpriteColor(available: bool):
 		spr.self_modulate = Color("#ff0000", 1);
 
 func _onEnemyDetected(enemy: Enemy):
-	if(self.enemy != null || enemy == self.enemy):
+	if(enemy != null && self.enemy != null):
 		return;
 
 	if self.enemy != null:
@@ -201,11 +201,9 @@ func _onEnemyDetected(enemy: Enemy):
 		Utility.ConnectSignal(self.enemy, "onReachEndPoint", Callable(self, "clearEnemy"));
 
 func clearEnemy(_enemy, _cause, _reward):
-	if(enemy == null):
-		return;
-
 	enemy = null;
 	attacking = false;
+	print("enemy cleared", " enemy:", enemy);
 
 func play_animation(name: String, speed: float = 1):
 	if(anim != null):

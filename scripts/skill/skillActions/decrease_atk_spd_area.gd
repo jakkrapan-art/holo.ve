@@ -18,7 +18,7 @@ func execute(context: SkillContext):
 		target.add_child(area);
 
 func enemyEntered(area: Area2D):
-	if(!isEnemy(user, area)):
+	if not is_instance_valid(user) or !isEnemy(user, area):
 		return;
 
 	if(area.has_method("addDecreaseAtkSpeed")):
@@ -26,7 +26,7 @@ func enemyEntered(area: Area2D):
 	effectedTargets.append(area);
 
 func enemyExited(area: Area2D):
-	if(!effectedTargets.has(area)):
+	if not is_instance_valid(user) or !effectedTargets.has(area):
 		return;
 
 	if(area.has_method("removeDecreaseAtkSpeed")):

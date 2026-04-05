@@ -16,7 +16,7 @@ skill:
         height: 1
     - type: play_animation
       data:
-        animation: "n_attack"
+        animation: "skill"
     - type: attack
       data:
         damage: 100

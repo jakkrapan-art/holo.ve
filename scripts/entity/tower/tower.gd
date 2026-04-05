@@ -96,7 +96,7 @@ func setup(id: String, onPlace: Callable, onRemove: Callable):
 	var towerData = TowerCenter._towers_data.get(id.to_lower(), null);
 
 	if towerData == null:
-		printerr("tower data not found: " + id);
+		printerr("tower data not found: " + id + ", exists: " + str(TowerCenter._towers_data.keys()));
 		return;
 
 	self.data = towerData.data;

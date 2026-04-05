@@ -20,10 +20,10 @@ var selected_data_file: String = "myth.yaml" #temporary
 var selected_map_file: String = "forest01.yaml"
 
 func setTowerData(datas: Dictionary):
-	_towers_data = datas
-	for k in _towers_data.keys():
-		var data = _towers_data.get(k, null)
+	for k in datas.keys():
+		var data = datas.get(k, null)
 		if(data != null):
+			_towers_data[data.data_name] = data;
 			_towers_data_by_name[data.name.to_lower()] = data
 
 			var portrait = preloadPortrait(data.data_name);

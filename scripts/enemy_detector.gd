@@ -57,10 +57,11 @@ func onCollisionExit(area: Area2D):
 		var eArea = area as EnemyArea
 		if eArea:
 			var enemy = eArea.enemy
+			enemyInRange.erase(enemy)
+
 			if enemy == target:
 				removeTarget()
 
-			enemyInRange.erase(enemy)
 			updateTarget(null, null, null)
 
 func updateTarget(_enemy, _cause, _reward):
@@ -84,10 +85,7 @@ func updateTarget(_enemy, _cause, _reward):
 				currentDistance = distance
 				best = enemy
 
-	if(best == target):
-		return;
 	setTarget(best)
-
 	onEnemyDetected.emit(best)
 
 func setTarget(enemy: Enemy):
@@ -101,8 +99,8 @@ func removeTarget():
 	if target != null:
 		if target.is_connected("onDead", Callable(self, "updateTarget")):
 			target.disconnect("onDead", Callable(self, "updateTarget"))
-		target = null
-		onRemoveTarget.emit()
+	target = null
+	onRemoveTarget.emit()
 
 func isHasEnemy() -> bool:
 	return target != null

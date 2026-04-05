@@ -189,9 +189,6 @@ func updateSpriteColor(available: bool):
 		spr.self_modulate = Color("#ff0000", 1);
 
 func _onEnemyDetected(enemy: Enemy):
-	if(enemy != null && self.enemy != null):
-		return;
-
 	if self.enemy != null:
 		clearEnemy(null, null, null);
 
@@ -203,7 +200,6 @@ func _onEnemyDetected(enemy: Enemy):
 func clearEnemy(_enemy, _cause, _reward):
 	enemy = null;
 	attacking = false;
-	print("enemy cleared", " enemy:", enemy);
 
 func play_animation(name: String, speed: float = 1):
 	if(anim != null):

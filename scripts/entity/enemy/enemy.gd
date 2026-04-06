@@ -3,6 +3,7 @@ class_name Enemy
 
 @onready var sprite: Sprite2D = $Sprite2D;
 @onready var area: Area2D = $Enemy;
+@onready var healthBar: HealthBar = $HealthBar;
 
 @export var stats: EnemyStat;
 var originalModulate: Color
@@ -24,6 +25,10 @@ func setup(enemyType: EnemyType, hp: int, armor: int, mArmor: int, moveSpeed: in
 	originalModulate = sprite.modulate
 	skillController = EnemySkillController.new(self, skills);
 	initialized = true;
+
+	if healthBar:
+		healthBar.setup(hp, false);
+		healthBar.visible = false;
 
 func _process(_delta):
 	if(!initialized):
@@ -70,6 +75,9 @@ func recvDamage(damage: Damage) -> int:
 	if reduction > 0:
 		damageVal = int(damage.damage * (1 - reduction))
 	var currentHp = stats.updateHealth(-damageVal)
+
+	updateHealthBar(currentHp);
+
 	if currentHp <= 0:
 		dead(damage)
 
@@ -81,6 +89,11 @@ func recvDamage(damage: Damage) -> int:
 func _on_damage_flash_timeout():
 	if sprite:
 		sprite.modulate = originalModulate
+
+func updateHealthBar(value: float):
+	if healthBar:
+		healthBar.visible = true
+		healthBar.updateValue(value)
 
 func dead(cause: Damage):
 	var reward = calcurateReward();

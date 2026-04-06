@@ -22,6 +22,7 @@ TowerCenter="*res://scripts/tower_center.gd"
 AudioManager="*res://scripts/audio/audio_manager.gd"
 AttackVfx="*res://scripts/combat/attack_vfx.gd"
 Global="*res://scripts/utility/global.gd"
+PlayerHealth="*res://scripts/utility/player_health.gd"
 
 [display]
 

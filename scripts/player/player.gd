@@ -13,7 +13,7 @@ var ui: PlayerUI;
 var currencyUI: CurrencyUI;
 
 func _ready():
-	setup(1000);
+	setup(PlayerHealth.PLAYER_HEALTH);
 
 func setup(hp: int):
 	currentHp = hp;

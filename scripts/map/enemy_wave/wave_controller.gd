@@ -190,7 +190,7 @@ func createEnemyObject(type: Enemy.EnemyType, health: int, def: int, mDef: int, 
 	return instance
 
 func enemyReachEndPoint(enemy: Enemy):
-	data.onEnemyReachEndpoint.call(5);
+	data.onEnemyReachEndpoint.call(PlayerHealth.DAMAGE_BY_MONSTER_TYPE.get(enemy.enemyType, 10));
 
 func _allGroupsSpawned() -> bool:
 	if waveData == null:

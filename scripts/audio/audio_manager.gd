@@ -13,6 +13,8 @@ var sfx: Dictionary = {}
 var bgm: Dictionary = {}
 var voice: Dictionary = {}
 
+var soundCache: Dictionary = {}
+
 const SFX_POOL_SIZE = 10
 const VOICE_POOL_SIZE = 5
 
@@ -41,11 +43,15 @@ func preloadAudio():
 	for key in sfxList:
 		var filePath = SoundDatabase.sfx[key]
 		var fullPath = sfxPrefix + filePath
+		if(soundCache.has(fullPath)):
+			sfx[key] = soundCache[fullPath]
+			continue;
 		var sound = ResourceLoader.load(fullPath)
 		print("Loaded SFX: ", fullPath, " for key: ", key)
 		if sound:
 			print("Successfully loaded SFX: ", key)
 			sfx[key] = sound
+			soundCache[fullPath] = sound
 		else:
 			print("Failed to load SFX: " + fullPath)
 
@@ -53,11 +59,15 @@ func preloadAudio():
 	for key in bgmList:
 		var filePath = SoundDatabase.bgm[key]
 		var fullPath = bgmPrefix + filePath
+		if(soundCache.has(fullPath)):
+			bgm[key] = soundCache[fullPath]
+			continue;
 		var sound = ResourceLoader.load(fullPath)
 		print("Loaded BGM: ", fullPath, " for key: ", key)
 		if sound:
 			print("Successfully loaded BGM: ", key)
 			bgm[key] = sound
+			soundCache[fullPath] = sound
 		else:
 			print("Failed to load BGM: " + fullPath)
 
@@ -65,9 +75,15 @@ func preloadAudio():
 	for key in voiceList:
 		var filePath = SoundDatabase.voice[key]
 		var fullPath = voicePrefix + filePath
+
+		if(soundCache.has(fullPath)):
+			voice[key] = soundCache[fullPath]
+			continue;
+
 		var sound = ResourceLoader.load(fullPath)
 		if sound:
 			voice[key] = sound
+			soundCache[fullPath] = sound
 		else:
 			push_warning("Failed to load Voice: " + fullPath)
 

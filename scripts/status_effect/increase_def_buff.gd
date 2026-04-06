@@ -22,6 +22,9 @@ func _on_apply(target: Node, buffKey: String = "") -> void:
 		stats.addDefPercent(increaseAmount, buffKey);
 
 func _on_expire(target: Node) -> void:
+	if(!is_instance_valid(target)):
+		return;
+
 	if target.stats != null && target.stats is EnemyStat:
 		var stats:= target.stats as EnemyStat
 		stats.removeDefPercent(self.buffKey);

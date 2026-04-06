@@ -27,6 +27,9 @@ func _on_apply(target: Node) -> void:
 		enemy.originalModulate = effectColor
 
 func _on_expire(target: Node) -> void:
+	if(!is_instance_valid(target)):
+		return;
+
 	if target.stats != null && target.stats is EnemyStat:
 		target.stats.damageReduction = max(0.0, target.stats.damageReduction - reductionAmount)
 

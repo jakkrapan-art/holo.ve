@@ -17,7 +17,7 @@ func disableMove(target: Node):
 	enemy.enableMove = false
 
 func _on_expire(target: Node) -> void:
-	if not target is Enemy:
+	if !is_instance_valid(target) or not target is Enemy:
 		return;
 
 	var enemy: Enemy = target as Enemy

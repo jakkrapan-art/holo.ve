@@ -20,7 +20,6 @@ var bossList: Array[BossDBData] = [];
 var waveData: WaveData = null
 
 var isBossWave:bool = false;
-var bossRandomIndex: int = -1;
 
 var groupSpawnRemain: Dictionary = {}
 
@@ -65,8 +64,6 @@ func startNextWave():
 	waveData = wData
 	active = true
 	isBossWave = wData.isBossWave;
-	if isBossWave:
-		bossRandomIndex = randi_range(0, bossList.size() - 1);
 
 	if isBossWave:
 		spawnBoss();
@@ -138,7 +135,24 @@ func spawnEnemy(groupIndex: int):
 	connectSignalToEnemy(enemy);
 
 func spawnBoss():
-	var bossData = bossList[bossRandomIndex];
+	var result = bossList.filter(func(b):
+		print("[test] checking boss wave: ", b.name, " wave: ", b.wave, " against current wave: ", currWave)
+		return b.wave.has(currWave);
+	)
+
+	if result.is_empty():
+		for b in bossList:
+			print("[test] Boss wave: ", b.name, " wave: ", b.wave, " current wave:", currWave, " has:", b.wave.has(currWave))
+		printerr("Error: No boss found for current wave ", currWave)
+		return
+
+	var bossData: BossDBData;
+
+	if(result.size() > 1):
+		bossData = result[randi_range(0, result.size() - 1)]
+	else:
+		bossData = result[0]
+
 	var texture = bossData.texture;
 	var health = bossData.stats.hp
 	var def = bossData.stats.def

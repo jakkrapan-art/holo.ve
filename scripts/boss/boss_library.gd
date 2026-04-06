@@ -14,6 +14,7 @@ func _init():
 		# var skillPool = [];
 		for bd in bossDatas:
 			var name = bd.name;
+			var wave: Array = bd.wave;
 			var texturePath = "res://resources/enemy/forest01/boss/" + bd.texture + "/" + bd.texture + ".png";
 			var texture = load(texturePath);
 			if texture == null:
@@ -23,7 +24,7 @@ func _init():
 			if bd.has("skill") and bd.skill.size() > 0:
 				bossSkills = SkillUtility.ParseSkill(bd.skill);
 
-			var bossDBData = BossDBData.new(name, texture, bd.scale, bd.stats, bossSkills);
+			var bossDBData = BossDBData.new(name, wave, texture, bd.scale, bd.stats, bossSkills);
 			bossList.append(bossDBData);
 		bossPool[d.map] = {"boss": bossList, "skill": []};
 

@@ -1,6 +1,9 @@
 - name: King Salam
   texture: king_salam
   scale: 1.75
+  wave:
+    - 5
+    - 10
   stats:
     hp: 5000
     def: 5
@@ -43,6 +46,8 @@
 - name: Giant Boar
   texture: giant_boar
   scale: 1
+  wave:
+    - 10
   stats:
     hp: 20000
     def: 5

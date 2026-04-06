@@ -14,7 +14,6 @@ var towerTrait: TowerTrait = TowerTrait.new()
 var towersByName: Dictionary = {}
 var towers: Dictionary = {}
 var _evolutionList: Dictionary = {}
-var _evolvedList: Array[String] = []
 var activeSynergies: Dictionary = {}
 var activeMissionBuff: Dictionary = {}
 
@@ -35,7 +34,7 @@ func getTower(name: String, evoToken: int = 0) -> GetTowerResult:
 
 	if(resource == null && towerTemplate != null):
 		resource = towerTemplate
-	
+
 	print("resource:", resource, " towerTemplate:", towerTemplate);
 	if (resource == null):
 		return null
@@ -157,14 +156,20 @@ func removeTowerFromDict(tower: Tower, key: int):
 	towers[key] = list
 
 func evolutionTower(name: String):
-	var tower = towersByName.get(name, null);
+	var towerData = TowerCenter.getTowerDataByName(name);
+	if towerData == null:
+		print("Error: Tower data not found for evolution:", name)
+		return;
+
+	var dataName = towerData.data_name;
+	var tower = towersByName.get(dataName, null);
 	if tower == null:
 		return
 
 	var success = tower.evolve();
 	if success:
-		_evolutionList.erase(name);
-		_evolvedList.append(name);
+		_evolutionList.erase(dataName);
+		TowerCenter._evolvedList.append(dataName);
 
 func onActivateSynergy(synergy_id: int, tier: int, buff: Dictionary):
 	if not activeSynergies.has(synergy_id):

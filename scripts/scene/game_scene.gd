@@ -112,10 +112,7 @@ func _on_option_selected(selection):
 
 	TowerCenter.upgradeTowerLevelByName(selection);
 	var evoToken = player.wallet.getEvoToken();
-	var result = towerFactory.getTower(tower.data_name, evoToken);
-
-	print("result:", result, " state:", result.state);
-
+	var result: GetTowerResult = towerFactory.getTower(tower.data_name, evoToken);
 	if(result == null):
 		startWave();
 		return;

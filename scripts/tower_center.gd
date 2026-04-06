@@ -10,6 +10,7 @@ var _tower_portrait_by_name: Dictionary
 var _own_towers: Dictionary = {}
 
 var _canEvoList = [];
+var _evolvedList = [];
 
 var MAX_LEVEL = "Max";
 var EVOLVED = "Evolved";
@@ -75,6 +76,9 @@ func getTowerSelectDataByName(name: String):
 	return {"level":0, "evoCost":0}
 
 func validateSelectTower(name: String, evoToken: int):
+	if(_evolvedList.find(name) >= 0):
+		return false
+
 	if _own_towers == null:
 		return false
 

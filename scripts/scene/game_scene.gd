@@ -27,6 +27,7 @@ func _input(event):
 		startWave();
 
 func _ready():
+	TowerCenter.clearData();
 	var b: BossLibrary = BossLibrary.new();
 
 	_load_towers_data() # temp

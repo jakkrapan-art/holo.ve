@@ -20,6 +20,20 @@ var selected_deck: String = "Myth" #temporary
 var selected_data_file: String = "myth.yaml" #temporary
 var selected_map_file: String = "forest01.yaml"
 
+func clearData():
+	_towers_data = {}
+	_default_tower_data = null
+
+	_towers_data_by_name = {}
+
+	_tower_portrait = {}
+	_tower_portrait_by_name = {}
+
+	_own_towers = {}
+
+	_canEvoList = []
+	_evolvedList = []
+
 func setTowerData(datas: Dictionary):
 	for k in datas.keys():
 		var data = datas.get(k, null)

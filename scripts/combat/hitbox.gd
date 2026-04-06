@@ -5,9 +5,9 @@ var _callback: Callable
 var _size: Vector2 = Vector2.ZERO
 var _local_offset: Vector2 = Vector2.ZERO
 var _visual_color: Color = Color(1, 0, 0, 0.25)
-var hide_delay: float = 0.2
+var hide_delay: float = 0
 
-static func create(width: float, height: float, callback: Callable, spawn_pos: Vector2 = Vector2.ZERO, parent: Node = null, spawn_rotation: float = 0.0, local_offset: Vector2 = Vector2.ZERO, visual_color: Color = Color(1, 0, 0, 0.25), visual_delay: float = 0.2) -> Hitbox:
+static func create(width: float, height: float, callback: Callable, spawn_pos: Vector2 = Vector2.ZERO, parent: Node = null, spawn_rotation: float = 0.0, local_offset: Vector2 = Vector2.ZERO, visual_color: Color = Color(1, 0, 0, 0.25), visual_delay: float = 0) -> Hitbox:
 	var hitbox := Hitbox.new()
 
 	# Set callback and visual state

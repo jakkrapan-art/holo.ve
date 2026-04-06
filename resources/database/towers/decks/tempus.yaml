@@ -1,29 +1,29 @@
-Regis Altare:
+regis_altare:
   name: Regis Altare
   sprite: Regis.png
   data_name: regis_altare
 
-Axel Syrios:
+axel_syrios:
   name: Axel Syrios
   sprite: Axel.png
   data_name: axel_syrios
 
-Banzoin Hakka:
+banzoin_hakka:
   name: Banzoin Hakka
   sprite: Hakka.png
   data_name: banzoin_hakka
 
-Gavis Bettel:
+gavis_bettel:
   name: Gavis Bettel
   sprite: Bettel.png
   data_name: gavis_bettel
 
-Machina X Flayon:
+machina_x_flayon:
   name: Machina X Flayon
   sprite: Flayon.png
   data_name: machina_x_flayon
 
-Josuiji Shinri:
+josuiji_shinri:
   name: Josuiji Shinri
   sprite: Josuiji.png
   data_name: josuiji_shinri

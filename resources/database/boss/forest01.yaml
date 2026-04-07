@@ -5,7 +5,7 @@
     - 5
     - 10
   stats:
-    hp: 5000
+    hp: 8000
     def: 5
     mDef: 5
     moveSpeed: 30

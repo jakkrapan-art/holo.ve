@@ -26,6 +26,15 @@ skill:
         animation: "idle"
 
 stats:
+  - damage: 120
+    attackRange: 1.0
+    attackSpeed: 80
+    mana: 30
+    manaRegen: 10
+    intialMana: 0
+    critChance: 0
+    critMultiplier: 1.5
+
   - damage: 180
     attackRange: 1.0
     attackSpeed: 80
@@ -35,16 +44,7 @@ stats:
     critChance: 0
     critMultiplier: 1.5
 
-  - damage: 200
-    attackRange: 1.0
-    attackSpeed: 80
-    mana: 30
-    manaRegen: 10
-    intialMana: 0
-    critChance: 0
-    critMultiplier: 1.5
-
-  - damage: 240
+  - damage: 270
     attackRange: 1.0
     attackSpeed: 80
     mana: 30
@@ -54,7 +54,7 @@ stats:
     critMultiplier: 1.5
 
 evolutionStat:
-  damage: 340
+  damage: 400
   attackRange: 1.0
   attackSpeed: 80
   mana: 30

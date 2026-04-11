@@ -41,6 +41,12 @@ func updateHp(updateAmount: int):
 	currentHp += updateAmount;
 	ui.updateBar(currentHp);
 
+	if(currentHp <= 0):
+		currentHp = 0;
+		ui.updateBar(currentHp);
+
+		UIEndDemo.create();
+
 func getItem(item: InventoryItem):
 	inventory.addItem(item);
 

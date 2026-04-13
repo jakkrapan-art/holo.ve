@@ -23,7 +23,7 @@ skill:
         damage_multiplier_param_name: "damageMultiplier"
 
 stats:
-  - damage: 150
+  - damage: 60
     attackRange: 5.0
     attackSpeed: 120
     mana: 100
@@ -32,7 +32,7 @@ stats:
     critChance: 0
     critMultiplier: 1.5
 
-  - damage: 175
+  - damage: 120
     attackRange: 5.0
     attackSpeed: 120
     mana: 100
@@ -41,7 +41,7 @@ stats:
     critChance: 0
     critMultiplier: 1.5
 
-  - damage: 225
+  - damage: 240
     attackRange: 5.0
     attackSpeed: 120
     mana: 100

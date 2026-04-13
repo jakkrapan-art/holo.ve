@@ -125,8 +125,8 @@ waves:
         def: 10
         mDef: 1
         moveSpeed: 40
-        count: 15
-        spawnInterval: 2
+        count: 5
+        spawnInterval: 6
         skill:
           - name: Sweat Spore
             cooldown: 0
@@ -156,8 +156,8 @@ waves:
         def: 10
         mDef: 1
         moveSpeed: 40
-        count: 15
-        spawnInterval: 2
+        count: 10
+        spawnInterval: 3
         skill:
           - name: Sweat Spore
             cooldown: 0
@@ -176,7 +176,7 @@ waves:
         health: 5000
         def: 1
         mDef: 10
-        moveSpeed: 40
+        moveSpeed: 50
         count: 5
         spawnInterval: 6
         skill:

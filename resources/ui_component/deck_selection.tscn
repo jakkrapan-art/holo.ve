@@ -1,8 +1,10 @@
-[gd_scene load_steps=4 format=3 uid="uid://drdktrtd7dqo"]
+[gd_scene load_steps=5 format=3 uid="uid://drdktrtd7dqo"]
 
 [ext_resource type="Script" path="res://scripts/ui_scenes/deck_selection.gd" id="1_c6p8i"]
 [ext_resource type="Texture2D" uid="uid://dgvgrhrg7mp83" path="res://resources/stick01.png" id="2_ilsgx"]
 [ext_resource type="Texture2D" uid="uid://bie6v8keq3w1h" path="res://resources/skill01.png" id="3_bw8ah"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_m8ldg"]
 
 [node name="DeckSelection" type="Panel"]
 anchors_preset = 15
@@ -42,7 +44,7 @@ text = "Hololive"
 [node name="Holostars" type="Button" parent="MainPanel/GenGroupContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Holo star"
+text = "HoloStars"
 
 [node name="DeckContainer" type="GridContainer" parent="MainPanel"]
 layout_mode = 0
@@ -142,13 +144,13 @@ text = "Skill01"
 [node name="PSkillSubName" type="Label" parent="SubPanel/SkillContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
-text = "megane-ko"
 
 [node name="SkillDesc" type="Label" parent="SubPanel"]
 layout_mode = 2
-text = "sddfsd aa asdd afadf ggg
-asdg gdssg sdfsa
-dddd paishj ppp[sdfp"
+text = "A-Chan's deck description
+line 2 description
+line 3 description"
+label_settings = SubResource("LabelSettings_m8ldg")
 autowrap_mode = 1
 
 [node name="Start" type="Button" parent="."]

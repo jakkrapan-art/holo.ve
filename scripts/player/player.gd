@@ -45,7 +45,9 @@ func updateHp(updateAmount: int):
 		currentHp = 0;
 		ui.updateBar(currentHp);
 
-		UIEndDemo.create();
+		var ui = UIEndDemo.create();
+		if(ui):
+			get_tree().current_scene.add_child(ui);
 
 func getItem(item: InventoryItem):
 	inventory.addItem(item);

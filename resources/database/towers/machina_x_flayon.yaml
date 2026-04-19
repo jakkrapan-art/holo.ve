@@ -1,6 +1,6 @@
 maxLevel: 3
 towerClass: robotic
-generation: myth
+generation: tempus
 evolutionCost: 1
 
 # skill: "res://resources/database/skill/takanashi_kiara_skill.tres"

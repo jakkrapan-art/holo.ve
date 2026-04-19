@@ -231,8 +231,8 @@ func enemyDead(enemy: Enemy, cause: Damage, reward: EnemyReward):
 		return
 
 	deadList.append(enemy);
-	reduceEnemyCount();
 	onEnemyDead.emit(enemy, cause, reward);
+	reduceEnemyCount();
 
 func reduceEnemyCount():
 	enemyAliveCount -= 1;

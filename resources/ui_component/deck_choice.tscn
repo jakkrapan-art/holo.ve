@@ -15,8 +15,8 @@ script = ExtResource("1_hcuko")
 
 [node name="Panel" type="Panel" parent="."]
 layout_mode = 0
-offset_right = 100.0
-offset_bottom = 120.0
+offset_right = 200.0
+offset_bottom = 300.0
 
 [node name="DeckImage" type="TextureRect" parent="Panel"]
 layout_mode = 1

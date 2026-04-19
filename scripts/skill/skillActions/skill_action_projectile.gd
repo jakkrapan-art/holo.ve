@@ -20,13 +20,14 @@ func execute(context: SkillContext):
 
 	if(lifetime > 0 && context.user is Tower):
 		var tower: Tower = context.user as Tower
-
-		tower.enableRegenMana = false;
-		tower.usingSkill = false;
-		tower.skillController.currentMana = 0;
+		if(is_instance_valid(tower)):
+			tower.enableRegenMana = false;
+			tower.usingSkill = false;
+			tower.skillController.currentMana = 0;
 
 		await context.user.get_tree().create_timer(lifetime).timeout
-		tower.enableRegenMana = true
+		if(is_instance_valid(tower)):
+			tower.enableRegenMana = true
 
 func setupProjectile(_projectile: Projectile, _i: int, _context: SkillContext):
 	addStatusEffects(_projectile);

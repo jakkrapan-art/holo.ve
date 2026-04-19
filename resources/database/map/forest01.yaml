@@ -2,34 +2,34 @@ mapName: "forest01"
 width: 0
 height: 0
 waves:
-  - waveTime: 60.0 #wave1
+  - waveTime: 30.0 #wave1
     groupList:
       - texture: "salam"
         health: 60
         def: 1
         mDef: 1
         moveSpeed: 20
-        count: 60
+        count: 30
         spawnInterval: 1  #interval = count/60 (60 = 60 second)
 
-  - waveTime: 60.0  #wave2
+  - waveTime: 30.0  #wave2
     groupList:
       - texture: "rolling_stone"
-        health: 80
+        health: 100
         def: 1
         mDef: 1
         moveSpeed: 20
-        count: 60
+        count: 30
         spawnInterval: 1
 
-  - waveTime: 60.0  #wave3
+  - waveTime: 30.0  #wave3
     groupList:
       - texture: "goblin"
-        health: 120
+        health: 150
         def: 1
         mDef: 1
         moveSpeed: 40
-        count: 60
+        count: 30
         spawnInterval: 1
 
       - texture: "armored_goblin"
@@ -38,7 +38,7 @@ waves:
         mDef: 1
         moveSpeed: 20
         count: 5
-        spawnInterval: 12
+        spawnInterval: 6
         skill:
           - name: Wooden Shield
             cooldown: 0
@@ -50,14 +50,14 @@ waves:
                 data:
                   count: 1
                   
-  - waveTime: 60.0  #wave4
+  - waveTime: 30.0  #wave4
     groupList:
       - texture: "armored_salam"
-        health: 150
+        health: 225
         def: 1
         mDef: 1
         moveSpeed: 40
-        count: 60
+        count: 30
         spawnInterval: 1
 
       - texture: "armored_goblin"
@@ -66,7 +66,7 @@ waves:
         mDef: 1
         moveSpeed: 20
         count: 5
-        spawnInterval: 12
+        spawnInterval: 6
         skill:
           - name: Wooden Shield
             cooldown: 0
@@ -81,58 +81,51 @@ waves:
   - waveTime: 60.0  #wave5
     boss: true
 
-  - waveTime: 60.0  #wave6
+  - waveTime: 30.0  #wave6
     groupList:
       - texture: "baby_garlic"
-        health: 300
+        health: 350
         def: 1
         mDef: 1
         moveSpeed: 60
-        count: 60
+        count: 30
         spawnInterval: 1
 
-  - waveTime: 60.0  #wave7
+  - waveTime: 30.0  #wave7
     groupList:
       - texture: "baby_garlic"
-        health: 300
+        health: 350
         def: 1
         mDef: 1
         moveSpeed: 60
-        count: 60
+        count: 30
         spawnInterval: 1
 
       - texture: "wild_boar"
-        health: 400
+        health: 525
         def: 1
         mDef: 1
         moveSpeed: 80
-        count: 40
-        spawnInterval: 1.5
+        count: 15
+        spawnInterval: 2
 
-  - waveTime: 60.0  #wave8
+  - waveTime: 30.0  #wave8
     groupList:
-      - texture: "baby_garlic"
-        health: 300
-        def: 1
-        mDef: 1
-        moveSpeed: 60
-        count: 40
-        spawnInterval: 1.5
 
       - texture: "wild_boar"
-        health: 400
+        health: 525
         def: 1
         mDef: 1
         moveSpeed: 80
-        count: 40
-        spawnInterval: 1.5
+        count: 30
+        spawnInterval: 1
         
       - texture: "flying_flower"
-        health: 2000
+        health: 3000
         def: 10
         mDef: 1
         moveSpeed: 40
-        count: 10
+        count: 5
         spawnInterval: 6
         skill:
           - name: Sweat Spore
@@ -148,23 +141,23 @@ waves:
                   level: 1
                   increaseValue: 5
                   
-  - waveTime: 60.0  #wave9
+  - waveTime: 30.0  #wave9
     groupList:
       - texture: "wild_boar"
-        health: 400
+        health: 525
         def: 1
         mDef: 1
         moveSpeed: 80
-        count: 40
-        spawnInterval: 1.5
+        count: 30
+        spawnInterval: 1
 
       - texture: "flying_flower"
-        health: 2000
+        health: 3000
         def: 10
         mDef: 1
         moveSpeed: 40
         count: 10
-        spawnInterval: 6
+        spawnInterval: 3
         skill:
           - name: Sweat Spore
             cooldown: 0
@@ -183,9 +176,9 @@ waves:
         health: 5000
         def: 1
         mDef: 10
-        moveSpeed: 40
+        moveSpeed: 50
         count: 5
-        spawnInterval: 12
+        spawnInterval: 6
         skill:
           - name: Protector Aura
             cooldown: 0

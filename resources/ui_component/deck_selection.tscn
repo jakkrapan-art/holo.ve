@@ -44,7 +44,7 @@ text = "Hololive"
 [node name="Holostars" type="Button" parent="MainPanel/GenGroupContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "HoloStars"
+text = "Holostars"
 
 [node name="DeckContainer" type="GridContainer" parent="MainPanel"]
 layout_mode = 0

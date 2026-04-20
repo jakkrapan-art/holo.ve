@@ -3,7 +3,6 @@
   scale: 1.75
   wave:
     - 5
-    - 10
   stats:
     hp: 8000
     def: 5
@@ -43,9 +42,10 @@
             duration: 5
             radius: 5
             value: 0.1
+
 - name: Giant Boar
   texture: giant_boar
-  scale: 1
+  scale: 2
   wave:
     - 10
   stats:

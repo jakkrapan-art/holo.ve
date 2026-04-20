@@ -3,24 +3,31 @@ towerClass: Marksman
 generation: myth
 evolutionCost: 1
 
-# skill: "res://resources/database/skill/gawr_gura_skill.tres"
 attack_sound: "hit_amelia"
 open_sound: "debut_amelia"
 skill:
-  name: "Skill"
-  desc: "Just a skill"
+  name: "Time Traveler I"
+  desc: "Amelia increases her own attack speed by {attackSpeedPercent}% for 4 seconds."
+  cast_time: 0.5
+  parameters:
+    attackSpeedPercent:
+      - 10
+      - 15
+      - 20
   actions:
-    - type: "create_circle_projectile"
+    - type: "play_animation"
       data:
-        circle_radius: 1.0
-        angular_speed: 180.0
-        initial_angle: 0.0
-        angle_offset: 90.0
-        lifetime: 5.0
-        count: 4
-        damage_multiplier: 1.0
-        damage_type: "magic"
-        damage_multiplier_param_name: "damageMultiplier"
+        animation: "skill"
+    - type: "play_effect"
+      data:
+        effect_script: "res://resources/tower/hololive/en_branch/myth_gen/amelia/skill_effect/amelia_skill_effect.gd"
+    - type: "atk_speed_buff"
+      data:
+        duration: 4.0
+        param_name: "attackSpeedPercent"
+    - type: "play_animation"
+      data:
+        animation: "idle"
 
 stats:
   - damage: 60
@@ -49,6 +56,30 @@ stats:
     manaRegen: 10
     critChance: 0
     critMultiplier: 1.5
+
+evolution_skill:
+  name: "Elementary my dear"
+  desc: "Amelia increases attack speed by 50% for herself and nearby towers, and gains 100% critical chance for 4 seconds."
+  cast_time: 0.5
+  actions:
+    - type: "play_animation"
+      data:
+        animation: "skill"
+    - type: "play_effect"
+      data:
+        effect_script: "res://resources/tower/hololive/en_branch/myth_gen/amelia/skill_effect/amelia_evo_skill_effect.gd"
+    - type: "atk_speed_buff_aoe"
+      data:
+        duration: 4.0
+        percent: 50.0
+        range: 1
+    - type: "crit_chance_buff"
+      data:
+        duration: 4.0
+        percent: 100.0
+    - type: "play_animation"
+      data:
+        animation: "idle"
 
 evolutionStat:
   damage: 350

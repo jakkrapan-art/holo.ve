@@ -102,6 +102,26 @@ static func ParseAction(data: Dictionary) -> SkillAction:
 			skill.duration = duration;
 			skill.radius = radius;
 			skill.decreaseValue = decreaseValue;
+		"atk_speed_buff_aoe":
+			skill = SkillActionAtkSpeedBuffAOE.new()
+			var skillData = data.get("data", {})
+			skill.duration = skillData.get("duration", 4.0)
+			skill.percent = skillData.get("percent", 50.0)
+			skill.range = skillData.get("range", 1)
+		"crit_chance_buff":
+			skill = SkillActionCritChanceBuff.new()
+			var skillData = data.get("data", {})
+			skill.duration = skillData.get("duration", 4.0)
+			skill.percent = skillData.get("percent", 100.0)
+		"play_effect":
+			skill = SkillActionPlayEffect.new()
+			var skillData = data.get("data", {})
+			skill.effectScriptPath = skillData.get("effect_script", "")
+		"atk_speed_buff":
+			skill = SkillActionAtkSpeedBuff.new()
+			var skillData = data.get("data", {})
+			skill.duration = skillData.get("duration", 4.0)
+			skill.paramName = skillData.get("param_name", "attackSpeedPercent")
 		"block_damage":
 			skill = SkillActionBlockDamage.new();
 			var skillData = data.get("data", {});

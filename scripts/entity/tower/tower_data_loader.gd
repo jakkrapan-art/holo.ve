@@ -80,7 +80,23 @@ static func load_data(prefix: String, name: String) -> TowerData:
 	skill.name = skillData.get("name", "Unnamed Skill");
 	skill.desc = skillData.get("desc", "");
 	skill.parameters = skillData.get("parameters", {});
+	skill.castTime = skillData.get("cast_time", 0.0);
 
 	tower.skill = skill
+
+	if data.has("evolution_skill"):
+		var evoSkillData = data["evolution_skill"]
+		var evoSkill := Skill.new()
+		var evoActions: Array[SkillAction] = []
+		for act in evoSkillData.get("actions", []):
+			var action = SkillUtility.ParseAction(act)
+			if action != null:
+				evoActions.append(action)
+		evoSkill.actions = evoActions
+		evoSkill.name = evoSkillData.get("name", "Evolved Skill")
+		evoSkill.desc = evoSkillData.get("desc", "")
+		evoSkill.parameters = evoSkillData.get("parameters", {})
+		evoSkill.castTime = evoSkillData.get("cast_time", 0.0)
+		tower.evolutionSkill = evoSkill
 
 	return tower

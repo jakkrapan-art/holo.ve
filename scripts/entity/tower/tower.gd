@@ -44,6 +44,7 @@ func getAttackAnimationSpeed():
 	return data.getAttackAnimationSpeed(spr, ATTACK_ANIMATION);
 
 func _ready():
+	add_to_group("tower")
 	anim = AnimationController.new(spr, IDLE_ANIMATION);
 	Utility.ConnectSignal(anim,"on_animation_finished", Callable(self, "animation_finished"));
 
@@ -130,9 +131,15 @@ func upgrade():
 
 func evolve():
 	var success = data.evolve()
-	if(success):
-		setTowerStar(4);
-
+	if success:
+		setTowerStar(4)
+		if data.evolutionSkill != null:
+			if skillController != null:
+				skillController.cancel()
+			usingSkill = false
+			var stat = data.getStat()
+			skillController = SkillController.new(self, stat.mana, stat.intialMana, data.evolutionSkill)
+			Utility.ConnectSignal(skillController, "on_mana_updated", Callable(self, "update_mana_bar"))
 	return success
 
 func canEvolve():

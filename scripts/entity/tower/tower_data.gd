@@ -14,6 +14,7 @@ var _damagePercentDebuff: float = 0;
 var _rangeBuff: float = 0;
 var _attackSpeedBuff: float = 1;
 var _attackSpeedDebuff: float = 0;
+var _attackSpeedPercentBuff: float = 0.0
 var _manaRegenBuff: float = 0.0
 var _critChanceBuff: float = 0.0
 
@@ -28,6 +29,7 @@ var _modifiers := {}
 @export var evolutionStat: TowerStat;
 
 @export var skill: Skill;
+var evolutionSkill: Skill = null;
 var attack_sound: String = "hit";
 var attack_vfx: String = "atk";
 var open_sound: String = "open";
@@ -142,7 +144,10 @@ func getAttackSpeed():
 	return getStat().attackSpeed + _attackSpeedBuff;
 
 func getAttackDelay():
-	return getStat().getAttackDelay(_attackSpeedBuff) * (1 + _attackSpeedDebuff);
+	var base: float = getStat().getAttackDelay(_attackSpeedBuff) * (1 + _attackSpeedDebuff)
+	if _attackSpeedPercentBuff > 0:
+		base = base / (1.0 + _attackSpeedPercentBuff / 100.0)
+	return base
 
 func getManaRegen():
 	return getStat().manaRegen + _manaRegenBuff;
@@ -174,6 +179,19 @@ func removeAttackSpeedDebuff(key):
 		amount = _modifiers[key]
 		removeBuff(key, amount);
 	_attackSpeedDebuff -= amount
+
+func addAttackSpeedPercentBuff(percent: float, key: String):
+	if key && _modifiers.has(key):
+		removeAttackSpeedPercentBuff(key)
+	applyBuff(key, percent)
+	_attackSpeedPercentBuff += percent
+
+func removeAttackSpeedPercentBuff(key: String):
+	var amount := 0.0
+	if _modifiers.has(key):
+		amount = _modifiers[key]
+		removeBuff(key, amount)
+	_attackSpeedPercentBuff -= amount
 
 func getAttackAnimationSpeed(anim: AnimatedSprite2D, name: String):
 	var stat = getStat();

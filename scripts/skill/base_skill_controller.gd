@@ -32,6 +32,13 @@ func execute_skill_actions(skill: Skill, context: SkillContext):
 		user.usingSkill = true;
 
 	skill.using = true;
+
+	if skill.castTime > 0:
+		await user.get_tree().create_timer(skill.castTime).timeout
+		if context.cancel || cancelled:
+			resetUsingSkill(skill);
+			return
+
 	for action in skill.actions:
 		if(context.cancel || cancelled):
 			resetUsingSkill(skill);

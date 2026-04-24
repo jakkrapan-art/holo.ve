@@ -84,6 +84,8 @@ func _process(delta):
 	if skillController && !usingSkill:
 		if(skillController.currentMana == skillController.maxMana && !attacking):
 			await useSkill();
+			if not is_instance_valid(self):
+				return
 
 	if enableAttack && !attacking && !usingSkill:
 		attackEnemy();
@@ -166,6 +168,8 @@ func attackEnemy():
 		attacking = true;
 		regenMana(data.getManaRegen());
 		await get_tree().create_timer(data.getAttackDelay()).timeout
+		if not is_instance_valid(self):
+			return
 		attacking = false;
 	elif(!is_instance_valid(enemy)):
 		clearEnemy(null, null, null);

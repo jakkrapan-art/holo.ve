@@ -1,0 +1,39 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/User/AppData/Roaming/Claude/local-agent-mode-sessions/skills-plugin/ffdf0642-950b-4b6e-8cbd-be8887f40c26/ba61f24f-4308-4cb4-80d3-44a72f5d0eea/skills/docx/**)",
+      "Bash(python scripts/office/unpack.py \"C:\\\\Users\\\\User\\\\Downloads\\\\HoloVe_GDD_v2.docx\" \"C:\\\\Temp\\\\gdd_unpacked\")",
+      "Bash(pip install *)",
+      "Bash(python -c ' *)",
+      "Bash(node -e \"require\\('docx'\\)\")",
+      "Bash(npm install *)",
+      "Bash(node gen_report.js)",
+      "Bash(npm list *)",
+      "Bash(npm root *)",
+      "Bash(node -e \"require.resolve\\('docx'\\)\")",
+      "Bash(NODE_PATH=\"C:\\\\Users\\\\User\\\\AppData\\\\Roaming\\\\npm\\\\node_modules\" node -e \"require.resolve\\('docx'\\)\")",
+      "Bash(mkdir C:\\\\Temp\\\\docxproj)",
+      "Bash(npm init *)",
+      "Bash(dir \"C:\\\\Users\\\\User\\\\Downloads\\\\HoloVe_BugReport_ForLeadProgrammer.docx\")",
+      "Skill(update-config)",
+      "Skill(update-config:*)",
+      "Bash(node build_report.js)",
+      "Bash(python scripts/office/unpack.py \"D:/Godot/holo.ve/QA Bug Report/HoloVe_BugReport_ForLeadProgrammer.docx\" unpacked_ref/)",
+      "Bash(extract-text \"D:/Godot/holo.ve/QA Bug Report/HoloVe_BugReport_ForLeadProgrammer.docx\")",
+      "Bash(pandoc unpacked_ref/word/document.xml -o -)",
+      "Read(//usr/local/**)",
+      "Read(//usr/**)",
+      "Bash(command -v nodejs)",
+      "PowerShell(Get-Command node -ErrorAction SilentlyContinue; Get-Command \"node.exe\" -ErrorAction SilentlyContinue; \\(Get-Command npm -ErrorAction SilentlyContinue\\).Source)",
+      "PowerShell($env:PATH -split \";\" | Where-Object { $_ -match \"node|npm\" })",
+      "PowerShell($skillBase = \"C:\\\\Users\\\\User\\\\AppData\\\\Roaming\\\\Claude\\\\local-agent-mode-sessions\\\\skills-plugin\\\\ffdf0642-950b-4b6e-8cbd-be8887f40c26\\\\ba61f24f-4308-4cb4-80d3-44a72f5d0eea\"; ls \"$skillBase\\\\bin\\\\\")",
+      "PowerShell(Get-ChildItem \"D:\\\\Godot\\\\holo.ve\\\\QA Bug Report\\\\\" | Select-Object Name, LastWriteTime, @{N='Size\\(KB\\)';E={[math]::Round\\($_.Length/1KB,1\\)}})",
+      "PowerShell(Copy-Item \"C:\\\\Users\\\\User\\\\AppData\\\\Roaming\\\\Claude\\\\local-agent-mode-sessions\\\\skills-plugin\\\\ffdf0642-950b-4b6e-8cbd-be8887f40c26\\\\ba61f24f-4308-4cb4-80d3-44a72f5d0eea\\\\skills\\\\docx\\\\HoloVe_BugReport_20260424.docx\" -Destination \"D:\\\\Godot\\\\holo.ve\\\\QA Bug Report\\\\HoloVe_BugReport_20260424.docx\")",
+      "PowerShell(Copy-Item \"C:\\\\Users\\\\User\\\\AppData\\\\Roaming\\\\Claude\\\\local-agent-mode-sessions\\\\skills-plugin\\\\ffdf0642-950b-4b6e-8cbd-be8887f40c26\\\\ba61f24f-4308-4cb4-80d3-44a72f5d0eea\\\\skills\\\\docx\\\\HoloVe_BugReport_20260424.docx\" -Destination \"D:\\\\Godot\\\\holo.ve\\\\QA Bug Report\\\\HoloVe_BugReport_20260424.docx\" -Force)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(gh --version)"
+    ]
+  }
+}

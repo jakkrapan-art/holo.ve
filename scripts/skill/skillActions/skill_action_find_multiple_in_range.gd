@@ -14,7 +14,7 @@ func execute(context: SkillContext):
 	context.target = [] # Assuming context has a targets array property
 
 	while context.target.is_empty() && attempt < max_attempt:
-		find_targets_in_rotated_range(context)
+		await find_targets_in_rotated_range(context)
 
 		if context.target.is_empty():
 			attempt += 1
@@ -50,7 +50,7 @@ func find_targets_in_rotated_range(context: SkillContext):
 	var parent_node = context.user.get_parent() if context.user.get_parent() else context.user.get_tree().current_scene
 
 	var callback = Callable(self, "_on_hitbox_detected").bind(context, user_position)
-	Hitbox.create(actual_width, actual_height, callback, hitbox_position, parent_node, user_rotation, local_offset)
+	await Hitbox.create(actual_width, actual_height, callback, hitbox_position, parent_node, user_rotation, local_offset)
 
 func _on_hitbox_detected(enemies: Array, context: SkillContext, user_position: Vector2):
 	if not context:

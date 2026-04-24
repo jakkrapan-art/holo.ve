@@ -8,3 +8,6 @@ func execute(context: SkillContext):
 		return;
 
 	await context.user.get_tree().create_timer(delay).timeout
+	if not is_instance_valid(context.user):
+		context.cancel = true
+		return

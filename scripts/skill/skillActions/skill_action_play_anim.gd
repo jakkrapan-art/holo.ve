@@ -18,4 +18,7 @@ func execute(context: SkillContext):
 		return
 
 	var name = await context.user.on_animation_finished
+	if not is_instance_valid(context.user):
+		context.cancel = true
+		return
 	context.cancel = name != animationName

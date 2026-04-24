@@ -13,7 +13,11 @@ func execute(context: SkillContext) -> void:
 
 	var percent: float = context.getParameter(paramName, tower.data.level - 1)
 	tower.data.addAttackSpeedPercentBuff(percent, BUFF_KEY)
+	var on_expire := func():
+		if not is_instance_valid(tower):
+			return
+		tower.data.removeAttackSpeedPercentBuff(BUFF_KEY)
 	context.user.get_tree().create_timer(duration).timeout.connect(
-		func(): tower.data.removeAttackSpeedPercentBuff(BUFF_KEY),
+		on_expire,
 		CONNECT_ONE_SHOT
 	)

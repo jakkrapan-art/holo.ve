@@ -4,6 +4,9 @@ extends Resource
 const TowerClass = preload("res://scripts/entity/tower/tower_trait.gd").TowerClass
 const TowerGeneration = preload("res://scripts/entity/tower/tower_trait.gd").TowerGeneration
 
+const AS_MIN := 1.0
+const AS_MAX := 500.0
+
 var _level: int = 1;
 var _evolutionCost: int = 1;
 var _isEvolved: bool = false;
@@ -12,14 +15,13 @@ var _damageBuff: int = 0;
 var _damagePercentBuff: float = 0;
 var _damagePercentDebuff: float = 0;
 var _rangeBuff: float = 0;
-var _attackSpeedBuff: float = 1;
-var _attackSpeedDebuff: float = 0;
-var _attackSpeedPercentBuff: float = 0.0
 var _manaRegenBuff: float = 0.0
 var _critChanceBuff: float = 0.0
 
 var _attackModifierBuff: Array[Callable] = []
 var _modifiers := {}
+
+var buffs: TowerBuffContainer = TowerBuffContainer.new()
 
 @export var maxLevel: int = 3;
 @export var towerClass: TowerClass;
@@ -140,62 +142,18 @@ func removeAttackRangeBuff(key):
 		removeBuff(key, amount);
 	_rangeBuff -= amount
 
-func getAttackSpeed():
-	return getStat().attackSpeed + _attackSpeedBuff;
+func getAttackSpeed() -> float:
+	var sigma := 1.0 + (buffs.aggregate(BuffInstance.StatType.ATTACK_SPEED) / 100.0)
+	return clampf(getStat().attackSpeed * sigma, AS_MIN, AS_MAX)
 
-func getAttackDelay():
-	var base: float = getStat().getAttackDelay(_attackSpeedBuff) * (1 + _attackSpeedDebuff)
-	if _attackSpeedPercentBuff > 0:
-		base = base / (1.0 + _attackSpeedPercentBuff / 100.0)
-	return base
+func getAttackDelay() -> float:
+	return 100.0 / getAttackSpeed()
 
 func getManaRegen():
 	return getStat().manaRegen + _manaRegenBuff;
 
-func addAttackSpeedBuff(amount: int, key):
-	if(key):
-		if(_modifiers.has(key)):
-			removeAttackSpeedBuff(key)
-		applyBuff(key, amount);
-	_attackSpeedBuff += amount;
-
-func removeAttackSpeedBuff(key):
-	var amount = 0;
-	if(_modifiers.has(key)):
-		amount = _modifiers[key]
-		removeBuff(key, amount);
-	_attackSpeedBuff -= amount
-
-func addAttackSpeedDebuff(amount: float, key):
-	if(key):
-		if(_modifiers.has(key)):
-			removeAttackSpeedDebuff(key)
-		applyBuff(key, amount);
-	_attackSpeedDebuff += amount;
-
-func removeAttackSpeedDebuff(key):
-	var amount = 0;
-	if(_modifiers.has(key)):
-		amount = _modifiers[key]
-		removeBuff(key, amount);
-	_attackSpeedDebuff -= amount
-
-func addAttackSpeedPercentBuff(percent: float, key: String):
-	if key && _modifiers.has(key):
-		removeAttackSpeedPercentBuff(key)
-	applyBuff(key, percent)
-	_attackSpeedPercentBuff += percent
-
-func removeAttackSpeedPercentBuff(key: String):
-	var amount := 0.0
-	if _modifiers.has(key):
-		amount = _modifiers[key]
-		removeBuff(key, amount)
-	_attackSpeedPercentBuff -= amount
-
-func getAttackAnimationSpeed(anim: AnimatedSprite2D, name: String):
-	var stat = getStat();
-	return stat.getAttackAnimationSpeed(anim, name) * _attackSpeedBuff * (1 - _attackSpeedDebuff);
+func getAttackAnimationSpeed(anim: AnimatedSprite2D, name: String) -> float:
+	return getStat().getAttackAnimationSpeed(anim, name, getAttackDelay())
 
 func addManaRegenBuff(amount: float, key):
 	if(key):

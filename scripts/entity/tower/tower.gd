@@ -256,8 +256,6 @@ func processActiveBuff(buff: Dictionary, extraKey: String = ""):
 				data.addAttackBonusPercentBuff(value, str(synergy_id) + extraKey)
 			"rangeBuff":
 				data.addAttackRangeBuff(value, str(synergy_id) + extraKey)
-			"attack_speed_bonus":
-				data.addAttackSpeedBuff(value, str(synergy_id) + extraKey)
 			"mana_regen":
 				data.addManaRegen(value, str(synergy_id) + extraKey)
 			"crit_chance_bonus_percent":
@@ -302,8 +300,6 @@ func clearSynergyBuffs(synergy_id: int):
 					data.removeAttackBonusPercentBuff(synergy_id);
 				"rangeBuff":
 					data.removeAttackRangeBuff(synergy_id)
-				"attackSpeedBuff":
-					data.removeAttackSpeedBuff(synergy_id)
 				"phys_atk_bonus_percent":
 					data.removePhysicDamagePercentBuff(synergy_id)
 				"magic_atk_bonus_percent":
@@ -359,10 +355,16 @@ func setTowerStar(tier: int):
 		towerStar.setStar(tier);
 
 func addDecreaseAtkSpeed(value: float, key: String = ""):
-	data.addAttackSpeedDebuff(value, key);
+	var buff := BuffInstance.new(
+		key,
+		BuffInstance.StatType.ATTACK_SPEED,
+		-value * 100.0,
+		BuffInstance.Category.DEBUFF,
+	)
+	data.buffs.add(buff)
 
 func removeDecreaseAtkSpeed(key: String):
-	data.removeAttackSpeedDebuff(key);
+	data.buffs.remove(key)
 
 func addDecreaseDmgAllPercent(value: float, key: String = ""):
 	data.addAttackBonusPercentBuff(value, key);

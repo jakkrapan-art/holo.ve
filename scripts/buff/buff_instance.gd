@@ -4,13 +4,14 @@ extends Resource
 enum StatType {
 	ATTACK_SPEED,
 	DAMAGE,
-	CRIT,
+	CRIT_CHANCE,
 	RANGE,
 	MANA_REGEN,
 	ATTACK_FLAT,
 	ATTACK_MULT,
 	MAGIC_FLAT,
 	MAGIC_MULT,
+	CRIT_DAMAGE_BONUS,
 }
 
 enum Category {

@@ -251,9 +251,21 @@ func processActiveBuff(buff: Dictionary, extraKey: String = ""):
 		var value = buff[key]
 		match key:
 			"attack_bonus":
-				data.addPhysicDamageBuff(value, str(synergy_id) + extraKey)
+				var b := BuffInstance.new(
+					str(synergy_id) + extraKey + "_atk_flat",
+					BuffInstance.StatType.ATTACK_FLAT,
+					float(value),
+					BuffInstance.Category.BUFF,
+				)
+				data.buffs.add(b)
 			"attack_bonus_percent":
-				data.addAttackBonusPercentBuff(value, str(synergy_id) + extraKey)
+				var b := BuffInstance.new(
+					str(synergy_id) + extraKey + "_atk_mult",
+					BuffInstance.StatType.ATTACK_MULT,
+					float(value),
+					BuffInstance.Category.BUFF,
+				)
+				data.buffs.add(b)
 			"rangeBuff":
 				data.addAttackRangeBuff(value, str(synergy_id) + extraKey)
 			"mana_regen":
@@ -294,10 +306,10 @@ func clearSynergyBuffs(synergy_id: int):
 				continue
 			var value = buff[key]
 			match key:
-				"damageBuff":
-					data.removePhysicDamageBuff(synergy_id)
+				"attack_bonus":
+					data.buffs.remove(str(synergy_id) + "_atk_flat")
 				"attack_bonus_percent":
-					data.removeAttackBonusPercentBuff(synergy_id);
+					data.buffs.remove(str(synergy_id) + "_atk_mult")
 				"rangeBuff":
 					data.removeAttackRangeBuff(synergy_id)
 				"phys_atk_bonus_percent":
@@ -367,10 +379,17 @@ func removeDecreaseAtkSpeed(key: String):
 	data.buffs.remove(key)
 
 func addDecreaseDmgAllPercent(value: float, key: String = ""):
-	data.addAttackBonusPercentBuff(value, key);
+	# value is decimal (0.10 = 10%), BuffInstance ATTACK_MULT expects percent (-10)
+	var buff := BuffInstance.new(
+		key,
+		BuffInstance.StatType.ATTACK_MULT,
+		-value * 100.0,
+		BuffInstance.Category.DEBUFF,
+	)
+	data.buffs.add(buff)
 
 func removeDecreaseDmgAllPercent(key: String):
-	data.removeDecreaseDmgAllPercent(key);
+	data.buffs.remove(key)
 
 signal onReceiveMission(mission: MissionDetail);
 signal on_animation_finished(name: String);

@@ -7,6 +7,8 @@ enum StatType {
 	CRIT,
 	RANGE,
 	MANA_REGEN,
+	ATTACK_FLAT,
+	ATTACK_MULT,
 }
 
 enum Category {

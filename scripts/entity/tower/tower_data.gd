@@ -11,9 +11,6 @@ var _level: int = 1;
 var _evolutionCost: int = 1;
 var _isEvolved: bool = false;
 
-var _damageBuff: int = 0;
-var _damagePercentBuff: float = 0;
-var _damagePercentDebuff: float = 0;
 var _rangeBuff: float = 0;
 var _manaRegenBuff: float = 0.0
 var _critChanceBuff: float = 0.0
@@ -55,56 +52,19 @@ func getStat():
 	get:
 		return _evolutionCost;
 
+func getTotalAttack() -> int:
+	var base: float = float(getStat().damage)
+	var flat: float = buffs.aggregate(BuffInstance.StatType.ATTACK_FLAT)
+	var mult: float = buffs.aggregate(BuffInstance.StatType.ATTACK_MULT)
+	var total: float = (base + flat) * (1.0 + mult / 100.0)
+	return int(clampf(total, 1.0, INF))
+
 func getDamage(enemy: Enemy, source: Node2D) -> Damage:
 	if(enemy == null):
-		return Damage.new(source, getStat().damage + _damageBuff, Damage.DamageType.MAGIC);
+		return Damage.new(source, getTotalAttack(), Damage.DamageType.MAGIC);
 
-	var finalDamage = calculateFinalDamage(getStat().damage + _damageBuff, enemy);
+	var finalDamage = calculateFinalDamage(getTotalAttack(), enemy);
 	return finalDamage;
-
-func addPhysicDamageBuff(amount: int, key):
-	if(key):
-		if(_modifiers.has(key)):
-			removePhysicDamageBuff(key)
-
-	_damageBuff += amount;
-	applyBuff(key, amount);
-
-func removePhysicDamageBuff(key):
-	var amount := 0;
-	if(_modifiers.has(key)):
-		amount = _modifiers.get(key, 0)
-		removeBuff(key, amount);
-
-	_damageBuff -= amount;
-
-func addAttackBonusPercentBuff(amount: int, key):
-	if key && _modifiers.has(key):
-		removeAttackBonusPercentBuff(key);
-
-	_damagePercentBuff += amount;
-	applyBuff(key, amount);
-
-func removeAttackBonusPercentBuff(key):
-	var amount = 0;
-	if(_modifiers.has(key)):
-		amount = _modifiers[key]
-		removeBuff(key, amount);
-	_damagePercentBuff -= amount
-
-func addAttackBonusPercentDebuff(amount: int, key):
-	if key && _modifiers.has(key):
-		removeAttackBonusPercentDebuff(key);
-
-	_damagePercentDebuff += amount;
-	applyBuff(key, amount);
-
-func removeAttackBonusPercentDebuff(key):
-	var amount = 0;
-	if(_modifiers.has(key)):
-		amount = _modifiers[key]
-		removeBuff(key, amount);
-	_damagePercentDebuff -= amount
 
 func calculateFinalDamage(baseDamage: float, enemy: Enemy) -> Damage:
 	var finalDamage = baseDamage
@@ -112,9 +72,6 @@ func calculateFinalDamage(baseDamage: float, enemy: Enemy) -> Damage:
 	# Apply each modifier in the array
 	for modifier in _attackModifierBuff:
 		finalDamage = modifier.call(finalDamage, enemy)
-
-	#Apply percent buff
-	finalDamage += (finalDamage * _damagePercentBuff / 100) * (1 - _damagePercentDebuff)
 
 	var critChance = getCritChance();
 	var isCrit = false;

@@ -1,6 +1,7 @@
 maxLevel: 3
 towerClass: Assassin
 generation: myth
+attackType: physic
 evolutionCost: 1
 
 # skill: "res://resources/database/skill/gawr_gura_skill.tres"

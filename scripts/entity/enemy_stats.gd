@@ -86,8 +86,16 @@ func removeMArmorPercent(key: String):
 	extraMArmorPercent -= buffs[key];
 	buffs.erase(key);
 
+const ARMOR_MAX := 95
+
 func getTotalArmor() -> int:
-	return armor + int(armor * extraArmorPercent);
+	return clampi(armor + int(armor * extraArmorPercent), 0, ARMOR_MAX);
 
 func getTotalMArmor() -> int:
-	return mArmor + int(mArmor * extraMArmorPercent);
+	return clampi(mArmor + int(mArmor * extraMArmorPercent), 0, ARMOR_MAX);
+
+func getArmorFactor() -> float:
+	return 1.0 - float(getTotalArmor()) / 100.0
+
+func getMagicResistFactor() -> float:
+	return 1.0 - float(getTotalMArmor()) / 100.0

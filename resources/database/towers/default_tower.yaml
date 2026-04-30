@@ -1,6 +1,7 @@
 maxLevel: 3 # tower max level
 towerClass: diva # tower class (Assassin, Diva, Hero, King, Marksman, Robotic, SpellCaster, Warrior)
 generation: tempus # tower generation (Myth, Tempus, Gen0, Gen1, Indo1)
+attackType: physic
 evolutionCost: 1 # ค่า evolution
 
 # skill: "res://resources/database/skill/gawr_gura_skill.tres" #tower skill file path (เดี๋ยวอัปเดตเป็น yaml ให้อีกที)

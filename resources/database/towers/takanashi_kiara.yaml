@@ -13,8 +13,8 @@ skill:
   actions:
     - type: find_multi_enemy
       data:
-        width: 1
-        height: 3
+        width: 3
+        height: 1
     - type: play_animation
       data:
         animation: "skill"

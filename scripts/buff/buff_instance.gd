@@ -12,6 +12,8 @@ enum StatType {
 	MAGIC_FLAT,
 	MAGIC_MULT,
 	CRIT_DAMAGE_BONUS,
+	DAMAGE_AMPLIFIER,    # additive decimal — final pipeline × (1 + ΣAmp)
+	DAMAGE_REDUCTION,    # additive decimal — final pipeline × (1 − ΣRed)
 }
 
 enum Category {

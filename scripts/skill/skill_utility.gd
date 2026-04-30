@@ -134,7 +134,26 @@ static func ParseAction(data: Dictionary) -> SkillAction:
 			skill = SkillActionAttack.new();
 			var skillData = data.get("data", {});
 			skill.damage = skillData.get("damage", 0);
-			skill.damageType = Utility.parse_string_to_enum(Damage.DamageType, skillData.get("damage_type", "physic"))
+			# Phase 3 Block C — Skill Multiplier
+			if skillData.has("damage_multiplier"):
+				var dm = skillData["damage_multiplier"]
+				if typeof(dm) == TYPE_ARRAY:
+					var dmArr: Array[float] = []
+					for v in dm:
+						dmArr.append(float(v))
+					skill.damageMultiplierPerLevel = dmArr
+				else:
+					skill.damageMultiplier = float(dm)
+			if skillData.has("hit_distribution"):
+				var hd = skillData["hit_distribution"]
+				var hdArr: Array[float] = []
+				for v in hd:
+					hdArr.append(float(v))
+				skill.hitDistribution = hdArr
+			skill.canCrit = skillData.get("can_crit", true)
+			if skillData.has("damage_type"):
+				skill.damageType = Utility.parse_string_to_enum(Damage.DamageType, skillData["damage_type"])
+				skill.damageTypeOverride = true
 		"clear_enemy":
 			skill = SkillActionClearEnemy.new();
 		"find_multi_enemy":

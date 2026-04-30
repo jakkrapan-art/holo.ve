@@ -8,20 +8,41 @@ evolutionCost: 1
 attack_sound: "hit_kiara"
 open_sound: "debut_kiara"
 skill:
-  name: "Skill"
-  desc: "Just a skill"
+  name: "Kiara ฟันดาบเปลวเพลิง"
+  desc: "สร้างความเสียหายกายภาพ 140% / 150% / 170% (ตามเลเวล) แก่ศัตรูในระยะ 3×1"
   actions:
     - type: find_multi_enemy
       data:
-        width: 3
-        height: 1
+        width: 1
+        height: 3
     - type: play_animation
       data:
         animation: "skill"
     - type: attack
       data:
-        damage: 100
-        damage_type: physical
+        # Skill Multiplier ต่อ level — uses tower.attackType (physic) by default
+        damage_multiplier: [1.4, 1.5, 1.7]
+        can_crit: false   # Kiara ตามดีไซน์: skill ไม่สามารถ crit
+    - type: play_animation
+      data:
+        animation: "idle"
+
+# Evolution skill — overrides base skill when tower is evolved
+evolution_skill:
+  name: "Kiara ฟันดาบเปลวเพลิงสุดยอด"
+  desc: "สร้างความเสียหายกายภาพ 300% แก่ศัตรูในระยะ 6×3"
+  actions:
+    - type: find_multi_enemy
+      data:
+        width: 3
+        height: 6
+    - type: play_animation
+      data:
+        animation: "skill"
+    - type: attack
+      data:
+        damage_multiplier: 3.0   # 300% physic damage (uses tower.attackType)
+        can_crit: false
     - type: play_animation
       data:
         animation: "idle"

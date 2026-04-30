@@ -51,6 +51,35 @@ skill:
       data:
         damage: 100
         damage_type: physic
+        # ─────────────────────────────────────────────────────────────────
+        # Phase 3 Block C — Skill Multiplier (สำหรับ skill tower เท่านั้น)
+        #
+        # damage_multiplier:
+        #   - scalar  → ใช้ค่าเดียว ทุก level     เช่น 2.0 (200% Total Attack)
+        #   - array   → ค่าแต่ละ level [L1, L2, L3]  เช่น [1.4, 1.5, 1.7]
+        #
+        # damage_type ถ้าไม่ใส่ → ใช้ tower.attackType (default ตาม design 1 tower 1 type)
+        #
+        # can_crit:
+        #   - true (default) → skill roll crit ตามเลขของ tower
+        #   - false           → skill ไม่ crit (เช่น skill Kiara ตามดีไซน์)
+        #
+        # hit_distribution: [r1, r2, ...]  ← multi-hit, แบ่ง 100% ของ final damage
+        #   ⚠️ caution: ผลรวม ratio ต้อง = 1.0 ไม่งั้น push_warning
+        #   ⚠️ ใช้ได้กับ skill ของ tower เท่านั้น (normal attack ไม่มี multi-hit)
+        #
+        # ตัวอย่าง 4-hit skill ความเสียหาย 200% รวม:
+        #   - type: attack
+        #     data:
+        #       damage_multiplier: 2.0
+        #       hit_distribution: [0.2, 0.2, 0.1, 0.5]   # รวม = 1.0 ✓
+        #
+        # ตัวอย่าง skill non-crit ที่ scale ตาม level:
+        #   - type: attack
+        #     data:
+        #       damage_multiplier: [1.4, 1.5, 1.7]
+        #       can_crit: false
+        # ─────────────────────────────────────────────────────────────────
     - type: play_animation
       data:
         animation: "idle"

@@ -23,6 +23,7 @@ var buffs: TowerBuffContainer = TowerBuffContainer.new()
 @export var maxLevel: int = 3;
 @export var towerClass: TowerClass;
 @export var generation: TowerGeneration;
+@export var attackType: Damage.DamageType = Damage.DamageType.PHYSIC;
 
 @export var stats: Array[TowerStat];
 @export var evolutionStat: TowerStat;
@@ -54,14 +55,21 @@ func getStat():
 
 func getTotalAttack() -> int:
 	var base: float = float(getStat().damage)
-	var flat: float = buffs.aggregate(BuffInstance.StatType.ATTACK_FLAT)
-	var mult: float = buffs.aggregate(BuffInstance.StatType.ATTACK_MULT)
+	var flat: float
+	var mult: float
+	match attackType:
+		Damage.DamageType.MAGIC:
+			flat = buffs.aggregate(BuffInstance.StatType.MAGIC_FLAT)
+			mult = buffs.aggregate(BuffInstance.StatType.MAGIC_MULT)
+		_:
+			flat = buffs.aggregate(BuffInstance.StatType.ATTACK_FLAT)
+			mult = buffs.aggregate(BuffInstance.StatType.ATTACK_MULT)
 	var total: float = (base + flat) * (1.0 + mult / 100.0)
 	return int(clampf(total, 1.0, INF))
 
 func getDamage(enemy: Enemy, source: Node2D) -> Damage:
 	if(enemy == null):
-		return Damage.new(source, getTotalAttack(), Damage.DamageType.MAGIC);
+		return Damage.new(source, getTotalAttack(), attackType);
 
 	var finalDamage = calculateFinalDamage(getTotalAttack(), enemy);
 	return finalDamage;
@@ -80,7 +88,7 @@ func calculateFinalDamage(baseDamage: float, enemy: Enemy) -> Damage:
 			finalDamage *= getStat().critMultiplier
 			isCrit = true
 
-	return Damage.new(null, int(finalDamage), Damage.DamageType.PHYSIC, isCrit)
+	return Damage.new(null, int(finalDamage), attackType, isCrit)
 
 func getAttackRange():
 	return getStat().attackRange + _rangeBuff;

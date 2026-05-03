@@ -27,6 +27,11 @@ static func load_data(prefix: String, name: String) -> TowerData:
 	# Parse enum safely (string or int)
 	tower.towerClass = Utility.parse_string_to_enum(TowerData.TowerClass, data.get("towerClass", "Assassin"))
 	tower.generation = Utility.parse_string_to_enum(TowerData.TowerGeneration, data.get("generation", "Myth"))
+	if data.has("attackType"):
+		tower.attackType = Utility.parse_string_to_enum(Damage.DamageType, data["attackType"])
+	else:
+		push_warning("Tower YAML '" + name + "': missing 'attackType' field — defaulting to PHYSIC. Add 'attackType: physic' or 'attackType: magic' to suppress this warning.")
+		tower.attackType = Damage.DamageType.PHYSIC
 
 	tower.evolutionCost = data.get("evolutionCost", 1)
 

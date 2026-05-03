@@ -1,6 +1,7 @@
 maxLevel: 3
 towerClass: Marksman
 generation: myth
+attackType: physic
 evolutionCost: 1
 
 attack_sound: "hit_amelia"

@@ -12,8 +12,7 @@ var current_character_index: int = 0
 
 @export var deckContainer: Node;
 @export var genGroupContainer: Node;
-var selectingGenToggle: UIToggle;
-var selectingBranchToggle: UIToggle;
+var selectingFilterToggle: UIToggle;
 
 @export var branchFilterContainer: Node;
 
@@ -74,8 +73,8 @@ func _setup_buttons():
 
 func _on_gen_filter_pressed(target_gen: String):
 	# Filter decks by type (Fast, Strong, Trick)
-	if(selectingGenToggle):
-		selectingGenToggle.toggleActive(false)
+	if(selectingFilterToggle):
+		selectingFilterToggle.toggleActive(false)
 
 	var genBtn = genGroupContainer.find_child(target_gen)
 	if (genBtn):
@@ -83,7 +82,7 @@ func _on_gen_filter_pressed(target_gen: String):
 		if toggleChild and toggleChild is UIToggle:
 			var toggle = toggleChild as UIToggle
 			toggle.toggleActive(true);
-			selectingGenToggle = toggle
+			selectingFilterToggle = toggle
 
 	print("Filter pressed:", target_gen)
 	for deck_button in deckContainer.get_children():
@@ -93,17 +92,16 @@ func _on_gen_filter_pressed(target_gen: String):
 
 func _on_branch_filter_pressed(target_branch: String):
 	# Filter decks by branch (EN, JP, KR)
-	if(selectingBranchToggle):
-		selectingBranchToggle.toggleActive(false)
+	if(selectingFilterToggle):
+		selectingFilterToggle.toggleActive(false)
 
 	var branchBtn = branchFilterContainer.find_child(target_branch)
-	print("branchBtn: ", branchBtn, " for target_branch: ", target_branch);
 	if (branchBtn):
 		var toggleChild = branchBtn.find_child("Toggle");
 		if toggleChild and toggleChild is UIToggle:
 			var toggle = toggleChild as UIToggle
 			toggle.toggleActive(true);
-			selectingBranchToggle = toggle
+			selectingFilterToggle = toggle
 
 	print("Branch filter pressed:", target_branch)
 	for deck_button in deckContainer.get_children():

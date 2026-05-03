@@ -25,7 +25,7 @@ func refresh_visuals():
 # --- YOUR ORIGINAL FUNCTIONS (UNTOUCHED LOGIC) ---
 
 static func isCellAvailable(cellPos: Vector2i) -> bool:
-	if(cellPos.x < startX || cellPos.y < startY || cellPos.x > startX + mapSize.x || cellPos.y > startY + mapSize.y):
+	if(cellPos.x < startX || cellPos.y < startY || cellPos.x > startX + mapSize.x - 1 || cellPos.y > startY + mapSize.y - 1):
 		return false;
 	return availableCells.has(cellPos);
 

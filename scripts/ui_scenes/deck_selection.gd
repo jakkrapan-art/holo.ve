@@ -13,6 +13,7 @@ var current_character_index: int = 0
 @export var deckContainer: Node;
 @export var genGroupContainer: Node;
 var selectingFilterToggle: UIToggle;
+var selectingDeckToggle: UIToggle;
 
 @export var branchFilterContainer: Node;
 
@@ -66,6 +67,7 @@ func _display_character():
 func _setup_buttons():
 	if is_instance_valid(startBtn):
 		startBtn.pressed.connect(_on_confirm)
+		setActiveStartBtn(false)
 	if is_instance_valid(exitBtn):
 		exitBtn.pressed.connect(_on_exit)
 	#%NextButton.pressed.connect(_on_next_character)
@@ -84,7 +86,6 @@ func _on_gen_filter_pressed(target_gen: String):
 			toggle.toggleActive(true);
 			selectingFilterToggle = toggle
 
-	print("Filter pressed:", target_gen)
 	for deck_button in deckContainer.get_children():
 		print("Checking deck:", deck_button.group, "against filter:", target_gen)
 		deck_button.visible = deck_button.group == target_gen
@@ -103,7 +104,6 @@ func _on_branch_filter_pressed(target_branch: String):
 			toggle.toggleActive(true);
 			selectingFilterToggle = toggle
 
-	print("Branch filter pressed:", target_branch)
 	for deck_button in deckContainer.get_children():
 		print("Checking deck:", deck_button.branch, "against filter:", target_branch)
 		deck_button.visible = deck_button.branch == target_branch
@@ -117,10 +117,25 @@ func _on_prev_character():
 	current_character_index = (current_character_index - 1 + characters.size()) % characters.size()
 	_display_character()
 
-func _on_deck_selected(deck_name: String):
+func _on_deck_selected(deck_name: String, toggle: UIToggle):
+	if (selectingDeckToggle):
+		selectingDeckToggle.toggleActive(false)
+
+	if (toggle):
+		toggle.toggleActive(true)
+		selectingDeckToggle = toggle
+
 	_selected_deck = _data[deck_name]
 	print("Selected Deck:", _selected_deck)
-	$Start.disabled = false
+	setActiveStartBtn(true)
+
+func setActiveStartBtn(isActive: bool):
+	if (startBtn):
+		startBtn.disabled = !isActive
+		var toggleChild = startBtn.find_child("Toggle");
+		if toggleChild and toggleChild is UIToggle:
+			var startToggle = toggleChild as UIToggle
+			startToggle.toggleActive(isActive);
 
 func _on_confirm():
 	print("Deck selected:", _selected_deck)

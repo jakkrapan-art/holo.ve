@@ -1,36 +1,86 @@
-[gd_scene load_steps=2 format=3 uid="uid://8o7qou0m6kp2"]
+[gd_scene load_steps=8 format=3 uid="uid://8o7qou0m6kp2"]
 
 [ext_resource type="Script" path="res://scripts/ui_scenes/deck_choice.gd" id="1_hcuko"]
+[ext_resource type="Script" path="res://scripts/ui/ui_toggle.gd" id="2_bf4cs"]
+[ext_resource type="Texture2D" uid="uid://7oqqoq5oo2a" path="res://resources/ui_component/ui_asset/deck_on.png" id="3_t8s65"]
+[ext_resource type="FontFile" uid="uid://bvunhnjan4hqu" path="res://resources/ui_component/font/Balthazar-Regular.ttf" id="4_t50qw"]
+[ext_resource type="Texture2D" uid="uid://dhat3a5sddxfi" path="res://resources/ui_component/ui_asset/deck_off.png" id="5_llp5e"]
 
-[node name="DeckChoice" type="Control"]
+[sub_resource type="LabelSettings" id="LabelSettings_vb3iw"]
+font = ExtResource("4_t50qw")
+font_size = 25
+font_color = Color(0.0745098, 0.172549, 0.290196, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_33cch"]
+font = ExtResource("4_t50qw")
+font_size = 25
+font_color = Color(0.0705882, 0.0862745, 0.384314, 1)
+
+[node name="DeckChoice" type="Button" node_paths=PackedStringArray("toggle")]
+self_modulate = Color(1, 1, 1, 0.00392157)
 clip_contents = true
 custom_minimum_size = Vector2(200, 300)
-layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_right = -1691.0
+offset_bottom = -780.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_hcuko")
+toggle = NodePath("Toggle")
 
-[node name="Panel" type="Panel" parent="."]
+[node name="Toggle" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("2_bf4cs")
+
+[node name="Active" type="TextureRect" parent="Toggle"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("3_t8s65")
+
+[node name="Name" type="Label" parent="Toggle/Active"]
 layout_mode = 0
-offset_right = 200.0
-offset_bottom = 300.0
+offset_left = 48.0
+offset_top = 212.0
+offset_right = 183.0
+offset_bottom = 251.0
+text = "{Deck_Name}"
+label_settings = SubResource("LabelSettings_vb3iw")
+horizontal_alignment = 1
+vertical_alignment = 1
+text_overrun_behavior = 3
 
-[node name="DeckImage" type="TextureRect" parent="Panel"]
+[node name="Inactive" type="TextureRect" parent="Toggle"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("5_llp5e")
 
-[node name="Button" type="Button" parent="Panel/DeckImage"]
-modulate = Color(1, 1, 1, 0)
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="Name" type="Label" parent="Toggle/Inactive"]
+layout_mode = 0
+offset_left = 48.0
+offset_top = 212.0
+offset_right = 183.0
+offset_bottom = 251.0
+text = "{Deck_Name}"
+label_settings = SubResource("LabelSettings_33cch")
+horizontal_alignment = 1
+vertical_alignment = 1
+text_overrun_behavior = 3

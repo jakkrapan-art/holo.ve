@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=3 uid="uid://drdktrtd7dqo"]
+[gd_scene load_steps=33 format=3 uid="uid://drdktrtd7dqo"]
 
 [ext_resource type="Texture2D" uid="uid://dundllopjjw5r" path="res://resources/ui_component/ui_asset/BG02.png" id="1_4mrre"]
 [ext_resource type="Script" path="res://scripts/ui_scenes/deck_selection.gd" id="1_c6p8i"]
@@ -20,6 +20,7 @@
 [ext_resource type="Texture2D" uid="uid://bymc6hg66xc2a" path="res://resources/ui_component/ui_asset/holo_head_select_bg.png" id="14_7k427"]
 [ext_resource type="Texture2D" uid="uid://co31mpvtdmr0n" path="res://resources/ui_component/branch_filter_active.png" id="15_e7684"]
 [ext_resource type="Texture2D" uid="uid://16ly41lyuy4w" path="res://resources/ui_component/branch_filter_inactive.png" id="16_t4gjl"]
+[ext_resource type="Texture2D" uid="uid://btqpf8iis3skm" path="res://resources/ui_component/ui_asset/button_off.png" id="20_67tp8"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_mhc4r"]
 texture = ExtResource("1_4mrre")
@@ -801,7 +802,17 @@ offset_bottom = -27.26
 grow_horizontal = 0
 grow_vertical = 0
 
-[node name="TextureRect" type="TextureRect" parent="Start"]
+[node name="Toggle" type="Control" parent="Start"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("10_g7cw1")
+active = true
+
+[node name="Active" type="TextureRect" parent="Start/Toggle"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -811,6 +822,17 @@ grow_vertical = 2
 texture = ExtResource("6_8nwq8")
 expand_mode = 1
 
+[node name="Inactive" type="TextureRect" parent="Start/Toggle"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("20_67tp8")
+expand_mode = 1
+
 [node name="Label" type="Label" parent="Start"]
 layout_mode = 1
 anchors_preset = 8
@@ -818,10 +840,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -11.5
-offset_right = 20.0
-offset_bottom = 11.5
+offset_left = -31.5
+offset_top = -17.5
+offset_right = 31.5
+offset_bottom = 17.5
 grow_horizontal = 2
 grow_vertical = 2
 text = "Start"

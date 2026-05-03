@@ -9,6 +9,8 @@ enum StatType {
 	MANA_REGEN,
 	ATTACK_FLAT,
 	ATTACK_MULT,
+	MAGIC_FLAT,
+	MAGIC_MULT,
 }
 
 enum Category {

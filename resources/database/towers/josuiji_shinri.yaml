@@ -1,6 +1,7 @@
 maxLevel: 3
 towerClass: marksman
 generation: tempus
+attackType: physic
 evolutionCost: 1
 
 # skill: "res://resources/database/skill/takanashi_kiara_skill.tres"

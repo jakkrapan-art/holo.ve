@@ -70,10 +70,18 @@ func recvDamage(damage: Damage) -> int:
 	var timer := get_tree().create_timer(0.3)
 	timer.timeout.connect(_on_damage_flash_timeout)
 
+	var defense_factor: float
+	match damage.type:
+		Damage.DamageType.MAGIC:
+			defense_factor = stats.getMagicResistFactor()
+		_:
+			defense_factor = stats.getArmorFactor()
+
+	var damageVal := int(damage.damage * defense_factor)
+
 	var reduction = stats.getDamageReduction();
-	var damageVal = damage.damage;
 	if reduction > 0:
-		damageVal = int(damage.damage * (1 - reduction))
+		damageVal = int(damageVal * (1 - reduction))
 	var currentHp = stats.updateHealth(-damageVal)
 
 	updateHealthBar(currentHp);
@@ -81,7 +89,13 @@ func recvDamage(damage: Damage) -> int:
 	if currentHp <= 0:
 		dead(damage)
 
-	var dmgColor = Color(1, 1, 1) if not damage.isCritical else Color(1, 0.15, 0)
+	var dmgColor: Color
+	match damage.type:
+		Damage.DamageType.MAGIC:
+			# vivid purple (normal) → pink-magenta (crit, rare event)
+			dmgColor = Color(1.0, 0.3, 0.85) if damage.isCritical else Color(0.85, 0.45, 1.0)
+		_:
+			dmgColor = Color(1, 0.15, 0) if damage.isCritical else Color(1, 1, 1)
 
 	Utility.show_damage_text(global_position, get_parent(), damageVal, dmgColor)
 	return damageVal

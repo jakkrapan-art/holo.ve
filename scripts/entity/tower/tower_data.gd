@@ -11,12 +11,7 @@ var _level: int = 1;
 var _evolutionCost: int = 1;
 var _isEvolved: bool = false;
 
-var _rangeBuff: float = 0;
-var _manaRegenBuff: float = 0.0
-var _critChanceBuff: float = 0.0
-
 var _attackModifierBuff: Array[Callable] = []
-var _modifiers := {}
 
 var buffs: TowerBuffContainer = TowerBuffContainer.new()
 
@@ -81,31 +76,23 @@ func calculateFinalDamage(baseDamage: float, enemy: Enemy) -> Damage:
 	for modifier in _attackModifierBuff:
 		finalDamage = modifier.call(finalDamage, enemy)
 
-	var critChance = getCritChance();
-	var isCrit = false;
-	if(critChance > 0):
-		if(randi_range(0, 100) <= critChance):
-			finalDamage *= getStat().critMultiplier
-			isCrit = true
+	var critChance: float = getCritChance()
+	var isCrit: bool = critChance > 0 and randi_range(0, 100) <= critChance
+	var sigmaCD: float = getStat().critMultiplier + buffs.aggregate(BuffInstance.StatType.CRIT_DAMAGE_BONUS)
+	var critCheck: float = 1.0 if isCrit else 0.0
+	finalDamage *= 1.0 + (critCheck * (sigmaCD - 1.0))
 
 	return Damage.new(null, int(finalDamage), attackType, isCrit)
 
 func getAttackRange():
-	return getStat().attackRange + _rangeBuff;
+	return getStat().attackRange + buffs.aggregate(BuffInstance.StatType.RANGE)
 
-func addAttackRangeBuff(amount: int, key):
-	if(key):
-		if(_modifiers.has(key)):
-			removeAttackRangeBuff(key)
-		applyBuff(key, amount);
-	_rangeBuff += amount;
+func addAttackRangeBuff(amount, key):
+	_addBuffByStat(BuffInstance.StatType.RANGE, float(amount), key)
 
 func removeAttackRangeBuff(key):
-	var amount = 0;
-	if(_modifiers.has(key)):
-		amount = _modifiers[key]
-		removeBuff(key, amount);
-	_rangeBuff -= amount
+	if key:
+		buffs.remove(str(key))
 
 func getAttackSpeed() -> float:
 	var sigma := 1.0 + (buffs.aggregate(BuffInstance.StatType.ATTACK_SPEED) / 100.0)
@@ -115,41 +102,37 @@ func getAttackDelay() -> float:
 	return 100.0 / getAttackSpeed()
 
 func getManaRegen():
-	return getStat().manaRegen + _manaRegenBuff;
+	return getStat().manaRegen + buffs.aggregate(BuffInstance.StatType.MANA_REGEN)
 
 func getAttackAnimationSpeed(anim: AnimatedSprite2D, name: String) -> float:
 	return getStat().getAttackAnimationSpeed(anim, name, getAttackDelay())
 
 func addManaRegenBuff(amount: float, key):
-	if(key):
-		if(_modifiers.has(key)):
-			removeManaRegenBuff(key)
-		applyBuff(key, amount);
-	_manaRegenBuff += amount
+	_addBuffByStat(BuffInstance.StatType.MANA_REGEN, amount, key)
 
 func removeManaRegenBuff(key):
-	var amount := 0;
-	if(_modifiers.has(key)):
-		amount = _modifiers.get(key, 0)
-		removeBuff(key, amount);
-	_manaRegenBuff -= amount
+	if key:
+		buffs.remove(str(key))
 
 func getCritChance():
-	return _critChanceBuff + getStat().critChance
+	return getStat().critChance + buffs.aggregate(BuffInstance.StatType.CRIT_CHANCE)
 
 func addCritChanceBuff(amount: float, key):
-	if(key):
-		if(_modifiers.has(key)):
-			removeCritChanceBuff(key)
-		applyBuff(key, amount);
-	_critChanceBuff += amount
+	_addBuffByStat(BuffInstance.StatType.CRIT_CHANCE, amount, key)
 
 func removeCritChanceBuff(key):
-	var amount := 0;
-	if(_modifiers.has(key)):
-		amount = _modifiers.get(key, 0)
-		removeBuff(key, amount);
-	_critChanceBuff -= amount
+	if key:
+		buffs.remove(str(key))
+
+# Internal helper — REFRESH-on-key semantics (matches legacy behavior).
+# Inserts BuffInstance into `buffs`; if `key` already exists it's replaced.
+func _addBuffByStat(statType: int, value: float, key) -> void:
+	if not key:
+		return
+	var keyStr := str(key)
+	buffs.remove(keyStr)
+	var category: int = BuffInstance.Category.BUFF if value >= 0 else BuffInstance.Category.DEBUFF
+	buffs.add(BuffInstance.new(keyStr, statType, value, category))
 
 func levelUp():
 	print("level up, current level ", _level, " max level ", maxLevel);
@@ -167,11 +150,5 @@ func evolve():
 	_isEvolved = true;
 	print("evolve success");
 	return true;
-
-func applyBuff(key: String, value):
-	_modifiers[key] = value
-
-func removeBuff(key: String, value):
-	_modifiers.erase(key);
 
 signal onAttack(target);

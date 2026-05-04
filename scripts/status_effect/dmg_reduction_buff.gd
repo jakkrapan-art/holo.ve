@@ -14,9 +14,12 @@ func _process_effect(delta: float, target: Node) -> void:
 	if elapsedTime >= duration:
 		_on_expire(target)
 
+func _buffKey() -> String:
+	return "dmgReductionBuff_" + str(get_instance_id())
+
 func _on_apply(target: Node) -> void:
 	if target.stats != null && target.stats is EnemyStat:
-		target.stats.damageReduction += reductionAmount
+		target.stats.addDamageReduction(reductionAmount, _buffKey())
 
 	if(target is Enemy):
 		var enemy := target as Enemy
@@ -31,7 +34,7 @@ func _on_expire(target: Node) -> void:
 		return;
 
 	if target.stats != null && target.stats is EnemyStat:
-		target.stats.damageReduction = max(0.0, target.stats.damageReduction - reductionAmount)
+		target.stats.removeDamageReduction(_buffKey())
 
 	if(target is Enemy):
 		var enemy := target as Enemy

@@ -77,7 +77,8 @@ func calculateFinalDamage(baseDamage: float, enemy: Enemy) -> Damage:
 		finalDamage = modifier.call(finalDamage, enemy)
 
 	var critChance: float = getCritChance()
-	var isCrit: bool = critChance > 0 and randi_range(0, 100) <= critChance
+	# randi_range(1, 100) → 100 values for exact critChance/100 probability (§6.2 #1 fix)
+	var isCrit: bool = critChance > 0 and randi_range(1, 100) <= critChance
 	var sigmaCD: float = getStat().critMultiplier + buffs.aggregate(BuffInstance.StatType.CRIT_DAMAGE_BONUS)
 	var critCheck: float = 1.0 if isCrit else 0.0
 	finalDamage *= 1.0 + (critCheck * (sigmaCD - 1.0))

@@ -70,7 +70,8 @@ func execute(context: SkillContext):
 		for target in context.target:
 			if not is_instance_valid(target) or not target.has_method("recvDamage"):
 				continue
-			var isCrit: bool = canCrit and critChance > 0 and randi_range(0, 100) <= critChance
+			# randi_range(1, 100) → 100 values for exact critChance/100 probability (§6.2 #1 fix)
+			var isCrit: bool = canCrit and critChance > 0 and randi_range(1, 100) <= critChance
 			var hitDamage: float = hitBase
 			if isCrit:
 				# §5: Critical Damage = 1 + (1 × (ΣCD − 1)) = ΣCD

@@ -60,6 +60,8 @@ func getDamageReduction() -> float:
 	return clamp(damageReduction, 0.0, 0.9);
 
 func addMoveSpeedMultiplier(value: float, key: String):
+	if buffs.has(key):
+		removeMoveSpeedMultiplier(key);
 	moveSpeedMultiplier += value;
 	buffs[key] = value;
 

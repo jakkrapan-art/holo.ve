@@ -13,6 +13,18 @@ static func ParseStatusEffect(data: Dictionary):
 		"IncreaseDefBuff":
 			var increaseValue = data.get("increaseValue", 0.0);
 			statusEffect = IncreaseDefBuff.new(duration, increaseValue);
+		"IncreaseMArmorPercentBuff":
+			var increaseValue = data.get("increaseValue", 0.0);
+			statusEffect = IncreaseMArmorPercentBuff.new(duration, increaseValue);
+		"IncreaseArmorFlatBuff":
+			var increaseValue = data.get("increaseValue", 0);
+			statusEffect = IncreaseArmorFlatBuff.new(duration, int(increaseValue));
+		"IncreaseMArmorFlatBuff":
+			var increaseValue = data.get("increaseValue", 0);
+			statusEffect = IncreaseMArmorFlatBuff.new(duration, int(increaseValue));
+		"MoveSpeedMultiplierBuff":
+			var multiplierValue = data.get("multiplierValue", 0.0);
+			statusEffect = MoveSpeedMultiplierBuff.new(duration, multiplierValue);
 		_:
 			push_error("invalid type for status effect, type: ", type);
 			return null;

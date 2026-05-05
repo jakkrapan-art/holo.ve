@@ -29,8 +29,17 @@ func updateHealth(amount: int):
 	currentHp = clamp(currentHp + amount, 0, maxHp);
 	return currentHp;
 
+const MS_MIN := 1.0
+const MS_MAX := 500.0
+
+# Effective Move Speed = Base × (1 + ΣM) clamp [1, 500]
+# Logic: 100 = monster เดินผ่าน 1 ช่อง / วินาที, 200 = 2 ช่อง / วินาที
+# Floor 1 ตั้งใจแยก slow ออกจาก stun/freeze (slow ติด floor=1 ไม่หยุด)
+func getEffectiveMoveSpeed() -> float:
+	return clampf(moveSpeed * moveSpeedMultiplier, MS_MIN, MS_MAX)
+
 func getMoveSpeed(path: Path2D):
-	return calculatePathfollowSpeed(path) * moveSpeedMultiplier;
+	return calculatePathfollowSpeed(path);
 
 func calculatePathfollowSpeed(path: Path2D) -> float:
 	var curve = path.curve
@@ -39,7 +48,7 @@ func calculatePathfollowSpeed(path: Path2D) -> float:
 	var totalSegments = curve.point_count - 3
 	if totalSegments <= 0:
 		return 0.0
-	var totalTime = (100.0 / moveSpeed) * totalSegments
+	var totalTime = (100.0 / getEffectiveMoveSpeed()) * totalSegments
 	return 1.0 / totalTime  # how much progress_ratio to move per second
 
 func getDamageReduction() -> float:

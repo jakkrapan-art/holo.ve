@@ -21,16 +21,16 @@ func enemyEntered(area: Area2D):
 	if not is_instance_valid(user) or isEnemy(user, area):
 		return;
 
-	if(area.has_method("addIncreaseDef")):
-		area.addIncreaseDef(increaseValue, getDebuffKey());
+	if(area.has_method("addIncreaseDefPercent")):
+		area.addIncreaseDefPercent(increaseValue, getDebuffKey());
 	effectedTargets.append(area);
 
 func enemyExited(area: Area2D):
 	if not is_instance_valid(user) or !effectedTargets.has(area):
 		return;
 
-	if(area.has_method("removeIncreaseDef")):
-		area.removeIncreaseDef(getDebuffKey());
+	if(area.has_method("removeIncreaseDefPercent")):
+		area.removeIncreaseDefPercent(getDebuffKey());
 
 	effectedTargets.erase(area);
 

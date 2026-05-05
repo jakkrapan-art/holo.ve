@@ -142,6 +142,24 @@ func addIncreaseDefPercent(value: float, key: String):
 func removeIncreaseDefPercent(key: String):
 	stats.removeDefPercent(key);
 
+func addIncreaseMArmorPercent(value: float, key: String):
+	stats.addMArmorPercent(value, key);
+
+func removeIncreaseMArmorPercent(key: String):
+	stats.removeMArmorPercent(key);
+
+func addIncreaseArmorFlat(value: int, key: String):
+	stats.addArmorFlat(value, key);
+
+func removeIncreaseArmorFlat(key: String):
+	stats.removeArmorFlat(key);
+
+func addIncreaseMArmorFlat(value: int, key: String):
+	stats.addMArmorFlat(value, key);
+
+func removeIncreaseMArmorFlat(key: String):
+	stats.removeMArmorFlat(key);
+
 func addBlockDamageCount(value: int):
 	stats.blockCount += value;
 

@@ -40,7 +40,7 @@ func _process(_delta):
 	if skillController:
 		skillController.useSkill();
 
-	if(progress_ratio == 1):
+	if(progress_ratio >= 1.0):
 		onReachEndPoint.emit();
 		queue_free()
 

@@ -18,9 +18,6 @@ func addModifier(key: int, mod: Callable):
 	modifier[key] = mod
 
 func removeModifier(key: int):
-	if(!modifier.has(key)):
-		pass
-
 	modifier.erase(key);
 
 func executeModifier():

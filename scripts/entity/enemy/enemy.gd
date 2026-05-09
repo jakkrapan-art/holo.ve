@@ -77,11 +77,15 @@ func recvDamage(damage: Damage) -> int:
 		_:
 			defense_factor = stats.getArmorFactor()
 
-	var damageVal := int(damage.damage * defense_factor)
+	# Master Formula §2 final pipeline: × armor_factor × (1 + ΣAmp) × (1 − ΣRed)
+	var sigmaAmp: float = 0.0
+	if damage.source != null and damage.source is Tower:
+		var towerData: TowerData = (damage.source as Tower).data
+		if towerData != null:
+			sigmaAmp = towerData.buffs.aggregate(BuffInstance.StatType.DAMAGE_AMPLIFIER)
 
-	var reduction = stats.getDamageReduction();
-	if reduction > 0:
-		damageVal = int(damageVal * (1 - reduction))
+	var sigmaRed: float = stats.getDamageReduction()  # already clamped + handles blockCount
+	var damageVal: int = int(damage.damage * defense_factor * (1.0 + sigmaAmp) * (1.0 - sigmaRed))
 	var currentHp = stats.updateHealth(-damageVal)
 
 	updateHealthBar(currentHp);
@@ -137,6 +141,24 @@ func addIncreaseDefPercent(value: float, key: String):
 
 func removeIncreaseDefPercent(key: String):
 	stats.removeDefPercent(key);
+
+func addIncreaseMArmorPercent(value: float, key: String):
+	stats.addMArmorPercent(value, key);
+
+func removeIncreaseMArmorPercent(key: String):
+	stats.removeMArmorPercent(key);
+
+func addIncreaseArmorFlat(value: int, key: String):
+	stats.addArmorFlat(value, key);
+
+func removeIncreaseArmorFlat(key: String):
+	stats.removeArmorFlat(key);
+
+func addIncreaseMArmorFlat(value: int, key: String):
+	stats.addMArmorFlat(value, key);
+
+func removeIncreaseMArmorFlat(key: String):
+	stats.removeMArmorFlat(key);
 
 func addBlockDamageCount(value: int):
 	stats.blockCount += value;

@@ -216,9 +216,44 @@ static func _convert(v: String) -> Variant:
 		return int(s)
 	if s.is_valid_float():
 		return float(s)
+	# Inline (flow-style) array: [a, b, c]
+	if s.length() >= 2 and s.substr(0, 1) == "[" and s.substr(s.length() - 1, 1) == "]":
+		var inner := s.substr(1, s.length() - 2).strip_edges()
+		var arr: Array = []
+		if inner == "":
+			return arr
+		var parts := _split_top_level_commas(inner)
+		for p in parts:
+			arr.append(_convert(p))
+		return arr
 	if s.length() >= 2:
 		var a := s.substr(0, 1)
 		var b := s.substr(s.length() - 1, 1)
 		if (a == '"' and b == '"') or (a == "'" and b == "'"):
 			return s.substr(1, s.length() - 2)
 	return s
+
+
+# Splits a string by top-level commas, respecting quotes and nested brackets/braces.
+# Used for parsing inline (flow-style) arrays/objects in YAML values.
+static func _split_top_level_commas(s: String) -> PackedStringArray:
+	var parts: PackedStringArray = []
+	var depth := 0
+	var in_s := false
+	var in_d := false
+	var start := 0
+	for i in range(s.length()):
+		var ch := s.substr(i, 1)
+		if ch == "'" and not in_d:
+			in_s = not in_s
+		elif ch == '"' and not in_s:
+			in_d = not in_d
+		elif (ch == "[" or ch == "{") and not in_s and not in_d:
+			depth += 1
+		elif (ch == "]" or ch == "}") and not in_s and not in_d:
+			depth -= 1
+		elif ch == "," and depth == 0 and not in_s and not in_d:
+			parts.append(s.substr(start, i - start).strip_edges())
+			start = i + 1
+	parts.append(s.substr(start, s.length() - start).strip_edges())
+	return parts

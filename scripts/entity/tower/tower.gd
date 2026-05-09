@@ -269,7 +269,7 @@ func processActiveBuff(buff: Dictionary, extraKey: String = ""):
 			"rangeBuff":
 				data.addAttackRangeBuff(value, str(synergy_id) + extraKey)
 			"mana_regen":
-				data.addManaRegen(value, str(synergy_id) + extraKey)
+				data.addManaRegenBuff(value, str(synergy_id) + extraKey)
 			"crit_chance_bonus_percent":
 				data.addCritChanceBuff(value, str(synergy_id) + extraKey)
 			"on_skill_cast":
@@ -317,7 +317,7 @@ func clearSynergyBuffs(synergy_id: int):
 				"magic_atk_bonus_percent":
 					data.removeMagicDamagePercentBuff(synergy_id)
 				"mana_regen":
-					data.removeManaRegen(synergy_id)
+					data.removeManaRegenBuff(synergy_id)
 				"meteor_proc_chance_percent":
 					data.removeMeteorProcChance(synergy_id)
 				"meteor_damage_percent":

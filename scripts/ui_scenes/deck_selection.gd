@@ -12,10 +12,14 @@ var current_character_index: int = 0
 
 @export var deckContainer: Node;
 @export var genGroupContainer: Node;
-var selectingFilterToggle: UIToggle;
+var selectingGenFilterToggle: UIToggle;
+var selectingBranchFilterToggle: UIToggle;
 var selectingDeckToggle: UIToggle;
 
 @export var branchFilterContainer: Node;
+
+var currentGroupFilter: String = "";
+var DEFAULT_BRANCH_FILTER: String = "jp";
 
 func _ready():
 	_load_deck();
@@ -75,8 +79,8 @@ func _setup_buttons():
 
 func _on_gen_filter_pressed(target_gen: String):
 	# Filter decks by type (Fast, Strong, Trick)
-	if(selectingFilterToggle):
-		selectingFilterToggle.toggleActive(false)
+	if(selectingGenFilterToggle):
+		selectingGenFilterToggle.toggleActive(false)
 
 	var genBtn = genGroupContainer.find_child(target_gen)
 	if (genBtn):
@@ -84,17 +88,19 @@ func _on_gen_filter_pressed(target_gen: String):
 		if toggleChild and toggleChild is UIToggle:
 			var toggle = toggleChild as UIToggle
 			toggle.toggleActive(true);
-			selectingFilterToggle = toggle
+			selectingGenFilterToggle = toggle
 
 	for deck_button in deckContainer.get_children():
-		print("Checking deck:", deck_button.group, "against filter:", target_gen)
-		deck_button.visible = deck_button.group == target_gen
-		print("Deck visible:", deck_button.visible)
+		deck_button.visible = deck_button.group == target_gen and deck_button.branch == DEFAULT_BRANCH_FILTER
+
+	_on_branch_filter_pressed(DEFAULT_BRANCH_FILTER)
+
+	currentGroupFilter = target_gen
 
 func _on_branch_filter_pressed(target_branch: String):
 	# Filter decks by branch (EN, JP, KR)
-	if(selectingFilterToggle):
-		selectingFilterToggle.toggleActive(false)
+	if(selectingBranchFilterToggle):
+		selectingBranchFilterToggle.toggleActive(false)
 
 	var branchBtn = branchFilterContainer.find_child(target_branch)
 	if (branchBtn):
@@ -102,12 +108,10 @@ func _on_branch_filter_pressed(target_branch: String):
 		if toggleChild and toggleChild is UIToggle:
 			var toggle = toggleChild as UIToggle
 			toggle.toggleActive(true);
-			selectingFilterToggle = toggle
+			selectingBranchFilterToggle = toggle
 
 	for deck_button in deckContainer.get_children():
-		print("Checking deck:", deck_button.branch, "against filter:", target_branch)
-		deck_button.visible = deck_button.branch == target_branch
-		print("Deck visible:", deck_button.visible)
+		deck_button.visible = deck_button.branch == target_branch and deck_button.group == currentGroupFilter
 
 func _on_next_character():
 	current_character_index = (current_character_index + 1) % characters.size()

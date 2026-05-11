@@ -18,9 +18,6 @@ func addModifier(key: int, mod: Callable):
 	modifier[key] = mod
 
 func removeModifier(key: int):
-	if(!modifier.has(key)):
-		pass
-
 	modifier.erase(key);
 
 func executeModifier():
@@ -39,8 +36,7 @@ func attack(target: Enemy, direction: Global.DIRECTION, damage: Damage = Damage.
 	if(sound != ""):
 		AudioManager.playSfx(Utility.parse_string_to_enum(SoundDatabase.SFX_NAME, sound));
 
-	if true:
-		AttackVfx.play_vfx(Utility.parse_string_to_enum(AttackVfx.AttackVFXName, vfx), self.tower.global_position, direction, get_tree().current_scene);
+	AttackVfx.play_vfx(Utility.parse_string_to_enum(AttackVfx.AttackVFXName, vfx), self.tower.global_position, direction, get_tree().current_scene);
 
 # func shootProjectile(onHit: Callable = Callable()):
 # 	if(target == null):

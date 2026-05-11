@@ -88,19 +88,25 @@ func show_popup_panel():
 	_popup_open = true
 	# Ensure it's added to the UI layer, not just as a child of the 2D scene
 	get_tree().root.add_child(popup)
-	var evoToken = player.wallet.getEvoToken();
-	popup.setup(evoToken, 1000);
 
-	# Connect function "_on_option_selected" to the signal "tower_select"
+	# Connect signals BEFORE setup() — popup may emit tower_select_skipped during
+	# setup() when no valid towers exist (all maxed/evolved with insufficient evoToken).
 	popup.tower_select.connect(Callable(self, "_on_option_selected"))
-
+	Utility.ConnectSignal(popup, "tower_select_skipped", Callable(self, "_on_tower_select_skipped"));
 	# When the popup is closed/freed, allow it to be opened again
 	Utility.ConnectSignal(popup, "tree_exited", Callable(self, "_on_popup_closed"));
+
+	var evoToken = player.wallet.getEvoToken();
+	popup.setup(evoToken, 1000);
 
 	return
 
 func _on_popup_closed():
 	_popup_open = false
+
+func _on_tower_select_skipped():
+	print("Tower select skipped — no valid towers available")
+	startWave()
 
 # Handle the selection from the popup
 func _on_option_selected(selection):

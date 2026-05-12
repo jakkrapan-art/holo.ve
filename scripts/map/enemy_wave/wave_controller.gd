@@ -178,6 +178,10 @@ func testSpawnBoss(index: int = -1):
 	if(index < 0):
 		index = randi_range(0, bossList.size() - 1);
 
+	if(index >= bossList.size()):
+		print("No boss at index ", index, " (bossList size: ", bossList.size(), ")");
+		return;
+
 	var boss = bossList[index]; # For testing, spawn the first boss in the list.
 
 	var texture = boss.texture;

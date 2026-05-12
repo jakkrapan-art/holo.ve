@@ -239,6 +239,11 @@ func onMissionCompleted(id: int, buff: Dictionary):
 func onWaveStart():
 	processGen0Buff()
 
+func onWaveEnd():
+	for tower: Tower in towersByName.values():
+		if is_instance_valid(tower):
+			tower.resetForWave()
+
 func processGen0Buff():
 	if (!activeSynergies.has(TowerGeneration.Gen0)):
 		return;

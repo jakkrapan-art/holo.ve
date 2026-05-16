@@ -8,6 +8,8 @@ func _init(onGoldUpdate: Callable, onEvoTokenUpdate: Callable):
 	evoToken.subscribeOnUpdate("ui", onEvoTokenUpdate);
 
 func updateGold(value: int):
+	if value == 0:
+		return
 	print("update gold", value);
 	gold.update(value);
 
@@ -15,6 +17,8 @@ func getGold() -> int:
 	return gold.value;
 
 func updateEvoToken(amount: int):
+	if amount == 0:
+		return
 	print("update evo token", amount);
 	evoToken.update(amount);
 

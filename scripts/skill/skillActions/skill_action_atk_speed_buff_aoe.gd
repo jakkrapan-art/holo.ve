@@ -2,7 +2,8 @@ class_name SkillActionAtkSpeedBuffAOE
 extends SkillAction
 
 @export var duration: float = 4.0
-@export var percent: float = 50.0
+# ATTACK_SPEED is decimal scale (0.5 = +50%) — see tower_data.getAttackSpeed.
+@export var percent: float = 0.5
 @export var range: int = 1
 @export var displayName: String = "Attack Speed Up"
 @export var iconPath: String = ""

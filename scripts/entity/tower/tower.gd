@@ -386,10 +386,11 @@ func setTowerStar(tier: int):
 		towerStar.setStar(tier);
 
 func addDecreaseAtkSpeed(value: float, key: String = ""):
+	# ATTACK_SPEED is decimal scale (0.5 = +50%) — caller passes decimal directly.
 	var buff := BuffInstance.new(
 		key,
 		BuffInstance.StatType.ATTACK_SPEED,
-		-value * 100.0,
+		-value,
 		BuffInstance.Category.DEBUFF,
 	)
 	buff.sourceSkill = key

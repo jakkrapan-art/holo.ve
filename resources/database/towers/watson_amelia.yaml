@@ -8,13 +8,13 @@ attack_sound: "hit_amelia"
 open_sound: "debut_amelia"
 skill:
   name: "Time Traveler I"
-  desc: "Amelia increases her own attack speed by {attackSpeedPercent}% for 4 seconds."
+  desc: "Amelia increases her own attack speed by {attackSpeedBuff}% for 4 seconds."
   cast_time: 0.5
   parameters:
-    attackSpeedPercent:
-      - 10
-      - 15
-      - 20
+    attackSpeedBuff:
+      - 0.10
+      - 0.15
+      - 0.20
   actions:
     - type: "play_animation"
       data:
@@ -25,7 +25,7 @@ skill:
     - type: "atk_speed_buff"
       data:
         duration: 4.0
-        param_name: "attackSpeedPercent"
+        param_name: "attackSpeedBuff"
     - type: "play_animation"
       data:
         animation: "idle"
@@ -72,7 +72,7 @@ evolution_skill:
     - type: "atk_speed_buff_aoe"
       data:
         duration: 4.0
-        percent: 50.0
+        percent: 0.50
         range: 1
     - type: "crit_chance_buff"
       data:

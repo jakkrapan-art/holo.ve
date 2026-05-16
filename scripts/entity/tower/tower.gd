@@ -91,9 +91,10 @@ func _process(delta):
 		attackEnemy();
 
 func setup(id: String, onPlace: Callable, onRemove: Callable):
+	self.id = id;
+	self.name = id;
+	towerName = id;
 	self.onPlace = onPlace;
-	self.name = name;
-	towerName = name;
 	self.onRemove = onRemove;
 
 	var towerData = TowerCenter._towers_data.get(id.to_lower(), null);

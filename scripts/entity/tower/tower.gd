@@ -354,6 +354,8 @@ func resetForWave():
 		if child is CircleEffectArea:
 			child.queue_free()
 
+	play_animation_default()
+
 func addIntervalAction(key,interval: float, action: String, value: float):
 	var callable: Callable;
 	match action:

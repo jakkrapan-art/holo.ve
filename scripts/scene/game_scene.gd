@@ -10,6 +10,10 @@ var PopupPanelScene = preload("res://resources/ui_component/tower_select/tower_s
 # @export var mapData: MapData = null;
 @onready var towerFactory: TowerFactory = $TowerFactory;
 
+# Wave numbers (1-indexed, end-of-wave) at which the player is offered an extra deck
+# to merge into the tower pool. Demo default = [5]. Inspector-editable.
+@export var deck_unlock_waves: Array[int] = [5]
+
 var mission: Mission = null;
 var t: Tower = null
 var state: String = ""
@@ -30,7 +34,9 @@ func _ready():
 	TowerCenter.clearData();
 	var b: BossLibrary = BossLibrary.new();
 
-	_load_towers_data() # temp
+	TowerCenter.addDeck(TowerCenter.selected_deck)
+	var default = TowerDataLoader.load_data("res://resources/database/towers/", "default_tower")
+	TowerCenter.setDefaultTowerData(default)
 	ResourceManager.loadResources();
 	var camera = get_node("Camera2D")
 	camera.make_current()
@@ -81,6 +87,52 @@ func reducePlayerHp(amount: int):
 func on_wave_ended():
 	if towerFactory != null:
 		towerFactory.onWaveEnd()
+
+	# At configured wave milestones, offer one of the remaining decks BEFORE
+	# the normal tower-select popup. Pre-filter empty decks so the popup never
+	# opens with nothing to pick.
+	if deck_unlock_waves.has(waveController.currWave) and !TowerCenter.getAvailableDecks().is_empty():
+		show_deck_popup()
+	else:
+		show_popup_panel()
+
+func show_deck_popup():
+	if _popup_open:
+		print("show_deck_popup: popup already open, ignoring duplicate call")
+		return
+
+	var popup: UITowerSelect = PopupPanelScene.instantiate() as UITowerSelect
+	_popup_open = true
+	get_tree().root.add_child(popup)
+
+	var cards: Array = []
+	for deck in TowerCenter.getAvailableDecks():
+		var card = TowerSelectData.new(deck.key, 0, 0)
+		var sprite_path = "res://resources/" + deck.info.sprite
+		if ResourceLoader.exists(sprite_path):
+			card.icon = load(sprite_path)
+		cards.append(card)
+
+	popup.tower_select.connect(Callable(self, "_on_deck_selected"))
+	Utility.ConnectSignal(popup, "tower_select_skipped", Callable(self, "_on_deck_skipped"))
+	# NOTE: tree_exited intentionally NOT connected here. The deck popup's deferred
+	# queue_free would fire tree_exited AFTER the follow-up tower popup is already
+	# open, and would erroneously reset _popup_open while the tower popup is alive.
+	# Flag handoff is explicit in _on_deck_selected / _on_deck_skipped below; the
+	# tower popup wires its own tree_exited via show_popup_panel().
+
+	popup.setup_with_cards(cards, 0)
+
+func _on_deck_selected(deck_key: String):
+	TowerCenter.addDeck(deck_key)
+	# Hand off the popup flag from the (about-to-free) deck popup to the tower popup.
+	_popup_open = false
+	show_popup_panel()
+
+func _on_deck_skipped():
+	# Safety net: getAvailableDecks() pre-filter prevents an empty deck popup
+	# in normal flow. If the popup self-skips anyway, fall through to tower select.
+	_popup_open = false
 	show_popup_panel()
 
 func show_popup_panel():
@@ -156,19 +208,6 @@ func _on_option_selected(selection):
 			var cost = result.tower.data.evolutionCost;
 			player.wallet.updateEvoToken(-cost);
 			startWave();
-
-func _load_towers_data(): #temp
-	var selected_deck_file_path = "res://resources/database/towers/decks/" + TowerCenter.selected_data_file
-	var towerDataList = YamlParser.load_data(selected_deck_file_path)
-	for key in towerDataList:
-		var towerData = towerDataList[key]
-		var data = TowerDataLoader.load_data("res://resources/database/towers/" , towerData.data_name.to_lower());
-		towerData.data = data
-
-
-	TowerCenter.setTowerData(towerDataList);
-	var default = TowerDataLoader.load_data("res://resources/database/towers/" , "default_tower");
-	TowerCenter.setDefaultTowerData(default);
 
 func startWave():
 	state = "wave"

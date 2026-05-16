@@ -1,13 +1,13 @@
-Tempest:
+Tempus:
   name: Tempus
-  sprite: Tempest.png
+  sprite: database/towers/decks/portrait/Tempus.png
   group: Holostars
   data_file: tempus.yaml
   branch: en
 
 Myth:
   name: Myth
-  sprite: Myth.png
+  sprite: database/towers/decks/portrait/Myth.png
   group: Hololive
   data_file: myth.yaml
   branch: en

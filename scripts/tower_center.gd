@@ -20,6 +20,14 @@ var selected_deck: String = "Myth" #temporary
 var selected_data_file: String = "myth.yaml" #temporary
 var selected_map_file: String = "forest01.yaml"
 
+# Deck registry: static metadata from decks.yaml, loaded once at autoload init.
+# added_decks tracks which decks have been merged into the live tower pool during a run.
+var _decks_registry: Dictionary = {}
+var added_decks: Array[String] = []
+
+func _ready():
+	_decks_registry = YamlParser.load_data("res://resources/database/towers/decks/decks.yaml")
+
 func clearData():
 	_towers_data = {}
 	_default_tower_data = null
@@ -33,6 +41,33 @@ func clearData():
 
 	_canEvoList = []
 	_evolvedList = []
+
+	added_decks = []
+
+func addDeck(deck_key: String) -> bool:
+	if added_decks.has(deck_key):
+		return false
+	var deck_info = _decks_registry.get(deck_key, null)
+	if deck_info == null:
+		push_error("TowerCenter.addDeck: unknown deck_key " + deck_key)
+		return false
+
+	var data_file_path = "res://resources/database/towers/decks/" + deck_info.data_file
+	var tower_list = YamlParser.load_data(data_file_path)
+	for k in tower_list:
+		var td = tower_list[k]
+		td.data = TowerDataLoader.load_data("res://resources/database/towers/", td.data_name.to_lower())
+
+	setTowerData(tower_list)
+	added_decks.append(deck_key)
+	return true
+
+func getAvailableDecks() -> Array:
+	var result := []
+	for key in _decks_registry.keys():
+		if !added_decks.has(key):
+			result.append({"key": key, "info": _decks_registry[key]})
+	return result
 
 func setTowerData(datas: Dictionary):
 	for k in datas.keys():

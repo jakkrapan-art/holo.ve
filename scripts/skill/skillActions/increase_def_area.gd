@@ -38,4 +38,4 @@ func isEnemy(user: Node, target: Node):
 	return (user is Enemy and target is Tower) || (user is Tower and (target is Enemy or target is EnemyArea))
 
 func getDebuffKey():
-	return "skill_buff_move_spd";
+	return "skill_" + str(get_instance_id());

@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/ui/tower_select/tower_select_button.gd" id="1_ydvhw"]
 [ext_resource type="FontFile" uid="uid://vc6emo5px8ld" path="res://resources/ui_component/font/Roboto-Regular.ttf" id="2_oispt"]
-[ext_resource type="Texture2D" uid="uid://bs5m5iehs107f" path="res://resources/ui_asset/UIExport_0000s_0011_Layer-1-copy-5.png" id="3_lbarx"]
+[ext_resource type="Texture2D" uid="uid://buu6ln75erxkw" path="res://resources/currency/evo_token.png" id="3_lbarx"]
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_wd61a"]
 resource_name = "tower_buttons"

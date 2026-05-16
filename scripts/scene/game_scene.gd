@@ -14,6 +14,12 @@ var PopupPanelScene = preload("res://resources/ui_component/tower_select/tower_s
 # to merge into the tower pool. Demo default = [5]. Inspector-editable.
 @export var deck_unlock_waves: Array[int] = [5]
 
+# Pause between boss-wave end and the wave-end popup opening, so the
+# EvoTokenDrop pop-in / hold / float-fade sequence is visible before the
+# popup overlays it. Slightly shorter than EvoTokenDrop.TOTAL_DURATION
+# (currently 2.5 s) so the popup arrives during the last fade beat.
+const BOSS_WAVE_END_POPUP_DELAY := 2.2
+
 var mission: Mission = null;
 var t: Tower = null
 var state: String = ""
@@ -72,6 +78,7 @@ func _ready():
 		waveController.connect("onWaveStart", Callable(towerFactory, "onWaveStart"));
 		Utility.ConnectSignal(waveController, "onEnemyDead", Callable(player, "processReward"));
 		Utility.ConnectSignal(waveController, "onEnemyDead", Callable(mission, "enemyDeadCheck"));
+		Utility.ConnectSignal(waveController, "onEnemyDead", Callable(self, "_on_enemy_dead_visual"));
 
 func placeTower(cell: Vector2):
 	map.removeAvailableCell(cell);
@@ -87,6 +94,14 @@ func reducePlayerHp(amount: int):
 func on_wave_ended():
 	if towerFactory != null:
 		towerFactory.onWaveEnd()
+
+	# Hold the wave-end popup back briefly on boss waves so the token drop
+	# visual at the boss death position is readable before the popup covers it.
+	if waveController != null and waveController.isBossWave:
+		await get_tree().create_timer(BOSS_WAVE_END_POPUP_DELAY).timeout
+		# Re-entry guard: scene may have been freed mid-wait (e.g. game-over).
+		if !is_instance_valid(self):
+			return
 
 	# At configured wave milestones, offer one of the remaining decks BEFORE
 	# the normal tower-select popup. Pre-filter empty decks so the popup never
@@ -208,6 +223,13 @@ func _on_option_selected(selection):
 			var cost = result.tower.data.evolutionCost;
 			player.wallet.updateEvoToken(-cost);
 			startWave();
+
+func _on_enemy_dead_visual(enemy: Enemy, _cause, _reward):
+	# World-space loot-drop feedback bound to enemy TYPE, not reward contents.
+	# Today only Boss spawns the visual; future normal-mob token drops (if any)
+	# stay invisible unless explicitly opted-in via a different visual.
+	if enemy.enemyType == Enemy.EnemyType.Boss:
+		EvoTokenDrop.spawn(enemy.global_position, get_tree().current_scene)
 
 func startWave():
 	state = "wave"

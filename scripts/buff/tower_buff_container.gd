@@ -51,3 +51,10 @@ func clear() -> void:
 	_buffs.clear()
 	for buff: BuffInstance in buffs:
 		buff_removed.emit(buff)
+
+func clear_skill_buffs() -> void:
+	for id in _buffs.keys().duplicate():
+		var buff: BuffInstance = _buffs[id]
+		if buff.sourceSkill != "":
+			_buffs.erase(id)
+			buff_removed.emit(buff)

@@ -56,7 +56,7 @@ func _ready():
 		var waveControllerData: WaveControllerData = WaveControllerData.new();
 		waveControllerData.waveDatas = waves;
 		waveControllerData.onEnemyReachEndpoint = Callable(self, "reducePlayerHp");
-		waveControllerData.onWaveEnd = Callable(self, "show_popup_panel");
+		waveControllerData.onWaveEnd = Callable(self, "on_wave_ended");
 
 		waveController.setup(waveControllerData);
 
@@ -77,6 +77,11 @@ func checkValidCell(cell: Vector2):
 	return !map.grids.has(cell);
 func reducePlayerHp(amount: int):
 	player.updateHp(-amount);
+
+func on_wave_ended():
+	if towerFactory != null:
+		towerFactory.onWaveEnd()
+	show_popup_panel()
 
 func show_popup_panel():
 	# Prevent opening multiple popups if this function is called repeatedly

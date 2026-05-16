@@ -335,6 +335,24 @@ func clearSynergyBuffs(synergy_id: int):
 
 	synergyBuffs.erase(synergy_id)
 
+func resetForWave():
+	attacking = false
+	usingSkill = false
+	lastAttackTime = 0.0
+	clearEnemy(null, null, null)
+
+	if skillController != null:
+		skillController.cancel()
+		var initMana: float = data.getStat().intialMana
+		skillController.currentMana = initMana
+		skillController.on_mana_updated.emit(initMana)
+
+	data.buffs.clear_skill_buffs()
+
+	for child in get_children():
+		if child is CircleEffectArea:
+			child.queue_free()
+
 func addIntervalAction(key,interval: float, action: String, value: float):
 	var callable: Callable;
 	match action:
@@ -373,6 +391,7 @@ func addDecreaseAtkSpeed(value: float, key: String = ""):
 		-value * 100.0,
 		BuffInstance.Category.DEBUFF,
 	)
+	buff.sourceSkill = key
 	data.buffs.add(buff)
 
 func removeDecreaseAtkSpeed(key: String):
@@ -386,6 +405,7 @@ func addDecreaseDmgAllPercent(value: float, key: String = ""):
 		-value * 100.0,
 		BuffInstance.Category.DEBUFF,
 	)
+	buff.sourceSkill = key
 	data.buffs.add(buff)
 
 func removeDecreaseDmgAllPercent(key: String):

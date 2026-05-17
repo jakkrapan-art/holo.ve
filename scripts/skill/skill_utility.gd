@@ -106,7 +106,8 @@ static func ParseAction(data: Dictionary) -> SkillAction:
 			skill = SkillActionAtkSpeedBuffAOE.new()
 			var skillData = data.get("data", {})
 			skill.duration = skillData.get("duration", 4.0)
-			skill.percent = skillData.get("percent", 50.0)
+			# ATTACK_SPEED is decimal scale (0.5 = +50%) — see tower_data.getAttackSpeed.
+			skill.percent = skillData.get("percent", 0.5)
 			skill.range = skillData.get("range", 1)
 		"crit_chance_buff":
 			skill = SkillActionCritChanceBuff.new()
@@ -121,7 +122,7 @@ static func ParseAction(data: Dictionary) -> SkillAction:
 			skill = SkillActionAtkSpeedBuff.new()
 			var skillData = data.get("data", {})
 			skill.duration = skillData.get("duration", 4.0)
-			skill.paramName = skillData.get("param_name", "attackSpeedPercent")
+			skill.paramName = skillData.get("param_name", "attackSpeedBuff")
 		"block_damage":
 			skill = SkillActionBlockDamage.new();
 			var skillData = data.get("data", {});

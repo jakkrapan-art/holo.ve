@@ -2,7 +2,7 @@ class_name SkillActionAtkSpeedBuff
 extends SkillAction
 
 @export var duration: float = 4.0
-@export var paramName: String = "attackSpeedPercent"
+@export var paramName: String = "attackSpeedBuff"
 @export var displayName: String = "Attack Speed Up"
 @export var iconPath: String = ""
 

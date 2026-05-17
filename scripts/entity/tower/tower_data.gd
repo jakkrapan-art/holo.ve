@@ -96,7 +96,8 @@ func removeAttackRangeBuff(key):
 		buffs.remove(str(key))
 
 func getAttackSpeed() -> float:
-	var sigma := 1.0 + (buffs.aggregate(BuffInstance.StatType.ATTACK_SPEED) / 100.0)
+	# ATTACK_SPEED is decimal scale (0.5 = +50%) — matches MOVE_SPEED post-PR #9.
+	var sigma := 1.0 + buffs.aggregate(BuffInstance.StatType.ATTACK_SPEED)
 	return clampf(getStat().attackSpeed * sigma, AS_MIN, AS_MAX)
 
 func getAttackDelay() -> float:

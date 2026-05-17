@@ -70,19 +70,20 @@ func updateTarget(_enemy, _cause, _reward):
 		onEnemyDetected.emit(null)
 		return
 
+	# Priority: enemy closest to its path end point (highest progress_ratio).
+	# Sticky: current target stays locked until it leaves range / dies.
 	var best: Enemy = null
-	var currentDistance: float = -1
+	var bestProgress: float = -1.0
 
 	for enemy in enemyInRange:
 		if enemy:
 			if (enemy == target):
 				best = enemy
-				currentDistance = 0
 				break;
 
-			var distance = position.distance_to(enemy.position)
-			if distance < currentDistance || currentDistance == -1:
-				currentDistance = distance
+			var p: float = enemy.progress_ratio
+			if p > bestProgress:
+				bestProgress = p
 				best = enemy
 
 	setTarget(best)

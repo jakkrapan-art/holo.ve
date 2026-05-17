@@ -61,14 +61,25 @@ func _on_hitbox_detected(enemies: Array, context: SkillContext, user_position: V
 		if not enemy or not enemy is Node2D:
 			continue
 
+		# Normalize to the Enemy (PathFollow2D) for progress lookup.
+		# Hitbox._detect() may return either Enemy or EnemyArea (Area2D child of Enemy), since both share the "enemy" group.
+		var enemy_node: Enemy = null
+		if enemy is Enemy:
+			enemy_node = enemy
+		elif enemy is Area2D and enemy.get_parent() is Enemy:
+			enemy_node = enemy.get_parent()
+		if enemy_node == null:
+			continue
+
 		var distance = user_position.distance_to(enemy.global_position)
 		valid_targets.append({
 			"target": enemy,
+			"enemy_node": enemy_node,
 			"distance": distance
 		})
 
-	# Sort by distance (closest first)
-	valid_targets.sort_custom(func(a, b): return a.distance < b.distance)
+	# Sort by path progress (closest to end first) — match normal-attack priority.
+	valid_targets.sort_custom(func(a, b): return a.enemy_node.progress_ratio > b.enemy_node.progress_ratio)
 
 	for target_data in valid_targets:
 		context.target.append(target_data.target)

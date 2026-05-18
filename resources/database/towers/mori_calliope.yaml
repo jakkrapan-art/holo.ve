@@ -21,7 +21,7 @@ skill:
     - type: attack
       data:
         damage: 100
-        damage_type: physical
+        damage_type: physic
     - type: play_animation
       data:
         animation: "idle"

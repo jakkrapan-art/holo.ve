@@ -1,0 +1,144 @@
+[gd_scene load_steps=9 format=3 uid="uid://omnglvjm0xyi"]
+
+[ext_resource type="Script" path="res://scripts/ui/staff_widget.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://dirflpewxylbn" path="res://resources/ui_asset/staff/bg.png" id="2_bg"]
+[ext_resource type="Texture2D" uid="uid://bsvnv5u67vlrv" path="res://resources/staffs/a_chan/hud/portrait.png" id="3_portrait"]
+[ext_resource type="Texture2D" uid="uid://b1qmtl8ktewvf" path="res://resources/ui_asset/staff/border.png" id="4_border"]
+[ext_resource type="Texture2D" uid="uid://b0cs1do08aqpk" path="res://resources/ui_asset/staff/hp_border.png" id="5_hp_border"]
+[ext_resource type="Texture2D" uid="uid://dl086p0jt33jj" path="res://resources/ui_asset/staff/hp_gauge.png" id="6_hp_gauge"]
+[ext_resource type="Texture2D" uid="uid://cdtc4uurl8x5m" path="res://resources/ui_asset/staff/skill_border.png" id="7_skill_border"]
+[ext_resource type="Texture2D" uid="uid://cc27qry4n02k2" path="res://resources/staffs/a_chan/hud/skill_icon.png" id="8_skill_icon"]
+
+[node name="StaffWidget" type="Control"]
+custom_minimum_size = Vector2(520, 236)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 520.0
+offset_bottom = 236.0
+mouse_filter = 2
+script = ExtResource("1_script")
+
+[node name="PortraitBG" type="TextureRect" parent="."]
+clip_children = 2
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -212.0
+offset_top = 31.0
+offset_right = -40.0
+offset_bottom = -33.0
+grow_horizontal = 0
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("2_bg")
+expand_mode = 1
+
+[node name="Portrait" type="TextureRect" parent="PortraitBG"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("3_portrait")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="PortraitBorder" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -240.0
+offset_right = -4.0
+grow_horizontal = 0
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("4_border")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="HpGauge" type="TextureProgressBar" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = -90.0
+offset_right = 353.0
+offset_bottom = -50.0
+grow_vertical = 0
+mouse_filter = 2
+value = 100.0
+fill_mode = 1
+texture_under = ExtResource("5_hp_border")
+texture_progress = ExtResource("6_hp_gauge")
+texture_progress_offset = Vector2(6, 5)
+
+[node name="HpLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = -90.0
+offset_right = 353.0
+offset_bottom = -50.0
+grow_vertical = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 24
+text = "100/100"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SkillMask" type="TextureRect" parent="."]
+clip_children = 1
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 273.0
+offset_top = -16.0
+offset_right = 335.0
+offset_bottom = 46.0
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("2_bg")
+expand_mode = 1
+
+[node name="SkillButton" type="TextureButton" parent="SkillMask"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -2.0
+offset_top = -2.0
+offset_right = 2.0
+offset_bottom = 2.0
+grow_horizontal = 2
+grow_vertical = 2
+texture_normal = ExtResource("8_skill_icon")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="SkillBorder" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 259.0
+offset_top = -30.0
+offset_right = 349.0
+offset_bottom = 59.0
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("7_skill_border")
+expand_mode = 1
+
+[connection signal="pressed" from="SkillMask/SkillButton" to="." method="_on_skill_button_pressed"]

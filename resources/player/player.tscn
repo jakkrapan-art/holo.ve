@@ -1,8 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://ds61ramnlbso3"]
+[gd_scene load_steps=2 format=3 uid="uid://ds61ramnlbso3"]
 
 [ext_resource type="Script" path="res://scripts/player/player.gd" id="1_yiw65"]
-[ext_resource type="PackedScene" uid="uid://h34edgefwfm6" path="res://resources/ui_component/player_ui.tscn" id="2_1gana"]
 
 [node name="Player" type="Node2D"]
 script = ExtResource("1_yiw65")
-uiTemplate = ExtResource("2_1gana")

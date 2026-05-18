@@ -1,0 +1,41 @@
+# Staff data for A-Chan (default demo staff)
+# Edit max_hp / portrait / skill fields here — pipeline reads via StaffDataLoader on game start.
+
+data_name: a_chan
+name: A-Chan
+max_hp: 100
+
+# Paths (relative to res://resources/; loader prepends prefix)
+hud_portrait: staffs/a_chan/hud/portrait.png
+hud_skill_icon: staffs/a_chan/hud/skill_icon.png
+selection_portrait: staffs/a_chan/profile/profile01.png
+end_sprite_scene: staffs/a_chan/sprite/staff_a_chan_sprite.tscn
+
+# Skill — "Hard Worker Ghost Release!!!" (Phase 2)
+# Active player-aimed AOE 4×4 cells; 1 charge per game.
+# Boss enemies → 25% Max HP True Damage; non-boss → 100% Max HP True Damage (= kill).
+# True damage bypasses armor + magic resist + ΣAmp + ΣRed (see damage_formula.md §4 TRUE).
+skill:
+  name: "Hard Worker Ghost Release!!!"
+  desc: "A-Chan releases the spirits of hard workers, instantly killing all enemies in a 5x5 area. Boss enemies take 25% of their max HP as True Damage. Once per game."
+  cast_time: 0.0
+  # MOBA-style charges: 1 = once/game, 2 = twice/game, … ; omit or -1 = unlimited.
+  use_charges: 1
+  aoe:
+    width: 5
+    height: 5
+  # Cast animation + sound — framework prepared; assets pending per Game Director.
+  # Animation: when artist adds "skill" frames to staff_a_chan_sprite.tscn SpriteFrames, it auto-fires.
+  # Sound: leave empty until Game Director picks an SFX_NAME enum key from SoundDatabase
+  # (e.g., "skill_cast"). Empty string = skip the AudioManager call entirely (no warn).
+  cast_animation: "skill"
+  cast_sound: ""
+  actions:
+    - type: "find_multi_enemy"
+      data:
+        width: 5
+        height: 5
+    - type: "damage_percent_maxhp"
+      data:
+        boss_percent: 0.25
+        non_boss_percent: 1.0

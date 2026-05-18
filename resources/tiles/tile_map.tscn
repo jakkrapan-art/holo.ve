@@ -10,7 +10,7 @@
 [ext_resource type="Script" path="res://scripts/map/path_bake_auto.gd" id="8_nw8xb"]
 [ext_resource type="Texture2D" uid="uid://baklj5j1j0b2j" path="res://resources/tiles/LightAnimation01.png" id="8_wce3f"]
 [ext_resource type="Script" path="res://scripts/map/available_grid_drawer.gd" id="10_y0try"]
-[ext_resource type="PackedScene" uid="uid://cbvsli7h2xgda" path="res://resources/manager/a_chan/sprite/animated_sprite_2d_a_chan.tscn" id="11_3swc4"]
+[ext_resource type="PackedScene" uid="uid://cbvsli7h2xgda" path="res://resources/staffs/a_chan/sprite/staff_a_chan_sprite.tscn" id="11_3swc4"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_k166p"]
 texture = ExtResource("1_v0y5x")
@@ -1006,6 +1006,6 @@ texture = ExtResource("8_wce3f")
 [node name="GridDrawer" type="Node2D" parent="."]
 script = ExtResource("10_y0try")
 
-[node name="AnimatedSprite2D_a_chan" parent="." instance=ExtResource("11_3swc4")]
+[node name="StaffEndPoint" type="Marker2D" parent="."]
 position = Vector2(10253, 4977.95)
 scale = Vector2(1.87, 1.87)

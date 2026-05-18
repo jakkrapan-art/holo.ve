@@ -18,18 +18,29 @@ func _ready() -> void:
 	setupRefreshText(refreshLeft, maxRefresh);
 
 func setup(evoToken: int = 0, maxRefresh: int = 0):
-	self.refreshLeft = maxRefresh;
-	self.maxRefresh = maxRefresh;
-
 	var cards = _build_card_list(evoToken)
+	_apply_setup(cards, maxRefresh, evoToken)
+
+# Entry point for callers that already have a card list (e.g. deck-add popup at wave-5 end).
+# Bypasses _build_card_list so the popup is not tied to TowerCenter tower pool.
+func setup_with_cards(cards: Array, maxRefresh: int = 0):
+	_apply_setup(cards, maxRefresh, 0)
+
+func _apply_setup(cards: Array, max_refresh: int, evoTokenForRefresh: int):
+	self.refreshLeft = max_refresh;
+	self.maxRefresh = max_refresh;
+
 	if cards.is_empty():
 		emit_signal("tower_select_skipped")
 		queue_free()
 		return
 
 	_apply_cards_to_buttons(cards)
+
 	var refresh_button = get_node("CanvasLayer/PopupPanel/Panel/RefreshButton")
-	refresh_button.pressed.connect(Callable(self, "refreshList").bind(evoToken))
+	refresh_button.visible = max_refresh > 0
+	if max_refresh > 0:
+		refresh_button.pressed.connect(Callable(self, "refreshList").bind(evoTokenForRefresh))
 
 	setupRefreshText(refreshLeft, maxRefresh)
 
@@ -81,7 +92,14 @@ func _build_card_list(evoToken: int) -> Array:
 	return finalList
 
 func _apply_cards_to_buttons(cards: Array) -> void:
-	var buttons = get_tree().get_nodes_in_group("tower_buttons")
+	# Filter the "tower_buttons" group to descendants of THIS popup. The group is
+	# scene-tree-global, so a deck popup awaiting deferred queue_free leaks its
+	# buttons into a tower popup opened in the same frame — causing the tower
+	# popup's own buttons to be hidden (cards consumed by the dying popup).
+	var buttons: Array = []
+	for b in get_tree().get_nodes_in_group("tower_buttons"):
+		if is_ancestor_of(b):
+			buttons.append(b)
 	var select_callable = Callable(self, "_on_select_tower_button")
 	for button: TowerSelectButton in buttons:
 		# Guard: pressed has no fixed binding so disconnecting an unbound callable errors

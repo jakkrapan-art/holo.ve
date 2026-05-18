@@ -26,6 +26,9 @@ func setup(name: String, sprite, level: int, evolutionCost: int):
 	towerNameText.text = name + ("\nLevel " + str(level) if level > 0 else "")
 	evolutionNode.visible = evolutionCost > 0
 	evolutionCostText.text = " " + str(evolutionCost)
-	var portrait = TowerCenter.getTowerPortraitByName(name.to_lower());
-	if(portrait):
-		towerPortrait.texture = portrait
+	if sprite != null:
+		towerPortrait.texture = sprite
+	else:
+		var portrait = TowerCenter.getTowerPortraitByName(name.to_lower());
+		if(portrait):
+			towerPortrait.texture = portrait

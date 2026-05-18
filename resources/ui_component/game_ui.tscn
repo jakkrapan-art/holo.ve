@@ -184,6 +184,7 @@ grow_vertical = 0
 script = ExtResource("2_rqmfg")
 
 [node name="EssenseOfMem" type="Control" parent="CurrencyUI"]
+visible = false
 layout_mode = 1
 anchors_preset = 6
 anchor_left = 1.0

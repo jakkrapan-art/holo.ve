@@ -16,6 +16,8 @@ func _init(id: int, name: String, desc: String, icon: Texture2D, value: int) -> 
 	self.value = value
 
 func update(updateAmount: int):
+	if updateAmount == 0:
+		return
 	self.value += updateAmount;
 	for key in onUpdate:
 		onUpdate[key].call(self.value);

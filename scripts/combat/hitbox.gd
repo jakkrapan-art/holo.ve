@@ -57,45 +57,46 @@ func _draw():
 	draw_rect(rect, _visual_color, true)
 	draw_rect(rect, Color(_visual_color.r, _visual_color.g, _visual_color.b, 1.0), false, 2)
 
+# Normalize an overlap / group-scan result to its owning Enemy (PathFollow2D).
+# enemy_base.tscn places the "enemy" group on BOTH the PathFollow2D Enemy and its child Area2D (EnemyArea),
+# so overlap queries / group scans may return either node. Resolve once here so callbacks always receive Enemy.
+# Returns null if the node is not an enemy-shaped node.
+static func _resolve_enemy(node: Node) -> Enemy:
+	if node is Enemy:
+		return node
+	if node is Area2D and node.get_parent() is Enemy:
+		return node.get_parent()
+	return null
+
 func _detect():
 	var enemies: Array = []
-	var discovered = {}
+	var discovered := {}
 
 	# Check areas and bodies so we cover both area-based and body-based enemies
 	for node in get_overlapping_areas() + get_overlapping_bodies():
 		print("overlapping node:", node)
-		if not node or not node is Node:
-			continue
-
-		# enemy_base.tscn: PathFollow2D has group enemy, and sub-node Enemy Area2D also has group enemy.
-		# Prefer returning the top-level Enemy instance when possible.
-		var enemy_node: Node = node
-		if node is PathFollow2D and node.is_in_group("enemy"):
-			enemy_node = node
-		elif node.has_node("..") and node.get_parent() and node.get_parent().is_in_group("enemy"):
-			enemy_node = node.get_parent()
-		elif node.is_in_group("enemy"):
-			enemy_node = node
-
-		if not enemy_node or not enemy_node.is_in_group("enemy"):
+		var enemy_node := _resolve_enemy(node)
+		if enemy_node == null:
 			continue
 		if enemy_node in discovered:
 			continue
-
 		discovered[enemy_node] = true
 		enemies.append(enemy_node)
 
 	# If physics overlap gave nothing, fallback to group check via enemy nodes + local rectangle test
 	if enemies.is_empty():
-		for enemy_candidate in get_tree().get_nodes_in_group("enemy"):
-			if not enemy_candidate or not enemy_candidate is Node2D:
+		for candidate in get_tree().get_nodes_in_group("enemy"):
+			var enemy_node := _resolve_enemy(candidate)
+			if enemy_node == null:
+				continue
+			if enemy_node in discovered:
 				continue
 
-			var point = to_local(enemy_candidate.global_position) - _local_offset
+			# Rect test uses the canonical Enemy position (EnemyArea may have local offset).
+			var point = to_local(enemy_node.global_position) - _local_offset
 			if abs(point.x) <= _size.x * 0.5 and abs(point.y) <= _size.y * 0.5:
-				if enemy_candidate not in discovered:
-					discovered[enemy_candidate] = true
-					enemies.append(enemy_candidate)
+				discovered[enemy_node] = true
+				enemies.append(enemy_node)
 
 	# Call callback
 	if _callback:

@@ -12,21 +12,25 @@ var test_deck = ['1','2','3','4','5']
 @onready var refreshText: Label = $CanvasLayer/PopupPanel/Panel/RefreshButton/RefreshText
 var refreshLeft = 0;
 var maxRefresh = 0;
+# Programmatic title header — lazy-created on first _apply_setup() call when a title is provided.
+# Lives as a child of Panel; anchored top-center above the HBoxContainer card row. Avoids editing
+# tower_select.tscn (RULES.md §5: Engineer cannot modify the node tree in the Scene editor).
+var _title_label: Label = null
 
 
 func _ready() -> void:
 	setupRefreshText(refreshLeft, maxRefresh);
 
-func setup(evoToken: int = 0, maxRefresh: int = 0):
+func setup(evoToken: int = 0, maxRefresh: int = 0, title: String = ""):
 	var cards = _build_card_list(evoToken)
-	_apply_setup(cards, maxRefresh, evoToken)
+	_apply_setup(cards, maxRefresh, evoToken, title)
 
 # Entry point for callers that already have a card list (e.g. deck-add popup at wave-5 end).
 # Bypasses _build_card_list so the popup is not tied to TowerCenter tower pool.
-func setup_with_cards(cards: Array, maxRefresh: int = 0):
-	_apply_setup(cards, maxRefresh, 0)
+func setup_with_cards(cards: Array, maxRefresh: int = 0, title: String = ""):
+	_apply_setup(cards, maxRefresh, 0, title)
 
-func _apply_setup(cards: Array, max_refresh: int, evoTokenForRefresh: int):
+func _apply_setup(cards: Array, max_refresh: int, evoTokenForRefresh: int, title: String = ""):
 	self.refreshLeft = max_refresh;
 	self.maxRefresh = max_refresh;
 
@@ -34,6 +38,9 @@ func _apply_setup(cards: Array, max_refresh: int, evoTokenForRefresh: int):
 		emit_signal("tower_select_skipped")
 		queue_free()
 		return
+
+	if title != "":
+		_ensure_title_label(title)
 
 	_apply_cards_to_buttons(cards)
 
@@ -43,6 +50,28 @@ func _apply_setup(cards: Array, max_refresh: int, evoTokenForRefresh: int):
 		refresh_button.pressed.connect(Callable(self, "refreshList").bind(evoTokenForRefresh))
 
 	setupRefreshText(refreshLeft, maxRefresh)
+
+func _ensure_title_label(title: String) -> void:
+	# Lazy-create a single header Label inside Panel. Anchored top-stretch so it remains centered
+	# regardless of Panel width; offset_top/bottom defines a fixed-height header band above the
+	# HBoxContainer card row.
+	if _title_label == null:
+		_title_label = Label.new()
+		_title_label.name = "TitleLabel"
+		_title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		_title_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		_title_label.anchor_left = 0.0
+		_title_label.anchor_right = 1.0
+		_title_label.anchor_top = 0.0
+		_title_label.anchor_bottom = 0.0
+		_title_label.offset_top = 12
+		_title_label.offset_bottom = 56
+		var ls := LabelSettings.new()
+		ls.font_size = 28
+		_title_label.label_settings = ls
+		var panel: Panel = $CanvasLayer/PopupPanel/Panel
+		panel.add_child(_title_label)
+	_title_label.text = title
 
 func setupRefreshText(refreshCount: int, maxRefresh: int):
 	if(refreshText):

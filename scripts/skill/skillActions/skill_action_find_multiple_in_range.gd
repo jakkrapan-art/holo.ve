@@ -27,9 +27,21 @@ func find_targets_in_rotated_range(context: SkillContext):
 	if not context.user:
 		return
 
+	# Default: tower-aimed AOE — anchor at user position, rotate toward target, extend forward.
 	var user_position = context.user.global_position
 	var user_rotation = 0.0
-	if context.user is Tower:
+	var center_on_anchor: bool = false
+
+	# Player-aimed override: if context.extra carries a target_position (Vector2), use it as the
+	# hitbox CENTER instead of context.user.global_position. Skip rotation (axis-aligned grid AOE)
+	# and skip the forward-extend offset (rect centered on click, not extending past it).
+	# Caller responsibility: snap target_position to grid cell before passing it in.
+	var override_position = context.extra.get("target_position", null)
+	if override_position != null and override_position is Vector2:
+		user_position = override_position
+		user_rotation = 0.0
+		center_on_anchor = true
+	elif context.user is Tower:
 		var tower := context.user as Tower
 		if tower.enemy == null:
 			return
@@ -40,10 +52,10 @@ func find_targets_in_rotated_range(context: SkillContext):
 	var actual_width = width * cellSize + (cellSize * 0.5) # Add half cell size for better coverage
 	var actual_height = height * cellSize + (cellSize * 0.5) # Add half cell size for better coverage
 
-	# Offset so that rectangle starts at user position and extends forward
-	var local_offset = Vector2(0, actual_height * 0.5)
+	# Offset: tower mode extends forward from anchor; player-aim mode centers on click.
+	var local_offset = Vector2(0, 0) if center_on_anchor else Vector2(0, actual_height * 0.5)
 
-	# Place the hitbox at the user origin
+	# Place the hitbox at the resolved anchor
 	var hitbox_position = user_position
 
 	# Parent the hitbox to ensure it's in the scene tree for physics checks

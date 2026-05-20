@@ -22,7 +22,7 @@ skill:
     - type: attack
       data:
         damage: 100
-        damage_type: physical
+        damage_type: physic
     - type: clear_enemy
     - type: find_multi_enemy
       data:

@@ -21,11 +21,22 @@ var selectingDeckToggle: UIToggle;
 var currentGroupFilter: String = "";
 var DEFAULT_BRANCH_FILTER: String = "jp";
 
+# Manager Card display refs — populated dynamically from the selected StaffData.
+# (Phase 1 has 1 staff; the script is shaped so adding more entries in staffs.yaml
+# + bullets in the scene "just works" without further plumbing.)
+@onready var _manager_portrait: TextureRect = $ContentContainer/ManagerField/ManagerCard/CardContainer/ManagerImage/TextureRect
+@onready var _manager_name: Label = $ContentContainer/ManagerField/ManagerCard/CardContainer/Name
+@onready var _manager_hp_value: Label = $ContentContainer/ManagerField/ManagerCard/CardContainer/HpInfo/HpValue
+@onready var _manager_skill_icon: TextureRect = $ContentContainer/ManagerField/ManagerCard/CardContainer/Skill/Icon
+@onready var _manager_skill_name: Label = $ContentContainer/ManagerField/ManagerCard/CardContainer/Skill/Name
+@onready var _manager_skill_desc: RichTextLabel = $ContentContainer/ManagerField/ManagerCard/CardContainer/Skill/Description
+
 func _ready():
 	_load_deck();
 	_setup_gen_filter()
 	_setup_branch_filter()
 	_setup_buttons()
+	_setup_staff_card()
 
 func _load_deck():
 	_data = YamlParser.load_data("res://resources/database/towers/decks/decks.yaml")
@@ -145,7 +156,40 @@ func _on_confirm():
 	print("Deck selected:", _selected_deck)
 	TowerCenter.selected_deck = _selected_deck["name"]
 	TowerCenter.selected_data_file = _selected_deck["data_file"]
+	# Staff selection: persisted via StaffCenter.selected_staff (already set by _refresh_staff_card on bullet/arrow).
 	get_tree().change_scene_to_file("res://scenes/dev_scene.tscn")
+
+func _setup_staff_card():
+	# Mirror of _load_deck for staffs — populate StaffCenter, then push the
+	# currently-selected staff into the Manager Card display nodes.
+	StaffCenter.loadAllStaffs()
+	_refresh_staff_card()
+
+func _refresh_staff_card():
+	var data: StaffData = StaffCenter.getSelectedStaff()
+	if data == null:
+		push_warning("DeckSelection._refresh_staff_card: no selected staff in StaffCenter")
+		return
+
+	if data.selection_portrait != "":
+		var portrait_path = "res://resources/" + data.selection_portrait
+		if ResourceLoader.exists(portrait_path):
+			_manager_portrait.texture = load(portrait_path)
+	if data.name != "":
+		_manager_name.text = data.name
+	_manager_hp_value.text = str(data.max_hp)
+
+	if data.hud_skill_icon != "":
+		var icon_path = "res://resources/" + data.hud_skill_icon
+		if ResourceLoader.exists(icon_path):
+			_manager_skill_icon.texture = load(icon_path)
+	# Phase 2: skill is now a Skill resource (data.skill). Read .name / .desc when present;
+	# fall back to scene placeholder text when staff has no skill defined or fields are empty.
+	if data.skill != null:
+		if data.skill.name != "":
+			_manager_skill_name.text = data.skill.name
+		if data.skill.desc != "":
+			_manager_skill_desc.text = data.skill.desc
 
 func _on_exit():
 	get_tree().change_scene_to_file("res://scenes/main_menu.tscn")

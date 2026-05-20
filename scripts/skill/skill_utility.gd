@@ -163,6 +163,13 @@ static func ParseAction(data: Dictionary) -> SkillAction:
 			skill.width = skillData.get("width", 1);
 			skill.height = skillData.get("height", 1);
 			skill.cancel_when_empty = skillData.get("cancel_when_empty", true);
+		"damage_percent_maxhp":
+			# Staff-style TRUE damage = enemy.maxHp × percent (boss vs non-boss split).
+			# First caller: A-Chan "Hard Worker Ghost Release!!!".
+			skill = SkillActionDamagePercentMaxHp.new();
+			var skillData = data.get("data", {});
+			skill.boss_percent = float(skillData.get("boss_percent", 0.25));
+			skill.non_boss_percent = float(skillData.get("non_boss_percent", 1.0));
 		"create_circle_projectile":
 			skill = SkillCreateCircleProjectile.new();
 			var skillData = data.get("data", {});

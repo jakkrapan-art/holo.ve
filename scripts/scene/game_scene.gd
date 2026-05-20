@@ -10,6 +10,9 @@ var PopupPanelScene = preload("res://resources/ui_component/tower_select/tower_s
 # @export var mapData: MapData = null;
 @onready var towerFactory: TowerFactory = $TowerFactory;
 
+# Staff system — instantiated in _ready() once StaffCenter resolves the selected staff.
+var staff: Staff = null
+
 # Wave numbers (1-indexed, end-of-wave) at which the player is offered an extra deck
 # to merge into the tower pool. Demo default = [5]. Inspector-editable.
 @export var deck_unlock_waves: Array[int] = [5]
@@ -25,6 +28,10 @@ var t: Tower = null
 var state: String = ""
 var _popup_open: bool = false
 
+# Staff skill casting state — indicator follows mouse; LeftClick commits, RightClick / ESC cancels.
+var _skill_cast_indicator: SkillCastIndicator = null
+var _state_before_skill_cast: String = ""
+
 func _input(event):
 	if state == "tower_placement" and event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		if(t != null && !t.isOnValidCell):
@@ -35,6 +42,18 @@ func _input(event):
 		if(map != null):
 			map.toggle_grid(false);
 		startWave();
+	elif state == "staff_skill_casting":
+		if event is InputEventMouseButton and event.pressed:
+			if event.button_index == MOUSE_BUTTON_LEFT:
+				_commit_staff_skill_cast()
+			elif event.button_index == MOUSE_BUTTON_RIGHT:
+				_cancel_staff_skill_cast()
+		elif event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE:
+			_cancel_staff_skill_cast()
+
+func _process(_delta):
+	if state == "staff_skill_casting" and _skill_cast_indicator != null:
+		_skill_cast_indicator.update_position_from_world(get_global_mouse_position())
 
 func _ready():
 	TowerCenter.clearData();
@@ -44,6 +63,9 @@ func _ready():
 	var default = TowerDataLoader.load_data("res://resources/database/towers/", "default_tower")
 	TowerCenter.setDefaultTowerData(default)
 	ResourceManager.loadResources();
+
+	# Staff system: load data → instantiate entity → wire widget → spawn endpoint sprite.
+	setup_staff()
 	var camera = get_node("Camera2D")
 	camera.make_current()
 	print("Camera forced to current:", camera.is_current())
@@ -89,7 +111,96 @@ func removeTower(cell: Vector2):
 func checkValidCell(cell: Vector2):
 	return !map.grids.has(cell);
 func reducePlayerHp(amount: int):
-	player.updateHp(-amount);
+	# HP ownership moved from Player to Staff — Player retains wallet/inventory only.
+	if staff != null:
+		staff.takeDamage(amount)
+
+func setup_staff():
+	StaffCenter.loadAllStaffs()
+	var staffData: StaffData = StaffCenter.getSelectedStaff()
+	if staffData == null:
+		push_warning("GameScene.setup_staff: no selected staff in StaffCenter; HP / widget / endpoint sprite will be skipped")
+		return
+
+	staff = Staff.new()
+	staff.name = "Staff"
+	add_child(staff)
+	staff.setup(staffData)
+	Utility.ConnectSignal(staff, "died", Callable(self, "_on_staff_died"))
+
+	# Wire HUD widget — replaces the legacy ManagerImg / PlayerUI HealthBar binding.
+	var staff_widget: StaffWidget = get_node_or_null("GameUI/PlayerUI/Player/StaffWidget") as StaffWidget
+	if staff_widget != null:
+		staff_widget.setup(staff)
+		# Widget button click → Staff.requestCastSkill (emits skill_cast_requested if usable).
+		Utility.ConnectSignal(staff_widget, "skill_pressed", Callable(staff, "requestCastSkill"))
+	else:
+		push_warning("GameScene.setup_staff: StaffWidget not found at GameUI/PlayerUI/Player/StaffWidget")
+
+	# Enter casting state when Staff confirms the cast is valid (uses remaining, skill defined).
+	Utility.ConnectSignal(staff, "skill_cast_requested", Callable(self, "_on_staff_skill_cast_requested"))
+
+	# Spawn the staff sprite at the path-end Marker2D (data-driven per staff) AND
+	# hand the AnimatedSprite2D reference back to Staff so cast animation can fire on it.
+	if staffData.end_sprite_scene != "":
+		var sprite_path = "res://resources/" + staffData.end_sprite_scene
+		if ResourceLoader.exists(sprite_path):
+			var marker = map.get_node_or_null("StaffEndPoint")
+			if marker != null:
+				var sprite_scene: PackedScene = load(sprite_path)
+				if sprite_scene != null:
+					var sprite_instance = sprite_scene.instantiate()
+					marker.add_child(sprite_instance)
+					if sprite_instance is AnimatedSprite2D:
+						staff.staff_sprite = sprite_instance
+			else:
+				push_warning("GameScene.setup_staff: StaffEndPoint Marker2D not found in TileMap")
+
+	# Cast indicator — instantiated lazily here (no .tscn since visual is minimal).
+	# z_index above map but below CanvasLayer popups; hidden until cast starts.
+	if _skill_cast_indicator == null:
+		_skill_cast_indicator = SkillCastIndicator.new()
+		_skill_cast_indicator.name = "SkillCastIndicator"
+		_skill_cast_indicator.z_index = 5
+		add_child(_skill_cast_indicator)
+	_skill_cast_indicator.set_aoe_size(staffData.skill_aoe_width, staffData.skill_aoe_height)
+
+func _on_staff_died():
+	# Game-over flow — previously inside Player.updateHp; now lives here so Staff owns HP lifecycle.
+	var endScreen = UIEndDemo.create()
+	if endScreen:
+		get_tree().current_scene.add_child(endScreen)
+
+# === Staff skill casting ===
+
+func _on_staff_skill_cast_requested():
+	# Player pressed the Staff Widget skill button + Staff confirmed cast is valid.
+	# Enter input-mode "staff_skill_casting"; mouse position drives the indicator.
+	if staff == null or _skill_cast_indicator == null:
+		return
+	_state_before_skill_cast = state
+	state = "staff_skill_casting"
+	_skill_cast_indicator.set_aoe_size(staff.data.skill_aoe_width, staff.data.skill_aoe_height)
+	_skill_cast_indicator.update_position_from_world(get_global_mouse_position())
+	_skill_cast_indicator.visible = true
+
+func _commit_staff_skill_cast():
+	if staff == null:
+		return
+	# Snap mouse to grid cell center (same logic as the indicator) and execute.
+	var cell: Vector2i = GridHelper.WorldToCell(get_global_mouse_position())
+	var snapped: Vector2 = GridHelper.CellToWorld(cell)
+	_exit_skill_cast_state()
+	staff.executeSkillAtPosition(snapped)
+
+func _cancel_staff_skill_cast():
+	_exit_skill_cast_state()
+
+func _exit_skill_cast_state():
+	state = _state_before_skill_cast
+	_state_before_skill_cast = ""
+	if _skill_cast_indicator != null:
+		_skill_cast_indicator.visible = false
 
 func on_wave_ended():
 	if towerFactory != null:

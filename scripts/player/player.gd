@@ -1,53 +1,23 @@
 extends Node2D
 class_name Player
 
-var maxHp: int;
-var currentHp: int;
+# Player owns wallet / inventory / currency UI binding.
+# HP lives on the Staff entity (scripts/entity/staff/staff.gd) — game-over flow is wired
+# in game_scene.gd via Staff.died signal.
 
 var inventory: Inventory;
 var wallet: Wallet;
 
-var ui: PlayerUI;
-@export var uiTemplate: PackedScene;
-
 var currencyUI: CurrencyUI;
 
 func _ready():
-	setup(PlayerHealth.PLAYER_HEALTH);
+	setup();
 
-func setup(hp: int):
-	currentHp = hp;
-	maxHp = hp;
-
-	createUI();
-
+func setup():
 	wallet = Wallet.new(Callable(self, "updateGoldUI"), Callable(self, "updateEvoTokenUI"));
 	inventory = Inventory.new();
 
 	currencyUI = $"../GameUI/CurrencyUI"
-
-func createUI():
-	if(!uiTemplate.can_instantiate()):
-		return;
-
-	var uiCanvas = CanvasLayer.new();
-	add_child(uiCanvas);
-
-	ui = uiTemplate.instantiate() as PlayerUI
-	uiCanvas.add_child(ui);
-	ui.setup(maxHp);
-
-func updateHp(updateAmount: int):
-	currentHp += updateAmount;
-	ui.updateBar(currentHp);
-
-	if(currentHp <= 0):
-		currentHp = 0;
-		ui.updateBar(currentHp);
-
-		var endScreen = UIEndDemo.create();
-		if(endScreen):
-			get_tree().current_scene.add_child(endScreen);
 
 func getItem(item: InventoryItem):
 	inventory.addItem(item);

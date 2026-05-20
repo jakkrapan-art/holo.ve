@@ -1,0 +1,86 @@
+# ============================================================
+# Staff manifest — template for ALL playable staffs.
+# ============================================================
+# When adding a new staff, copy the template entry below and:
+#   1. Pick a unique snake_case key (the YAML key + data_name in the per-staff file)
+#   2. Create resources/database/staffs/<key>.yaml mirroring a_chan.yaml
+#   3. Add the matching assets per the size guide below
+#   4. Add a bullet to deck_selection.tscn → ManagerBulletContainer
+#      (HBoxContainer auto-centers — copy any existing ManagerBullet node)
+#   5. The HUD widget auto-swaps hud_portrait / hud_skill_icon at runtime
+#      based on StaffCenter.selected_staff — no game_ui.tscn change needed
+#
+# ------------------------------------------------------------
+# Asset size guide  (artist target for new staffs)
+# ------------------------------------------------------------
+# RULE OF THUMB:
+#   - Provide assets at NATIVE size ≥ display size (downscale safe; upscale breaks pixels)
+#   - Square aspect (1:1) for portrait + skill icon — Control rects are square in current layout
+#   - "Display" = actual on-screen rendered size in current staff_widget.tscn layout
+#                 (subject to change if widget gets resized; treat as floor, not ceiling)
+#
+# HUD widget overall — 520 × 236 (set in staff_widget.tscn root + game_ui.tscn PlayerUI)
+#
+# Per-staff assets — under resources/staffs/<key>/:
+#   hud/portrait.png    — Native: ≥ 320 × 320 px (current A-chan), Display: 171 × 171
+#                         PNG transparent bg, square 1:1. Will be clipped to circle by PortraitBG mask.
+#                         A-chan provides 320 → 0.53x downscale (sharp, plenty of margin)
+#   hud/skill_icon.png  — Native: ≥ 146 × 145 px (current A-chan), Display: 66 × 66
+#                         PNG transparent bg, square 1:1 preferred. Clipped to circle by SkillMask.
+#                         A-chan provides 146 → 0.45x downscale (over-res; could trim to ~128×128)
+#   profile/<name>.png  — Native: ≥ 400 × 400 px (current A-chan), Display: ~199 × 267
+#                         (deck-selection Manager Card portrait — full-body or bust ok)
+#                         A-chan provides 400 → safely downscales to selection-card rect
+#   sprite/<spritesheet>.png + staff_<key>_sprite.tscn
+#                       — Spritesheet 1536 × 1024 px = 3 cols × 2 rows of 512×512 frames
+#                         (animated_sprite_2d.tscn wraps it; 6 frames @ 12 fps, looping)
+#                         Display = native (1:1), rendered at world position on the map endpoint.
+#
+# SHARED HUD chrome — under resources/ui_asset/staff/ (NOT per-staff, all staffs use these):
+#   bg.png              — 172 × 172, used as PortraitBG (display 171×171, 0.99x = perfect) +
+#                         SkillMask (display 62×62, 0.36x downscale = also fine)
+#   border.png          — 236 × 236, used as PortraitBorder (display 236×236, perfect 1:1)
+#   skill_border.png    — 146 × 145, display 90 × 89 (0.62x downscale, fine)
+#   hp_border.png       — 345 × 40, display 345 × 40 (perfect 1:1)
+#   hp_gauge.png        — 333 × 29, rendered inset (6, 5) inside hp_border (perfect 1:1)
+#
+# If widget is upsized later, raise per-staff native sizes accordingly to avoid upscale.
+# ------------------------------------------------------------
+# Skill schema  (reference for <staff_key>.yaml `skill:` block — Phase 2 onwards)
+# ------------------------------------------------------------
+# Reuses the Tower Skill resource + SkillAction primitives (see damage_formula.md §3,
+# skill_utility.gd ParseAction for the full action-type catalog). Player-aimed AOE
+# skills set `context.extra.target_position` automatically via Staff.executeSkillAtPosition.
+#
+# skill:
+#   name: "<display name>"
+#   desc: "<player-facing description (English; appears on selection card + tooltip)>"
+#   cast_time: 0.0          # seconds; instant = 0
+#   use_charges: 1          # MOBA-style charge cap. 1 = once/game, 2 = twice, ... ;
+#                           # omit or -1 = unlimited. Per-charge cooldown not yet supported.
+#   aoe:                    # cast-range indicator footprint (cells)
+#     width: 4
+#     height: 4
+#   cast_animation: "skill" # AnimatedSprite2D animation name on staff_<key>_sprite — graceful skip if missing
+#   cast_sound: "<sfx_key>" # AudioManager SFX key — graceful skip if missing
+#   actions:                # await-chained per SkillUtility.ParseAction
+#     - type: "find_multi_enemy"   # build hitbox at target_position (player-aimed) — sets context.target
+#       data: { width: 4, height: 4 }
+#     - type: "damage_percent_maxhp"  # TRUE damage = enemy.maxHp × percent (boss/non-boss split)
+#       data: { boss_percent: 0.25, non_boss_percent: 1.0 }
+#     # other action types: "attack", "add_buff", "play_animation", "play_effect", "delay", ...
+#     # full catalog: scripts/skill/skill_utility.gd ParseAction match block
+# ------------------------------------------------------------
+
+# ============================================================
+# Live entries (one per playable staff)
+# ============================================================
+
+a_chan:
+  name: A-Chan
+  data_file: a_chan.yaml
+
+# --- Template for next staff (uncomment + fill, do NOT ship as-is) ---
+# <staff_key>:
+#   name: <Display Name>
+#   data_file: <staff_key>.yaml

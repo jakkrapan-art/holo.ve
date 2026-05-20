@@ -70,22 +70,29 @@ func recvDamage(damage: Damage) -> int:
 	var timer := get_tree().create_timer(0.3)
 	timer.timeout.connect(_on_damage_flash_timeout)
 
-	var defense_factor: float
-	match damage.type:
-		Damage.DamageType.MAGIC:
-			defense_factor = stats.getMagicResistFactor()
-		_:
-			defense_factor = stats.getArmorFactor()
+	# TRUE damage bypasses armor/MR + ΣAmp + ΣRed — raw value applied straight to HP.
+	# First caller: Staff skill `damage_percent_maxhp` (see damage_formula.md §4).
+	var damageVal: int
+	if damage.type == Damage.DamageType.TRUE:
+		damageVal = damage.damage
+	else:
+		var defense_factor: float
+		match damage.type:
+			Damage.DamageType.MAGIC:
+				defense_factor = stats.getMagicResistFactor()
+			_:
+				defense_factor = stats.getArmorFactor()
 
-	# Master Formula §2 final pipeline: × armor_factor × (1 + ΣAmp) × (1 − ΣRed)
-	var sigmaAmp: float = 0.0
-	if damage.source != null and damage.source is Tower:
-		var towerData: TowerData = (damage.source as Tower).data
-		if towerData != null:
-			sigmaAmp = towerData.buffs.aggregate(BuffInstance.StatType.DAMAGE_AMPLIFIER)
+		# Master Formula §2 final pipeline: × armor_factor × (1 + ΣAmp) × (1 − ΣRed)
+		var sigmaAmp: float = 0.0
+		if damage.source != null and damage.source is Tower:
+			var towerData: TowerData = (damage.source as Tower).data
+			if towerData != null:
+				sigmaAmp = towerData.buffs.aggregate(BuffInstance.StatType.DAMAGE_AMPLIFIER)
 
-	var sigmaRed: float = stats.getDamageReduction()  # already clamped + handles blockCount
-	var damageVal: int = int(damage.damage * defense_factor * (1.0 + sigmaAmp) * (1.0 - sigmaRed))
+		var sigmaRed: float = stats.getDamageReduction()  # already clamped + handles blockCount
+		damageVal = int(damage.damage * defense_factor * (1.0 + sigmaAmp) * (1.0 - sigmaRed))
+
 	var currentHp = stats.updateHealth(-damageVal)
 
 	updateHealthBar(currentHp);
@@ -98,6 +105,9 @@ func recvDamage(damage: Damage) -> int:
 		Damage.DamageType.MAGIC:
 			# vivid purple (normal) → pink-magenta (crit, rare event)
 			dmgColor = Color(1.0, 0.3, 0.85) if damage.isCritical else Color(0.85, 0.45, 1.0)
+		Damage.DamageType.TRUE:
+			# bright gold — distinct from PHYSIC red and MAGIC purple
+			dmgColor = Color(1.0, 0.85, 0.2)
 		_:
 			dmgColor = Color(1, 0.15, 0) if damage.isCritical else Color(1, 1, 1)
 

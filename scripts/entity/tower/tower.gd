@@ -22,7 +22,7 @@ var inPlaceMode: bool = false;
 var anim: AnimationController;
 
 var attacking: bool = false;
-var lastAttackTime: float = 0.0;
+var attackCooldownRemaining: float = 0.0;
 var usingSkill: bool = false;
 
 var skillController: SkillController
@@ -77,6 +77,11 @@ func _ready():
 	isReady = true;
 
 func _process(delta):
+	if attackCooldownRemaining > 0.0:
+		attackCooldownRemaining = maxf(0.0, attackCooldownRemaining - delta)
+		if attackCooldownRemaining <= 0.0:
+			attacking = false
+
 	if isMoving:
 		position = GridHelper.snapToGrid(get_viewport().size, get_global_mouse_position());
 		updateTowerState();
@@ -165,13 +170,10 @@ func isEvolved():
 	return data.isEvolved
 
 func attackEnemy():
-	var delay = data.getAttackDelay();
-	if (lastAttackTime + delay > (Time.get_ticks_msec() / 1000.00)):
+	if attackCooldownRemaining > 0.0:
 		return;
 
 	if(is_instance_valid(enemy) && attackController != null && attackController.canAttack(enemy)):
-		lastAttackTime = Time.get_ticks_msec() / 1000.00;
-
 		var targetDir = (enemy.global_position - global_position).normalized().x;
 		var attackDir = Global.DIRECTION.LEFT if targetDir < 0 else Global.DIRECTION.RIGHT
 
@@ -181,10 +183,7 @@ func attackEnemy():
 		attackController.attack(enemy, attackDir, data.getDamage(enemy, self), data.attack_sound, data.attack_vfx);
 		attacking = true;
 		regenMana(data.getManaRegen());
-		await get_tree().create_timer(data.getAttackDelay()).timeout
-		if not is_instance_valid(self):
-			return
-		attacking = false;
+		attackCooldownRemaining = data.getAttackDelay()
 	elif(!is_instance_valid(enemy)):
 		clearEnemy(null, null, null);
 
@@ -351,8 +350,8 @@ func clearSynergyBuffs(synergy_id: int):
 
 func resetForWave():
 	attacking = false
+	attackCooldownRemaining = 0.0
 	usingSkill = false
-	lastAttackTime = 0.0
 	clearEnemy(null, null, null)
 
 	if skillController != null:

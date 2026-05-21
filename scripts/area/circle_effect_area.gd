@@ -6,20 +6,21 @@ extends EffectArea
 @export var duration: float = 5.0  # Default duration of the effect
 @export var drawColor: Color = Color(0, 0, 1, 0.2);
 
-var endTime = 0;
+var elapsedTime: float = 0.0;
 
 func setup(radius: float = 2.0, duration: float = 5.0, callback: EffectAreaCallback = null, drawColor: Color = Color(0, 0, 1, 0.2)):
 	var circle_shape = CircleShape2D.new()
 	circle_shape.radius = radius
 	_base_setup(circle_shape, callback);
 	collisionShape.scale = Vector2.ONE * radius;
-	endTime = Time.get_ticks_msec() + (duration * 1000)
+	elapsedTime = 0.0
 	self.drawColor = drawColor
 	self.radius = radius
 	self.duration = duration
 
 func _process(delta: float) -> void:
-	if endTime < Time.get_ticks_msec():
+	elapsedTime += delta
+	if elapsedTime >= duration:
 		queue_free();
 
 	super._process(delta);

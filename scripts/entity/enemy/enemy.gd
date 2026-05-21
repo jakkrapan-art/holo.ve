@@ -38,6 +38,7 @@ func _process(_delta):
 		statusEffects.processEffects(_delta, self)
 
 	if skillController:
+		skillController.process(_delta)
 		skillController.useSkill();
 
 	if(progress_ratio >= 1.0):

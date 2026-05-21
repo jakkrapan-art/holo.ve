@@ -6,6 +6,11 @@ func _init(user: Node, skills: Array[Skill]):
 	for s in skills:
 		(s as EnemySkill).initCooldown();
 
+func process(delta: float):
+	for skill in skills:
+		if skill is EnemySkill:
+			(skill as EnemySkill).tick(delta)
+
 func onSuccess(skill: Skill):
 	super.onSuccess(skill);
 	print("Enemy used skill: ", skill.name);

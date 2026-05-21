@@ -1,10 +1,11 @@
-[gd_scene load_steps=21 format=3 uid="uid://bcyr1l11fwy7"]
+[gd_scene load_steps=22 format=3 uid="uid://bcyr1l11fwy7"]
 
 [ext_resource type="PackedScene" uid="uid://dsshuu1axf1t8" path="res://resources/ui_component/synergy/ui_synergy.tscn" id="1_hk82f"]
 [ext_resource type="Script" path="res://scripts/ui/currency.gd" id="2_rqmfg"]
 [ext_resource type="FontFile" uid="uid://d4bqxeogm6c5q" path="res://resources/ui_component/font/Roboto-Regular.ttf" id="3_pj1e5"]
 [ext_resource type="Texture2D" uid="uid://c2hli7gmyibit" path="res://resources/ui_asset/UIExport_0001s_0003_Group-39.png" id="4_7yvjc"]
 [ext_resource type="Texture2D" uid="uid://d0nownxd0cep6" path="res://resources/ui_asset/UIExport_0001s_0005_Layer-33.png" id="5_r4mlk"]
+[ext_resource type="Script" path="res://scripts/ui/ui_speed_btn.gd" id="7_6qfka"]
 [ext_resource type="Script" path="res://scripts/ui/ui_pause_btn.gd" id="7_7oet5"]
 [ext_resource type="Texture2D" uid="uid://begvukmye4rh1" path="res://resources/ui_component/btn_pause.png" id="7_8wafk"]
 [ext_resource type="PackedScene" uid="uid://omnglvjm0xyi" path="res://resources/ui_component/staff_widget.tscn" id="9_staff"]
@@ -248,12 +249,26 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_v8yjg")
 
-[node name="Button" type="Button" parent="."]
+[node name="TopRightControls" type="HBoxContainer" parent="."]
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -8.0
-offset_bottom = 8.0
+offset_left = -196.0
+offset_top = 16.0
+offset_right = -16.0
+offset_bottom = 58.0
 grow_horizontal = 0
+theme_override_constants/separation = 20
+
+[node name="SpeedButton" type="Button" parent="TopRightControls"]
+custom_minimum_size = Vector2(76, 42)
+layout_mode = 2
+focus_mode = 0
+text = "x2"
+script = ExtResource("7_6qfka")
+
+[node name="Button" type="Button" parent="TopRightControls"]
+custom_minimum_size = Vector2(76, 42)
+layout_mode = 2
 text = "Pause"
 script = ExtResource("7_7oet5")

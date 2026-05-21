@@ -3,6 +3,7 @@ extends Button
 func _ready():
 	# IMPORTANT: Allow this button to work while game is paused
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	focus_mode = Control.FOCUS_NONE
 
 	# Connect the button's pressed signal to our function
 	pressed.connect(_on_pressed)
@@ -10,6 +11,7 @@ func _ready():
 func _on_pressed():
 	# Toggle pause state
 	get_tree().paused = !get_tree().paused
+	release_focus()
 
 	# Optional: Update button text to show current state
 	if get_tree().paused:

@@ -7,6 +7,7 @@ class_name StatusEffect
 
 # var elapsedTime: float = 0.0
 var triggeredTime: float = 0.0
+var scaledAge: float = 0.0
 var applied: bool = false;
 var expired: bool = false;
 var appliedTarget: Node = null
@@ -18,15 +19,16 @@ func _init(duration: float = 5.0, level: int = 1, effectType: String = ""):
 
 func _process_effect(delta: float, target: Node) -> void:
 	if not applied:
-		triggeredTime = Time.get_ticks_msec() / 1000.0
+		triggeredTime = scaledAge
 		applied = true
 
-func checkExpired() -> bool:
-	if triggeredTime + duration > Time.get_ticks_msec() / 1000.0:
+func checkExpired(delta: float) -> bool:
+	scaledAge += delta
+	if triggeredTime + duration > scaledAge:
 		return false;
 	_on_expire(appliedTarget)
 	expired = true
-	print("effect expired: ", effectType, " time used: ", Time.get_ticks_msec() / 1000.0 - triggeredTime)
+	print("effect expired: ", effectType, " time used: ", scaledAge - triggeredTime)
 	return expired
 
 func _on_apply(target: Node) -> void:

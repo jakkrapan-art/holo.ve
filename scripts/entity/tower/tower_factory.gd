@@ -26,7 +26,6 @@ func setup(onPlace: Callable, onRemove: Callable):
 	self.onRemove = onRemove
 
 	Utility.ConnectSignal(towerTrait, "synergy_activated", Callable(self, "onActivateSynergy"));
-	Utility.ConnectSignal(towerTrait, "synergy_deactivated", Callable(self, "onDeactivateSynergy"));
 	Utility.ConnectSignal(towerTrait, "mission_completed", Callable(self, "onMissionCompleted"));
 
 func getTower(name: String, evoToken: int = 0) -> GetTowerResult:
@@ -191,28 +190,6 @@ func onActivateSynergy(synergy_id: int, tier: int, buff: Dictionary):
 
 		if isStarGen1:
 			towerTrait.setStarGen1Damage(starGen1Damage);
-
-# Dont have to deactive synergy
-# func onDeactivateSynergy(synergy_id: int, tier: int):
-# 	if not activeSynergies.has(synergy_id):
-# 		return
-
-# 	var buffList = activeSynergies[synergy_id]
-# 	if tier >= 0 and tier < buffList.size():
-# 		var buff = buffList[tier]
-# 		# Remove this tier's buff
-# 		buffList.remove_at(tier)
-
-# 		# Optional: Clear and re-apply all current buffs for this synergy to all affected towers
-# 		if towers.has(synergy_id):
-# 			for tower in towers[synergy_id]:
-# 				tower.clearSynergyBuffs(synergy_id)  # You will define this
-# 				for remaining_buff in buffList:
-# 					tower.processActiveBuff(remaining_buff)
-
-# 	# If no more buffs, clean up
-# 	if buffList.is_empty():
-# 		activeSynergies.erase(synergy_id)
 
 func onMissionCompleted(id: int, buff: Dictionary):
 	var synergyId = buff.get("synergy_id", -1);

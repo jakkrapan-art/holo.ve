@@ -45,7 +45,6 @@ static func load_data(prefix: String, name: String) -> TowerData:
 		stat.critChance = stat_dict.get("critChance", 0.0)
 		stat.critMultiplier = stat_dict.get("critMultiplier", 1.0)
 		stat.mana = stat_dict.get("mana", 0)
-		stat.manaRegen = stat_dict.get("manaRegen", 0.0)
 		stat.intialMana = stat_dict.get("intialMana", 0)
 
 		stat_list.append(stat)
@@ -62,7 +61,6 @@ static func load_data(prefix: String, name: String) -> TowerData:
 		evo.critChance = evo_dict.get("critChance", 0.0)
 		evo.critMultiplier = evo_dict.get("critMultiplier", 1.0)
 		evo.mana = evo_dict.get("mana", 0)
-		evo.manaRegen = evo_dict.get("manaRegen", 0.0)
 		evo.intialMana = evo_dict.get("intialMana", 0)
 
 		tower.evolutionStat = evo

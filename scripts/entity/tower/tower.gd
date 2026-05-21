@@ -135,6 +135,7 @@ func upgrade():
 func evolve():
 	var success = data.evolve()
 	if success:
+		_play_evolve_sound()
 		setTowerStar(4)
 		if data.evolutionSkill != null:
 			if skillController != null:
@@ -144,6 +145,18 @@ func evolve():
 			skillController = SkillController.new(self, stat.mana, stat.intialMana, data.evolutionSkill)
 			Utility.ConnectSignal(skillController, "on_mana_updated", Callable(self, "update_mana_bar"))
 	return success
+
+func _play_evolve_sound():
+	if data.evolve_sound == "":
+		return
+
+	var target := data.evolve_sound.to_lower()
+	for key in SoundDatabase.VOICE_NAME.keys():
+		if str(key).to_lower() == target:
+			AudioManager.playVoice(SoundDatabase.VOICE_NAME[key])
+			return
+
+	push_warning("Tower evolve voice not found: " + data.evolve_sound)
 
 func canEvolve():
 	return data.level >= data.maxLevel && !data.isEvolved;

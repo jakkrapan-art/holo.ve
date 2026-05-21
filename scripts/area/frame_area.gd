@@ -6,7 +6,7 @@ extends EffectArea
 @export var interval: float = 1.0;
 
 var enemyList: Array[Enemy] = [];
-var lastTick: float = 0.0;
+var tickTime: float = 0.0;
 
 func _ready():
 	setup(radius, EffectAreaCallback.new(Callable(self, "enemyEntered"), Callable(self, "enemyExited")))
@@ -21,12 +21,11 @@ func _process(delta: float):
 	damageInArea(delta);
 
 func damageInArea(delta: float):
-	var currTick: float = Time.get_ticks_msec() / 1000.0;
-
-	if lastTick + interval > currTick:
+	tickTime += delta
+	if tickTime < interval:
 		return;
 
-	lastTick = currTick;
+	tickTime -= interval;
 	for enemy in enemyList:
 		if is_instance_valid(enemy):
 			enemy.recvDamage(Damage.new(null, damage, Damage.DamageType.MAGIC));

@@ -150,10 +150,6 @@ func _check_synergy_tiers(synergy_id: int) -> void:
 				buff["synergy_id"] = synergy_id  # Mark the buff
 				synergy_activated.emit(synergy_id, tier, buff)
 				print("Synergy activated:", getSynergyName(synergy_id), "Tier", tier + 1)
-		elif new_tier < prev_tier:
-			for tier in range(prev_tier, new_tier, -1):
-				synergy_deactivated.emit(synergy_id, tier)
-				print("Synergy deactivated:", getSynergyName(synergy_id), "Tier", tier + 1)
 
 		active_synergy_tiers[synergy_id] = new_tier
 
@@ -234,5 +230,4 @@ func getMinRequirement(synergy_id: int) -> int:
 	return synergyRequirements[0]
 
 signal synergy_activated(synergy_id: int, tier: int, buff: Dictionary)
-signal synergy_deactivated(synergy_id: int, tier: int)
 signal mission_completed(mission_id: int, buff: Dictionary);

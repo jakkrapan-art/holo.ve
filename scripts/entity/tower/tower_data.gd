@@ -31,6 +31,7 @@ var evolutionSkill: Skill = null;
 var attack_sound: String = "hit";
 var attack_vfx: String = "atk";
 var open_sound: String = "open";
+var evolve_sound: String = "";
 
 func getStat():
 	if(!_isEvolved):

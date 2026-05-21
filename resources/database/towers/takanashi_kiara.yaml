@@ -7,6 +7,7 @@ evolutionCost: 1
 # skill: "res://resources/database/skill/takanashi_kiara_skill.tres"
 attack_sound: "hit_kiara"
 open_sound: "debut_kiara"
+evolve_sound: "evo_kiara"
 skill:
   name: "Kiara ฟันดาบเปลวเพลิง"
   desc: "สร้างความเสียหายกายภาพ 140% / 150% / 170% (ตามเลเวล) แก่ศัตรูในระยะ 3×1"

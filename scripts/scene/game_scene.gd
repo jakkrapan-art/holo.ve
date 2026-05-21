@@ -27,6 +27,9 @@ var mission: Mission = null;
 var t: Tower = null
 var state: String = ""
 var _popup_open: bool = false
+# Ref to the popup currently on screen (tower-select or deck-select). Used so _on_staff_died()
+# can dismiss it; cleared via _on_popup_closed() when the popup frees itself normally.
+var _active_popup: UITowerSelect = null
 
 # Staff skill casting state — indicator follows mouse; LeftClick commits, RightClick / ESC cancels.
 var _skill_cast_indicator: SkillCastIndicator = null
@@ -167,6 +170,13 @@ func setup_staff():
 
 func _on_staff_died():
 	# Game-over flow — previously inside Player.updateHp; now lives here so Staff owns HP lifecycle.
+	# Mark game over BEFORE any UI work so popup factories early-return if they fire
+	# concurrently from a wave-end timer or deferred callback.
+	state = "game_over"
+	# Dismiss any tower-select / deck popup currently open so it can't sit on top of
+	# the end screen or accept clicks after the game is over.
+	if _active_popup != null and is_instance_valid(_active_popup):
+		_active_popup.queue_free()
 	var endScreen = UIEndDemo.create()
 	if endScreen:
 		get_tree().current_scene.add_child(endScreen)
@@ -210,8 +220,11 @@ func on_wave_ended():
 	# visual at the boss death position is readable before the popup covers it.
 	if waveController != null and waveController.isBossWave:
 		await get_tree().create_timer(BOSS_WAVE_END_POPUP_DELAY).timeout
-		# Re-entry guard: scene may have been freed mid-wait (e.g. game-over).
+		# Re-entry guard: scene may have been freed mid-wait (e.g. game-over) OR the staff
+		# may have died during the await window leaving the scene alive but the game over.
 		if !is_instance_valid(self):
+			return
+		if state == "game_over":
 			return
 
 	# At configured wave milestones, offer one of the remaining decks BEFORE
@@ -223,12 +236,16 @@ func on_wave_ended():
 		show_popup_panel()
 
 func show_deck_popup():
+	# End-game guard: if the staff has died, never open a new popup over the end screen.
+	if state == "game_over":
+		return
 	if _popup_open:
 		print("show_deck_popup: popup already open, ignoring duplicate call")
 		return
 
 	var popup: UITowerSelect = PopupPanelScene.instantiate() as UITowerSelect
 	_popup_open = true
+	_active_popup = popup
 	get_tree().root.add_child(popup)
 
 	var cards: Array = []
@@ -247,7 +264,7 @@ func show_deck_popup():
 	# Flag handoff is explicit in _on_deck_selected / _on_deck_skipped below; the
 	# tower popup wires its own tree_exited via show_popup_panel().
 
-	popup.setup_with_cards(cards, 0)
+	popup.setup_with_cards(cards, 0, "Select Additional Deck")
 
 func _on_deck_selected(deck_key: String):
 	TowerCenter.addDeck(deck_key)
@@ -262,6 +279,9 @@ func _on_deck_skipped():
 	show_popup_panel()
 
 func show_popup_panel():
+	# End-game guard: if the staff has died, never open a new popup over the end screen.
+	if state == "game_over":
+		return
 	# Prevent opening multiple popups if this function is called repeatedly
 	if _popup_open:
 		print("show_popup_panel: popup already open, ignoring duplicate call")
@@ -269,6 +289,7 @@ func show_popup_panel():
 
 	var popup: UITowerSelect = PopupPanelScene.instantiate() as UITowerSelect;
 	_popup_open = true
+	_active_popup = popup
 	# Ensure it's added to the UI layer, not just as a child of the 2D scene
 	get_tree().root.add_child(popup)
 
@@ -280,12 +301,13 @@ func show_popup_panel():
 	Utility.ConnectSignal(popup, "tree_exited", Callable(self, "_on_popup_closed"));
 
 	var evoToken = player.wallet.getEvoToken();
-	popup.setup(evoToken, 1000);
+	popup.setup(evoToken, 1000, "Select Tower");
 
 	return
 
 func _on_popup_closed():
 	_popup_open = false
+	_active_popup = null
 
 func _on_tower_select_skipped():
 	print("Tower select skipped — no valid towers available")

@@ -16,6 +16,6 @@ func get_random_cards(deck, count: int, evoToken: int) -> Array:
 	var result: Array[TowerSelectData] = []
 	for card in selected_cards:
 		var selectData = TowerCenter.getTowerSelectDataByName(card);
-		result.append(TowerSelectData.new(card, selectData.level if selectData.level is String else selectData.level + 1, selectData.evoCost))
+		result.append(TowerSelectData.new(card, selectData.level + 1, selectData.evoCost))
 
 	return result  # Get the first 3 random cards

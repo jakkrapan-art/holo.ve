@@ -12,9 +12,6 @@ var _own_towers: Dictionary = {}
 var _canEvoList = [];
 var _evolvedList = [];
 
-var MAX_LEVEL = "Max";
-var EVOLVED = "Evolved";
-
 #var selected_deck: String = ""
 var selected_deck: String = "Myth" #temporary
 var selected_data_file: String = "myth.yaml" #temporary
@@ -120,7 +117,8 @@ func getTowerSelectDataByName(name: String):
 
 	var data = _own_towers.get(name.to_lower(), null);
 	if(data != null):
-		return {"level": data.level, "evoCost": data.evoCost if data.level is String and data.level == MAX_LEVEL else 0}
+		var maxed: bool = data.level >= data.maxLevel and not data.isEvolved
+		return {"level": data.level, "evoCost": data.evoCost if maxed else 0}
 
 	return {"level":0, "evoCost":0}
 
@@ -133,7 +131,8 @@ func validateSelectTower(name: String, evoToken: int):
 
 	var data = _own_towers.get(name.to_lower(), null);
 	if(data != null):
-		if(data.level is String and (data.level == EVOLVED or (data.level == MAX_LEVEL and data.evoCost > evoToken))):
+		var maxed: bool = data.level >= data.maxLevel and not data.isEvolved
+		if(data.isEvolved or (maxed and data.evoCost > evoToken)):
 			return false
 
 		return true
@@ -159,16 +158,14 @@ func upgradeTowerLevelByName(name: String):
 
 	var data = _own_towers.get(name.to_lower(), null);
 	if(data != null):
-		if(data.level is String):
-			if(data.level == EVOLVED):
-				return
-			if(data.level == MAX_LEVEL):
-				data.level = EVOLVED;
-				_canEvoList.erase(name);
+		if(data.isEvolved):
+			return
+		if(data.level >= data.maxLevel):
+			data.isEvolved = true;
+			_canEvoList.erase(name);
 		else:
 			data.level += 1
 			if(data.level >= data.maxLevel):
-				data.level = MAX_LEVEL;
 				_canEvoList.append(name);
 	else:
 		var tData = getTowerDataByName(name);
@@ -177,7 +174,7 @@ func upgradeTowerLevelByName(name: String):
 		var d = tData.data;
 		var evoCost = d.evolutionCost;
 		var maxLevel = d.maxLevel;
-		_own_towers[name.to_lower()] = {"level": 1, "maxLevel": maxLevel, "evoCost": evoCost};
+		_own_towers[name.to_lower()] = {"level": 1, "maxLevel": maxLevel, "evoCost": evoCost, "isEvolved": false};
 
 func getTowerPortraitByName(name: String):
 	if _tower_portrait_by_name == null:

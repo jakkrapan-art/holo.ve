@@ -7,6 +7,9 @@ const TowerGeneration = preload("res://scripts/entity/tower/tower_trait.gd").Tow
 const AS_MIN := 1.0
 const AS_MAX := 500.0
 
+# Energy gained per normal attack. Design intent: a fixed base, buff/debuff adjustable.
+const BASE_MANA_REGEN := 10
+
 var _level: int = 1;
 var _evolutionCost: int = 1;
 var _isEvolved: bool = false;
@@ -104,7 +107,7 @@ func getAttackDelay() -> float:
 	return 100.0 / getAttackSpeed()
 
 func getManaRegen():
-	return getStat().manaRegen + buffs.aggregate(BuffInstance.StatType.MANA_REGEN)
+	return BASE_MANA_REGEN + buffs.aggregate(BuffInstance.StatType.MANA_REGEN)
 
 func getAttackAnimationSpeed(anim: AnimatedSprite2D, name: String) -> float:
 	return getStat().getAttackAnimationSpeed(anim, name, getAttackDelay())

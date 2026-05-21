@@ -7,7 +7,6 @@ extends Resource
 @export var critChance: float = 15.0
 @export var critMultiplier: float = 1.5
 @export var mana: int = 100
-@export var manaRegen: int = 10
 @export var intialMana: int = 10
 
 func getAttackAnimationSpeed(anim: AnimatedSprite2D, name: String, attack_delay: float) -> float:

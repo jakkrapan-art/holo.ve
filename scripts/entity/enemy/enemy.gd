@@ -17,6 +17,7 @@ var enableMove: bool = true;
 var initialized: bool = false;
 
 enum EnemyType {Normal, Elite, Boss}
+const FACING_X_EPSILON: float = 0.01
 
 func setup(enemyType: EnemyType, hp: int, armor: int, mArmor: int, moveSpeed: int, texture: Texture2D, skills: Array[Skill] = []):
 	self.enemyType = enemyType;
@@ -57,12 +58,22 @@ func _physics_process(delta):
 		progress_ratio += moveRatio;
 		var pos := global_position # sample a little ahead
 		var direction = pos - oldPos;
-		if abs(direction.x) > (GridHelper.CELL_SIZE * 0.01):
-			sprite.flip_h = direction.x > 0;
+		updateFacingFromDirection(direction)
+
+func updateFacingFromDirection(direction: Vector2):
+	if sprite == null:
+		return
+
+	# Enemy source art is authored facing left; flip only when moving right.
+	if abs(direction.x) <= FACING_X_EPSILON:
+		return
+
+	sprite.flip_h = direction.x > 0.0;
 
 func setTexture(image: Texture2D):
 	if(sprite != null && image != null):
 		sprite.texture = image;
+		sprite.flip_h = false;
 
 func recvDamage(damage: Damage) -> int:
 	sprite.modulate = Color.RED

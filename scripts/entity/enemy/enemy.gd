@@ -15,14 +15,12 @@ var skillController: EnemySkillController;
 var enableMove: bool = true;
 
 var initialized: bool = false;
-var sourceFacesRight: bool = false;
 
 enum EnemyType {Normal, Elite, Boss}
 const FACING_X_EPSILON: float = 0.01
 
-func setup(enemyType: EnemyType, hp: int, armor: int, mArmor: int, moveSpeed: int, texture: Texture2D, skills: Array[Skill] = [], sourceFacesRight: bool = false):
+func setup(enemyType: EnemyType, hp: int, armor: int, mArmor: int, moveSpeed: int, texture: Texture2D, skills: Array[Skill] = []):
 	self.enemyType = enemyType;
-	self.sourceFacesRight = sourceFacesRight;
 	setTexture(texture);
 	stats = EnemyStat.new(hp, armor, mArmor, moveSpeed);
 	originalModulate = sprite.modulate
@@ -79,8 +77,7 @@ func updateFacingFromDirection(direction: Vector2):
 	if abs(direction.x) <= FACING_X_EPSILON:
 		return
 
-	var movingRight := direction.x > 0.0;
-	sprite.flip_h = movingRight != sourceFacesRight;
+	sprite.flip_h = direction.x > 0.0;
 
 func setTexture(image: Texture2D):
 	if(sprite != null && image != null):

@@ -73,7 +73,7 @@ static func load_data(prefix: String, name: String) -> TowerData:
 	var skillData = data.get("skill", {"actions": []});
 	var skill = Skill.new();
 	var skillActions: Array[SkillAction] = [];
-	for act in skillData.actions:
+	for act in skillData.get("actions", []):
 		var action = SkillUtility.ParseAction(act);
 		if action != null:
 			skillActions.append(action);
@@ -81,10 +81,7 @@ static func load_data(prefix: String, name: String) -> TowerData:
 			print("Warning: Failed to parse action in skill for tower", name);
 
 	skill.actions = skillActions;
-	skill.name = skillData.get("name", "Unnamed Skill");
-	skill.desc = skillData.get("desc", "");
-	skill.parameters = skillData.get("parameters", {});
-	skill.castTime = skillData.get("cast_time", 0.0);
+	_apply_skill_data(skill, skillData, "Unnamed Skill");
 
 	tower.skill = skill
 
@@ -97,10 +94,23 @@ static func load_data(prefix: String, name: String) -> TowerData:
 			if action != null:
 				evoActions.append(action)
 		evoSkill.actions = evoActions
-		evoSkill.name = evoSkillData.get("name", "Evolved Skill")
-		evoSkill.desc = evoSkillData.get("desc", "")
-		evoSkill.parameters = evoSkillData.get("parameters", {})
-		evoSkill.castTime = evoSkillData.get("cast_time", 0.0)
+		_apply_skill_data(evoSkill, evoSkillData, "Evolved Skill")
 		tower.evolutionSkill = evoSkill
 
 	return tower
+
+static func _apply_skill_data(skill: Skill, skill_data: Dictionary, default_name: String) -> void:
+	skill.names = _parse_skill_names(skill_data)
+	skill.name = skill_data.get("name", default_name)
+	if not skill_data.has("name") and skill.names.size() > 0:
+		skill.name = skill.names[0]
+	skill.desc = skill_data.get("desc", "")
+	skill.desc_template = skill_data.get("desc_template", "")
+	skill.parameters = skill_data.get("parameters", {})
+	skill.castTime = skill_data.get("cast_time", 0.0)
+
+static func _parse_skill_names(skill_data: Dictionary) -> Array[String]:
+	var parsed_names: Array[String] = []
+	for display_name in skill_data.get("names", []):
+		parsed_names.append(str(display_name))
+	return parsed_names

@@ -39,7 +39,14 @@ stats:
 
 skill:
   name: "Skill"
+  names: ["Skill I", "Skill II", "Skill III"] # optional UI display names per tower level
   desc: "Just a skill"
+  desc_template: "Just a skill with {damageBonus:percent} bonus" # UI display template; desc is legacy/fallback text
+  parameters:
+    damageBonus:
+      - 0.10
+      - 0.15
+      - 0.20
   actions:
     - type: find_multi_enemy
       data:

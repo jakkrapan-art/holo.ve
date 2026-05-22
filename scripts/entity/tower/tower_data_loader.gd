@@ -70,34 +70,77 @@ static func load_data(prefix: String, name: String) -> TowerData:
 	tower.open_sound = data.get("open_sound", "default");
 	tower.evolve_sound = data.get("evolve_sound", "");
 
-	var skillData = data.get("skill", {"actions": []});
-	var skill = Skill.new();
-	var skillActions: Array[SkillAction] = [];
-	for act in skillData.get("actions", []):
-		var action = SkillUtility.ParseAction(act);
-		if action != null:
-			skillActions.append(action);
-		else:
-			print("Warning: Failed to parse action in skill for tower", name);
+	_warn_if_passive_slot_present(data, "skills", name)
+	_warn_if_passive_slot_present(data, "evolution_skills", name)
 
-	skill.actions = skillActions;
-	_apply_skill_data(skill, skillData, "Unnamed Skill");
+	var skillData := _resolve_skill_block(data, "skills", "skill", name, {"actions": []})
+	tower.skill = _parse_skill_data(skillData, "Unnamed Skill", name, "active skill")
 
-	tower.skill = skill
-
-	if data.has("evolution_skill"):
-		var evoSkillData = data["evolution_skill"]
-		var evoSkill := Skill.new()
-		var evoActions: Array[SkillAction] = []
-		for act in evoSkillData.get("actions", []):
-			var action = SkillUtility.ParseAction(act)
-			if action != null:
-				evoActions.append(action)
-		evoSkill.actions = evoActions
-		_apply_skill_data(evoSkill, evoSkillData, "Evolved Skill")
-		tower.evolutionSkill = evoSkill
+	var evoSkillData := _resolve_skill_block(data, "evolution_skills", "evolution_skill", name, {})
+	if not evoSkillData.is_empty():
+		tower.evolutionSkill = _parse_skill_data(evoSkillData, "Evolved Skill", name, "evolved active skill")
 
 	return tower
+
+static func _resolve_skill_block(data: Dictionary, slot_root_key: String, legacy_key: String, tower_name: String, default_block: Dictionary) -> Dictionary:
+	var has_new_slot := false
+	var new_skill_data: Dictionary = {}
+	if data.has(slot_root_key):
+		var slot_root = data[slot_root_key]
+		if slot_root is Dictionary:
+			if slot_root.has("active") and slot_root["active"] != null:
+				if slot_root["active"] is Dictionary:
+					new_skill_data = slot_root["active"]
+					has_new_slot = true
+				else:
+					push_warning("Tower YAML '" + tower_name + "': '" + slot_root_key + ".active' must be a dictionary.")
+		elif slot_root != null:
+			push_warning("Tower YAML '" + tower_name + "': '" + slot_root_key + "' must be a dictionary.")
+
+	var has_legacy := false
+	var legacy_skill_data: Dictionary = {}
+	if data.has(legacy_key) and data[legacy_key] != null:
+		if data[legacy_key] is Dictionary:
+			legacy_skill_data = data[legacy_key]
+			has_legacy = true
+		else:
+			push_warning("Tower YAML '" + tower_name + "': '" + legacy_key + "' must be a dictionary.")
+
+	if has_new_slot:
+		if has_legacy:
+			push_warning("Tower YAML '" + tower_name + "': both '" + legacy_key + "' and '" + slot_root_key + ".active' exist; using the new slot.")
+		return new_skill_data
+	if has_legacy:
+		return legacy_skill_data
+	return default_block
+
+static func _warn_if_passive_slot_present(data: Dictionary, slot_root_key: String, tower_name: String) -> void:
+	if not data.has(slot_root_key):
+		return
+
+	var slot_root = data[slot_root_key]
+	if not (slot_root is Dictionary):
+		return
+	if slot_root.has("passive") and slot_root["passive"] != null:
+		push_warning("Tower YAML '" + tower_name + "': '" + slot_root_key + ".passive' is currently ignored until passive skill runtime exists.")
+
+static func _parse_skill_data(skill_data: Dictionary, default_name: String, tower_name: String, source_name: String) -> Skill:
+	var skill := Skill.new()
+	var skillActions: Array[SkillAction] = []
+	var action_data_list = skill_data.get("actions", [])
+	if action_data_list is Array:
+		for act in action_data_list:
+			var action = SkillUtility.ParseAction(act)
+			if action != null:
+				skillActions.append(action)
+			else:
+				push_warning("Tower YAML '" + tower_name + "': failed to parse action in " + source_name + ".")
+	else:
+		push_warning("Tower YAML '" + tower_name + "': actions in " + source_name + " must be an array.")
+
+	skill.actions = skillActions
+	_apply_skill_data(skill, skill_data, default_name)
+	return skill
 
 static func _apply_skill_data(skill: Skill, skill_data: Dictionary, default_name: String) -> void:
 	skill.names = _parse_skill_names(skill_data)
@@ -108,9 +151,31 @@ static func _apply_skill_data(skill: Skill, skill_data: Dictionary, default_name
 	skill.desc_template = skill_data.get("desc_template", "")
 	skill.parameters = skill_data.get("parameters", {})
 	skill.castTime = skill_data.get("cast_time", 0.0)
+	skill.tags = _parse_string_array(skill_data.get("tags", []))
+	skill.target_summary = _parse_dictionary(skill_data.get("target_summary", {}))
+	skill.icon = str(skill_data.get("icon", ""))
+	skill.effects = _parse_array(skill_data.get("effects", []))
 
 static func _parse_skill_names(skill_data: Dictionary) -> Array[String]:
 	var parsed_names: Array[String] = []
 	for display_name in skill_data.get("names", []):
 		parsed_names.append(str(display_name))
 	return parsed_names
+
+static func _parse_string_array(value) -> Array[String]:
+	var parsed_values: Array[String] = []
+	if not (value is Array):
+		return parsed_values
+	for item in value:
+		parsed_values.append(str(item))
+	return parsed_values
+
+static func _parse_dictionary(value) -> Dictionary:
+	if value is Dictionary:
+		return value
+	return {}
+
+static func _parse_array(value) -> Array:
+	if value is Array:
+		return value
+	return []

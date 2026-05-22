@@ -6,31 +6,48 @@ evolutionCost: 1
 
 attack_sound: "hit_amelia"
 open_sound: "debut_amelia"
-skill:
-  name: "Time Traveler"
-  names: ["Time Traveler I", "Time Traveler II", "Time Traveler III"]
-  desc: "Amelia increases her own attack speed for 4 seconds."
-  desc_template: "Amelia increases her own attack speed by {attackSpeedBuff:percent} for 4 seconds."
-  cast_time: 0.5
-  parameters:
-    attackSpeedBuff:
-      - 0.10
-      - 0.15
-      - 0.20
-  actions:
-    - type: "play_animation"
-      data:
-        animation: "skill"
-    - type: "play_effect"
-      data:
-        effect_script: "res://resources/tower/hololive/en_branch/myth_gen/amelia/skill_effect/amelia_skill_effect.gd"
-    - type: "atk_speed_buff"
-      data:
-        duration: 4.0
-        param_name: "attackSpeedBuff"
-    - type: "play_animation"
-      data:
-        animation: "idle"
+skills:
+  active:
+    name: "Time Traveler"
+    names: ["Time Traveler I", "Time Traveler II", "Time Traveler III"]
+    desc: "Amelia increases her own attack speed for 4 seconds."
+    desc_template: "Amelia increases her own attack speed by {attackSpeedBuff:percent} for 4 seconds."
+    icon: ""
+    tags:
+      - buff
+      - attack_speed
+      - self
+    target_summary:
+      target_team: self
+      target_type: tower
+      target_shape: single
+    effects:
+      - name: "Attack Speed Buff"
+        target:
+          target_team: self
+          target_type: tower
+          target_shape: single
+    cast_time: 0.5
+    parameters:
+      attackSpeedBuff:
+        - 0.10
+        - 0.15
+        - 0.20
+    actions:
+      - type: "play_animation"
+        data:
+          animation: "skill"
+      - type: "play_effect"
+        data:
+          effect_script: "res://resources/tower/hololive/en_branch/myth_gen/amelia/skill_effect/amelia_skill_effect.gd"
+      - type: "atk_speed_buff"
+        data:
+          duration: 4.0
+          param_name: "attackSpeedBuff"
+      - type: "play_animation"
+        data:
+          animation: "idle"
+  passive: null
 
 stats:
   - damage: 60
@@ -60,29 +77,55 @@ stats:
     critChance: 0
     critMultiplier: 1.5
 
-evolution_skill:
-  name: "Elementary my dear"
-  desc: "Amelia increases attack speed by 50% for herself and nearby towers, and gains 100% critical chance for 4 seconds."
-  cast_time: 0.5
-  actions:
-    - type: "play_animation"
-      data:
-        animation: "skill"
-    - type: "play_effect"
-      data:
-        effect_script: "res://resources/tower/hololive/en_branch/myth_gen/amelia/skill_effect/amelia_evo_skill_effect.gd"
-    - type: "atk_speed_buff_aoe"
-      data:
-        duration: 4.0
-        percent: 0.50
-        range: 1
-    - type: "crit_chance_buff"
-      data:
-        duration: 4.0
-        percent: 100.0
-    - type: "play_animation"
-      data:
-        animation: "idle"
+evolution_skills:
+  active:
+    name: "Elementary my dear"
+    desc: "Amelia increases attack speed by 50% for herself and nearby towers, and gains 100% critical chance for 4 seconds."
+    icon: ""
+    tags:
+      - buff
+      - attack_speed
+      - crit_rate
+      - aoe
+      - self
+      - ally
+    target_summary:
+      target_team: ally
+      target_type: tower
+      target_shape: area
+    effects:
+      - name: "Area Attack Speed Buff"
+        target:
+          target_team: ally
+          target_type: tower
+          target_shape: area
+        include_self: true
+      - name: "Self Critical Rate Buff"
+        target:
+          target_team: self
+          target_type: tower
+          target_shape: single
+    cast_time: 0.5
+    actions:
+      - type: "play_animation"
+        data:
+          animation: "skill"
+      - type: "play_effect"
+        data:
+          effect_script: "res://resources/tower/hololive/en_branch/myth_gen/amelia/skill_effect/amelia_evo_skill_effect.gd"
+      - type: "atk_speed_buff_aoe"
+        data:
+          duration: 4.0
+          percent: 0.50
+          range: 1
+      - type: "crit_chance_buff"
+        data:
+          duration: 4.0
+          percent: 100.0
+      - type: "play_animation"
+        data:
+          animation: "idle"
+  passive: null
 
 evolutionStat:
   damage: 350

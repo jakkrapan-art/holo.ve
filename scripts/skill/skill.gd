@@ -11,6 +11,10 @@ enum TARGET_TYPE {ENEMY, FRIENDLY}
 @export var castTime: float = 0.0
 @export var actions: Array[SkillAction] = []
 @export var parameters: Dictionary = {}
+@export var tags: Array[String] = []
+@export var target_summary: Dictionary = {}
+@export var icon: String = ""
+@export var effects: Array = []
 
 var using = false;
 var disable = false;

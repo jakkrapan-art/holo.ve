@@ -22,6 +22,11 @@ var waveData: WaveData = null
 var isBossWave:bool = false;
 
 var groupSpawnRemain: Dictionary = {}
+const SOURCE_FACING_RIGHT_ENEMIES: Dictionary = {
+	"salam": true,
+	"rolling_stone": true,
+	"armored_goblin": true,
+}
 
 var enemyAliveCount: int = 0;
 var isSpawnAllEnemy: bool = false;
@@ -129,7 +134,7 @@ func spawnEnemy(groupIndex: int):
 	for skill in waveGroup.skill:
 		skills.append(Utility.deep_duplicate_resource(skill))
 
-	var enemy: Enemy = await createEnemyObject(Enemy.EnemyType.Normal, health, def, mDef, moveSpeed, texture, skills);
+	var enemy: Enemy = await createEnemyObject(Enemy.EnemyType.Normal, health, def, mDef, moveSpeed, texture, skills, waveGroup.texture);
 	enemyAliveCount += 1;
 
 	connectSignalToEnemy(enemy);
@@ -199,12 +204,13 @@ func connectSignalToEnemy(enemy: Enemy):
 	Utility.ConnectSignal(enemy, "onReachEndPoint", Callable(self, "enemyReachEndPoint").bind(enemy));
 	Utility.ConnectSignal(enemy, "onDead", Callable(self, "enemyDead"));
 
-func createEnemyObject(type: Enemy.EnemyType, health: int, def: int, mDef: int, moveSpeed: int, texture: Texture2D = null, skills: Array[Skill] = []):
+func createEnemyObject(type: Enemy.EnemyType, health: int, def: int, mDef: int, moveSpeed: int, texture: Texture2D = null, skills: Array[Skill] = [], textureKey: String = ""):
 
 	if(enemyFactory == null):
 		return;
 
-	var instance = await enemyFactory.createEnemy(type, spawnParent, health, def, mDef, moveSpeed, texture, skills);
+	var sourceFacesRight := SOURCE_FACING_RIGHT_ENEMIES.get(textureKey, false)
+	var instance = await enemyFactory.createEnemy(type, spawnParent, health, def, mDef, moveSpeed, texture, skills, sourceFacesRight);
 	return instance
 
 func enemyReachEndPoint(enemy: Enemy):

@@ -53,12 +53,22 @@ func _physics_process(delta):
 	if enableMove:
 		var parent: Path2D = get_parent() as Path2D
 		var moveRatio = stats.getMoveSpeed(parent) * delta;
-		# var curve := (parent).curve
-		var oldPos := global_position
+		var previousProgressRatio := progress_ratio
 		progress_ratio += moveRatio;
-		var pos := global_position # sample a little ahead
-		var direction = pos - oldPos;
+		var direction := getPathDirection(parent, previousProgressRatio, progress_ratio)
 		updateFacingFromDirection(direction)
+
+func getPathDirection(parent: Path2D, fromProgressRatio: float, toProgressRatio: float) -> Vector2:
+	if parent == null or parent.curve == null:
+		return Vector2.ZERO
+
+	var bakedLength := parent.curve.get_baked_length()
+	if bakedLength <= 0.0:
+		return Vector2.ZERO
+
+	var fromDistance := clampf(fromProgressRatio * bakedLength, 0.0, bakedLength)
+	var toDistance := clampf(toProgressRatio * bakedLength, 0.0, bakedLength)
+	return parent.curve.sample_baked(toDistance) - parent.curve.sample_baked(fromDistance)
 
 func updateFacingFromDirection(direction: Vector2):
 	if sprite == null:

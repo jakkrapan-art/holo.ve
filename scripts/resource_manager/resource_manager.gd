@@ -42,6 +42,16 @@ static func loadImage(group, key, path):
 
 	return texture
 
+static func preloadSynergy():
+	var synergyList = TowerTrait.TOWER_CLASS_NAMES.values() + TowerTrait.TOWER_GENERATION_NAMES.values();
+	synergyList.append("default");
+	var statuses = ["", "_active"];
+	for synergy in synergyList:
+		for status in statuses:
+			var key = synergy.to_lower() + status;
+			var path = "ui_asset/synergies/" + key + ".png"
+			loadImage("synergy", key, path)
+
 static func preloadEnemy(mapName: String, types: Array[String]) -> void:
 	var enemyPrefix := "res://resources/enemy"
 	var loaded: Dictionary = {}

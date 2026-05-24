@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=3 uid="uid://drdktrtd7dqo"]
+[gd_scene load_steps=34 format=3 uid="uid://drdktrtd7dqo"]
 
 [ext_resource type="Texture2D" uid="uid://dundllopjjw5r" path="res://resources/ui_component/ui_asset/BG02.png" id="1_4mrre"]
 [ext_resource type="Script" path="res://scripts/ui_scenes/deck_selection.gd" id="1_c6p8i"]
@@ -9,19 +9,19 @@
 [ext_resource type="Texture2D" uid="uid://t82e3nsj2h5n" path="res://resources/ui_component/ui_asset/LR_Click.png" id="5_y0e2u"]
 [ext_resource type="Texture2D" uid="uid://c2hds6hhb5krc" path="res://resources/ui_component/ui_asset/button_on.png" id="6_8nwq8"]
 [ext_resource type="Texture2D" uid="uid://b58h4g7d8xy0s" path="res://resources/ui_component/ui_asset/manager_bg_2.png" id="6_mgohv"]
-[ext_resource type="Texture2D" uid="uid://bsgb6ck80ku6p" path="res://resources/staffs/a_chan/profile/profile01.png" id="7_mua0l"]
+[ext_resource type="Texture2D" uid="uid://h41o1y1qe7gj" path="res://resources/staffs/a_chan/profile/profile01.png" id="7_mua0l"]
 [ext_resource type="Texture2D" uid="uid://cd12c6hpmqvfv" path="res://resources/ui_component/ui_asset/exit.png" id="7_v85y8"]
 [ext_resource type="Texture2D" uid="uid://bdigb31m53k0" path="res://resources/ui_component/ui_asset/manager_name.png" id="8_yjoci"]
-[ext_resource type="Texture2D" uid="uid://cc27qry4n02k2" path="res://resources/staffs/a_chan/hud/skill_icon.png" id="9_j4tvn"]
+[ext_resource type="Texture2D" uid="uid://bfqa6ee1pxkdp" path="res://resources/staffs/a_chan/hud/skill_icon.png" id="9_j4tvn"]
 [ext_resource type="Script" path="res://scripts/ui/ui_toggle.gd" id="10_g7cw1"]
 [ext_resource type="Texture2D" uid="uid://dovlsunnluoh1" path="res://resources/ui_component/ui_asset/manager_bullet_active.png" id="11_7grsp"]
 [ext_resource type="Texture2D" uid="uid://cmqihk5djfxyf" path="res://resources/ui_component/ui_asset/manager_bullet_inactive.png" id="12_6aqhd"]
-[ext_resource type="Texture2D" uid="uid://dt7ucxst4bv8r" path="res://resources/ui_asset/UIExport_0001s_0018_BoodBloodIcom.png" id="20_blood"]
 [ext_resource type="Texture2D" uid="uid://0upucutv0hwh" path="res://resources/ui_component/ui_asset/holo_bg.png" id="13_frjjy"]
 [ext_resource type="Texture2D" uid="uid://bymc6hg66xc2a" path="res://resources/ui_component/ui_asset/holo_head_select_bg.png" id="14_7k427"]
 [ext_resource type="Texture2D" uid="uid://co31mpvtdmr0n" path="res://resources/ui_component/branch_filter_active.png" id="15_e7684"]
 [ext_resource type="Texture2D" uid="uid://16ly41lyuy4w" path="res://resources/ui_component/branch_filter_inactive.png" id="16_t4gjl"]
 [ext_resource type="Texture2D" uid="uid://btqpf8iis3skm" path="res://resources/ui_component/ui_asset/button_off.png" id="20_67tp8"]
+[ext_resource type="Texture2D" uid="uid://b5e85anc650cb" path="res://resources/ui_asset/UIExport_0001s_0018_BoodBloodIcom.png" id="20_blood"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_mhc4r"]
 texture = ExtResource("1_4mrre")
@@ -233,6 +233,18 @@ text = "A-Chan"
 label_settings = SubResource("LabelSettings_c58rm")
 vertical_alignment = 1
 
+[node name="ManagerName" type="TextureRect" parent="ContentContainer/ManagerField/ManagerCard/CardContainer/Name"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("8_yjoci")
+expand_mode = 1
+flip_h = true
+
 [node name="HpInfo" type="HBoxContainer" parent="ContentContainer/ManagerField/ManagerCard/CardContainer"]
 layout_mode = 1
 anchors_preset = 2
@@ -243,7 +255,6 @@ offset_top = -30.0
 offset_right = 480.0
 offset_bottom = 28.85
 grow_vertical = 0
-alignment = 0
 
 [node name="BloodIcon" type="TextureRect" parent="ContentContainer/ManagerField/ManagerCard/CardContainer/HpInfo"]
 custom_minimum_size = Vector2(48, 48)
@@ -256,25 +267,12 @@ stretch_mode = 5
 [node name="HpValue" type="Label" parent="ContentContainer/ManagerField/ManagerCard/CardContainer/HpInfo"]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 4
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 4
 theme_override_font_sizes/font_size = 40
 text = "100"
 vertical_alignment = 1
-
-[node name="ManagerName" type="TextureRect" parent="ContentContainer/ManagerField/ManagerCard/CardContainer/Name"]
-visible = false
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("8_yjoci")
-expand_mode = 1
-flip_h = true
 
 [node name="Skill" type="Control" parent="ContentContainer/ManagerField/ManagerCard/CardContainer"]
 layout_mode = 1

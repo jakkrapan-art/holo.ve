@@ -57,6 +57,8 @@ func addDeck(deck_key: String) -> bool:
 
 	setTowerData(tower_list)
 	added_decks.append(deck_key)
+
+	ResourceManager.preloadSynergy();
 	return true
 
 func getAvailableDecks() -> Array:

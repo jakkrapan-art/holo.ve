@@ -141,7 +141,11 @@ func _apply_cards_to_buttons(cards: Array) -> void:
 	for index in range(buttons.size()):
 		if index < cards.size():
 			var cardSelectData: TowerSelectData = cards[index] as TowerSelectData;
-			buttons[index].setup(cardSelectData.name, cardSelectData.icon, cardSelectData.level, cardSelectData.evolutionCost)
+			var data: TowerData = TowerCenter.getTowerDataByName(cardSelectData.name).data;
+			var tClass = data.towerClass;
+			var tGen = data.generation;
+
+			buttons[index].Setup(cardSelectData.name, cardSelectData.icon, tClass, tGen, cardSelectData.level, cardSelectData.evolutionCost)
 			var bound: Callable = select_callable.bind(cardSelectData.name)
 			buttons[index].pressed.connect(bound)
 			buttons[index].set_meta("_select_binding", bound)

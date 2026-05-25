@@ -182,7 +182,6 @@ static func ParseAction(data: Dictionary) -> SkillAction:
 			skill.damageMultiplier = skillData.get("damage_multiplier", 1.0);
 			skill.damageType = Utility.parse_string_to_enum(Damage.DamageType, skillData.get("damage_type", "physic"));
 			skill.damageMultiplierParamName = skillData.get("damage_multiplier_param_name", "damageMultiplier");
-			skill.projectile_speed = skillData.get("projectile_speed", -1.0);
 			var statusEffects: Array[StatusEffect] = [];
 			var statusEffectDataList = skillData.get("status_effects", []);
 			if(statusEffectDataList.size() > 0):

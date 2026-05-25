@@ -5,9 +5,12 @@ extends SkillActionProjectile
 @export var angular_speed: float = 180.0;
 @export var initial_angle: float = 0.0;
 @export var angle_offset: float = 0.0;
+@export var projectile_speed: float = -1.0; # -1 = use scene default; ignored in Circle movement mode
 
 func setupProjectile(projectile: Projectile, i: int, context: SkillContext):
 	var tower: Tower = context.user as Tower;
 	var multi = getDamageMultiplier(context)
+	if projectile_speed > 0:
+		projectile.speed = projectile_speed
 	projectile.setup_circle(tower, Damage.new(tower, multi * tower.data.getDamage(null, null).damage, damageType), circle_radius, angular_speed, initial_angle + (angle_offset * i), lifetime, ProjectileCallback.new(Callable(self, "onHit"), Callable(), Callable()))
 	super.setupProjectile(projectile, i, context)

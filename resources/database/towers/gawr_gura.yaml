@@ -4,34 +4,56 @@ generation: myth
 attackType: magic
 evolutionCost: 1
 
-# skill: "res://resources/database/skill/gawr_gura_skill.tres"
 attack_sound: "hit_gura"
 open_sound: "debut_gura"
 attack_vfx: "blue" # ชื่อ VFX ที่ใช้ตอนโจมตี (เป็น enum ใน attack_vfx.gd AttackVFXName)
 
-skill:
-  name: "Skill"
-  desc: "Just a skill"
-  parameters:
-    damageMultiplier:
-      - 1.2
-      - 1.3
-      - 1.5
-  actions:
-    - type: "create_circle_projectile"
-      data:
-        circle_radius: 1.0
-        angular_speed: 180.0
-        initial_angle: 0.0
-        angle_offset: 90.0
-        lifetime: 5.0
-        count: 4
-        damage_multiplier: 1.0
-        damage_type: "magic"
-        damage_multiplier_param_name: "damageMultiplier"
-        status_effects:
-          - type: "stun"
-            duration: 1
+skills:
+  active:
+    name: "Atlantis Trident"
+    names: ["Atlantis Trident I", "Atlantis Trident II", "Atlantis Trident III"]
+    desc: "Gura summons crashing waves of the Atlantis Trident around herself."
+    desc_template: "Gura wields the Trident of Atlantis to summon four storm waves within one tile around her for 5 seconds. Each wave deals {damageMultiplier:percent} damage per hit and stuns foes for 0.1s. While the storm rages, Gura gains no Energy."
+    icon: ""
+    tags:
+      - damage
+      - projectile
+      - aoe
+      - stun
+      - enemy
+      - persistent
+    target_summary:
+      target_team: enemy
+      target_type: tower
+      target_shape: area
+    effects:
+      - name: "Storm Wave Damage"
+        target:
+          target_team: enemy
+          target_type: tower
+          target_shape: area
+    cast_time: 0.5
+    parameters:
+      damageMultiplier:
+        - 1.2
+        - 1.3
+        - 1.5
+    actions:
+      - type: "create_circle_projectile"
+        data:
+          radius: 1.0
+          angular_speed: 180.0
+          initial_angle: 0.0
+          angle_offset: 90.0
+          lifetime: 5.0
+          count: 4
+          damage_multiplier_param_name: "damageMultiplier"
+          damage_type: "magic"
+          projectile_speed: 1000.0
+          status_effects:
+            - type: "stun"
+              duration: 0.1
+  passive: null
 
 stats:
   - damage: 80
@@ -61,6 +83,47 @@ stats:
     critChance: 0
     critMultiplier: 1.5
 
+evolution_skills:
+  active:
+    name: "Sink to the Void at the Bottom of the Sea!!"
+    desc: "Gura wields the Trident of Atlantis to summon eight storm waves within one tile around her for 5 seconds. Each wave deals 200% damage per hit and stuns foes for 0.1s. While the storm rages, Gura gains no Energy."
+    icon: ""
+    tags:
+      - damage
+      - projectile
+      - aoe
+      - stun
+      - enemy
+      - persistent
+    target_summary:
+      target_team: enemy
+      target_type: tower
+      target_shape: area
+    effects:
+      - name: "Storm Wave Damage"
+        target:
+          target_team: enemy
+          target_type: tower
+          target_shape: area
+    cast_time: 0.5
+    actions:
+      - type: "create_circle_projectile"
+        data:
+          radius: 1.0
+          angular_speed: 180.0
+          initial_angle: 0.0
+          angle_offset: 45.0
+          lifetime: 5.0
+          count: 8
+          damage_multiplier: 2.0
+          damage_multiplier_param_name: ""
+          damage_type: "magic"
+          projectile_speed: 1000.0
+          status_effects:
+            - type: "stun"
+              duration: 0.1
+  passive: null
+
 evolutionStat:
   damage: 240
   attackRange: 1.0
@@ -70,4 +133,3 @@ evolutionStat:
   intialMana: 80
   critChance: 50.0
   critMultiplier: 1.5
-

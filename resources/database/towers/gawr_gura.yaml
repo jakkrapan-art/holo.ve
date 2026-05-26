@@ -71,7 +71,7 @@ skills:
         data:
           # circle_radius: orbit radius in tile units (1.0 = projectiles trace a circle 1 tile from the tower).
           # Increase to push waves further from the tower; decrease to tighten.
-          circle_radius: 1.0
+          circle_radius: 1.25
           angular_speed: 180.0
           initial_angle: 0.0
           angle_offset: 90.0
@@ -128,7 +128,7 @@ evolution_skills:
     actions:
       - type: "create_circle_projectile"
         data:
-          circle_radius: 1.0
+          circle_radius: 1.25
           angular_speed: 180.0
           initial_angle: 0.0
           angle_offset: 45.0

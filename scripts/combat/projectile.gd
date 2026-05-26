@@ -6,6 +6,11 @@ class_name Projectile
 var damage: Damage;
 var shooter: Tower = null
 var target: Enemy = null
+
+func _ready() -> void:
+	# Lets towers locate their own in-flight projectiles for wave-end cleanup.
+	add_to_group("projectile")
+
 var target_position: Vector2 = Vector2.ZERO
 var move_direction: Vector2 = Vector2.ZERO
 var moveType: ProjectileMoveType = ProjectileMoveType.Direction

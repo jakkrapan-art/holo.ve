@@ -20,13 +20,18 @@ func execute(context: SkillContext):
 
 	if(lifetime > 0 && context.user is Tower):
 		var tower: Tower = context.user as Tower
+		var gen: int = 0
 		if(is_instance_valid(tower)):
 			tower.enableRegenMana = false;
 			tower.usingSkill = false;
 			tower.skillController.currentMana = 0;
+			gen = tower.skill_lock_generation
 
 		await context.user.get_tree().create_timer(lifetime).timeout
-		if(is_instance_valid(tower)):
+		# Only re-enable regen if this cast is still the live one. resetForWave() bumps
+		# skill_lock_generation so a stale timer can't unblock energy during a fresh
+		# skill cast on the next wave.
+		if(is_instance_valid(tower) and tower.skill_lock_generation == gen):
 			tower.enableRegenMana = true
 
 func setupProjectile(_projectile: Projectile, _i: int, _context: SkillContext):

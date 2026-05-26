@@ -6,6 +6,35 @@ evolutionCost: 1
 
 attack_sound: "hit_amelia"
 open_sound: "debut_amelia"
+
+stats:
+  - damage: 60
+    attackRange: 5.0
+    attackSpeed: 120
+    mana: 100
+    intialMana: 80
+    manaRegen: 10
+    critChance: 0
+    critMultiplier: 1.5
+
+  - damage: 120
+    attackRange: 5.0
+    attackSpeed: 120
+    mana: 100
+    intialMana: 80
+    manaRegen: 10
+    critChance: 0
+    critMultiplier: 1.5
+
+  - damage: 240
+    attackRange: 5.0
+    attackSpeed: 120
+    mana: 100
+    intialMana: 80
+    manaRegen: 10
+    critChance: 0
+    critMultiplier: 1.5
+
 skills:
   active:
     name: "Time Traveler"
@@ -49,33 +78,15 @@ skills:
           animation: "idle"
   passive: null
 
-stats:
-  - damage: 60
-    attackRange: 5.0
-    attackSpeed: 120
-    mana: 100
-    intialMana: 80
-    manaRegen: 10
-    critChance: 0
-    critMultiplier: 1.5
-
-  - damage: 120
-    attackRange: 5.0
-    attackSpeed: 120
-    mana: 100
-    intialMana: 80
-    manaRegen: 10
-    critChance: 0
-    critMultiplier: 1.5
-
-  - damage: 240
-    attackRange: 5.0
-    attackSpeed: 120
-    mana: 100
-    intialMana: 80
-    manaRegen: 10
-    critChance: 0
-    critMultiplier: 1.5
+evolutionStat:
+  damage: 350
+  attackRange: 5.0
+  attackSpeed: 140
+  mana: 120
+  manaRegen: 10
+  intialMana: 80
+  critChance: 50.0
+  critMultiplier: 1.5
 
 evolution_skills:
   active:
@@ -132,13 +143,3 @@ evolution_skills:
         data:
           animation: "idle"
   passive: null
-
-evolutionStat:
-  damage: 350
-  attackRange: 5.0
-  attackSpeed: 140
-  mana: 120
-  manaRegen: 10
-  intialMana: 80
-  critChance: 50.0
-  critMultiplier: 1.5

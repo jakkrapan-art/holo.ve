@@ -147,8 +147,10 @@ static func _apply_skill_data(skill: Skill, skill_data: Dictionary, default_name
 	skill.name = skill_data.get("name", default_name)
 	if not skill_data.has("name") and skill.names.size() > 0:
 		skill.name = skill.names[0]
-	skill.desc = skill_data.get("desc", "")
-	skill.desc_template = skill_data.get("desc_template", "")
+	# Custom YAML parser preserves backslash escapes literally; translate "\n" tokens
+	# from skill copy into real newlines so designers can split notes onto their own line.
+	skill.desc = str(skill_data.get("desc", "")).replace("\\n", "\n")
+	skill.desc_template = str(skill_data.get("desc_template", "")).replace("\\n", "\n")
 	skill.parameters = skill_data.get("parameters", {})
 	skill.castTime = skill_data.get("cast_time", 0.0)
 	skill.tags = _parse_string_array(skill_data.get("tags", []))

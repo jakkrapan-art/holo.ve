@@ -3,6 +3,7 @@ extends SkillAction
 
 @export var duration: float = 4.0
 @export var percent: float = 100.0
+@export var paramName: String = ""
 
 const BUFF_KEY = "crit_chance_buff_skill"
 
@@ -11,7 +12,8 @@ func execute(context: SkillContext) -> void:
 	if tower == null:
 		return
 
-	tower.data.addCritChanceBuff(percent, BUFF_KEY)
+	var resolved_percent: float = context.getParameter(paramName, tower.data.level - 1) if paramName != "" else percent
+	tower.data.addCritChanceBuff(resolved_percent, BUFF_KEY)
 
 	tower.get_tree().create_timer(duration).timeout.connect(
 		func():

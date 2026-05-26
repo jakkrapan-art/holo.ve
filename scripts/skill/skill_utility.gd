@@ -108,12 +108,14 @@ static func ParseAction(data: Dictionary) -> SkillAction:
 			skill.duration = skillData.get("duration", 4.0)
 			# ATTACK_SPEED is decimal scale (0.5 = +50%) — see tower_data.getAttackSpeed.
 			skill.percent = skillData.get("percent", 0.5)
+			skill.paramName = skillData.get("param_name", "")
 			skill.range = skillData.get("range", 1)
 		"crit_chance_buff":
 			skill = SkillActionCritChanceBuff.new()
 			var skillData = data.get("data", {})
 			skill.duration = skillData.get("duration", 4.0)
 			skill.percent = skillData.get("percent", 100.0)
+			skill.paramName = skillData.get("param_name", "")
 		"play_effect":
 			skill = SkillActionPlayEffect.new()
 			var skillData = data.get("data", {})
@@ -182,6 +184,8 @@ static func ParseAction(data: Dictionary) -> SkillAction:
 			skill.damageMultiplier = skillData.get("damage_multiplier", 1.0);
 			skill.damageType = Utility.parse_string_to_enum(Damage.DamageType, skillData.get("damage_type", "physic"));
 			skill.damageMultiplierParamName = skillData.get("damage_multiplier_param_name", "damageMultiplier");
+			skill.projectile_size_w = skillData.get("projectile_size_w", 1.0);
+			skill.projectile_size_h = skillData.get("projectile_size_h", 1.0);
 			var statusEffects: Array[StatusEffect] = [];
 			var statusEffectDataList = skillData.get("status_effects", []);
 			if(statusEffectDataList.size() > 0):

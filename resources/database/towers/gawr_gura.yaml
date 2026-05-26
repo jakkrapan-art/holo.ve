@@ -8,6 +8,34 @@ attack_sound: "hit_gura"
 open_sound: "debut_gura"
 attack_vfx: "blue" # ชื่อ VFX ที่ใช้ตอนโจมตี (เป็น enum ใน attack_vfx.gd AttackVFXName)
 
+stats:
+  - damage: 80
+    attackRange: 1.0
+    attackSpeed: 80
+    mana: 120
+    manaRegen: 10
+    intialMana: 60
+    critChance: 0
+    critMultiplier: 1.5
+
+  - damage: 120
+    attackRange: 1.0
+    attackSpeed: 80
+    mana: 120
+    manaRegen: 10
+    intialMana: 60
+    critChance: 0
+    critMultiplier: 1.5
+
+  - damage: 180
+    attackRange: 1.0
+    attackSpeed: 80
+    mana: 120
+    manaRegen: 10
+    intialMana: 60
+    critChance: 0
+    critMultiplier: 1.5
+
 skills:
   active:
     name: "Atlantis Trident"
@@ -41,7 +69,9 @@ skills:
     actions:
       - type: "create_circle_projectile"
         data:
-          radius: 1.0
+          # circle_radius: orbit radius in tile units (1.0 = projectiles trace a circle 1 tile from the tower).
+          # Increase to push waves further from the tower; decrease to tighten.
+          circle_radius: 1.0
           angular_speed: 180.0
           initial_angle: 0.0
           angle_offset: 90.0
@@ -50,42 +80,23 @@ skills:
           damage_multiplier_param_name: "damageMultiplier"
           damage_type: "magic"
           # Scale multipliers on the projectile root (visual + collision).
-          # Orbit radius = 1 tile; default projectile is too small to reach diagonal tiles
-          # (gap ~212 px at CELL_SIZE 512). 2.5 covers cardinal + diagonal tile centers.
-          projectile_size_w: 2.5
-          projectile_size_h: 2.5
+          # 1.0 keeps the .tscn default size; raise both to widen each wave's hitbox.
+          projectile_size_w: 1
+          projectile_size_h: 1
           status_effects:
             - type: "stun"
               duration: 0.1
   passive: null
 
-stats:
-  - damage: 80
-    attackRange: 1.0
-    attackSpeed: 80
-    mana: 120
-    manaRegen: 10
-    intialMana: 60
-    critChance: 0
-    critMultiplier: 1.5
-
-  - damage: 120
-    attackRange: 1.0
-    attackSpeed: 80
-    mana: 120
-    manaRegen: 10
-    intialMana: 60
-    critChance: 0
-    critMultiplier: 1.5
-
-  - damage: 180
-    attackRange: 1.0
-    attackSpeed: 80
-    mana: 120
-    manaRegen: 10
-    intialMana: 60
-    critChance: 0
-    critMultiplier: 1.5
+evolutionStat:
+  damage: 240
+  attackRange: 1.0
+  attackSpeed: 100
+  mana: 120
+  manaRegen: 10
+  intialMana: 80
+  critChance: 50.0
+  critMultiplier: 1.5
 
 evolution_skills:
   active:
@@ -117,7 +128,7 @@ evolution_skills:
     actions:
       - type: "create_circle_projectile"
         data:
-          radius: 1.0
+          circle_radius: 1.0
           angular_speed: 180.0
           initial_angle: 0.0
           angle_offset: 45.0
@@ -125,19 +136,9 @@ evolution_skills:
           count: 8
           damage_multiplier_param_name: "damageMultiplier"
           damage_type: "magic"
-          projectile_size_w: 2.5
-          projectile_size_h: 2.5
+          projectile_size_w: 1
+          projectile_size_h: 1
           status_effects:
             - type: "stun"
               duration: 0.1
   passive: null
-
-evolutionStat:
-  damage: 240
-  attackRange: 1.0
-  attackSpeed: 100
-  mana: 120
-  manaRegen: 10
-  intialMana: 80
-  critChance: 50.0
-  critMultiplier: 1.5

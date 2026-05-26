@@ -175,7 +175,8 @@ static func ParseAction(data: Dictionary) -> SkillAction:
 		"create_circle_projectile":
 			skill = SkillCreateCircleProjectile.new();
 			var skillData = data.get("data", {});
-			skill.circle_radius = skillData.get("radius", 1.0);
+			# Designer-facing key is "circle_radius" (in tile units); accept legacy "radius" as a fallback.
+			skill.circle_radius = skillData.get("circle_radius", skillData.get("radius", 1.0));
 			skill.count = skillData.get("count", 1);
 			skill.angular_speed = skillData.get("angular_speed", 90.0);
 			skill.initial_angle = skillData.get("initial_angle", 0.0);

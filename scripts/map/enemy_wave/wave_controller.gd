@@ -59,6 +59,11 @@ func startNextWave():
 	isSpawnAllEnemy = false;
 	endWaveCalled = false;
 	groupSpawnRemain.clear()
+	# Reset alive count as defense vs any stale count carryover from the
+	# previous wave's tracking. With Enemy._removed mutex preventing
+	# double-decrement at source, count should already be 0 here; this is
+	# unguarded cheap insurance, not the primary fix.
+	enemyAliveCount = 0
 
 	var wData: WaveData = data.waveDatas[currWave - 1] as WaveData
 	waveData = wData

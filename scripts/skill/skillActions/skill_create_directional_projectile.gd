@@ -43,14 +43,18 @@ func setupProjectile(projectile: Projectile, i: int, context: SkillContext):
 			ProjectileCallback.new(Callable(self, "onHit"), Callable(), Callable()))
 	super.setupProjectile(projectile, i, context)
 
-# Override base execute to use effective_lifetime (not configured lifetime) for
-# the mana lockout window. Without this override, Kiara Hinotori (lifetime=1.5
-# cap but max_range/speed=0.42 actual travel) would lock mana regen + idle
-# animation for the full 1.5s, causing visible cast delay + skill animation
-# loop after the projectile already despawned.
+# Override base execute so mana lockout doesn't block the action sequence.
+# Base SkillActionProjectile awaits `lifetime` inside execute, which freezes
+# the following action (`play_animation idle`) until after the lockout —
+# causing a visible animation glitch where the skill animation finishes and
+# starts to loop before idle finally fires. Amelia avoids this because her
+# non-projectile actions don't await.
 #
-# Also adds a skill_lock_generation guard so a stale post-await callback can't
-# re-enable mana regen after a wave-end resetForWave (see tower.gd:354-368).
+# Fix: spawn projectile, set lockout flags, then schedule the re-enable via
+# a separate non-blocking coroutine. execute() returns immediately so the
+# action sequence proceeds to `play_animation idle` right after the cast.
+# Wave-end resetForWave still invalidates the in-flight callback via
+# skill_lock_generation (see tower.gd:354-368).
 func execute(context: SkillContext):
 	for i in count:
 		var projectile: Projectile = projectileTemplate.instantiate() as Projectile
@@ -69,13 +73,17 @@ func execute(context: SkillContext):
 		var tower: Tower = context.user as Tower
 		if not is_instance_valid(tower):
 			return
-		var saved_gen: int = tower.skill_lock_generation
 		tower.enableRegenMana = false
 		tower.usingSkill = false
 		tower.skillController.currentMana = 0
+		# Fire-and-forget unlock — does NOT await, so the action sequence
+		# (play_animation idle next) can run immediately.
+		_unlock_mana_after_delay(tower, tower.skill_lock_generation, effective_lifetime)
 
-		await context.user.get_tree().create_timer(effective_lifetime).timeout
-
-		# Wave-end guard: skip re-enable if resetForWave fired during the await.
-		if is_instance_valid(tower) and tower.skill_lock_generation == saved_gen:
-			tower.enableRegenMana = true
+# Background coroutine that re-enables mana regen after the projectile's
+# effective travel time. Skipped if a wave-end resetForWave has bumped the
+# skill_lock_generation since this cast started (stale callback guard).
+func _unlock_mana_after_delay(tower: Tower, saved_gen: int, delay: float) -> void:
+	await tower.get_tree().create_timer(delay).timeout
+	if is_instance_valid(tower) and tower.skill_lock_generation == saved_gen:
+		tower.enableRegenMana = true

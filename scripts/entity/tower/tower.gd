@@ -152,6 +152,14 @@ func evolve():
 			var stat = data.getStat()
 			skillController = SkillController.new(self, stat.mana, stat.intialMana, data.evolutionSkill)
 			Utility.ConnectSignal(skillController, "on_mana_updated", Callable(self, "update_mana_bar"))
+			# Refresh manaBar visual to match the new evolved stat:
+			# - setup() re-applies the new max so the bar's full-bar fills at the
+			#   evolved cap (e.g., Kiara 50 -> 80) instead of the base cap.
+			# - updateValue() shows the new initial mana (e.g., Kiara 10 -> 40)
+			#   immediately; no on_mana_updated signal fires from the constructor.
+			if manaBar != null:
+				manaBar.setup(stat.mana, false)
+				manaBar.updateValue(stat.intialMana)
 	return success
 
 func _play_evolve_sound():

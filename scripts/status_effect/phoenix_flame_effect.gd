@@ -60,5 +60,9 @@ func _process_effect(delta: float, target: Node) -> void:
 	if not (target is Enemy):
 		return
 	var enemy: Enemy = target as Enemy
-	var dmg: int = int(attackPercent * snapshotAttack + maxHpPercent * float(enemy.maxHp))
+	# maxHp lives on EnemyStat (Resource on enemy.stats), NOT directly on Enemy.
+	# Guard against null stats just in case (e.g., despawn race during tick).
+	if enemy.stats == null:
+		return
+	var dmg: int = int(attackPercent * snapshotAttack + maxHpPercent * float(enemy.stats.maxHp))
 	enemy.recvDamage(Damage.new(null, dmg, Damage.DamageType.MAGIC))

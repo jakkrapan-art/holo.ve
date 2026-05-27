@@ -141,9 +141,15 @@ func _apply_cards_to_buttons(cards: Array) -> void:
 	for index in range(buttons.size()):
 		if index < cards.size():
 			var cardSelectData: TowerSelectData = cards[index] as TowerSelectData;
-			var data: TowerData = TowerCenter.getTowerDataByName(cardSelectData.name).data;
-			var tClass = data.towerClass;
-			var tGen = data.generation;
+			# Deck popup callsite passes deck keys (e.g. "myth") as card name, which
+			# are not registered tower names — fall through with default trait icons
+			# so the synergy chips render the "default" sprite instead of crashing.
+			var entry = TowerCenter.getTowerDataByName(cardSelectData.name);
+			var tClass: int = 0;
+			var tGen: int = 0;
+			if entry != null and entry.data != null:
+				tClass = entry.data.towerClass;
+				tGen = entry.data.generation;
 
 			buttons[index].Setup(cardSelectData.name, cardSelectData.icon, tClass, tGen, cardSelectData.level, cardSelectData.evolutionCost)
 			var bound: Callable = select_callable.bind(cardSelectData.name)

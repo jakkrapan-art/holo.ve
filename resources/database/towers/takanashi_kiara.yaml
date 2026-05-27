@@ -40,15 +40,14 @@ skills:
   active:
     name: "Flame Slash"
     names: ["Flame Slash I", "Flame Slash II", "Flame Slash III"]
-    desc: "Kiara ฟันดาบเปลวเพลิงของนกอมตะไปด้านหน้าระยะ 3×1 ช่อง สร้างความเสียหายกายภาพ พร้อมสร้างสถานะเพลิงฟินิกซ์จากความเสียหายเวท เป็นเวลา 5 วินาทีแก่ศัตรูทั้งหมด"
-    desc_template: "Kiara ฟันดาบเปลวเพลิงของนกอมตะไปด้านหน้าระยะ 3×1 ช่อง สร้างความเสียหายกายภาพ {damageMult:percent} พร้อมสร้างสถานะเพลิงฟินิกซ์จากความเสียหายเวท ({phoenixAtk:percent} attack + {phoenixHp:percent} maxHP) ต่อ tick เป็นเวลา {phoenixDuration} วินาทีแก่ศัตรูทั้งหมด"
+    desc: "Kiara swings her immortal phoenix flame blade forward through a 3×1 tile area, dealing physical damage. All enemies hit are scorched by Phoenix Flame, taking magic damage every second for 5 seconds."
+    desc_template: "Kiara swings her immortal phoenix flame blade forward through a 3×1 tile area, dealing {damageMultiplier:percent} physical damage. All enemies hit are scorched by Phoenix Flame, taking ({phoenixAtk:percent} attack + {phoenixHp:percent} max HP) magic damage every {phoenixInterval} second(s) for {phoenixDuration} seconds."
     icon: ""
     tags:
       - damage
       - attack
       - aoe
       - dot
-      - enemy
     target_summary:
       target_team: enemy
       target_type: enemy
@@ -65,12 +64,17 @@ skills:
           target_type: enemy
           target_shape: area
     cast_time: 0.2
+    # Parameters bound to desc_template tokens + read by skill actions.
+    # Edit numbers here to retune balance; descriptions auto-sync via {token}.
     parameters:
-      damageMult: [1.4, 1.5, 1.7]
-      phoenixAtk: 0.10
-      phoenixHp: 0.01
-      phoenixDuration: 5.0
-      phoenixInterval: 1.0
+      # Per-tier direct hit scaling — Skill Multiplier (% of Kiara attack).
+      # Direct damage = damageMultiplier × Kiara totalAttack.
+      damageMultiplier: [1.4, 1.5, 1.7]
+      # Phoenix Flame DOT — per-tick magic damage = phoenixAtk×attack + phoenixHp×targetMaxHp.
+      phoenixAtk: 0.10       # 10% of Kiara's attack stat per tick (snapshot at apply)
+      phoenixHp: 0.01        # 1% of target's max HP per tick
+      phoenixDuration: 5.0   # Total DOT duration in seconds
+      phoenixInterval: 1.0   # Seconds between ticks (5 ticks over 5s with default)
     actions:
       - type: "find_multi_enemy"
         data:
@@ -81,7 +85,8 @@ skills:
           animation: "skill"
       - type: "attack"
         data:
-          # Skill Multiplier per level — uses tower.attackType (physic) by default
+          # Per-tier skill multiplier — matches `parameters.damageMultiplier`.
+          # SkillActionAttack reads this array directly (no param_name needed).
           damage_multiplier: [1.4, 1.5, 1.7]
           can_crit: false   # Kiara design: skill cannot crit
           status_effects:
@@ -108,8 +113,8 @@ evolutionStat:
 evolution_skills:
   active:
     name: "Hinotori"
-    desc: "Kiara เสริมพลังดาบด้วยเพลิงศักดิ์สิทธิ์แล้วฟาดฟันออกไปข้างหน้าอย่างรุนแรงระยะ 3×5 ช่อง สร้างความเสียหายกายภาพ 300% พร้อมสร้างสถานะเพลิงฟินิกซ์จากความเสียหายเวท เป็นเวลา 5 วินาทีแก่ศัตรูทั้งหมด"
-    desc_template: "Kiara เสริมพลังดาบด้วยเพลิงศักดิ์สิทธิ์แล้วฟาดฟันออกไปข้างหน้าอย่างรุนแรงระยะ 3×5 ช่อง สร้างความเสียหายกายภาพ {damageMult:percent} พร้อมสร้างสถานะเพลิงฟินิกซ์จากความเสียหายเวท ({phoenixAtk:percent} attack + {phoenixHp:percent} maxHP) ต่อ tick เป็นเวลา {phoenixDuration} วินาทีแก่ศัตรูทั้งหมด"
+    desc: "Kiara empowers her blade with sacred phoenix fire and unleashes a devastating slash forward through a 3×5 tile corridor, dealing massive physical damage. All enemies hit are scorched by Phoenix Flame, taking magic damage every second for 5 seconds."
+    desc_template: "Kiara empowers her blade with sacred phoenix fire and unleashes a devastating slash forward through a 3×5 tile corridor, dealing {damageMultiplier:percent} physical damage. All enemies hit are scorched by Phoenix Flame, taking ({phoenixAtk:percent} attack + {phoenixHp:percent} max HP) magic damage every {phoenixInterval} second(s) for {phoenixDuration} seconds."
     icon: ""
     tags:
       - damage
@@ -117,7 +122,6 @@ evolution_skills:
       - aoe
       - dot
       - projectile
-      - enemy
     target_summary:
       target_team: enemy
       target_type: enemy
@@ -134,15 +138,18 @@ evolution_skills:
           target_type: enemy
           target_shape: area
     cast_time: 0.2
+    # Parameters bound to desc_template tokens + read by skill actions.
+    # Projectile knobs (speed/lifetime/max_range) live in the action data below
+    # — they're not duplicated here to avoid drift between display and runtime.
     parameters:
-      damageMult: 3.0
-      phoenixAtk: 0.10
-      phoenixHp: 0.01
-      phoenixDuration: 5.0
-      phoenixInterval: 1.0
-      projectileSpeed: 12.0
-      projectileLifetime: 1.5
-      projectileMaxRange: 5.0
+      # Direct hit scaling — Skill Multiplier (% of Kiara attack).
+      # Direct damage = damageMultiplier × Kiara totalAttack (≈ 300 × 3.0 = 900).
+      damageMultiplier: 3.0
+      # Phoenix Flame DOT (same formula as Normal; applied to every enemy in path).
+      phoenixAtk: 0.10       # 10% of Kiara's attack stat per tick
+      phoenixHp: 0.01        # 1% of target's max HP per tick
+      phoenixDuration: 5.0   # Total DOT duration in seconds
+      phoenixInterval: 1.0   # Seconds between ticks
     actions:
       - type: "find_multi_enemy"
         data:
@@ -156,10 +163,11 @@ evolution_skills:
           # Asset placeholder: reuses Gura projectile scene until Lead supplies
           # a Phoenix-themed asset in the visual phase (out of scope here).
           projectile: "res://resources/combat/bullets/gawr_gura_skill_projectile.tscn"
-          speed: 12.0
-          lifetime: 1.5
-          max_range: 5.0
-          damage_multiplier: 3.0
+          # Projectile tuning — designer can adjust these freely.
+          speed: 12.0          # Tiles per second (12 tiles/s ≈ fast straight shot)
+          lifetime: 1.5        # Max lifetime cap in seconds (failsafe if max_range unset)
+          max_range: 5.0       # Max travel distance in tiles — projectile despawns past this
+          damage_multiplier: 3.0   # Used when damage_multiplier_param_name is empty
           damage_type: "physic"
           can_crit: false
           status_effects:

@@ -15,6 +15,11 @@ var skillController: EnemySkillController;
 var enableMove: bool = true;
 
 var initialized: bool = false;
+# Mutex flag: ensures exactly ONE removal signal fires per enemy (onDead OR
+# onReachEndPoint, not both). Without this, lethal damage on the same frame
+# an enemy reaches the end double-decrements wave_controller.enemyAliveCount,
+# causing wave to end prematurely while monsters are still alive.
+var _removed: bool = false;
 
 enum EnemyType {Normal, Elite, Boss}
 const FACING_X_EPSILON: float = 0.01
@@ -43,6 +48,9 @@ func _process(_delta):
 		skillController.useSkill();
 
 	if(progress_ratio >= 1.0):
+		if _removed:
+			return
+		_removed = true
 		onReachEndPoint.emit();
 		queue_free()
 
@@ -146,6 +154,15 @@ func updateHealthBar(value: float):
 		healthBar.updateValue(value)
 
 func dead(cause: Damage):
+	# Mutex guard (see _removed comment near top). If the reach-end branch
+	# already fired, suppress onDead so the enemy doesn't double-decrement.
+	# Note: ordering inside _process matters — statusEffects.processEffects
+	# (line 39) runs BEFORE the reach-end check (line 45), so a DOT-lethal
+	# tick at progress_ratio >= 1.0 will set _removed here first, suppressing
+	# the reach-end emit later in the same frame.
+	if _removed:
+		return
+	_removed = true
 	var reward = calcurateReward();
 	onDead.emit(self, cause, reward);
 	queue_free();

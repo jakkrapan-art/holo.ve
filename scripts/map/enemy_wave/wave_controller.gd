@@ -137,7 +137,13 @@ func spawnEnemy(groupIndex: int):
 	# and call endWave() before the uncounted enemy is even on the map.
 	enemyAliveCount += 1;
 
-	var enemy: Enemy = await createEnemyObject(Enemy.EnemyType.Normal, health, def, mDef, moveSpeed, texture, skills);
+	# Resolve enemy tier from the texture key (registered by ResourceManager.
+	# preloadEnemy via enemy_list.yaml). Elite enemies deal Elite-tier damage
+	# (10) on reach-end and are correctly tagged for any downstream type-aware
+	# logic. Default to Normal if the texture wasn't registered.
+	var enemy_type := _tierToEnemyType(ResourceManager.getEnemyTier(waveGroup.texture))
+
+	var enemy: Enemy = await createEnemyObject(enemy_type, health, def, mDef, moveSpeed, texture, skills);
 
 	if enemy == null:
 		# Spawn failed — undo the reservation so the count stays accurate.
@@ -145,6 +151,15 @@ func spawnEnemy(groupIndex: int):
 		return;
 
 	connectSignalToEnemy(enemy);
+
+func _tierToEnemyType(tier: String) -> Enemy.EnemyType:
+	match tier:
+		"boss":
+			return Enemy.EnemyType.Boss
+		"elite":
+			return Enemy.EnemyType.Elite
+		_:
+			return Enemy.EnemyType.Normal
 
 func spawnBoss():
 	var result = bossList.filter(func(b):

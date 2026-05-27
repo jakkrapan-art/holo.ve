@@ -4,49 +4,68 @@ generation: myth
 attackType: physic
 evolutionCost: 1
 
-# skill: "res://resources/database/skill/takanashi_kiara_skill.tres"
 attack_sound: "hit_kiara"
 open_sound: "debut_kiara"
 evolve_sound: "evo_kiara"
-skill:
-  name: "Kiara ฟันดาบเปลวเพลิง"
-  desc: "สร้างความเสียหายกายภาพ 140% / 150% / 170% (ตามเลเวล) แก่ศัตรูในระยะ 3×1"
-  actions:
-    - type: find_multi_enemy
-      data:
-        width: 3
-        height: 1
-    - type: play_animation
-      data:
-        animation: "skill"
-    - type: attack
-      data:
-        # Skill Multiplier ต่อ level — uses tower.attackType (physic) by default
-        damage_multiplier: [1.4, 1.5, 1.7]
-        can_crit: false   # Kiara ตามดีไซน์: skill ไม่สามารถ crit
-    - type: play_animation
-      data:
-        animation: "idle"
 
-# Evolution skill — overrides base skill when tower is evolved
-evolution_skill:
-  name: "Kiara ฟันดาบเปลวเพลิงสุดยอด"
-  desc: "สร้างความเสียหายกายภาพ 300% แก่ศัตรูในระยะ 6×3"
-  actions:
-    - type: find_multi_enemy
-      data:
-        width: 3
-        height: 6
-    - type: play_animation
-      data:
-        animation: "skill"
-    - type: attack
-      data:
-        damage_multiplier: 3.0   # 300% physic damage (uses tower.attackType)
-        can_crit: false
-    - type: play_animation
-      data:
-        animation: "idle"
+skills:
+  active:
+    name: "Flame Slash"
+    names: ["Flame Slash I", "Flame Slash II", "Flame Slash III"]
+    desc: "Kiara ฟันดาบเปลวเพลิงของนกอมตะไปด้านหน้าระยะ 3×1 ช่อง สร้างความเสียหายกายภาพ พร้อมสร้างสถานะเพลิงฟินิกซ์จากความเสียหายเวท เป็นเวลา 5 วินาทีแก่ศัตรูทั้งหมด"
+    desc_template: "Kiara ฟันดาบเปลวเพลิงของนกอมตะไปด้านหน้าระยะ 3×1 ช่อง สร้างความเสียหายกายภาพ {damageMult:percent} พร้อมสร้างสถานะเพลิงฟินิกซ์จากความเสียหายเวท ({phoenixAtk:percent} attack + {phoenixHp:percent} maxHP) ต่อ tick เป็นเวลา {phoenixDuration} วินาทีแก่ศัตรูทั้งหมด"
+    icon: ""
+    tags:
+      - damage
+      - attack
+      - aoe
+      - dot
+      - enemy
+    target_summary:
+      target_team: enemy
+      target_type: enemy
+      target_shape: area
+    effects:
+      - name: "Flame Slash Damage"
+        target:
+          target_team: enemy
+          target_type: enemy
+          target_shape: area
+      - name: "Phoenix Flame DOT"
+        target:
+          target_team: enemy
+          target_type: enemy
+          target_shape: area
+    cast_time: 0.2
+    parameters:
+      damageMult: [1.4, 1.5, 1.7]
+      phoenixAtk: 0.10
+      phoenixHp: 0.01
+      phoenixDuration: 5.0
+      phoenixInterval: 1.0
+    actions:
+      - type: "find_multi_enemy"
+        data:
+          width: 3
+          height: 1
+      - type: "play_animation"
+        data:
+          animation: "skill"
+      - type: "attack"
+        data:
+          # Skill Multiplier per level — uses tower.attackType (physic) by default
+          damage_multiplier: [1.4, 1.5, 1.7]
+          can_crit: false   # Kiara design: skill cannot crit
+          status_effects:
+            - type: "phoenix_flame"
+              duration: 5.0
+              interval: 1.0
+              attack_percent: 0.10
+              max_hp_percent: 0.01
+      - type: "play_animation"
+        data:
+          animation: "idle"
+  passive: null
 
 stats:
   - damage: 100
@@ -76,6 +95,74 @@ stats:
     critChance: 0
     critMultiplier: 1.5
 
+evolution_skills:
+  active:
+    name: "Hinotori"
+    desc: "Kiara เสริมพลังดาบด้วยเพลิงศักดิ์สิทธิ์แล้วฟาดฟันออกไปข้างหน้าอย่างรุนแรงระยะ 3×5 ช่อง สร้างความเสียหายกายภาพ 300% พร้อมสร้างสถานะเพลิงฟินิกซ์จากความเสียหายเวท เป็นเวลา 5 วินาทีแก่ศัตรูทั้งหมด"
+    desc_template: "Kiara เสริมพลังดาบด้วยเพลิงศักดิ์สิทธิ์แล้วฟาดฟันออกไปข้างหน้าอย่างรุนแรงระยะ 3×5 ช่อง สร้างความเสียหายกายภาพ {damageMult:percent} พร้อมสร้างสถานะเพลิงฟินิกซ์จากความเสียหายเวท ({phoenixAtk:percent} attack + {phoenixHp:percent} maxHP) ต่อ tick เป็นเวลา {phoenixDuration} วินาทีแก่ศัตรูทั้งหมด"
+    icon: ""
+    tags:
+      - damage
+      - attack
+      - aoe
+      - dot
+      - projectile
+      - enemy
+    target_summary:
+      target_team: enemy
+      target_type: enemy
+      target_shape: area
+    effects:
+      - name: "Hinotori Projectile Damage"
+        target:
+          target_team: enemy
+          target_type: enemy
+          target_shape: area
+      - name: "Phoenix Flame DOT"
+        target:
+          target_team: enemy
+          target_type: enemy
+          target_shape: area
+    cast_time: 0.2
+    parameters:
+      damageMult: 3.0
+      phoenixAtk: 0.10
+      phoenixHp: 0.01
+      phoenixDuration: 5.0
+      phoenixInterval: 1.0
+      projectileSpeed: 12.0
+      projectileLifetime: 1.5
+      projectileMaxRange: 5.0
+    actions:
+      - type: "find_multi_enemy"
+        data:
+          width: 3
+          height: 5
+      - type: "play_animation"
+        data:
+          animation: "skill"
+      - type: "create_directional_projectile"
+        data:
+          # Asset placeholder: reuses Gura projectile scene until Lead supplies
+          # a Phoenix-themed asset in the visual phase (out of scope here).
+          projectile: "res://resources/combat/bullets/gawr_gura_skill_projectile.tscn"
+          speed: 12.0
+          lifetime: 1.5
+          max_range: 5.0
+          damage_multiplier: 3.0
+          damage_type: "physic"
+          can_crit: false
+          status_effects:
+            - type: "phoenix_flame"
+              duration: 5.0
+              interval: 1.0
+              attack_percent: 0.10
+              max_hp_percent: 0.01
+      - type: "play_animation"
+        data:
+          animation: "idle"
+  passive: null
+
 evolutionStat:
   damage: 300
   attackRange: 1.0
@@ -85,15 +172,3 @@ evolutionStat:
   intialMana: 40
   critChance: 50.0
   critMultiplier: 1.5
-
-
-# Optional (only if tower has evolution stats)
-# evolutionStat:
-#   damage: 250
-#   attackRange: 1.2
-#   attackSpeed: 110.0
-#   critChance: 25.0
-#   critMultiplier: 2.0
-#   mana: 80
-#   manaRegen: 15
-#   intialMana: 20

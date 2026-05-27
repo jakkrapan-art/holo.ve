@@ -129,8 +129,20 @@ func spawnEnemy(groupIndex: int):
 	for skill in waveGroup.skill:
 		skills.append(Utility.deep_duplicate_resource(skill))
 
-	var enemy: Enemy = await createEnemyObject(Enemy.EnemyType.Normal, health, def, mDef, moveSpeed, texture, skills);
+	# Reserve count BEFORE the async spawn so the in-flight createEnemyObject
+	# await window can't cause a premature wave-end. Otherwise, the while loop
+	# in spawnEnemyTask flips isSpawnAllEnemy = true while the final enemy is
+	# still being instantiated; if previously-spawned enemies have already
+	# died / reached the end, checkEndWave would see alive=0 + spawnedAll=true
+	# and call endWave() before the uncounted enemy is even on the map.
 	enemyAliveCount += 1;
+
+	var enemy: Enemy = await createEnemyObject(Enemy.EnemyType.Normal, health, def, mDef, moveSpeed, texture, skills);
+
+	if enemy == null:
+		# Spawn failed — undo the reservation so the count stays accurate.
+		enemyAliveCount -= 1;
+		return;
 
 	connectSignalToEnemy(enemy);
 
@@ -160,9 +172,16 @@ func spawnBoss():
 	var moveSpeed = bossData.stats.moveSpeed
 	var skills = bossData.skills;
 
+	# Reserve count BEFORE the async spawn (same race-condition guard as
+	# spawnEnemy — checkEndWave can fire while boss creation is still in flight).
 	isSpawnAllEnemy = true;
-	var boss: Enemy = await createEnemyObject(Enemy.EnemyType.Boss, health, def, mDef, moveSpeed, texture, skills);
 	enemyAliveCount += 1;
+
+	var boss: Enemy = await createEnemyObject(Enemy.EnemyType.Boss, health, def, mDef, moveSpeed, texture, skills);
+
+	if boss == null:
+		enemyAliveCount -= 1;
+		return;
 
 	connectSignalToEnemy(boss);
 
@@ -190,8 +209,12 @@ func testSpawnBoss(index: int = -1):
 	var mDef = boss.stats.mDef
 	var moveSpeed = boss.stats.moveSpeed
 
-	var enemy: Enemy = await createEnemyObject(Enemy.EnemyType.Boss, health, def, mDef, moveSpeed, texture);
+	# Same race-condition guard as spawnEnemy / spawnBoss (debug-only path).
 	enemyAliveCount += 1;
+	var enemy: Enemy = await createEnemyObject(Enemy.EnemyType.Boss, health, def, mDef, moveSpeed, texture);
+	if enemy == null:
+		enemyAliveCount -= 1;
+		return;
 	connectSignalToEnemy(enemy);
 
 func connectSignalToEnemy(enemy: Enemy):

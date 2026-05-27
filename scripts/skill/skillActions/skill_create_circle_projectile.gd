@@ -5,9 +5,14 @@ extends SkillActionProjectile
 @export var angular_speed: float = 180.0;
 @export var initial_angle: float = 0.0;
 @export var angle_offset: float = 0.0;
+# Scale multipliers applied to the projectile root (visual + collision).
+# 1.0 = template default size; 2.5 ≈ covers diagonal tile centers when orbit radius is 1 tile.
+@export var projectile_size_w: float = 1.0;
+@export var projectile_size_h: float = 1.0;
 
 func setupProjectile(projectile: Projectile, i: int, context: SkillContext):
 	var tower: Tower = context.user as Tower;
 	var multi = getDamageMultiplier(context)
+	projectile.scale = Vector2(projectile_size_w, projectile_size_h)
 	projectile.setup_circle(tower, Damage.new(tower, multi * tower.data.getDamage(null, null).damage, damageType), circle_radius, angular_speed, initial_angle + (angle_offset * i), lifetime, ProjectileCallback.new(Callable(self, "onHit"), Callable(), Callable()))
 	super.setupProjectile(projectile, i, context)

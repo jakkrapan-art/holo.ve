@@ -48,6 +48,14 @@ func execute_skill_actions(skill: Skill, context: SkillContext):
 
 		context.cancel = false;
 		await action.execute(context)
+
+	# Re-check cancellation after the final action's await. Without this, a skill
+	# cancelled mid-await (e.g. wave end during Gura storm) would still reach
+	# onSuccess and drain Energy via SkillController.onSuccess's updateMana(-current).
+	if(cancelled):
+		resetUsingSkill(skill);
+		return
+
 	onSuccess(skill);
 
 func resetUsingSkill(skill: Skill):

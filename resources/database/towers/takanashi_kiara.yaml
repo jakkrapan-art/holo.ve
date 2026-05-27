@@ -40,8 +40,8 @@ skills:
   active:
     name: "Flame Slash"
     names: ["Flame Slash I", "Flame Slash II", "Flame Slash III"]
-    desc: "Kiara swings her immortal phoenix flame blade forward through a 3×1 tile area, dealing physical damage. All enemies hit are scorched by Phoenix Flame, taking magic damage every second for 5 seconds."
-    desc_template: "Kiara swings her immortal phoenix flame blade forward through a 3×1 tile area, dealing {damageMultiplier:percent} physical damage. All enemies hit are scorched by Phoenix Flame, taking ({phoenixAtk:percent} attack + {phoenixHp:percent} max HP) magic damage every {phoenixInterval} second(s) for {phoenixDuration} seconds."
+    desc: "Kiara swings her immortal phoenix flame sword forward through a 3×1 tile area, dealing physical damage. All enemies hit are scorched by Phoenix Flame, taking magic damage every second for 5 seconds."
+    desc_template: "Kiara swings her immortal phoenix flame sword forward through a 3×1 tile area, dealing {damageMultiplier:percent} physical damage. All enemies hit are scorched by Phoenix Flame, taking ({phoenixAtk:percent} attack + {phoenixHp:percent} max HP) magic damage every {phoenixInterval} second(s) for {phoenixDuration} seconds."
     icon: ""
     tags:
       - damage
@@ -113,8 +113,8 @@ evolutionStat:
 evolution_skills:
   active:
     name: "Hinotori"
-    desc: "Kiara empowers her blade with sacred phoenix fire and unleashes a devastating slash forward through a 3×5 tile corridor, dealing massive physical damage. All enemies hit are scorched by Phoenix Flame, taking magic damage every second for 5 seconds."
-    desc_template: "Kiara empowers her blade with sacred phoenix fire and unleashes a devastating slash forward through a 3×5 tile corridor, dealing {damageMultiplier:percent} physical damage. All enemies hit are scorched by Phoenix Flame, taking ({phoenixAtk:percent} attack + {phoenixHp:percent} max HP) magic damage every {phoenixInterval} second(s) for {phoenixDuration} seconds."
+    desc: "Kiara empowers her sword with sacred phoenix fire and unleashes a devastating slash forward through a 3×5 tile corridor, dealing massive physical damage. All enemies hit are scorched by Phoenix Flame, taking magic damage every second for 5 seconds."
+    desc_template: "Kiara empowers her sword with sacred phoenix fire and unleashes a devastating slash forward through a 3×5 tile corridor, dealing {damageMultiplier:percent} physical damage. All enemies hit are scorched by Phoenix Flame, taking ({phoenixAtk:percent} attack + {phoenixHp:percent} max HP) magic damage every {phoenixInterval} second(s) for {phoenixDuration} seconds."
     icon: ""
     tags:
       - damage

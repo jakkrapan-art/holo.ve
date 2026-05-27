@@ -24,6 +24,9 @@ var anim: AnimationController;
 var attacking: bool = false;
 var attackCooldownRemaining: float = 0.0;
 var usingSkill: bool = false;
+# Bumped on wave reset / death so in-flight skill timers (e.g. SkillActionProjectile
+# lifetime await re-enabling enableRegenMana) can skip work tied to a stale cast.
+var skill_lock_generation: int = 0;
 
 var skillController: SkillController
 @onready var manaBar = $ManaBar
@@ -352,6 +355,10 @@ func resetForWave():
 	attacking = false
 	attackCooldownRemaining = 0.0
 	usingSkill = false
+	# Invalidate any in-flight skill-lock timers (e.g. SkillActionProjectile lifetime
+	# await) so a stale callback can't re-toggle enableRegenMana mid-next-cast.
+	skill_lock_generation += 1
+	enableRegenMana = true
 	clearEnemy(null, null, null)
 
 	if skillController != null:
@@ -359,6 +366,12 @@ func resetForWave():
 		var initMana: float = data.getStat().intialMana
 		skillController.currentMana = initMana
 		skillController.on_mana_updated.emit(initMana)
+
+	# Free any persistent projectiles this tower spawned (e.g. Gura storm waves)
+	# so they don't keep orbiting into the next wave.
+	for node in get_tree().get_nodes_in_group("projectile"):
+		if node is Projectile and node.shooter == self:
+			node.queue_free()
 
 	data.buffs.clear_skill_buffs()
 

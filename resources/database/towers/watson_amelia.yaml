@@ -6,12 +6,41 @@ evolutionCost: 1
 
 attack_sound: "hit_amelia"
 open_sound: "debut_amelia"
+
+stats:
+  - damage: 60
+    attackRange: 5.0
+    attackSpeed: 120
+    mana: 100
+    intialMana: 80
+    manaRegen: 10
+    critChance: 0
+    critMultiplier: 1.5
+
+  - damage: 120
+    attackRange: 5.0
+    attackSpeed: 120
+    mana: 100
+    intialMana: 80
+    manaRegen: 10
+    critChance: 0
+    critMultiplier: 1.5
+
+  - damage: 240
+    attackRange: 5.0
+    attackSpeed: 120
+    mana: 100
+    intialMana: 80
+    manaRegen: 10
+    critChance: 0
+    critMultiplier: 1.5
+
 skills:
   active:
     name: "Time Traveler"
     names: ["Time Traveler I", "Time Traveler II", "Time Traveler III"]
-    desc: "Amelia increases her own attack speed for 4 seconds."
-    desc_template: "Amelia increases her own attack speed by {attackSpeedBuff:percent} for 4 seconds."
+    desc: "Watson Amelia invokes the Clock of Time, increasing her own attack speed for 4 seconds."
+    desc_template: "Watson Amelia invokes the Clock of Time, increasing her own attack speed by {attackSpeedBuff:percent} for 4 seconds."
     icon: ""
     tags:
       - buff
@@ -49,38 +78,21 @@ skills:
           animation: "idle"
   passive: null
 
-stats:
-  - damage: 60
-    attackRange: 5.0
-    attackSpeed: 120
-    mana: 100
-    intialMana: 80
-    manaRegen: 10
-    critChance: 0
-    critMultiplier: 1.5
-
-  - damage: 120
-    attackRange: 5.0
-    attackSpeed: 120
-    mana: 100
-    intialMana: 80
-    manaRegen: 10
-    critChance: 0
-    critMultiplier: 1.5
-
-  - damage: 240
-    attackRange: 5.0
-    attackSpeed: 120
-    mana: 100
-    intialMana: 80
-    manaRegen: 10
-    critChance: 0
-    critMultiplier: 1.5
+evolutionStat:
+  damage: 350
+  attackRange: 5.0
+  attackSpeed: 140
+  mana: 120
+  manaRegen: 10
+  intialMana: 80
+  critChance: 50.0
+  critMultiplier: 1.5
 
 evolution_skills:
   active:
     name: "Elementary my dear"
-    desc: "Amelia increases attack speed by 50% for herself and nearby towers, and gains 100% critical chance for 4 seconds."
+    desc: "Watson Amelia invokes the Clock of Time, granting an attack speed buff to nearby towers and a large critical chance buff to herself for 4 seconds."
+    desc_template: "Watson Amelia invokes the Clock of Time, increasing attack speed by {attackSpeedBuff:percent} for herself and nearby towers within 1 tile, and granting herself {critChanceBuff}% critical chance for 4 seconds."
     icon: ""
     tags:
       - buff
@@ -106,6 +118,11 @@ evolution_skills:
           target_type: tower
           target_shape: single
     cast_time: 0.5
+    parameters:
+      attackSpeedBuff:
+        - 0.50
+      critChanceBuff:
+        - 100.0
     actions:
       - type: "play_animation"
         data:
@@ -116,23 +133,13 @@ evolution_skills:
       - type: "atk_speed_buff_aoe"
         data:
           duration: 4.0
-          percent: 0.50
+          param_name: "attackSpeedBuff"
           range: 1
       - type: "crit_chance_buff"
         data:
           duration: 4.0
-          percent: 100.0
+          param_name: "critChanceBuff"
       - type: "play_animation"
         data:
           animation: "idle"
   passive: null
-
-evolutionStat:
-  damage: 350
-  attackRange: 5.0
-  attackSpeed: 140
-  mana: 120
-  manaRegen: 10
-  intialMana: 80
-  critChance: 50.0
-  critMultiplier: 1.5

@@ -7,24 +7,7 @@ evolutionCost: 1
 # skill: "res://resources/database/skill/gawr_gura_skill.tres"
 attack_sound: "hit_calliope"
 open_sound: "debut_caliope"
-skill:
-  name: "Skill"
-  desc: "Just a skill"
-  actions:
-    - type: find_multi_enemy
-      data:
-        width: 3
-        height: 1
-    - type: play_animation
-      data:
-        animation: "skill"
-    - type: attack
-      data:
-        damage: 100
-        damage_type: physic
-    - type: play_animation
-      data:
-        animation: "idle"
+
 stats:
   - damage: 80
     attackRange: 2.0
@@ -52,6 +35,25 @@ stats:
     manaRegen: 10
     critChance: 0
     critMultiplier: 1.5
+
+skill:
+  name: "Skill"
+  desc: "Just a skill"
+  actions:
+    - type: find_multi_enemy
+      data:
+        width: 3
+        height: 1
+    - type: play_animation
+      data:
+        animation: "skill"
+    - type: attack
+      data:
+        damage: 100
+        damage_type: physic
+    - type: play_animation
+      data:
+        animation: "idle"
 
 evolutionStat:
   damage: 200

@@ -8,6 +8,34 @@ attack_sound: "hit_kiara"
 open_sound: "debut_kiara"
 evolve_sound: "evo_kiara"
 
+stats:
+  - damage: 100
+    attackRange: 1.0
+    attackSpeed: 90.0
+    mana: 50
+    manaRegen: 10
+    intialMana: 10
+    critChance: 0
+    critMultiplier: 1.5
+
+  - damage: 120
+    attackRange: 1.0
+    attackSpeed: 90.0
+    mana: 50
+    manaRegen: 10
+    intialMana: 10
+    critChance: 0
+    critMultiplier: 1.5
+
+  - damage: 160
+    attackRange: 1.0
+    attackSpeed: 90.0
+    mana: 50
+    manaRegen: 10
+    intialMana: 10
+    critChance: 0
+    critMultiplier: 1.5
+
 skills:
   active:
     name: "Flame Slash"
@@ -67,33 +95,15 @@ skills:
           animation: "idle"
   passive: null
 
-stats:
-  - damage: 100
-    attackRange: 1.0
-    attackSpeed: 90.0
-    mana: 50
-    manaRegen: 10
-    intialMana: 10
-    critChance: 0
-    critMultiplier: 1.5
-
-  - damage: 120
-    attackRange: 1.0
-    attackSpeed: 90.0
-    mana: 50
-    manaRegen: 10
-    intialMana: 10
-    critChance: 0
-    critMultiplier: 1.5
-
-  - damage: 160
-    attackRange: 1.0
-    attackSpeed: 90.0
-    mana: 50
-    manaRegen: 10
-    intialMana: 10
-    critChance: 0
-    critMultiplier: 1.5
+evolutionStat:
+  damage: 300
+  attackRange: 1.0
+  attackSpeed: 110
+  mana: 80
+  manaRegen: 10
+  intialMana: 40
+  critChance: 50.0
+  critMultiplier: 1.5
 
 evolution_skills:
   active:
@@ -162,13 +172,3 @@ evolution_skills:
         data:
           animation: "idle"
   passive: null
-
-evolutionStat:
-  damage: 300
-  attackRange: 1.0
-  attackSpeed: 110
-  mana: 80
-  manaRegen: 10
-  intialMana: 40
-  critChance: 50.0
-  critMultiplier: 1.5

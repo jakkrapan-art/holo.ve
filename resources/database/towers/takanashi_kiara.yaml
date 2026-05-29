@@ -83,6 +83,11 @@ skills:
       - type: "play_animation"
         data:
           animation: "skill"
+      - type: "play_effect"
+        data:
+          # Flame Slash crescent VFX — orients toward tower.enemy and lands
+          # on the 3×1 AOE (see kiara_skill_effect.gd setup()).
+          effect_script: "res://resources/tower/hololive/en_branch/myth_gen/kiara/skill_effect/kiara_skill_effect.gd"
       - type: "attack"
         data:
           # Per-tier skill multiplier — matches `parameters.damageMultiplier`.

@@ -17,3 +17,9 @@ func execute(context: SkillContext) -> void:
 	effect.set_script(script)
 	effect.global_position = tower.global_position
 	tower.get_parent().add_child(effect)
+
+	# Optional aim hook: directional effects (e.g. Kiara Flame Slash) implement
+	# setup(tower) to rotate/offset themselves toward tower.enemy. Self-centered
+	# effects (e.g. Amelia) omit it and stay put — backward compatible.
+	if effect.has_method("setup"):
+		effect.setup(tower)

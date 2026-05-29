@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://dnf5k0rgf7y00"]
-
-[ext_resource type="Script" path="res://test/kiara_vfx_preview/kiara_vfx_preview.gd" id="1_script"]
-
-[node name="KiaraVfxPreview" type="Node2D"]
-script = ExtResource("1_script")

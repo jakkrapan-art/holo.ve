@@ -163,11 +163,18 @@ evolution_skills:
       - type: "play_animation"
         data:
           animation: "skill"
+      - type: "play_effect"
+        data:
+          # Hinotori phoenix VFX (Wingsweep, magma-violet) — orients onto the
+          # 3×5 corridor toward tower.enemy and plays the rush internally.
+          # See kiara_evo_skill_effect.gd / .gdshader.
+          effect_script: "res://resources/tower/hololive/en_branch/myth_gen/kiara/skill_effect/kiara_evo_skill_effect.gd"
       - type: "create_directional_projectile"
         data:
-          # Asset placeholder: reuses Gura projectile scene until Lead supplies
-          # a Phoenix-themed asset in the visual phase (out of scope here).
-          projectile: "res://resources/combat/bullets/gawr_gura_skill_projectile.tscn"
+          # Kiara-specific WIDE-pierce projectile (3-lane RectangleShape2D) — fixes
+          # the 3×5 area damage. NOT the shared Gura scene (do not edit that one).
+          # The phoenix visual is the play_effect above; this is the damage carrier.
+          projectile: "res://resources/combat/bullets/kiara_skill_projectile.tscn"
           # Projectile tuning — designer can adjust these freely.
           speed: 12.0          # Tiles per second (12 tiles/s ≈ fast straight shot)
           lifetime: 1.5        # Max lifetime cap in seconds (failsafe if max_range unset)

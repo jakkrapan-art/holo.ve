@@ -191,7 +191,14 @@ func attackEnemy():
 		if(spr):
 			spr.flip_h = attackDir == Global.DIRECTION.RIGHT
 
+		# attack() deals damage synchronously. If this is the killing blow on the
+		# wave's last enemy, the onDead cascade runs endWave -> resetForWave INSIDE
+		# this call (bumping skill_lock_generation). If so, skip the post-attack
+		# state writes so mana/cooldown/attacking don't leak into the next wave.
+		var gen := skill_lock_generation
 		attackController.attack(enemy, attackDir, data.getDamage(enemy, self), data.attack_sound, data.attack_vfx);
+		if skill_lock_generation != gen:
+			return
 		attacking = true;
 		regenMana(data.getManaRegen());
 		attackCooldownRemaining = data.getAttackDelay()

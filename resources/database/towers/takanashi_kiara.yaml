@@ -4,7 +4,6 @@ generation: myth
 attackType: physic
 evolutionCost: 1
 
-# skill: "res://resources/database/skill/takanashi_kiara_skill.tres"
 attack_sound: "hit_kiara"
 open_sound: "debut_kiara"
 evolve_sound: "evo_kiara"
@@ -37,25 +36,74 @@ stats:
     critChance: 0
     critMultiplier: 1.5
 
-skill:
-  name: "Kiara ฟันดาบเปลวเพลิง"
-  desc: "สร้างความเสียหายกายภาพ 140% / 150% / 170% (ตามเลเวล) แก่ศัตรูในระยะ 3×1"
-  actions:
-    - type: find_multi_enemy
-      data:
-        width: 3
-        height: 1
-    - type: play_animation
-      data:
-        animation: "skill"
-    - type: attack
-      data:
-        # Skill Multiplier ต่อ level — uses tower.attackType (physic) by default
-        damage_multiplier: [1.4, 1.5, 1.7]
-        can_crit: false   # Kiara ตามดีไซน์: skill ไม่สามารถ crit
-    - type: play_animation
-      data:
-        animation: "idle"
+skills:
+  active:
+    name: "Flame Slash"
+    names: ["Flame Slash I", "Flame Slash II", "Flame Slash III"]
+    desc: "Kiara swings her immortal phoenix flame sword forward through a 3×1 tile area, dealing physical damage. All enemies hit are scorched by Phoenix Flame, taking magic damage every second for 5 seconds."
+    desc_template: "Kiara swings her immortal phoenix flame sword forward through a 3×1 tile area, dealing {damageMultiplier:percent} physical damage. All enemies hit are scorched by Phoenix Flame, taking ({phoenixAtk:percent} attack + {phoenixHp:percent} max HP) magic damage every {phoenixInterval} second(s) for {phoenixDuration} seconds."
+    icon: ""
+    tags:
+      - damage
+      - attack
+      - aoe
+      - dot
+    target_summary:
+      target_team: enemy
+      target_type: enemy
+      target_shape: area
+    effects:
+      - name: "Flame Slash Damage"
+        target:
+          target_team: enemy
+          target_type: enemy
+          target_shape: area
+      - name: "Phoenix Flame DOT"
+        target:
+          target_team: enemy
+          target_type: enemy
+          target_shape: area
+    cast_time: 0.2
+    # Parameters bound to desc_template tokens + read by skill actions.
+    # Edit numbers here to retune balance; descriptions auto-sync via {token}.
+    parameters:
+      # Per-tier direct hit scaling — Skill Multiplier (% of Kiara attack).
+      # Direct damage = damageMultiplier × Kiara totalAttack.
+      damageMultiplier: [1.4, 1.5, 1.7]
+      # Phoenix Flame DOT — per-tick magic damage = phoenixAtk×attack + phoenixHp×targetMaxHp.
+      phoenixAtk: 0.10       # 10% of Kiara's attack stat per tick (snapshot at apply)
+      phoenixHp: 0.01        # 1% of target's max HP per tick
+      phoenixDuration: 5.0   # Total DOT duration in seconds
+      phoenixInterval: 1.0   # Seconds between ticks (5 ticks over 5s with default)
+    actions:
+      - type: "find_multi_enemy"
+        data:
+          width: 3
+          height: 1
+      - type: "play_animation"
+        data:
+          animation: "skill"
+      - type: "play_effect"
+        data:
+          # Flame Slash crescent VFX — orients toward tower.enemy and lands
+          # on the 3×1 AOE (see kiara_skill_effect.gd setup()).
+          effect_script: "res://resources/tower/hololive/en_branch/myth_gen/kiara/skill_effect/kiara_skill_effect.gd"
+      - type: "attack"
+        data:
+          # Per-tier skill multiplier — matches `parameters.damageMultiplier`.
+          # SkillActionAttack reads this array directly (no param_name needed).
+          damage_multiplier: [1.4, 1.5, 1.7]
+          can_crit: false   # Kiara design: skill cannot crit
+          status_effects:
+            - type: "phoenix_flame"
+              duration: 5.0
+              interval: 1.0
+              attack_percent: 0.10
+              max_hp_percent: 0.01
+      - type: "play_animation"
+        data:
+          animation: "idle"
+  passive: null
 
 evolutionStat:
   damage: 300
@@ -67,34 +115,80 @@ evolutionStat:
   critChance: 50.0
   critMultiplier: 1.5
 
-# Evolution skill — overrides base skill when tower is evolved
-evolution_skill:
-  name: "Kiara ฟันดาบเปลวเพลิงสุดยอด"
-  desc: "สร้างความเสียหายกายภาพ 300% แก่ศัตรูในระยะ 6×3"
-  actions:
-    - type: find_multi_enemy
-      data:
-        width: 3
-        height: 6
-    - type: play_animation
-      data:
-        animation: "skill"
-    - type: attack
-      data:
-        damage_multiplier: 3.0   # 300% physic damage (uses tower.attackType)
-        can_crit: false
-    - type: play_animation
-      data:
-        animation: "idle"
-
-
-# Optional (only if tower has evolution stats)
-# evolutionStat:
-#   damage: 250
-#   attackRange: 1.2
-#   attackSpeed: 110.0
-#   critChance: 25.0
-#   critMultiplier: 2.0
-#   mana: 80
-#   manaRegen: 15
-#   intialMana: 20
+evolution_skills:
+  active:
+    name: "Hinotori"
+    desc: "Kiara empowers her sword with sacred phoenix fire and unleashes a devastating slash forward through a 3×5 tile corridor, dealing massive physical damage. All enemies hit are scorched by Phoenix Flame, taking magic damage every second for 5 seconds."
+    desc_template: "Kiara empowers her sword with sacred phoenix fire and unleashes a devastating slash forward through a 3×5 tile corridor, dealing {damageMultiplier:percent} physical damage. All enemies hit are scorched by Phoenix Flame, taking ({phoenixAtk:percent} attack + {phoenixHp:percent} max HP) magic damage every {phoenixInterval} second(s) for {phoenixDuration} seconds."
+    icon: ""
+    tags:
+      - damage
+      - attack
+      - aoe
+      - dot
+      - projectile
+    target_summary:
+      target_team: enemy
+      target_type: enemy
+      target_shape: area
+    effects:
+      - name: "Hinotori Projectile Damage"
+        target:
+          target_team: enemy
+          target_type: enemy
+          target_shape: area
+      - name: "Phoenix Flame DOT"
+        target:
+          target_team: enemy
+          target_type: enemy
+          target_shape: area
+    cast_time: 0.2
+    # Parameters bound to desc_template tokens + read by skill actions.
+    # Projectile knobs (speed/lifetime/max_range) live in the action data below
+    # — they're not duplicated here to avoid drift between display and runtime.
+    parameters:
+      # Direct hit scaling — Skill Multiplier (% of Kiara attack).
+      # Direct damage = damageMultiplier × Kiara totalAttack (≈ 300 × 3.0 = 900).
+      damageMultiplier: 3.0
+      # Phoenix Flame DOT (same formula as Normal; applied to every enemy in path).
+      phoenixAtk: 0.10       # 10% of Kiara's attack stat per tick
+      phoenixHp: 0.01        # 1% of target's max HP per tick
+      phoenixDuration: 5.0   # Total DOT duration in seconds
+      phoenixInterval: 1.0   # Seconds between ticks
+    actions:
+      - type: "find_multi_enemy"
+        data:
+          width: 3
+          height: 5
+      - type: "play_animation"
+        data:
+          animation: "skill"
+      - type: "play_effect"
+        data:
+          # Hinotori phoenix VFX (Wingsweep, magma-violet) — orients onto the
+          # 3×5 corridor toward tower.enemy and plays the rush internally.
+          # See kiara_evo_skill_effect.gd / .gdshader.
+          effect_script: "res://resources/tower/hololive/en_branch/myth_gen/kiara/skill_effect/kiara_evo_skill_effect.gd"
+      - type: "create_directional_projectile"
+        data:
+          # Kiara-specific WIDE-pierce projectile (3-lane RectangleShape2D) — fixes
+          # the 3×5 area damage. NOT the shared Gura scene (do not edit that one).
+          # The phoenix visual is the play_effect above; this is the damage carrier.
+          projectile: "res://resources/combat/bullets/kiara_skill_projectile.tscn"
+          # Projectile tuning — designer can adjust these freely.
+          speed: 12.0          # Tiles per second (12 tiles/s ≈ fast straight shot)
+          lifetime: 1.5        # Max lifetime cap in seconds (failsafe if max_range unset)
+          max_range: 5.0       # Max travel distance in tiles — projectile despawns past this
+          damage_multiplier: 3.0   # Used when damage_multiplier_param_name is empty
+          damage_type: "physic"
+          can_crit: false
+          status_effects:
+            - type: "phoenix_flame"
+              duration: 5.0
+              interval: 1.0
+              attack_percent: 0.10
+              max_hp_percent: 0.01
+      - type: "play_animation"
+        data:
+          animation: "idle"
+  passive: null

@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/combat/projectile.gd" id="1_proj"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_kiara"]
+size = Vector2(640, 1536)
+
+[node name="KiaraSkillProjectile" type="Area2D"]
+script = ExtResource("1_proj")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(320, 0)
+shape = SubResource("RectangleShape2D_kiara")

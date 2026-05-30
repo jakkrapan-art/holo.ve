@@ -157,6 +157,16 @@ static func ParseAction(data: Dictionary) -> SkillAction:
 			if skillData.has("damage_type"):
 				skill.damageType = Utility.parse_string_to_enum(Damage.DamageType, skillData["damage_type"])
 				skill.damageTypeOverride = true
+			# Status effects applied to each target after damage (e.g., Kiara
+			# Phoenix Flame DOT). Same shape as create_circle_projectile.
+			var attackStatusEffectDataList = skillData.get("status_effects", []);
+			if attackStatusEffectDataList.size() > 0:
+				var attackStatusEffects: Array[StatusEffect] = [];
+				for statusEffectData in attackStatusEffectDataList:
+					var se: StatusEffect = StatusEffectUtility.ParseStatusEffect(statusEffectData);
+					if se:
+						attackStatusEffects.append(se);
+				skill.statusEffects = attackStatusEffects;
 		"clear_enemy":
 			skill = SkillActionClearEnemy.new();
 		"find_multi_enemy":
@@ -199,6 +209,27 @@ static func ParseAction(data: Dictionary) -> SkillAction:
 				print("skill statusEffects:", skill.statusEffects);
 				print("status effect ", statusEffects)
 				skill.statusEffects = statusEffects;
+			skill.projectileTemplate = load(skillData.get("projectile", "res://resources/combat/bullets/gawr_gura_skill_projectile.tscn"));
+		"create_directional_projectile":
+			# Linear projectile that travels from caster toward primary target.
+			# First user: Kiara evolved Hinotori (3×5 forward pierce AOE).
+			skill = SkillCreateDirectionalProjectile.new();
+			var skillData = data.get("data", {});
+			skill.speed = float(skillData.get("speed", 12.0));
+			skill.max_range = float(skillData.get("max_range", -1.0));
+			skill.count = skillData.get("count", 1);
+			skill.lifetime = float(skillData.get("lifetime", 1.5));
+			skill.damageMultiplier = float(skillData.get("damage_multiplier", 1.0));
+			skill.damageType = Utility.parse_string_to_enum(Damage.DamageType, skillData.get("damage_type", "physic"));
+			skill.damageMultiplierParamName = skillData.get("damage_multiplier_param_name", "damageMultiplier");
+			var dirStatusEffectDataList = skillData.get("status_effects", []);
+			if dirStatusEffectDataList.size() > 0:
+				var dirStatusEffects: Array[StatusEffect] = [];
+				for statusEffectData in dirStatusEffectDataList:
+					var se: StatusEffect = StatusEffectUtility.ParseStatusEffect(statusEffectData);
+					if se:
+						dirStatusEffects.append(se);
+				skill.statusEffects = dirStatusEffects;
 			skill.projectileTemplate = load(skillData.get("projectile", "res://resources/combat/bullets/gawr_gura_skill_projectile.tscn"));
 		_:
 			print("Warning: Unknown skill type:", skillType);

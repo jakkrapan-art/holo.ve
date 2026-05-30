@@ -2,6 +2,13 @@ extends Area2D
 class_name Projectile
 
 @export var speed: float = 300.0
+# When true, hitTarget gates each Enemy by instance_id so the same enemy
+# can only be hit once per projectile lifetime. Used by directional pierce
+# projectiles (Kiara Hinotori) to prevent re-hit when an enemy moves through
+# the Area2D and re-triggers area_entered. Default false preserves Gura
+# circle projectile behavior (orbital may legitimately hit same enemy across
+# revolutions if designer wants — kept as opt-in).
+@export var prevent_rehit: bool = false
 
 var damage: Damage;
 var shooter: Tower = null
@@ -16,6 +23,7 @@ var move_direction: Vector2 = Vector2.ZERO
 var moveType: ProjectileMoveType = ProjectileMoveType.Direction
 var lifetime: float = 5.0
 var statusEffects: Array[StatusEffect] = []
+var _hit_ids: Dictionary = {}  # enemy.instance_id → true; used when prevent_rehit
 
 # for circle movement
 var spawn_position: Vector2 = Vector2.ZERO
@@ -135,10 +143,23 @@ func processLifetime(delta: float):
 func hitTarget(hit_area: EnemyArea):
 	var enemy = hit_area.enemy
 	if enemy and is_instance_valid(enemy):
+		# Pierce re-hit guard: skip if this enemy has already been hit by
+		# this projectile and prevent_rehit is on.
+		if prevent_rehit:
+			var key: int = enemy.get_instance_id()
+			if _hit_ids.has(key):
+				return
+			_hit_ids[key] = true
+
 		if statusEffects:
 			for effect in statusEffects:
 				if effect and is_instance_valid(effect):
-					enemy.addStatusEffect(effect.duplicate(true))
+					var dup_effect = effect.duplicate(true)
+					# Snapshot caster-side state for effects that need it
+					# (e.g., PhoenixFlame reads applier.totalAttack at apply).
+					if shooter and is_instance_valid(shooter):
+						dup_effect.set_applier(shooter)
+					enemy.addStatusEffect(dup_effect)
 
 	if moveType == ProjectileMoveType.Target:
 		if target and is_instance_valid(target) and hit_area == target.area:

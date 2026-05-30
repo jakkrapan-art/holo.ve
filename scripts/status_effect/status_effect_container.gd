@@ -11,6 +11,13 @@ func addEffect(effect: StatusEffect) -> void:
 	if not effects.has(effect.effectType):
 		effects[effect.effectType] = []
 
+	# Refresh-on-apply effects (DOT debuffs like PhoenixFlame) replace any
+	# existing entry of the same effectType so duration restarts cleanly and
+	# the array never grows past size 1 — also side-steps the per-frame
+	# sort cost in _getStrongestEffect for these effects.
+	if effect.refresh_on_apply:
+		effects[effect.effectType].clear()
+
 	effect._on_apply(host)
 	effects[effect.effectType].append(effect)
 

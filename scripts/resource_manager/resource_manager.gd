@@ -52,6 +52,8 @@ static func preloadSynergy():
 			var path = "ui_asset/synergies/" + key + ".png"
 			loadImage("synergy", key, path)
 
+static var _enemy_tier: Dictionary = {}  # texture key -> tier string ("boss"/"elite"/"normal")
+
 static func preloadEnemy(mapName: String, types: Array[String]) -> void:
 	var enemyPrefix := "res://resources/enemy"
 	var loaded: Dictionary = {}
@@ -61,6 +63,13 @@ static func preloadEnemy(mapName: String, types: Array[String]) -> void:
 	for type in types:
 		var enemyNames: Array = enemies.get(type, [])
 		for enemy in enemyNames:
+			# Record the tier this texture belongs to so spawn-time code can
+			# resolve the correct Enemy.EnemyType (Elite vs Normal vs Boss).
+			# Without this, wave_controller defaults every non-boss spawn to
+			# Normal, causing elites to deal Normal-tier damage (1 instead of
+			# 10 per PlayerHealth.DAMAGE_BY_MONSTER_TYPE).
+			_enemy_tier[enemy] = type
+
 			var full_path := "%s/%s/%s/%s/%s.png" % [
 				enemyPrefix,
 				mapName,
@@ -84,6 +93,11 @@ static func getSpriteGroup(group: String):
 	if !_sprites.has(group):
 		return null
 	return _sprites[group]
+
+# Returns the tier string ("boss"/"elite"/"normal") for an enemy texture key,
+# defaulting to "normal" when the texture wasn't registered in enemy_list.yaml.
+static func getEnemyTier(texture_key: String) -> String:
+	return _enemy_tier.get(texture_key, "normal")
 
 static func getSprite(group: String, key: String):
 	if !_sprites.has(group):

@@ -28,6 +28,10 @@ var buffs: TowerBuffContainer = TowerBuffContainer.new()
 
 @export var skill: Skill;
 var evolutionSkill: Skill = null;
+# Passive slot params (designer-tunable values; behavior lives in code keyed by
+# `behavior`). Empty = no passive. evolutionPassive overrides when evolved.
+var passive: Dictionary = {};
+var evolutionPassive: Dictionary = {};
 var attack_sound: String = "hit";
 var attack_vfx: String = "atk";
 var open_sound: String = "open";
@@ -122,6 +126,12 @@ func removeManaRegenBuff(key):
 
 func getCritChance():
 	return getStat().critChance + buffs.aggregate(BuffInstance.StatType.CRIT_CHANCE)
+
+# Current critical-damage multiplier (base + additive CRIT_DAMAGE_BONUS).
+# Mirrors the `sigmaCD` term in calculateFinalDamage so callers (e.g. the
+# crit_pierce passive arrow) reuse the same additive crit-damage rule.
+func getCritDamage() -> float:
+	return getStat().critMultiplier + buffs.aggregate(BuffInstance.StatType.CRIT_DAMAGE_BONUS)
 
 func addCritChanceBuff(amount: float, key):
 	_addBuffByStat(BuffInstance.StatType.CRIT_CHANCE, amount, key)

@@ -31,6 +31,9 @@ var skill_lock_generation: int = 0;
 var skillController: SkillController
 @onready var manaBar = $ManaBar
 
+# Passive runtime (e.g. PassiveCritPierce). null = tower has no passive.
+var passive = null
+
 var onPlace: Callable;
 var onRemove: Callable;
 
@@ -56,14 +59,18 @@ func _ready():
 	var maxMana = stat.mana;
 	var initMana = stat.intialMana;
 
-	if(manaBar != null):
-		manaBar.setup(maxMana, false);
-		manaBar.updateValue(initMana);
+	if _hasActiveSkill():
+		if(manaBar != null):
+			manaBar.setup(maxMana, false);
+			manaBar.updateValue(initMana);
 
-	skillController = SkillController.new(self,maxMana, initMana, data.skill);
-
-	if(skillController != null):
+		skillController = SkillController.new(self,maxMana, initMana, data.skill);
 		Utility.ConnectSignal(skillController, "on_mana_updated", Callable(self, "update_mana_bar"));
+	elif manaBar != null:
+		# No active skill (e.g. passive-only tower) -> no Energy bar.
+		manaBar.visible = false;
+
+	_setupPassive();
 
 	if(attackController != null):
 		attackController.setup(self, Callable(stat, "getAttackDelay"));
@@ -78,6 +85,26 @@ func _ready():
 		towerStar.setStar(data.level);
 
 	isReady = true;
+
+func _hasActiveSkill() -> bool:
+	return data.skill != null and not data.skill.actions.is_empty();
+
+# (Re)create the passive runtime from the current form's passive params.
+# Called on _ready and after evolve (evolutionPassive overrides passive).
+func _setupPassive() -> void:
+	if passive != null:
+		passive.reset();
+		passive = null;
+
+	var params: Dictionary = data.evolutionPassive if data.isEvolved and not data.evolutionPassive.is_empty() else data.passive;
+	if params == null or params.is_empty():
+		return;
+
+	match str(params.get("behavior", "")):
+		"crit_pierce":
+			passive = PassiveCritPierce.new(self, params);
+		_:
+			push_warning("Tower '" + towerName + "': unknown passive behavior '" + str(params.get("behavior", "")) + "'");
 
 func _process(delta):
 	if attackCooldownRemaining > 0.0:
@@ -160,6 +187,8 @@ func evolve():
 			if manaBar != null:
 				manaBar.setup(stat.mana, false)
 				manaBar.updateValue(stat.intialMana)
+
+		_setupPassive()
 	return success
 
 func _play_evolve_sound():
@@ -191,14 +220,26 @@ func attackEnemy():
 		if(spr):
 			spr.flip_h = attackDir == Global.DIRECTION.RIGHT
 
+		# Roll the attack once. Crit is decided here (TowerData.getDamage), and the
+		# crit chance already includes any passive Bull Eyes stacks.
+		var dmg: Damage = data.getDamage(enemy, self)
+
 		# attack() deals damage synchronously. If this is the killing blow on the
 		# wave's last enemy, the onDead cascade runs endWave -> resetForWave INSIDE
 		# this call (bumping skill_lock_generation). If so, skip the post-attack
 		# state writes so mana/cooldown/attacking don't leak into the next wave.
 		var gen := skill_lock_generation
-		attackController.attack(enemy, attackDir, data.getDamage(enemy, self), data.attack_sound, data.attack_vfx);
-		if skill_lock_generation != gen:
-			return
+		if passive != null and dmg.isCritical and passive.replaces_attack_on_crit():
+			# Crit -> the passive fires its pierce arrow INSTEAD of the normal hit.
+			passive.on_crit_attack(enemy)
+			if data.attack_sound != "":
+				AudioManager.playSfx(Utility.parse_string_to_enum(SoundDatabase.SFX_NAME, data.attack_sound))
+		else:
+			attackController.attack(enemy, attackDir, dmg, data.attack_sound, data.attack_vfx);
+			if skill_lock_generation != gen:
+				return
+			if passive != null:
+				passive.on_normal_attack()
 		attacking = true;
 		regenMana(data.getManaRegen());
 		attackCooldownRemaining = data.getAttackDelay()
@@ -375,6 +416,9 @@ func resetForWave():
 	skill_lock_generation += 1
 	enableRegenMana = true
 	clearEnemy(null, null, null)
+
+	if passive != null:
+		passive.reset()
 
 	if skillController != null:
 		skillController.cancel()

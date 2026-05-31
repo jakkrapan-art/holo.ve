@@ -4,71 +4,111 @@ generation: tempus
 attackType: physic
 evolutionCost: 1
 
-# skill: "res://resources/database/skill/takanashi_kiara_skill.tres"
 attack_sound: "hit_shinri"
 open_sound: "debut_shinri"
 evolve_sound: "evo_shinri"
 
+# Josuiji Shinri has no Active skill and no Energy — her kit is a pure Passive.
+# Stats omit mana/intialMana on purpose: with no active skill the tower builds
+# no Energy bar (see Tower._hasActiveSkill / _setupPassive).
 stats:
   - damage: 80
     attackRange: 4.0
     attackSpeed: 140.0
-    mana: 100
-    intialMana: 10
     critChance: 0
     critMultiplier: 1.5
 
   - damage: 160
     attackRange: 4.0
     attackSpeed: 140.0
-    mana: 100
-    intialMana: 10
     critChance: 0
     critMultiplier: 1.5
 
   - damage: 240
     attackRange: 4.0
     attackSpeed: 140.0
-    mana: 100
-    intialMana: 10
     critChance: 0
     critMultiplier: 1.5
 
-skill:
-  name: "Skill"
-  desc: "Just a skill"
-  actions:
-    - type: find_multi_enemy
-      data:
-        width: 3
-        height: 1
-    - type: play_animation
-      data:
-        animation: "skill"
-    - type: attack
-      data:
-        damage: 100
-        damage_type: physic
-    - type: play_animation
-      data:
-        animation: "idle"
+skills:
+  passive:
+    name: "Bull Eyes"
+    names: ["Bull Eyes I", "Bull Eyes II", "Bull Eyes III"]
+    desc: "Josuiji Shinri steadies his aim with every shot. Each normal attack adds a Bull Eyes stack, raising his critical chance; on a critical hit he looses a piercing arrow that tears through every enemy in a line for bonus critical damage, then his aim resets."
+    desc_template: "Each normal attack grants 1 Bull Eyes stack (+{critChancePerStack}% critical chance, no cap). On a critical hit, Josuiji Shinri fires a piercing arrow through all enemies in a 1×4 line dealing critical damage +{bonusCritDamage:percent}, then loses every Bull Eyes stack."
+    icon: ""
+    tags:
+      - crit_rate
+      - projectile
+      - aoe
+      - damage
+      - self
+    target_summary:
+      target_team: enemy
+      target_type: enemy
+      target_shape: area
+    effects:
+      - name: "Bull Eyes Crit Stacking"
+        target:
+          target_team: self
+          target_type: tower
+          target_shape: single
+      - name: "Heartpierce Arrow"
+        target:
+          target_team: enemy
+          target_type: enemy
+          target_shape: area
+    # Designer-tunable numbers (read by desc_template tokens + the passive runtime).
+    parameters:
+      critChancePerStack: 5
+      # Additive bonus crit damage (x) per level — arrow = ATK × (critDamage + x).
+      bonusCritDamage: [0.2, 0.25, 0.4]
+    # Behavior selector + structural runtime params (not display tokens).
+    behavior: "crit_pierce"
+    reset_on_crit: true
+    projectile: "res://resources/combat/bullets/shinri_skill_projectile.tscn"
+    arrow_speed: 12.0   # tiles/sec
+    arrow_range: 4.0    # tiles (pierce line length)
 
 evolutionStat:
   damage: 400
   attackRange: 4.0
-  attackSpeed: 140
-  mana: 100
-  intialMana: 10
+  attackSpeed: 140.0
   critChance: 50.0
   critMultiplier: 1.5
 
-
-# Optional (only if tower has evolution stats)
-# evolutionStat:
-#   damage: 250
-#   attackRange: 1.2
-#   attackSpeed: 110.0
-#   critChance: 25.0
-#   critMultiplier: 2.0
-#   mana: 80
-#   intialMana: 20
+evolution_skills:
+  passive:
+    name: "Heartpierce Shot"
+    desc: "Josuiji Shinri's aim turns lethal — he starts with a high critical chance and his Bull Eyes stacks no longer fade on a critical hit, so his piercing arrows quickly land with nearly every shot."
+    desc_template: "Each normal attack grants 1 Bull Eyes stack (+{critChancePerStack}% critical chance, no cap). On a critical hit, Josuiji Shinri fires a piercing arrow through all enemies in a 1×4 line dealing critical damage +{bonusCritDamage:percent}. Critical hits no longer consume Bull Eyes stacks."
+    icon: ""
+    tags:
+      - crit_rate
+      - projectile
+      - aoe
+      - damage
+      - self
+    target_summary:
+      target_team: enemy
+      target_type: enemy
+      target_shape: area
+    effects:
+      - name: "Bull Eyes Crit Stacking"
+        target:
+          target_team: self
+          target_type: tower
+          target_shape: single
+      - name: "Heartpierce Arrow"
+        target:
+          target_team: enemy
+          target_type: enemy
+          target_shape: area
+    parameters:
+      critChancePerStack: 5
+      bonusCritDamage: [1.0]
+    behavior: "crit_pierce"
+    reset_on_crit: false
+    projectile: "res://resources/combat/bullets/shinri_skill_projectile.tscn"
+    arrow_speed: 12.0
+    arrow_range: 4.0

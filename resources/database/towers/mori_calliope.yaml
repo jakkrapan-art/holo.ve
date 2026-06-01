@@ -14,7 +14,6 @@ stats:
     attackSpeed: 100
     mana: 40
     intialMana: 10
-    manaRegen: 10
     critChance: 0
     critMultiplier: 1.5
 
@@ -23,7 +22,6 @@ stats:
     attackSpeed: 100
     mana: 40
     intialMana: 10
-    manaRegen: 10
     critChance: 0
     critMultiplier: 1.5
 
@@ -32,7 +30,6 @@ stats:
     attackSpeed: 100
     mana: 40
     intialMana: 10
-    manaRegen: 10
     critChance: 0
     critMultiplier: 1.5
 
@@ -60,7 +57,6 @@ evolutionStat:
   attackRange: 2.0
   attackSpeed: 120
   mana: 80
-  manaRegen: 10
   intialMana: 40
   critChance: 50.0
   critMultiplier: 1.5

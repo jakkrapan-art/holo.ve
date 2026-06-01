@@ -1,22 +1,21 @@
 maxLevel: 3 # tower max level
 towerClass: diva # tower class (Assassin, Diva, Hero, King, Marksman, Robotic, SpellCaster, Warrior)
 generation: tempus # tower generation (Myth, Tempus, Gen0, Gen1, Indo1)
-attackType: physic
+attackType: physic # physic | magic (1 tower 1 type ตาม design)
 evolutionCost: 1 # ค่า evolution
 
-# skill: "res://resources/database/skill/gawr_gura_skill.tres" #tower skill file path (เดี๋ยวอัปเดตเป็น yaml ให้อีกที)
-attack_sound: "hit" # ชื่อเสียงที่ใช้ตอนโจมตี\
-open_sound: "open" # ชื่อเสียงที่ใช้ตอนเปิดตัว (เป็น enum ใน sound_database.gd VOICE_NAME)
+attack_sound: "hit" # ชื่อเสียงที่ใช้ตอนโจมตี (enum ใน sound_database.gd VOICE_NAME)
+open_sound: "open" # ชื่อเสียงที่ใช้ตอนเปิดตัว
 evolve_sound: "" # optional evolve voice key (VOICE_NAME); empty = no evolve voice
+# attack_vfx: "blue" # optional — ชื่อ VFX ตอนโจมตี (enum ใน attack_vfx.gd AttackVFXName); ไม่ใส่ = "default"
 
 stats:
   - damage: 80 # ค่าพลังโจมตี
-    attackRange: 2.0 #ระยะการตี (cell)
-    attackSpeed: 80.0 #ความเร็วการโจมตี
+    attackRange: 2.0 # ระยะการตี (cell)
+    attackSpeed: 80.0 # ความเร็วการโจมตี
     critChance: 15.0
     critMultiplier: 1.5
     mana: 120 # ค่า mana สูงสุด
-    manaRegen: 10 # ค่า mana รีเจน ต่อการตี 1 ที
     intialMana: 60 # ค่า mana เริ่มต้น
 
   - damage: 120
@@ -25,7 +24,6 @@ stats:
     critChance: 15.0
     critMultiplier: 1.5
     mana: 120
-    manaRegen: 10
     intialMana: 60
 
   - damage: 180
@@ -34,60 +32,137 @@ stats:
     critChance: 15.0
     critMultiplier: 1.5
     mana: 120
-    manaRegen: 10
     intialMana: 60
 
-skill:
-  name: "Skill"
-  names: ["Skill I", "Skill II", "Skill III"] # optional UI display names per tower level
-  desc: "Just a skill"
-  desc_template: "Just a skill with {damageBonus:percent} bonus" # UI display template; desc is legacy/fallback text
-  parameters:
-    damageBonus:
-      - 0.10
-      - 0.15
-      - 0.20
-  actions:
-    - type: find_multi_enemy
-      data:
-        width: 3
-        height: 1
-    - type: play_animation
-      data:
-        animation: "skill"
-    - type: attack
-      data:
-        damage: 100
-        damage_type: physic
-        # ─────────────────────────────────────────────────────────────────
-        # Phase 3 Block C — Skill Multiplier (สำหรับ skill tower เท่านั้น)
-        #
-        # damage_multiplier:
-        #   - scalar  → ใช้ค่าเดียว ทุก level     เช่น 2.0 (200% Total Attack)
-        #   - array   → ค่าแต่ละ level [L1, L2, L3]  เช่น [1.4, 1.5, 1.7]
-        #
-        # damage_type ถ้าไม่ใส่ → ใช้ tower.attackType (default ตาม design 1 tower 1 type)
-        #
-        # can_crit:
-        #   - true (default) → skill roll crit ตามเลขของ tower
-        #   - false           → skill ไม่ crit (เช่น skill Kiara ตามดีไซน์)
-        #
-        # hit_distribution: [r1, r2, ...]  ← multi-hit, แบ่ง 100% ของ final damage
-        #   ⚠️ caution: ผลรวม ratio ต้อง = 1.0 ไม่งั้น push_warning
-        #   ⚠️ ใช้ได้กับ skill ของ tower เท่านั้น (normal attack ไม่มี multi-hit)
-        #
-        # ตัวอย่าง 4-hit skill ความเสียหาย 200% รวม:
-        #   - type: attack
-        #     data:
-        #       damage_multiplier: 2.0
-        #       hit_distribution: [0.2, 0.2, 0.1, 0.5]   # รวม = 1.0 ✓
-        #
-        # ตัวอย่าง skill non-crit ที่ scale ตาม level:
-        #   - type: attack
-        #     data:
-        #       damage_multiplier: [1.4, 1.5, 1.7]
-        #       can_crit: false
-        # ─────────────────────────────────────────────────────────────────
-    - type: play_animation
-      data:
-        animation: "idle"
+# ── Skill slots (ทรงใหม่) ────────────────────────────────────────────
+# skills.active = Active Skill (auto-cast ตอน Energy เต็ม)
+# skills.passive = Passive Skill (ยังไม่มี runtime — ใส่ null ไว้ก่อน)
+skills:
+  active:
+    name: "Skill"
+    names: ["Skill I", "Skill II", "Skill III"] # optional UI display names per tower level
+    desc: "Just a skill" # legacy/fallback text
+    desc_template: "Just a skill with {damageBonus:percent} bonus" # UI display template
+    icon: "" # optional — ว่างได้ ถ้ายังไม่มี icon
+    # tags = ป้ายสรุปสกิลแบบผู้เล่นอ่าน (controlled registry ดู tower_skill.md §Tags)
+    tags:
+      - damage
+      - attack
+      - aoe
+      - enemy
+    # target_summary = สรุป target ระดับสกิลไว้โชว์ UI (ความแม่นจริงอยู่ที่ effect/action)
+    # ใช้ block map เท่านั้น อย่าใช้ inline {...} (custom YAML parser support flow จำกัด)
+    target_summary:
+      target_team: enemy # self | enemy | ally | both
+      target_type: enemy # tower | enemy | any
+      target_shape: area # single | area | global
+    effects:
+      - name: "Area Damage"
+        target:
+          target_team: enemy
+          target_type: enemy
+          target_shape: area
+    cast_time: 0.0
+    parameters:
+      damageBonus:
+        - 0.10
+        - 0.15
+        - 0.20
+    actions:
+      - type: find_multi_enemy
+        data:
+          width: 3
+          height: 1
+      - type: play_animation
+        data:
+          animation: "skill"
+      - type: attack
+        data:
+          damage: 100
+          damage_type: physic
+          # ─────────────────────────────────────────────────────────────────
+          # Phase 3 Block C — Skill Multiplier (สำหรับ skill tower เท่านั้น)
+          #
+          # damage_multiplier:
+          #   - scalar  → ใช้ค่าเดียว ทุก level     เช่น 2.0 (200% Total Attack)
+          #   - array   → ค่าแต่ละ level [L1, L2, L3]  เช่น [1.4, 1.5, 1.7]
+          #
+          # damage_type ถ้าไม่ใส่ → ใช้ tower.attackType (default ตาม design 1 tower 1 type)
+          #
+          # can_crit:
+          #   - true (default) → skill roll crit ตามเลขของ tower
+          #   - false           → skill ไม่ crit (เช่น skill Kiara ตามดีไซน์)
+          #
+          # hit_distribution: [r1, r2, ...]  ← multi-hit, แบ่ง 100% ของ final damage
+          #   ⚠️ caution: ผลรวม ratio ต้อง = 1.0 ไม่งั้น push_warning
+          #   ⚠️ ใช้ได้กับ skill ของ tower เท่านั้น (normal attack ไม่มี multi-hit)
+          #
+          # ตัวอย่าง 4-hit skill ความเสียหาย 200% รวม:
+          #   - type: attack
+          #     data:
+          #       damage_multiplier: 2.0
+          #       hit_distribution: [0.2, 0.2, 0.1, 0.5]   # รวม = 1.0 ✓
+          #
+          # ตัวอย่าง skill non-crit ที่ scale ตาม level:
+          #   - type: attack
+          #     data:
+          #       damage_multiplier: [1.4, 1.5, 1.7]
+          #       can_crit: false
+          # ─────────────────────────────────────────────────────────────────
+      - type: play_animation
+        data:
+          animation: "idle"
+  passive: null
+
+# evolutionStat = stat ตอน evolve (block เดียว ไม่ใช่ array)
+evolutionStat:
+  damage: 240
+  attackRange: 2.0
+  attackSpeed: 100.0
+  critChance: 50.0
+  critMultiplier: 1.5
+  mana: 120
+  intialMana: 80
+
+# evolution_skills = สกิลร่างวิวัฒน์ (ทรงเดียวกับ skills) — optional
+evolution_skills:
+  active:
+    name: "Evolved Skill"
+    desc: "Just a stronger skill"
+    desc_template: "Just a stronger skill with {damageBonus:percent} bonus"
+    icon: ""
+    tags:
+      - damage
+      - attack
+      - aoe
+      - enemy
+    target_summary:
+      target_team: enemy
+      target_type: enemy
+      target_shape: area
+    effects:
+      - name: "Area Damage"
+        target:
+          target_team: enemy
+          target_type: enemy
+          target_shape: area
+    cast_time: 0.0
+    parameters:
+      damageBonus:
+        - 0.30
+    actions:
+      - type: find_multi_enemy
+        data:
+          width: 3
+          height: 3
+      - type: play_animation
+        data:
+          animation: "skill"
+      - type: attack
+        data:
+          damage_multiplier: 2.0
+          damage_type: physic
+      - type: play_animation
+        data:
+          animation: "idle"
+  passive: null

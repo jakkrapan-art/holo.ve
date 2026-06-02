@@ -38,7 +38,7 @@ skills:
     name: "Flame Slash"
     names: ["Flame Slash I", "Flame Slash II", "Flame Slash III"]
     desc: "Kiara swings her immortal phoenix flame sword forward through a 3×1 tile area, dealing physical damage. All enemies hit are scorched by Phoenix Flame, taking magic damage every second for 5 seconds."
-    desc_template: "Kiara swings her immortal phoenix flame sword forward through a 3×1 tile area, dealing {damageMultiplier:percent} physical damage. All enemies hit are scorched by Phoenix Flame, taking ({phoenixAtk:percent} attack + {phoenixHp:percent} max HP) magic damage every {phoenixInterval} second(s) for {phoenixDuration} seconds."
+    desc_template: "Kiara swings her immortal phoenix flame sword forward through a 3×1 tile area, dealing {damageMultiplier:percent} physical damage. All enemies hit are scorched by Phoenix Flame, taking ({phoenixAtk:percent} attack + {phoenixHp:percent} max HP) magic damage every 1 second for {phoenixDuration} seconds."
     icon: ""
     tags:
       - damage
@@ -61,8 +61,9 @@ skills:
           target_type: enemy
           target_shape: area
     cast_time: 0.2
-    # Parameters bound to desc_template tokens + read by skill actions.
-    # Edit numbers here to retune balance; descriptions auto-sync via {token}.
+    # Single source for balance + desc: skill actions read these via
+    # damage_multiplier_param_name / *_param, and desc_template tokens render the
+    # same values — edit here to retune both at once.
     parameters:
       # Per-tier direct hit scaling — Skill Multiplier (% of Kiara attack).
       # Direct damage = damageMultiplier × Kiara totalAttack.
@@ -70,8 +71,7 @@ skills:
       # Phoenix Flame DOT — per-tick magic damage = phoenixAtk×attack + phoenixHp×targetMaxHp.
       phoenixAtk: 0.10       # 10% of Kiara's attack stat per tick (snapshot at apply)
       phoenixHp: 0.01        # 1% of target's max HP per tick
-      phoenixDuration: 5.0   # Total DOT duration in seconds
-      phoenixInterval: 1.0   # Seconds between ticks (5 ticks over 5s with default)
+      phoenixDuration: 5.0   # Total DOT duration in seconds (bound to runtime)
     actions:
       - type: "find_multi_enemy"
         data:
@@ -87,16 +87,15 @@ skills:
           effect_script: "res://resources/tower/hololive/en_branch/myth_gen/kiara/skill_effect/kiara_skill_effect.gd"
       - type: "attack"
         data:
-          # Per-tier skill multiplier — matches `parameters.damageMultiplier`.
-          # SkillActionAttack reads this array directly (no param_name needed).
-          damage_multiplier: [1.4, 1.5, 1.7]
+          # Skill multiplier reads parameters.damageMultiplier (single source w/ desc).
+          damage_multiplier_param_name: "damageMultiplier"
           can_crit: false   # Kiara design: skill cannot crit
           status_effects:
             - type: "phoenix_flame"
-              duration: 5.0
-              interval: 1.0
-              attack_percent: 0.10
-              max_hp_percent: 0.01
+              duration_param: "phoenixDuration"   # binds to parameters (single source)
+              interval: 1.0                       # fixed default tick
+              attack_percent_param: "phoenixAtk"
+              max_hp_percent_param: "phoenixHp"
       - type: "play_animation"
         data:
           animation: "idle"
@@ -115,7 +114,7 @@ evolution_skills:
   active:
     name: "Hinotori"
     desc: "Kiara empowers her sword with sacred phoenix fire and unleashes a devastating slash forward through a 3×5 tile corridor, dealing massive physical damage. All enemies hit are scorched by Phoenix Flame, taking magic damage every second for 5 seconds."
-    desc_template: "Kiara empowers her sword with sacred phoenix fire and unleashes a devastating slash forward through a 3×5 tile corridor, dealing {damageMultiplier:percent} physical damage. All enemies hit are scorched by Phoenix Flame, taking ({phoenixAtk:percent} attack + {phoenixHp:percent} max HP) magic damage every {phoenixInterval} second(s) for {phoenixDuration} seconds."
+    desc_template: "Kiara empowers her sword with sacred phoenix fire and unleashes a devastating slash forward through a 3×5 tile corridor, dealing {damageMultiplier:percent} physical damage. All enemies hit are scorched by Phoenix Flame, taking ({phoenixAtk:percent} attack + {phoenixHp:percent} max HP) magic damage every 1 second for {phoenixDuration} seconds."
     icon: ""
     tags:
       - damage
@@ -139,9 +138,10 @@ evolution_skills:
           target_type: enemy
           target_shape: area
     cast_time: 0.2
-    # Parameters bound to desc_template tokens + read by skill actions.
-    # Projectile knobs (speed/lifetime/max_range) live in the action data below
-    # — they're not duplicated here to avoid drift between display and runtime.
+    # Single source for balance + desc: actions read these (projectile damage via
+    # damage_multiplier_param_name default, DOT via *_param); desc_template tokens
+    # render the same values. Projectile knobs (speed/lifetime/max_range) live in
+    # the action data below.
     parameters:
       # Direct hit scaling — Skill Multiplier (% of Kiara attack).
       # Direct damage = damageMultiplier × Kiara totalAttack (≈ 300 × 3.0 = 900).
@@ -149,8 +149,7 @@ evolution_skills:
       # Phoenix Flame DOT (same formula as Normal; applied to every enemy in path).
       phoenixAtk: 0.10       # 10% of Kiara's attack stat per tick
       phoenixHp: 0.01        # 1% of target's max HP per tick
-      phoenixDuration: 5.0   # Total DOT duration in seconds
-      phoenixInterval: 1.0   # Seconds between ticks
+      phoenixDuration: 5.0   # Total DOT duration in seconds (bound to runtime)
     actions:
       - type: "find_multi_enemy"
         data:
@@ -175,15 +174,15 @@ evolution_skills:
           speed: 12.0          # Tiles per second (12 tiles/s ≈ fast straight shot)
           lifetime: 1.5        # Max lifetime cap in seconds (failsafe if max_range unset)
           max_range: 5.0       # Max travel distance in tiles — projectile despawns past this
-          damage_multiplier: 3.0   # Used when damage_multiplier_param_name is empty
+          damage_multiplier: 3.0   # Fallback; runtime reads parameters.damageMultiplier (default param name)
           damage_type: "physic"
           can_crit: false
           status_effects:
             - type: "phoenix_flame"
-              duration: 5.0
-              interval: 1.0
-              attack_percent: 0.10
-              max_hp_percent: 0.01
+              duration_param: "phoenixDuration"   # binds to parameters (single source)
+              interval: 1.0                       # fixed default tick
+              attack_percent_param: "phoenixAtk"
+              max_hp_percent_param: "phoenixHp"
       - type: "play_animation"
         data:
           animation: "idle"

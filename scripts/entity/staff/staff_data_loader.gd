@@ -38,7 +38,7 @@ static func load_data(prefix: String, name: String) -> StaffData:
 
 		var actions: Array[SkillAction] = []
 		for action_data in skill_dict.get("actions", []):
-			var action = SkillUtility.ParseAction(action_data)
+			var action = SkillUtility.ParseAction(action_data, skill.parameters)
 			if action != null:
 				actions.append(action)
 			else:

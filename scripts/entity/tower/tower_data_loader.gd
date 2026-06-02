@@ -128,9 +128,12 @@ static func _parse_skill_data(skill_data: Dictionary, default_name: String, towe
 	var skill := Skill.new()
 	var skillActions: Array[SkillAction] = []
 	var action_data_list = skill_data.get("actions", [])
+	# Read parameters before the action loop so actions can bind to them
+	# (skill.parameters is set later in _apply_skill_data).
+	var parameters = skill_data.get("parameters", {})
 	if action_data_list is Array:
 		for act in action_data_list:
-			var action = SkillUtility.ParseAction(act)
+			var action = SkillUtility.ParseAction(act, parameters)
 			if action != null:
 				skillActions.append(action)
 			else:

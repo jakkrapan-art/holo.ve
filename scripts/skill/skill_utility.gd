@@ -27,7 +27,7 @@ static func ParseSkill(skillDataList: Array) -> Array[Skill]:
 			print("Warning: Skill", s, "not found");
 	return result
 
-static func ParseAction(data: Dictionary) -> SkillAction:
+static func ParseAction(data: Dictionary, parameters: Dictionary = {}) -> SkillAction:
 	var skillType = data.get("type", "");
 	var skill: SkillAction;
 	match skillType:
@@ -137,8 +137,25 @@ static func ParseAction(data: Dictionary) -> SkillAction:
 			skill = SkillActionAttack.new();
 			var skillData = data.get("data", {});
 			skill.damage = skillData.get("damage", 0);
-			# Phase 3 Block C — Skill Multiplier
-			if skillData.has("damage_multiplier"):
+			# Phase 3 Block C — Skill Multiplier. A param-name (single source with
+			# desc) wins over a literal; resolved here at parse time into
+			# damageMultiplierPerLevel/damageMultiplier. (The projectile actions
+			# instead resolve via context.getParameter at runtime — both give
+			# correct per-level behavior.)
+			if skillData.has("damage_multiplier_param_name"):
+				var pname = skillData["damage_multiplier_param_name"]
+				if parameters.has(pname):
+					var pval = parameters[pname]
+					if typeof(pval) == TYPE_ARRAY:
+						var pArr: Array[float] = []
+						for v in pval:
+							pArr.append(float(v))
+						skill.damageMultiplierPerLevel = pArr
+					else:
+						skill.damageMultiplier = float(pval)
+				else:
+					push_warning("attack: damage_multiplier_param_name '" + str(pname) + "' not in skill parameters.")
+			elif skillData.has("damage_multiplier"):
 				var dm = skillData["damage_multiplier"]
 				if typeof(dm) == TYPE_ARRAY:
 					var dmArr: Array[float] = []
@@ -163,7 +180,7 @@ static func ParseAction(data: Dictionary) -> SkillAction:
 			if attackStatusEffectDataList.size() > 0:
 				var attackStatusEffects: Array[StatusEffect] = [];
 				for statusEffectData in attackStatusEffectDataList:
-					var se: StatusEffect = StatusEffectUtility.ParseStatusEffect(statusEffectData);
+					var se: StatusEffect = StatusEffectUtility.ParseStatusEffect(statusEffectData, parameters);
 					if se:
 						attackStatusEffects.append(se);
 				skill.statusEffects = attackStatusEffects;
@@ -200,14 +217,10 @@ static func ParseAction(data: Dictionary) -> SkillAction:
 			var statusEffects: Array[StatusEffect] = [];
 			var statusEffectDataList = skillData.get("status_effects", []);
 			if(statusEffectDataList.size() > 0):
-				print("data list:", statusEffectDataList, ", skill data keys:", skillData.keys());
 				for statusEffectData in statusEffectDataList:
-					print("parsing status effect data: ", statusEffectData);
-					var se: StatusEffect = StatusEffectUtility.ParseStatusEffect(statusEffectData);
+					var se: StatusEffect = StatusEffectUtility.ParseStatusEffect(statusEffectData, parameters);
 					if se:
 						statusEffects.append(se);
-				print("skill statusEffects:", skill.statusEffects);
-				print("status effect ", statusEffects)
 				skill.statusEffects = statusEffects;
 			skill.projectileTemplate = load(skillData.get("projectile", "res://resources/combat/bullets/gawr_gura_skill_projectile.tscn"));
 		"create_directional_projectile":
@@ -226,7 +239,7 @@ static func ParseAction(data: Dictionary) -> SkillAction:
 			if dirStatusEffectDataList.size() > 0:
 				var dirStatusEffects: Array[StatusEffect] = [];
 				for statusEffectData in dirStatusEffectDataList:
-					var se: StatusEffect = StatusEffectUtility.ParseStatusEffect(statusEffectData);
+					var se: StatusEffect = StatusEffectUtility.ParseStatusEffect(statusEffectData, parameters);
 					if se:
 						dirStatusEffects.append(se);
 				skill.statusEffects = dirStatusEffects;

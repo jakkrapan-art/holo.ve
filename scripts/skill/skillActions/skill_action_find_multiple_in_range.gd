@@ -46,6 +46,11 @@ func find_targets_in_rotated_range(context: SkillContext):
 		if tower.enemy == null:
 			return
 		user_rotation = get_user_rotation(tower, tower.enemy)
+		# Snapshot aim direction while tower.enemy is valid — survives the skill's
+		# animation await even if the enemy dies before play_effect/projectile run.
+		var aim := tower.enemy.global_position - tower.global_position
+		if aim.length() > 0.001:
+			context.extra["aim_dir"] = aim.normalized()
 
 	# Calculate actual dimensions from cell counts
 	var cellSize = GridHelper.CELL_SIZE

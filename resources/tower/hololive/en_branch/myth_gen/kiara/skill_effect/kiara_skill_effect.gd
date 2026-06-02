@@ -25,13 +25,19 @@ const POP_FRAC := 0.26         # scale_p elastic pop length (fraction of DURATIO
 
 # Called by SkillActionPlayEffect after the node is in the tree.
 # tower is the caster (Tower); tower.enemy is the locked target, if any.
-func setup(tower) -> void:
+func setup(tower, context = null) -> void:
+	# Aim from the live target, else the snapshotted aim_dir (set in
+	# find_multi_enemy while the enemy was valid) — so a target dying during the
+	# skill animation no longer leaves the slash centred on the tower.
+	var forward := Vector2.ZERO
 	if tower != null and tower.enemy != null and is_instance_valid(tower.enemy):
-		var to_enemy: Vector2 = tower.enemy.global_position - tower.global_position
-		if to_enemy.length() > 0.001:
-			var forward := to_enemy.normalized()
-			global_position += forward * (GridHelper.CELL_SIZE * FORWARD_CELLS)
-			rotation = to_enemy.angle() + ROT_OFFSET
+		forward = tower.enemy.global_position - tower.global_position
+	elif context != null and context.extra.has("aim_dir"):
+		forward = context.extra["aim_dir"]
+	if forward.length() > 0.001:
+		forward = forward.normalized()
+		global_position += forward * (GridHelper.CELL_SIZE * FORWARD_CELLS)
+		rotation = forward.angle() + ROT_OFFSET
 	_spawn_effect()
 
 func _spawn_effect() -> void:

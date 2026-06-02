@@ -32,7 +32,7 @@ const MOUTH_AHEAD  := 0.6      # corridor mouth (slash) this many cells ahead of
 const DURATION := 1.15        # progress 0→1 seconds
 const POP_FRAC := 0.16        # scale_p elastic pop length (fraction of DURATION)
 
-func setup(tower) -> void:
+func setup(tower, context = null) -> void:
 	var cell := float(GridHelper.CELL_SIZE)
 	var total_x := AREA_LEN_CELLS + PAD_L + PAD_R
 	var total_y := AREA_W_CELLS + 2.0 * PAD_TB
@@ -44,13 +44,17 @@ func setup(tower) -> void:
 	var hy := (AREA_W_CELLS * cell * 0.5) / eff.y
 	var cx := (corridor_cx_tiles * cell) / eff.y
 
-	# Orient toward the locked target — same lane as find_multi_enemy.
+	# Orient toward the locked target — same lane as find_multi_enemy. Falls back
+	# to the snapshotted aim_dir if the enemy died during the cast animation.
 	var forward := Vector2.RIGHT
+	var aim := Vector2.ZERO
 	if tower != null and tower.enemy != null and is_instance_valid(tower.enemy):
-		var to_enemy: Vector2 = tower.enemy.global_position - tower.global_position
-		if to_enemy.length() > 0.001:
-			forward = to_enemy.normalized()
-			rotation = forward.angle() + ROT_OFFSET
+		aim = tower.enemy.global_position - tower.global_position
+	elif context != null and context.extra.has("aim_dir"):
+		aim = context.extra["aim_dir"]
+	if aim.length() > 0.001:
+		forward = aim.normalized()
+		rotation = forward.angle() + ROT_OFFSET
 
 	# Push the rect forward so the corridor mouth (slash) sits ~MOUTH_AHEAD cells
 	# ahead of the caster. The rect centre is (hx - cx) author-units ahead of the

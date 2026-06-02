@@ -66,6 +66,9 @@ func _ready():
 	var default = TowerDataLoader.load_data("res://resources/database/towers/", "default_tower")
 	TowerCenter.setDefaultTowerData(default)
 	ResourceManager.loadResources();
+	# Compile skill-effect shader pipelines now (behind the deck/loading screen)
+	# so the first in-run cast doesn't hitch. Fire-and-forget coroutine.
+	ResourceManager.warmSkillEffectShaders(self)
 
 	# Staff system: load data → instantiate entity → wire widget → spawn endpoint sprite.
 	setup_staff()

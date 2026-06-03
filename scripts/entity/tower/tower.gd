@@ -239,7 +239,11 @@ func _onEnemyDetected(enemy: Enemy):
 		Utility.ConnectSignal(self.enemy, "onDead", Callable(self, "clearEnemy"));
 		Utility.ConnectSignal(self.enemy, "onReachEndPoint", Callable(self, "clearEnemy"));
 
-func clearEnemy(_enemy, _cause, _reward):
+func clearEnemy(_enemy = null, _cause = null, _reward = null):
+	# Default args so this can serve both the 3-arg enemy signals (onDead /
+	# onReachEndPoint) and the 0-arg EnemyDetector.onRemoveTarget — the latter
+	# previously errored ("expected 3 arguments, called with 0") and silently
+	# no-op'd. Net targeting is unchanged: _onEnemyDetected re-sets enemy.
 	enemy = null;
 	attacking = false;
 

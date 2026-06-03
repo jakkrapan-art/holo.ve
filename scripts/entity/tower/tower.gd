@@ -240,10 +240,17 @@ func _onEnemyDetected(enemy: Enemy):
 		Utility.ConnectSignal(self.enemy, "onReachEndPoint", Callable(self, "clearEnemy"));
 
 func clearEnemy(_enemy = null, _cause = null, _reward = null):
-	# Default args so this can serve both the 3-arg enemy signals (onDead /
-	# onReachEndPoint) and the 0-arg EnemyDetector.onRemoveTarget — the latter
-	# previously errored ("expected 3 arguments, called with 0") and silently
-	# no-op'd. Net targeting is unchanged: _onEnemyDetected re-sets enemy.
+	# Default args so this serves both the 3-arg enemy signals (onDead /
+	# onReachEndPoint) and the 0-arg EnemyDetector.onRemoveTarget.
+	# Symmetric teardown: drop this enemy's hooks before clearing, so switching
+	# or re-detecting a target never double-connects clearEnemy ("already
+	# connected") nor leaks a stale onDead hook that would clear a later target.
+	if enemy != null and is_instance_valid(enemy):
+		var cb := Callable(self, "clearEnemy")
+		if enemy.is_connected("onDead", cb):
+			enemy.disconnect("onDead", cb)
+		if enemy.is_connected("onReachEndPoint", cb):
+			enemy.disconnect("onReachEndPoint", cb)
 	enemy = null;
 	attacking = false;
 

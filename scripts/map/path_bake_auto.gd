@@ -12,7 +12,7 @@ func bake():
 		print("No marked tiles found!")
 		return
 
-	var path: Array[Vector2] = find_path_from_marked_points(marked_points)
+	var path: Array[Vector2i] = find_path_from_marked_points(marked_points)
 	if path.is_empty():
 		print("No valid path found.")
 		return
@@ -23,7 +23,7 @@ func bake():
 	# Add points to the Path2D curve
 	for point in path:
 		path2d.curve.add_point(point)
-	
+
 	draw_path_line(path);
 	print("Path set with %d points." % path.size())
 	return path
@@ -57,12 +57,12 @@ func get_marked_points(layer: int) -> Array[Vector2i]:
 
 	return final_marked
 
-func find_path_from_marked_points(points: Array[Vector2i]) -> Array[Vector2]:
+func find_path_from_marked_points(points: Array[Vector2i]) -> Array[Vector2i]:
 	if points.is_empty():
 		return []
 
 	var visited: Dictionary = {}
-	var path: Array[Vector2] = []
+	var path: Array[Vector2i] = []
 	var start: Vector2i = points[0]
 	var stack: Array[Vector2i] = [start]
 
@@ -72,17 +72,17 @@ func find_path_from_marked_points(points: Array[Vector2i]) -> Array[Vector2]:
 			continue
 
 		visited[current] = true
-		path.append(Vector2(tilemap.map_to_local(current)))  # Explicit cast
+		path.append(Vector2i(tilemap.map_to_local(current)))  # Explicit cast
 
 		for offset in get_adjacent_offsets():
 			var neighbor: Vector2i = current + offset
 			if points.has(neighbor) and not visited.has(neighbor):
 				stack.append(neighbor)
-		
+
 	if(path.size() >= 2):
 		var last_dir = get_direction(path[path.size() - 2], path[path.size() - 1])/2
 		var last_cell = path[path.size()-1];
-		path.append(Vector2(last_cell.x + last_dir.x, last_cell.y + last_dir.y));
+		path.append(Vector2i(last_cell.x + last_dir.x, last_cell.y + last_dir.y));
 	return path
 
 func get_direction(from: Vector2i, to: Vector2i):
@@ -97,7 +97,7 @@ func get_adjacent_offsets() -> Array[Vector2i]:
 		Vector2i(0, -1)
 	]
 
-func draw_path_line(points: Array[Vector2]) -> void:
+func draw_path_line(points: Array[Vector2i]) -> void:
 	# Remove old Line2D if any
 	for child in path2d.get_children():
 		if child is Line2D:
@@ -109,14 +109,14 @@ func draw_path_line(points: Array[Vector2]) -> void:
 	var line := Line2D.new()
 	line.width = 15
 	line.default_color = Color.DARK_RED
-	line.position = Vector2.ZERO
+	line.position = Vector2i.ZERO
 
 	for point in points:
 		line.add_point(point)
 
 	path2d.add_child(line)
 
-func get_available_tiles(path_tiles: Array[Vector2], excluded_layers: Array[int] = []) -> Array[Vector2i]:
+func get_available_tiles(path_tiles: Array[Vector2i], excluded_layers: Array[int] = []) -> Array[Vector2i]:
 	var available_tiles: Array[Vector2i] = []
 
 	var target_layer := 1

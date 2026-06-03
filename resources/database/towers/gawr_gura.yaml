@@ -7,6 +7,7 @@ evolutionCost: 1
 attack_sound: "hit_gura"
 open_sound: "debut_gura"
 attack_vfx: "blue" # ชื่อ VFX ที่ใช้ตอนโจมตี (เป็น enum ใน attack_vfx.gd AttackVFXName)
+evolve_sound: "evo_gura"
 
 stats:
   - damage: 80

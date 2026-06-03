@@ -6,6 +6,7 @@ evolutionCost: 1
 
 attack_sound: "hit_amelia"
 open_sound: "debut_amelia"
+evolve_sound: "evo_amelia"
 
 stats:
   - damage: 60

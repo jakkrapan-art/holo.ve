@@ -7,6 +7,7 @@ evolutionCost: 1
 # skill: "res://resources/database/skill/takanashi_kiara_skill.tres"
 attack_sound: "hit_syrios"
 open_sound: "debut_syrios"
+evolve_sound: "evo_syrios"
 
 stats:
   - damage: 120

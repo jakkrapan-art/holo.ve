@@ -7,6 +7,7 @@ evolutionCost: 1
 # skill: "res://resources/database/skill/takanashi_kiara_skill.tres"
 attack_sound: "hit_hakka"
 open_sound: "debut_hakka"
+evolve_sound: "evo_hakka"
 
 stats:
   - damage: 130

@@ -7,6 +7,7 @@ evolutionCost: 1
 # skill: "res://resources/database/skill/gawr_gura_skill.tres"
 attack_sound: "hit_calliope"
 open_sound: "debut_caliope"
+evolve_sound: "evo_caliope"
 
 stats:
   - damage: 80

@@ -121,7 +121,9 @@ static func warmSkillEffectShaders(host: Node) -> void:
 
 	var shaderPaths: Dictionary = {}
 	for k in TowerCenter._towers_data.keys():
-		var data = TowerCenter._towers_data.get(k, null)
+		var entry = TowerCenter._towers_data.get(k, null)
+		# _towers_data values are YAML wrapper dicts; the TowerData is under "data".
+		var data = entry.get("data", null) if entry is Dictionary else entry
 		if data == null:
 			continue
 		for skill in [data.skill, data.evolutionSkill]:

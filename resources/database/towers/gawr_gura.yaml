@@ -38,8 +38,8 @@ skills:
   active:
     name: "Atlantis Trident"
     names: ["Atlantis Trident I", "Atlantis Trident II", "Atlantis Trident III"]
-    desc: "Gawr Gura summons crashing waves of the Atlantis Trident around herself.\nNote: Gawr Gura does not gain Energy while this skill is active."
-    desc_template: "Gawr Gura wields the Trident of Atlantis to summon four storm waves within one tile around her for 10 seconds. Each wave deals {damageMultiplier:percent} damage per hit and stuns foes for 0.1s.\nNote: Gawr Gura does not gain Energy while this skill is active."
+    desc: "Gawr Gura wields the Trident of Atlantis to summon 4 storm waves within one tile around her for 10 seconds. Each wave deals damage per hit and stuns foes for 0.1s.\nNote: Gawr Gura does not gain Energy while this skill is active."
+    desc_template: "Gawr Gura wields the Trident of Atlantis to summon 4 storm waves within one tile around her for 10 seconds. Each wave deals {damageMultiplier:percent} damage per hit and stuns foes for 0.1s.\nNote: Gawr Gura does not gain Energy while this skill is active."
     icon: ""
     tags:
       - damage
@@ -98,8 +98,8 @@ evolutionStat:
 evolution_skills:
   active:
     name: "Sink to the Void at the Bottom of the Sea!!"
-    desc: "Gawr Gura unleashes the full fury of the Atlantis Trident.\nNote: Gawr Gura does not gain Energy while this skill is active."
-    desc_template: "Gawr Gura wields the Trident of Atlantis to summon eight storm waves within one tile around her for 10 seconds. Each wave deals {damageMultiplier:percent} damage per hit and stuns foes for 0.1s.\nNote: Gawr Gura does not gain Energy while this skill is active."
+    desc: "Gawr Gura wields the Trident of Atlantis to summon 8 storm waves within one tile around her for 10 seconds. Each wave deals damage per hit and stuns foes for 0.1s.\nNote: Gawr Gura does not gain Energy while this skill is active."
+    desc_template: "Gawr Gura wields the Trident of Atlantis to summon 8 storm waves within one tile around her for 10 seconds. Each wave deals {damageMultiplier:percent} damage per hit and stuns foes for 0.1s.\nNote: Gawr Gura does not gain Energy while this skill is active."
     icon: ""
     tags:
       - damage

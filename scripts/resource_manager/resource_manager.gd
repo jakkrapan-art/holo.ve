@@ -103,3 +103,74 @@ static func getSprite(group: String, key: String):
 	if !_sprites.has(group):
 		return null
 	return _sprites[group].get(key, null)
+
+# -----------------------------
+# SKILL-EFFECT SHADER WARM-UP
+# -----------------------------
+
+# A skill-effect shader compiles its GPU pipeline the first time it is drawn,
+# which lands on the visible cast frame → a one-time hitch (worst on heavy
+# shaders like Kiara's evolved Hinotori). Warm every deck skill-effect shader
+# once here at load (behind the deck / loading screen) so the first in-run cast
+# is smooth. Data-driven: reads each tower's normal + evolved play_effect
+# actions and resolves the effect script's `SHADER_PATH` const — no per-tower
+# hardcoding. Fire-and-forget coroutine; needs a host Node for the scene tree.
+static func warmSkillEffectShaders(host: Node) -> void:
+	if host == null or not is_instance_valid(host):
+		return
+
+	var shaderPaths: Dictionary = {}
+	for k in TowerCenter._towers_data.keys():
+		var entry = TowerCenter._towers_data.get(k, null)
+		# _towers_data values are YAML wrapper dicts; the TowerData is under "data".
+		var data = entry.get("data", null) if entry is Dictionary else entry
+		if data == null:
+			continue
+		for skill in [data.skill, data.evolutionSkill]:
+			if skill == null:
+				continue
+			for action in skill.actions:
+				if action is SkillActionPlayEffect and action.effectScriptPath != "":
+					var sp := _shaderPathFromEffectScript(action.effectScriptPath)
+					if sp != "":
+						shaderPaths[sp] = true
+
+	if shaderPaths.is_empty():
+		return
+
+	# Draw each pipeline for two frames on a throwaway CanvasLayer, then free.
+	# Must actually rasterize (not visible=false, and on-screen so it isn't
+	# culled) so the RenderingServer compiles the pipeline; the real shader +
+	# render_mode is used so the key matches the in-run cast. At the shaders'
+	# default `progress`=0 the output is ~invisible, and a 2px alpha-low rect
+	# for two frames is imperceptible.
+	var layer := CanvasLayer.new()
+	host.add_child(layer)
+	for sp in shaderPaths.keys():
+		var shader = load(sp)
+		if shader == null:
+			continue
+		var mat := ShaderMaterial.new()
+		mat.shader = shader
+		var rect := ColorRect.new()
+		rect.size = Vector2(2, 2)
+		rect.position = Vector2.ZERO
+		rect.modulate = Color(1, 1, 1, 0.01)
+		rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		rect.material = mat
+		layer.add_child(rect)
+
+	await host.get_tree().process_frame
+	await host.get_tree().process_frame
+
+	if is_instance_valid(layer):
+		layer.queue_free()
+
+# Reads the `SHADER_PATH` const off an effect controller script without
+# instantiating it. Returns "" if the script has no such const (warm skipped).
+static func _shaderPathFromEffectScript(scriptPath: String) -> String:
+	var script = load(scriptPath)
+	if script == null:
+		return ""
+	var consts: Dictionary = script.get_script_constant_map()
+	return consts.get("SHADER_PATH", "")

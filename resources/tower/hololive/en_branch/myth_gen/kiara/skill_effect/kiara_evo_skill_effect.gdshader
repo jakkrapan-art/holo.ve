@@ -124,7 +124,7 @@ void fragment() {
 		float charge = smoothstep(0.0, WIN, progress) * (1.0 - smoothstep(WIN, WIN + 0.06, progress));
 		vec2 cp = uv - vec2(LEFT - pull, 0.0);
 		float g = exp(-dot(cp, cp) * 18.0) * (0.82 + 0.18 * sin(progress * 40.0));
-		col += ramp(0.92) * g * charge * 2.2;
+		col += ramp(0.92) * g * charge * 1.4;
 		a = max(a, g * charge);
 	}
 
@@ -235,7 +235,7 @@ void fragment() {
 	// ── Launch flash (brief, no fbm) ────────────────────────────
 	float flash = 1.0 - smoothstep(0.0, 0.12, abs(progress - 0.30));
 	vec2 fp = vec2(uv.x - (LEFT + 0.05), uv.y);
-	col += mix(P_CORE, rim_color.rgb, 0.2) * exp(-dot(fp, fp) * 9.0) * flash * 1.3;
+	col += mix(P_CORE, rim_color.rgb, 0.2) * exp(-dot(fp, fp) * 16.0) * flash * 0.8;
 
 	// ── Terminal impact burst (baked off: burst_mode=1) ─────────
 	if (burst_mode != 1) {

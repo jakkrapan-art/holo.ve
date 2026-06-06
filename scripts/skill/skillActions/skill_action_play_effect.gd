@@ -22,4 +22,4 @@ func execute(context: SkillContext) -> void:
 	# setup(tower) to rotate/offset themselves toward tower.enemy. Self-centered
 	# effects (e.g. Amelia) omit it and stay put — backward compatible.
 	if effect.has_method("setup"):
-		effect.setup(tower)
+		effect.setup(tower, context)

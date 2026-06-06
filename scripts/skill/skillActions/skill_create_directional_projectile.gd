@@ -29,6 +29,9 @@ func setupProjectile(projectile: Projectile, i: int, context: SkillContext):
 		direction = (context.target[0].global_position - tower.global_position).normalized()
 	elif is_instance_valid(tower.enemy):
 		direction = (tower.enemy.global_position - tower.global_position).normalized()
+	elif context.extra.has("aim_dir"):
+		# Snapshotted at find_multi_enemy time — survives the enemy dying mid-cast.
+		direction = context.extra["aim_dir"]
 
 	# Cap travel by range if specified. Pierce projectiles can have a long
 	# configured lifetime but should stop at the AOE corridor edge.

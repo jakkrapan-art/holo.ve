@@ -74,8 +74,8 @@ static func load_data(prefix: String, name: String) -> TowerData:
 	if data.has("attack") and data["attack"] is Dictionary:
 		tower.attack_config = TowerAttackConfig.from_dict(data["attack"])
 
-	_warn_if_passive_slot_present(data, "skills", name)
-	_warn_if_passive_slot_present(data, "evolution_skills", name)
+	tower.passive = _resolve_passive_block(data, "skills")
+	tower.evolutionPassive = _resolve_passive_block(data, "evolution_skills")
 
 	var skillData := _resolve_skill_block(data, "skills", "skill", name, {"actions": []})
 	tower.skill = _parse_skill_data(skillData, "Unnamed Skill", name, "active skill")
@@ -118,15 +118,16 @@ static func _resolve_skill_block(data: Dictionary, slot_root_key: String, legacy
 		return legacy_skill_data
 	return default_block
 
-static func _warn_if_passive_slot_present(data: Dictionary, slot_root_key: String, tower_name: String) -> void:
+static func _resolve_passive_block(data: Dictionary, slot_root_key: String) -> Dictionary:
 	if not data.has(slot_root_key):
-		return
-
+		return {}
 	var slot_root = data[slot_root_key]
 	if not (slot_root is Dictionary):
-		return
-	if slot_root.has("passive") and slot_root["passive"] != null:
-		push_warning("Tower YAML '" + tower_name + "': '" + slot_root_key + ".passive' is currently ignored until passive skill runtime exists.")
+		return {}
+	var passive = slot_root.get("passive", null)
+	if passive is Dictionary:
+		return passive
+	return {}
 
 static func _parse_skill_data(skill_data: Dictionary, default_name: String, tower_name: String, source_name: String) -> Skill:
 	var skill := Skill.new()

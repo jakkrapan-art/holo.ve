@@ -70,6 +70,10 @@ static func load_data(prefix: String, name: String) -> TowerData:
 	tower.open_sound = data.get("open_sound", "default");
 	tower.evolve_sound = data.get("evolve_sound", "");
 
+	# Optional normal-attack block (absent = hitscan, back-compat).
+	if data.has("attack") and data["attack"] is Dictionary:
+		tower.attack_config = TowerAttackConfig.from_dict(data["attack"])
+
 	_warn_if_passive_slot_present(data, "skills", name)
 	_warn_if_passive_slot_present(data, "evolution_skills", name)
 

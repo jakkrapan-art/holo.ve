@@ -135,6 +135,13 @@ static func warmSkillEffectShaders(host: Node) -> void:
 					if sp != "":
 						shaderPaths[sp] = true
 
+		# Normal-attack projectile bullet shader (not a skill effect) — warm it too
+		# so the first shot doesn't hitch on pipeline compile. Its shader lives in a
+		# ShaderMaterial inside the bullet .tscn, invisible to the SHADER_PATH scan, so
+		# the path is declared explicitly in the tower's attack_config.vfx_shader.
+		if data.attack_config != null and data.attack_config.vfx_shader != "":
+			shaderPaths[data.attack_config.vfx_shader] = true
+
 	if shaderPaths.is_empty():
 		return
 

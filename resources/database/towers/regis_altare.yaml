@@ -43,9 +43,10 @@ skill:
         width: 3
         height: 1
         cancel_when_empty: true
-    - type: play_animation
+    - type: play_animation        # beat 1: clip scaled to 0.5s; impact lands ~0.4s
       data:
         animation: "skill_1"
+        duration: 0.5
     - type: attack
       data:
         damage: 100
@@ -56,12 +57,10 @@ skill:
         width: 1
         height: 3
         cancel_when_empty: false
-    - type: play_animation
-      data:
+    - type: play_animation        # beat 2: clip scaled to 1.0s; impact lands ~0.8s
+      data:                        # pacing lives in duration — no trailing delay
         animation: "skill_2"
-    - type: delay
-      data:
-        delay: 0.5
+        duration: 1.0
     - type: attack
       data:
         damage: 150

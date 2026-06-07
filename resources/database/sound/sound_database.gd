@@ -31,7 +31,17 @@ enum VOICE_NAME {
 	debut_altare,
 	debut_kiara,
 	debut_amelia,
-	evo_kiara
+	evo_syrios,
+	evo_hakka,
+	evo_bettel,
+	evo_gura,
+	evo_shinri,
+	evo_flayon,
+	evo_caliope,
+	evo_ina,
+	evo_altare,
+	evo_kiara,
+	evo_amelia
 }
 
 static var bgm: Dictionary = {

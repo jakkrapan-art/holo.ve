@@ -1,0 +1,30 @@
+[gd_scene load_steps=7 format=3 uid="uid://camelbullet0amly"]
+
+[ext_resource type="Script" path="res://scripts/combat/projectile.gd" id="1_proj"]
+[ext_resource type="Shader" path="res://resources/tower/hololive/en_branch/myth_gen/amelia/normal_effect/amelia_bullet.gdshader" id="2_shdr"]
+
+[sub_resource type="Gradient" id="Gradient_w"]
+offsets = PackedFloat32Array(0, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradTex_w"]
+gradient = SubResource("Gradient_w")
+width = 64
+height = 64
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_b"]
+shader = ExtResource("2_shdr")
+
+[sub_resource type="CircleShape2D" id="Circle_b"]
+radius = 42.0
+
+[node name="WatsonAmeliaBullet" type="Area2D"]
+script = ExtResource("1_proj")
+speed = 4608.0
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_b")
+texture = SubResource("GradTex_w")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("Circle_b")

@@ -32,6 +32,8 @@ var attack_sound: String = "hit";
 var attack_vfx: String = "atk";
 var open_sound: String = "open";
 var evolve_sound: String = "";
+# Optional normal-attack config (YAML `attack:` block). null = hitscan (back-compat).
+var attack_config: TowerAttackConfig = null;
 
 func getStat():
 	if(!_isEvolved):

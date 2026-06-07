@@ -196,7 +196,16 @@ func attackEnemy():
 		# this call (bumping skill_lock_generation). If so, skip the post-attack
 		# state writes so mana/cooldown/attacking don't leak into the next wave.
 		var gen := skill_lock_generation
-		attackController.attack(enemy, attackDir, data.getDamage(enemy, self), data.attack_sound, data.attack_vfx);
+		var dmg: Damage = data.getDamage(enemy, self)
+		if data.attack_config != null and data.attack_config.is_projectile():
+			# Projectile mode: spawn homing bullet(s). Damage lands on hit (async),
+			# so the killing-blow guard below won't trip here — attack commits at fire.
+			# Play attack sound at fire; no generic AttackVfx (the bullet IS the vfx).
+			attackController.attackProjectile(enemy, dmg, data.attack_config)
+			if data.attack_sound != "":
+				AudioManager.playSfx(Utility.parse_string_to_enum(SoundDatabase.SFX_NAME, data.attack_sound))
+		else:
+			attackController.attack(enemy, attackDir, dmg, data.attack_sound, data.attack_vfx);
 		if skill_lock_generation != gen:
 			return
 		attacking = true;

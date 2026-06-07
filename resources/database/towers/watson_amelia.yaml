@@ -8,6 +8,17 @@ attack_sound: "hit_amelia"
 open_sound: "debut_amelia"
 evolve_sound: "evo_amelia"
 
+# Normal attack = homing pistol-bullet burst (Soft Glow). Damage lands ONCE per
+# attack (the burst is visual); speed/size/burst/glow_softness are artist-tunable.
+attack:
+  mode: projectile
+  projectile: "res://resources/combat/bullets/watson_amelia_bullet.tscn"
+  vfx_shader: "res://resources/tower/hololive/en_branch/myth_gen/amelia/normal_effect/amelia_bullet.gdshader"
+  speed: 9.0          # tiles/sec
+  size: 84            # bullet diameter px (scales sprite + hitbox)
+  burst: 3            # rounds per shot (visual only)
+  glow_softness: 0.3  # 0 = crisp edge, higher = fuzzier halo
+
 stats:
   - damage: 60
     attackRange: 5.0

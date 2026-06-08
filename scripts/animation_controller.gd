@@ -8,8 +8,10 @@ func _init(animSprite: AnimatedSprite2D, defaultAnimation: String):
 	anim = animSprite;
 	default = defaultAnimation if defaultAnimation != "" else "idle";
 
-	#anim.connect("animation_finished", Callable(self, "anim_finish"))
+	# frame_changed drives the ~80% early finish; animation_finished is a backstop so a
+	# 1-frame clip (which never emits frame_changed) still resolves and can't hang a skill.
 	Utility.ConnectSignal(anim,"frame_changed", Callable(self, "anim_finish"))
+	Utility.ConnectSignal(anim,"animation_finished", Callable(self, "anim_finish"))
 	play(defaultAnimation);
 
 func playDefault():

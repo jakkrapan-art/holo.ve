@@ -58,7 +58,8 @@ skills:
           target_team: enemy
           target_type: tower
           target_shape: area
-    cast_time: 0.0   # combo/skill timing now lives in play_animation duration
+    # cast_time: 0.0   # DISABLED — skill timing now lives in play_animation `duration`.
+    #                  # cast_time = idle hold BEFORE the cast (no skill anim); kept for team ref / possible future use.
     parameters:
       damageMultiplier:
         - 1.2
@@ -125,7 +126,8 @@ evolution_skills:
           target_team: enemy
           target_type: tower
           target_shape: area
-    cast_time: 0.0   # combo/skill timing now lives in play_animation duration
+    # cast_time: 0.0   # DISABLED — skill timing now lives in play_animation `duration`.
+    #                  # cast_time = idle hold BEFORE the cast (no skill anim); kept for team ref / possible future use.
     parameters:
       damageMultiplier:
         - 2.0

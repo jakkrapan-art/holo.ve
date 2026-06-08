@@ -103,6 +103,7 @@ skills:
         data:
           width: 1
           height: 3
+          cancel_when_empty: false    # combo beat: whiff (play anim, no dmg), don't cancel
       - type: play_animation
         data:
           animation: "skill_2"
@@ -126,7 +127,7 @@ evolutionStat:
   mana: 120
   intialMana: 40
 
-# Evolved Active Skill — "Blue Hero Finish" (same combo, stronger + longer gun line).
+# Evolved Active Skill — "Heroic Requiem" (same combo, stronger + longer gun line).
 evolution_skills:
   active:
     name: "Heroic Requiem"
@@ -188,6 +189,7 @@ evolution_skills:
         data:
           width: 1
           height: 6
+          cancel_when_empty: false    # combo beat: whiff (play anim, no dmg), don't cancel
       - type: play_animation
         data:
           animation: "skill_2"

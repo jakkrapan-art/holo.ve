@@ -15,6 +15,16 @@ static func ParseStatusEffect(data: Dictionary, parameters: Dictionary = {}):
 		"IncreaseDefBuff":
 			var increaseValue = data.get("increaseValue", 0.0);
 			statusEffect = IncreaseDefBuff.new(duration, increaseValue);
+		"DecreaseDefBuff":
+			# Armor shred. Designer enters a POSITIVE magnitude in YAML (e.g. 0.05 =
+			# "reduce armor by 5%") so desc tokens read cleanly; applied as an armor
+			# DECREASE by reusing IncreaseDefBuff with the value negated.
+			# decreaseValue is param-bindable (single source with desc_template).
+			# refresh_on_apply keeps one entry per enemy + refreshes duration on re-apply,
+			# so expiry is reliable instead of relying on the strongest-effect tick path.
+			var decreaseValue = _resolveField(data, parameters, "decreaseValue", "decreaseValue_param", 0.0);
+			statusEffect = IncreaseDefBuff.new(duration, -float(decreaseValue));
+			statusEffect.refresh_on_apply = data.get("refresh_on_apply", false);
 		"IncreaseMArmorPercentBuff":
 			var increaseValue = data.get("increaseValue", 0.0);
 			statusEffect = IncreaseMArmorPercentBuff.new(duration, increaseValue);

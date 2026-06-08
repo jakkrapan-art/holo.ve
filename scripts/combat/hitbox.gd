@@ -74,7 +74,6 @@ func _detect():
 
 	# Check areas and bodies so we cover both area-based and body-based enemies
 	for node in get_overlapping_areas() + get_overlapping_bodies():
-		print("overlapping node:", node)
 		var enemy_node := _resolve_enemy(node)
 		if enemy_node == null:
 			continue

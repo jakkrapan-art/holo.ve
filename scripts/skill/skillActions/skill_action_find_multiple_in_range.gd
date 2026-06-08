@@ -43,14 +43,25 @@ func find_targets_in_rotated_range(context: SkillContext):
 		center_on_anchor = true
 	elif context.user is Tower:
 		var tower := context.user as Tower
-		if tower.enemy == null:
-			return
-		user_rotation = get_user_rotation(tower, tower.enemy)
-		# Snapshot aim direction while tower.enemy is valid — survives the skill's
-		# animation await even if the enemy dies before play_effect/projectile run.
-		var aim := tower.enemy.global_position - tower.global_position
-		if aim.length() > 0.001:
-			context.extra["aim_dir"] = aim.normalized()
+		if tower.enemy != null:
+			user_rotation = get_user_rotation(tower, tower.enemy)
+			# Snapshot aim direction while tower.enemy is valid — survives the skill's
+			# animation await even if the enemy dies before play_effect/projectile run.
+			var aim := tower.enemy.global_position - tower.global_position
+			if aim.length() > 0.001:
+				context.extra["aim_dir"] = aim.normalized()
+		else:
+			# Combo beat fallback: the locked enemy died (e.g. an earlier beat killed it),
+			# so reuse the snapshotted aim direction. The box still fires along the cast
+			# direction and hits live enemies in it, instead of no-op'ing on an empty target.
+			# aim_dir is the first-beat snapshot UNLESS an earlier beat re-locked a live
+			# enemy via the detector and refreshed it — both are correct.
+			# aim_dir.angle() - PI/2 matches get_user_rotation's angle_to_point(target) - PI/2 (Godot 4.x).
+			var aim_dir = context.extra.get("aim_dir", null)
+			if aim_dir is Vector2:
+				user_rotation = aim_dir.angle() - PI / 2
+			else:
+				return
 
 	# Calculate actual dimensions from cell counts
 	var cellSize = GridHelper.CELL_SIZE

@@ -172,6 +172,7 @@ static func ParseAction(data: Dictionary, parameters: Dictionary = {}) -> SkillA
 					hdArr.append(float(v))
 				skill.hitDistribution = hdArr
 			skill.canCrit = skillData.get("can_crit", true)
+			skill.forcedCrit = skillData.get("force_crit", false)
 			if skillData.has("damage_type"):
 				skill.damageType = Utility.parse_string_to_enum(Damage.DamageType, skillData["damage_type"])
 				skill.damageTypeOverride = true

@@ -116,13 +116,18 @@ func _process(delta):
 		position = GridHelper.snapToGrid(get_viewport().size, get_global_mouse_position());
 		updateTowerState();
 
-	if skillController && !usingSkill:
-		if(skillController.currentMana == skillController.maxMana && !attacking):
-			await useSkill();
-			if not is_instance_valid(self):
-				return
+	# Energy-full skill takes priority over auto-attack: while skillReady, the attack
+	# below is suppressed so a swing can't kill the target before the skill fires. Cast
+	# only with a locked target; a fizzle (target outside the skill box) keeps Energy
+	# full by design and the attack stays suppressed until find lands a target.
+	var skillReady := skillController != null && skillController.currentMana == skillController.maxMana
 
-	if enableAttack && !attacking && !usingSkill:
+	if skillReady && !usingSkill && !attacking && is_instance_valid(enemy):
+		await useSkill();
+		if not is_instance_valid(self):
+			return
+
+	if enableAttack && !attacking && !usingSkill && !skillReady:
 		attackEnemy();
 
 func setup(id: String, onPlace: Callable, onRemove: Callable):

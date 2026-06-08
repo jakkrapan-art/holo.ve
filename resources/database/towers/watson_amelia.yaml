@@ -65,7 +65,8 @@ skills:
           target_team: self
           target_type: tower
           target_shape: single
-    cast_time: 0.5
+    # cast_time: 0.0   # DISABLED — skill timing now lives in play_animation `duration`.
+    #                  # cast_time = idle hold BEFORE the cast (no skill anim); kept for team ref / possible future use.
     parameters:
       attackSpeedBuff:
         - 0.10
@@ -75,6 +76,7 @@ skills:
       - type: "play_animation"
         data:
           animation: "skill"
+          duration: 0.5   # skill clip scaled to 0.5s; effect lands ~0.4s (tune in-engine)
       - type: "play_effect"
         data:
           effect_script: "res://resources/tower/hololive/en_branch/myth_gen/amelia/skill_effect/amelia_skill_effect.gd"
@@ -125,7 +127,8 @@ evolution_skills:
           target_team: self
           target_type: tower
           target_shape: single
-    cast_time: 0.5
+    # cast_time: 0.0   # DISABLED — skill timing now lives in play_animation `duration`.
+    #                  # cast_time = idle hold BEFORE the cast (no skill anim); kept for team ref / possible future use.
     parameters:
       attackSpeedBuff:
         - 0.50
@@ -135,6 +138,7 @@ evolution_skills:
       - type: "play_animation"
         data:
           animation: "skill"
+          duration: 0.5   # skill clip scaled to 0.5s; effect lands ~0.4s (tune in-engine)
       - type: "play_effect"
         data:
           effect_script: "res://resources/tower/hololive/en_branch/myth_gen/amelia/skill_effect/amelia_evo_skill_effect.gd"

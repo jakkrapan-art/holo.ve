@@ -307,6 +307,16 @@ func play_animation(name: String, speed: float = 1):
 		return anim.play(name, speed);
 	return false;
 
+func get_animation_duration(name: String) -> float:
+	if(anim != null):
+		return anim.get_native_duration(name);
+	return 0.0;
+
+func has_animation(name: String) -> bool:
+	if(anim != null):
+		return anim.has_animation(name);
+	return false;
+
 func play_animation_default():
 	if(anim != null):
 		anim.playDefault();

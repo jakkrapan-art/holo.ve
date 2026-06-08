@@ -62,7 +62,8 @@ skills:
           target_team: enemy
           target_type: enemy
           target_shape: area
-    cast_time: 0.0
+    # cast_time: 0.0   # DISABLED — skill/combo timing lives in play_animation `duration` (see combo template below).
+    #                  # cast_time = idle hold BEFORE the cast (no skill anim); kept for team ref / possible future use.
     parameters:
       damageBonus:
         - 0.10
@@ -112,6 +113,49 @@ skills:
       - type: play_animation
         data:
           animation: "idle"
+      # ─────────────────────────────────────────────────────────────────
+      # COMBO SKILL (หลายท่าใน cast เดียว) — pattern แบบ "beat"
+      #
+      # 1 beat = play_animation(1 คลิป non-loop) + duration(วินาที) + effect ต่อท้าย
+      #   • duration ยืด/ย่อคลิปให้พอดีเวลา → ดาเมจ/effect ลงที่ ~80% ของ duration
+      #   • ชื่อคลิป: skill_1, skill_2, ... skill_N (ต้องมีใน SpriteFrames ของ .tscn, loop=false)
+      #   • ท่าเชื่อม (เช่น ควงปืน) วาดไว้ "หัวคลิป" ของ beat ถัดไป — ไม่มีคลิป "pre" แยก
+      #   • beat สุดท้ายปิดด้วย play_animation "idle" เสมอ (คืน speed ปกติ)
+      #   • ห้ามต่อ delay หลัง play_animation ของ beat — คุมจังหวะที่ duration พอ
+      #   • cast_time ตั้ง 0 สำหรับคอมโบ (ท่าชาร์จก่อนฟันใส่หัวคลิป beat 1)
+      #   • ใช้ได้ทั้ง skills.active และ evolution_skills.active เหมือนกัน
+      #
+      # ตัวอย่าง 2 beat (ฟันดาบ → ควงปืนยิง) — ของจริงดู regis_altare.yaml:
+      #   actions:
+      #     - type: find_multi_enemy
+      #       data:
+      #         width: 3
+      #         height: 1
+      #     - type: play_animation        # beat 1: ดาเมจฟันลง ~0.4s
+      #       data:
+      #         animation: "skill_1"
+      #         duration: 0.5
+      #     - type: attack
+      #       data:
+      #         damage: 100
+      #         damage_type: physic
+      #     - type: clear_enemy
+      #     - type: find_multi_enemy
+      #       data:
+      #         width: 1
+      #         height: 3
+      #     - type: play_animation        # beat 2: ท่าควงปืนอยู่หัวคลิปนี้, ยิงลง ~0.8s
+      #       data:
+      #         animation: "skill_2"
+      #         duration: 1.0
+      #     - type: attack
+      #       data:
+      #         damage: 150
+      #         damage_type: magic
+      #     - type: play_animation
+      #       data:
+      #         animation: "idle"
+      # ─────────────────────────────────────────────────────────────────
   passive: null
 
 # evolutionStat = stat ตอน evolve (block เดียว ไม่ใช่ array)
@@ -146,7 +190,8 @@ evolution_skills:
           target_team: enemy
           target_type: enemy
           target_shape: area
-    cast_time: 0.0
+    # cast_time: 0.0   # DISABLED — skill/combo timing lives in play_animation `duration` (see combo template below).
+    #                  # cast_time = idle hold BEFORE the cast (no skill anim); kept for team ref / possible future use.
     parameters:
       damageBonus:
         - 0.30

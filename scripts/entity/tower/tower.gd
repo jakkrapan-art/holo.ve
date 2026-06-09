@@ -37,8 +37,6 @@ var passive = null
 var onPlace: Callable;
 var onRemove: Callable;
 
-var synergyBuffs := {}  # key: synergy_id, value: Array of buffs
-
 var enemy: Enemy = null;
 
 var IDLE_ANIMATION = "idle";
@@ -389,51 +387,6 @@ func processActiveBuff(buff: Dictionary, extraKey: String = ""):
 				pass;
 			_:
 				print("Unknown synergy buff key: ", key)
-
-	# Track for removal
-	if not synergyBuffs.has(synergy_id):
-		synergyBuffs[synergy_id] = []
-	synergyBuffs[synergy_id].append(buff)
-
-
-func clearSynergyBuffs(synergy_id: int):
-	if not synergyBuffs.has(synergy_id):
-		return
-
-	for buff in synergyBuffs[synergy_id]:
-		for key in buff.keys():
-			if noActionKey.has(key):
-				continue
-			var value = buff[key]
-			match key:
-				"attack_bonus":
-					data.buffs.remove(str(synergy_id) + "_atk_flat")
-				"attack_bonus_percent":
-					data.buffs.remove(str(synergy_id) + "_atk_mult")
-				"rangeBuff":
-					data.removeAttackRangeBuff(synergy_id)
-				"phys_atk_bonus_percent":
-					data.removePhysicDamagePercentBuff(synergy_id)
-				"magic_atk_bonus_percent":
-					data.removeMagicDamagePercentBuff(synergy_id)
-				"mana_regen":
-					data.removeManaRegenBuff(synergy_id)
-				"meteor_proc_chance_percent":
-					data.removeMeteorProcChance(synergy_id)
-				"meteor_damage_percent":
-					data.removeMeteorDamagePercent(synergy_id)
-				"crit_chance_bonus_percent":
-					data.removeCritChanceBuff(synergy_id)
-				"on_skill_cast":
-					if(skillController):
-						skillController.removeModifier(synergy_id)
-				"on_attack":
-					if(attackController):
-						attackController.removeModifier(synergy_id)
-				_:
-					print("Unknown synergy buff key: ", key)
-
-	synergyBuffs.erase(synergy_id)
 
 func resetForWave():
 	attacking = false

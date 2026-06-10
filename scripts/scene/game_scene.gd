@@ -23,6 +23,10 @@ var staff: Staff = null
 # (currently 2.5 s) so the popup arrives during the last fade beat.
 const BOSS_WAVE_END_POPUP_DELAY := 2.2
 
+# Pacing beat between a regular (non-boss) wave end and the wave-end popup, so the
+# wave-clear effects land before the UI cuts in. Inspector-editable feel knob.
+@export var wave_end_popup_delay: float = 0.6
+
 var mission: Mission = null;
 var t: Tower = null
 var state: String = ""
@@ -219,16 +223,22 @@ func on_wave_ended():
 	if towerFactory != null:
 		towerFactory.onWaveEnd()
 
-	# Hold the wave-end popup back briefly on boss waves so the token drop
-	# visual at the boss death position is readable before the popup covers it.
-	if waveController != null and waveController.isBossWave:
-		await get_tree().create_timer(BOSS_WAVE_END_POPUP_DELAY).timeout
-		# Re-entry guard: scene may have been freed mid-wait (e.g. game-over) OR the staff
-		# may have died during the await window leaving the scene alive but the game over.
-		if !is_instance_valid(self):
-			return
-		if state == "game_over":
-			return
+	# Pacing beat before the popup so wave-clear effects land first. Boss waves hold
+	# longer (token-drop visual); regular waves get the short feel beat.
+	var popup_delay: float = BOSS_WAVE_END_POPUP_DELAY if (waveController != null and waveController.isBossWave) else wave_end_popup_delay
+	await get_tree().create_timer(popup_delay).timeout
+	# Re-entry guard: scene may have been freed mid-wait (e.g. game-over) OR the staff
+	# may have died during the await window leaving the scene alive but the game over.
+	if !is_instance_valid(self):
+		return
+	if state == "game_over":
+		return
+	# The beat keeps state == "wave", so the staff-skill button stays live during it.
+	# If the player entered targeting mid-beat, cancel it so the popup does not open over
+	# the cast indicator and a card-click cannot also commit a (limited-use) staff skill
+	# onto the now-empty field. Field is clear, so a pending cast has no value anyway.
+	if state == "staff_skill_casting":
+		_cancel_staff_skill_cast()
 
 	# At configured wave milestones, offer one of the remaining decks BEFORE
 	# the normal tower-select popup. Pre-filter empty decks so the popup never

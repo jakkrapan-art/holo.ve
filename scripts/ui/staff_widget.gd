@@ -65,6 +65,11 @@ func _on_hp_changed(current: int, max_hp: int) -> void:
 func _on_skill_button_pressed() -> void:
 	skill_pressed.emit()
 
+# True when the cursor is over the skill button — GameScene uses this so a click on the
+# button during skill targeting cancels (via the button) instead of committing a cast.
+func is_skill_button_hovered() -> bool:
+	return _skill_icon != null and _skill_icon.is_hovered()
+
 func _on_skill_used() -> void:
 	# A charge was consumed. Grey out only when all charges depleted (charges == 0).
 	# -1 = unlimited (never greys); > 0 = still has charges; 0 = depleted.

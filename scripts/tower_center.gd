@@ -59,6 +59,10 @@ func addDeck(deck_key: String) -> bool:
 	added_decks.append(deck_key)
 
 	ResourceManager.preloadSynergy();
+	# Rebuild the tower-scene cache so a deck added mid-run (the wave-clear deck
+	# unlock) has its tower .tscn loaded; otherwise getTower misses and the new
+	# deck's towers fall back to the default/placeholder scene.
+	ResourceManager.loadResources();
 	return true
 
 func getAvailableDecks() -> Array:

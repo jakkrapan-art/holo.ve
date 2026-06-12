@@ -75,10 +75,8 @@ func _ready():
 	TowerCenter.addDeck(TowerCenter.selected_deck)
 	var default = TowerDataLoader.load_data("res://resources/database/towers/", "default_tower")
 	TowerCenter.setDefaultTowerData(default)
-	# (tower-scene cache is built inside TowerCenter.addDeck above)
-	# Compile skill-effect shader pipelines now (behind the deck/loading screen)
-	# so the first in-run cast doesn't hitch. Fire-and-forget coroutine.
-	ResourceManager.warmSkillEffectShaders(self)
+	# (tower-scene cache + skill-effect shader warm are both handled inside
+	# TowerCenter.addDeck above)
 
 	# Staff system: load data → instantiate entity → wire widget → spawn endpoint sprite.
 	setup_staff()

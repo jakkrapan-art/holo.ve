@@ -38,6 +38,8 @@ var _active_popup: UITowerSelect = null
 # Staff skill casting state — indicator follows mouse; LeftClick commits, RightClick / ESC cancels.
 var _skill_cast_indicator: SkillCastIndicator = null
 var _state_before_skill_cast: String = ""
+# Ref to the Staff HUD widget so _input can ask whether a click landed on the skill button.
+var _staff_widget: StaffWidget = null
 
 func _input(event):
 	if state == "tower_placement" and event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
@@ -52,6 +54,10 @@ func _input(event):
 	elif state == "staff_skill_casting":
 		if event is InputEventMouseButton and event.pressed:
 			if event.button_index == MOUSE_BUTTON_LEFT:
+				# Click on the skill button itself -> let the button's pressed signal
+				# toggle-cancel (MOBA-style); do NOT commit a cast under the button.
+				if _staff_widget != null and _staff_widget.is_skill_button_hovered():
+					return
 				_commit_staff_skill_cast()
 			elif event.button_index == MOUSE_BUTTON_RIGHT:
 				_cancel_staff_skill_cast()
@@ -141,11 +147,11 @@ func setup_staff():
 	Utility.ConnectSignal(staff, "died", Callable(self, "_on_staff_died"))
 
 	# Wire HUD widget — replaces the legacy ManagerImg / PlayerUI HealthBar binding.
-	var staff_widget: StaffWidget = get_node_or_null("GameUI/PlayerUI/Player/StaffWidget") as StaffWidget
-	if staff_widget != null:
-		staff_widget.setup(staff)
-		# Widget button click → Staff.requestCastSkill (emits skill_cast_requested if usable).
-		Utility.ConnectSignal(staff_widget, "skill_pressed", Callable(staff, "requestCastSkill"))
+	_staff_widget = get_node_or_null("GameUI/PlayerUI/Player/StaffWidget") as StaffWidget
+	if _staff_widget != null:
+		_staff_widget.setup(staff)
+		# Widget button click → toggle: cancel if already aiming, else request a cast.
+		Utility.ConnectSignal(_staff_widget, "skill_pressed", Callable(self, "_on_staff_skill_button_pressed"))
 	else:
 		push_warning("GameScene.setup_staff: StaffWidget not found at GameUI/PlayerUI/Player/StaffWidget")
 
@@ -192,9 +198,24 @@ func _on_staff_died():
 
 # === Staff skill casting ===
 
+func _on_staff_skill_button_pressed():
+	# Skill button toggle (MOBA-style): press while aiming = cancel, otherwise request a cast.
+	if staff == null:
+		return
+	# Guard against re-entry across the wave-end popup beat (PR #51): never enter aiming
+	# once a popup is open or the run is over.
+	if _popup_open or state == "game_over":
+		return
+	if state == "staff_skill_casting":
+		_cancel_staff_skill_cast()
+	else:
+		staff.requestCastSkill()
+
 func _on_staff_skill_cast_requested():
 	# Player pressed the Staff Widget skill button + Staff confirmed cast is valid.
 	# Enter input-mode "staff_skill_casting"; mouse position drives the indicator.
+	if state == "staff_skill_casting":
+		return  # already aiming; guard a future re-entrant caller from clobbering _state_before_skill_cast
 	if staff == null or _skill_cast_indicator == null:
 		return
 	_state_before_skill_cast = state

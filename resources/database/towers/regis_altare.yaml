@@ -4,7 +4,6 @@ generation: tempus
 attackType: physic
 evolutionCost: 1
 
-# skill: "res://resources/database/skill/takanashi_kiara_skill.tres"
 attack_sound: "hit_altare"
 open_sound: "debut_altare"
 evolve_sound: "evo_altare"
@@ -12,79 +11,195 @@ evolve_sound: "evo_altare"
 stats:
   - damage: 80
     attackRange: 1.0
-    attackSpeed: 110
-    mana: 120
-    intialMana: 40
+    attackSpeed: 90.0
     critChance: 0
     critMultiplier: 1.5
+    mana: 120
+    intialMana: 40
 
   - damage: 140
     attackRange: 1.0
-    attackSpeed: 110.0
-    mana: 120
-    intialMana: 40
+    attackSpeed: 90.0
     critChance: 0
     critMultiplier: 1.5
+    mana: 120
+    intialMana: 40
 
   - damage: 200
     attackRange: 1.0
-    attackSpeed: 110.0
-    mana: 120
-    intialMana: 40
+    attackSpeed: 90.0
     critChance: 0
     critMultiplier: 1.5
+    mana: 120
+    intialMana: 40
 
-skill:
-  name: "Skill"
-  desc: "Just a skill"
-  actions:
-    - type: find_multi_enemy
-      data:
-        width: 3
-        height: 1
-        cancel_when_empty: true
-    - type: play_animation        # beat 1: clip scaled to 0.5s; impact lands ~0.4s
-      data:
-        animation: "skill_1"
-        duration: 0.5
-    - type: attack
-      data:
-        damage: 100
-        damage_type: physic
-    - type: clear_enemy
-    - type: find_multi_enemy
-      data:
-        width: 1
-        height: 3
-        cancel_when_empty: false
-    - type: play_animation        # beat 2: clip scaled to 1.0s; impact lands ~0.8s
-      data:                        # pacing lives in duration — no trailing delay
-        animation: "skill_2"
-        duration: 1.0
-    - type: attack
-      data:
-        damage: 150
-        damage_type: magic
-    - type: play_animation
-      data:
-        animation: "idle"
+# Active Skill — "Gun and Blade" combo (2 beats, both physic).
+# Reference example for: combo beat model + armor-shred debuff + guaranteed crit.
+skills:
+  active:
+    name: "Gun and Blade"
+    names: ["Gun and Blade I", "Gun and Blade II", "Gun and Blade III"]
+    desc: "Altare strikes twice with his Gun Blade. A forward slash across a 3x1 tile area deals physical damage and reduces armor by 5% for 2s, then a gun volley down a 1x3 lane deals physical damage with a guaranteed critical."
+    desc_template: "Altare strikes twice with his Gun Blade. A forward slash across a 3x1 tile area deals {beat1Damage:percent} physical damage and reduces armor by {armorShred:percent} for {shredDuration}s, then a gun volley down a 1x3 lane deals {beat2Damage:percent} physical damage with a guaranteed critical."
+    icon: ""
+    tags:
+      - damage
+      - attack
+      - aoe
+      - combo
+      - debuff
+      - enemy
+    target_summary:
+      target_team: enemy
+      target_type: enemy
+      target_shape: area
+    effects:
+      - name: "Gun Blade Slash"
+        target:
+          target_team: enemy
+          target_type: enemy
+          target_shape: area
+      - name: "Armor Break"
+        target:
+          target_team: enemy
+          target_type: enemy
+          target_shape: area
+      - name: "Gun Volley"
+        target:
+          target_team: enemy
+          target_type: enemy
+          target_shape: area
+    parameters:
+      beat1Damage:
+        - 1.5
+        - 1.75
+        - 2.25
+      beat2Damage:
+        - 1.2
+        - 1.4
+        - 1.6
+      armorShred: 0.05
+      shredDuration: 2.0
+    actions:
+      - type: find_multi_enemy        # beat 1: slash, 3 wide x 1 deep
+        data:
+          width: 3
+          height: 1
+      - type: play_animation
+        data:
+          animation: "skill_1"
+          duration: 0.5
+      - type: attack
+        data:
+          damage_multiplier_param_name: "beat1Damage"
+          damage_type: physic
+          status_effects:
+            - type: "DecreaseDefBuff"           # positive magnitude in YAML, applied as a reduction
+              decreaseValue_param: "armorShred"
+              duration_param: "shredDuration"
+              refresh_on_apply: true
+      - type: clear_enemy
+      - type: find_multi_enemy        # beat 2: gun line, 1 wide x 3 deep
+        data:
+          width: 1
+          height: 3
+          cancel_when_empty: false    # combo beat: whiff (play anim, no dmg), don't cancel
+      - type: play_animation
+        data:
+          animation: "skill_2"
+          duration: 1.0
+      - type: attack
+        data:
+          damage_multiplier_param_name: "beat2Damage"
+          damage_type: physic
+          force_crit: true                       # guaranteed critical
+      - type: play_animation
+        data:
+          animation: "idle"
+  passive: null
 
 evolutionStat:
   damage: 300
   attackRange: 1.0
-  attackSpeed: 110
-  mana: 120
-  intialMana: 40
+  attackSpeed: 90.0
   critChance: 50.0
   critMultiplier: 1.5
+  mana: 120
+  intialMana: 40
 
-
-# Optional (only if tower has evolution stats)
-# evolutionStat:
-#   damage: 250
-#   attackRange: 1.2
-#   attackSpeed: 110.0
-#   critChance: 25.0
-#   critMultiplier: 2.0
-#   mana: 80
-#   intialMana: 20
+# Evolved Active Skill — "Heroic Requiem" (same combo, stronger + longer gun line).
+evolution_skills:
+  active:
+    name: "Heroic Requiem"
+    desc: "Altare's finisher strikes twice with his Gun Blade. A forward slash across a 3x1 tile area deals physical damage and reduces armor by 5% for 2s, then a long gun volley down a 1x6 lane deals physical damage with a guaranteed critical."
+    desc_template: "Altare's finisher strikes twice with his Gun Blade. A forward slash across a 3x1 tile area deals {beat1Damage:percent} physical damage and reduces armor by {armorShred:percent} for {shredDuration}s, then a long gun volley down a 1x6 lane deals {beat2Damage:percent} physical damage with a guaranteed critical."
+    icon: ""
+    tags:
+      - damage
+      - attack
+      - aoe
+      - combo
+      - debuff
+      - enemy
+    target_summary:
+      target_team: enemy
+      target_type: enemy
+      target_shape: area
+    effects:
+      - name: "Gun Blade Slash"
+        target:
+          target_team: enemy
+          target_type: enemy
+          target_shape: area
+      - name: "Armor Break"
+        target:
+          target_team: enemy
+          target_type: enemy
+          target_shape: area
+      - name: "Gun Volley"
+        target:
+          target_team: enemy
+          target_type: enemy
+          target_shape: area
+    parameters:
+      beat1Damage: 3.0
+      beat2Damage: 2.0
+      armorShred: 0.05
+      shredDuration: 2.0
+    actions:
+      - type: find_multi_enemy        # beat 1: slash, 3 wide x 1 deep
+        data:
+          width: 3
+          height: 1
+      - type: play_animation
+        data:
+          animation: "skill_1"
+          duration: 0.5
+      - type: attack
+        data:
+          damage_multiplier_param_name: "beat1Damage"
+          damage_type: physic
+          status_effects:
+            - type: "DecreaseDefBuff"
+              decreaseValue_param: "armorShred"
+              duration_param: "shredDuration"
+              refresh_on_apply: true
+      - type: clear_enemy
+      - type: find_multi_enemy        # beat 2: longer gun line, 1 wide x 6 deep
+        data:
+          width: 1
+          height: 6
+          cancel_when_empty: false    # combo beat: whiff (play anim, no dmg), don't cancel
+      - type: play_animation
+        data:
+          animation: "skill_2"
+          duration: 1.0
+      - type: attack
+        data:
+          damage_multiplier_param_name: "beat2Damage"
+          damage_type: physic
+          force_crit: true
+      - type: play_animation
+        data:
+          animation: "idle"
+  passive: null

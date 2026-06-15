@@ -19,6 +19,10 @@ class_name SkillActionAttack
 # Crit toggle — false disables crit roll for this skill (e.g. Kiara fire blade)
 @export var canCrit: bool = true
 
+# Guaranteed crit — true forces every hit to crit regardless of crit chance
+# (e.g. Regis Altare beat-2 gun shot). Still applies the normal crit multiplier.
+@export var forcedCrit: bool = false
+
 # Damage type — defaults to tower.data.attackType (set damageTypeOverride=true to use this)
 @export var damageType: Damage.DamageType = Damage.DamageType.PHYSIC
 @export var damageTypeOverride: bool = false
@@ -76,7 +80,8 @@ func execute(context: SkillContext):
 			if not is_instance_valid(target) or not target.has_method("recvDamage"):
 				continue
 			# randi_range(1, 100) → 100 values for exact critChance/100 probability (§6.2 #1 fix)
-			var isCrit: bool = canCrit and critChance > 0 and randi_range(1, 100) <= critChance
+			# forcedCrit overrides the roll (guaranteed crit, e.g. Altare beat 2).
+			var isCrit: bool = forcedCrit or (canCrit and critChance > 0 and randi_range(1, 100) <= critChance)
 			var hitDamage: float = hitBase
 			if isCrit:
 				# §5: Critical Damage = 1 + (1 × (ΣCD − 1)) = ΣCD

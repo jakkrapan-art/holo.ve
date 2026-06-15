@@ -80,7 +80,9 @@ func _ready():
 
 	show_popup_panel();
 
-	ResourceManager.preloadEnemy("forest01", ["boss","elite", "normal"]);
+	# Map folder name = selected_map_file minus ".yaml" (e.g. "forest01.yaml" -> "forest01"),
+	# so a new map preloads its own enemy set instead of always forest01's.
+	ResourceManager.preloadEnemy(TowerCenter.selected_map_file.get_basename(), ["boss","elite", "normal"]);
 
 	mission = Mission.new();
 

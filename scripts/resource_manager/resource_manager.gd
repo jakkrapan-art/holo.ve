@@ -115,6 +115,11 @@ static func getSprite(group: String, key: String):
 # is smooth. Data-driven: reads each tower's normal + evolved play_effect
 # actions and resolves the effect script's `SHADER_PATH` const — no per-tower
 # hardcoding. Fire-and-forget coroutine; needs a host Node for the scene tree.
+#
+# Process-wide guard: a shader path warmed once stays warmed (its compiled GPU
+# pipeline persists because we keep the Shader ref alive here), so repeated calls
+# - e.g. a mid-run deck unlock via addDeck - only warm genuinely-new shaders.
+static var _warmed_shaders: Dictionary = {}
 static func warmSkillEffectShaders(host: Node) -> void:
 	if host == null or not is_instance_valid(host):
 		return
@@ -142,7 +147,12 @@ static func warmSkillEffectShaders(host: Node) -> void:
 		if data.attack_config != null and data.attack_config.vfx_shader != "":
 			shaderPaths[data.attack_config.vfx_shader] = true
 
-	if shaderPaths.is_empty():
+	# Skip shaders already warmed this process; only compile genuinely-new ones.
+	var toWarm: Array = []
+	for sp in shaderPaths.keys():
+		if not _warmed_shaders.has(sp):
+			toWarm.append(sp)
+	if toWarm.is_empty():
 		return
 
 	# Draw each pipeline for two frames on a throwaway CanvasLayer, then free.
@@ -153,8 +163,12 @@ static func warmSkillEffectShaders(host: Node) -> void:
 	# for two frames is imperceptible.
 	var layer := CanvasLayer.new()
 	host.add_child(layer)
-	for sp in shaderPaths.keys():
+	for sp in toWarm:
 		var shader = load(sp)
+		# Mark the resolved path warmed regardless of load result (a missing file
+		# must not retry every unlock); keep the Shader ref so its compiled
+		# pipeline survives scene changes and the skip stays valid next run.
+		_warmed_shaders[sp] = shader if shader != null else true
 		if shader == null:
 			continue
 		var mat := ShaderMaterial.new()

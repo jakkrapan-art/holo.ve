@@ -63,6 +63,11 @@ func addDeck(deck_key: String) -> bool:
 	# unlock) has its tower .tscn loaded; otherwise getTower misses and the new
 	# deck's towers fall back to the default/placeholder scene.
 	ResourceManager.loadResources();
+	# Pre-compile this deck's skill/bullet shaders (behind the deck / loading
+	# screen, or the wave-clear popup for a mid-run unlock) so the first in-run
+	# cast doesn't hitch. self (TowerCenter autoload) is the in-tree host; the
+	# _warmed guard makes repeat calls only warm new shaders. Fire-and-forget.
+	ResourceManager.warmSkillEffectShaders(self);
 	return true
 
 func getAvailableDecks() -> Array:

@@ -11,7 +11,7 @@ evolve_sound: "evo_altare"
 stats:
   - damage: 80
     attackRange: 1.0
-    attackSpeed: 90.0
+    attackSpeed: 110.0
     critChance: 0
     critMultiplier: 1.5
     mana: 120
@@ -19,7 +19,7 @@ stats:
 
   - damage: 140
     attackRange: 1.0
-    attackSpeed: 90.0
+    attackSpeed: 110.0
     critChance: 0
     critMultiplier: 1.5
     mana: 120
@@ -27,7 +27,7 @@ stats:
 
   - damage: 200
     attackRange: 1.0
-    attackSpeed: 90.0
+    attackSpeed: 110.0
     critChance: 0
     critMultiplier: 1.5
     mana: 120
@@ -48,7 +48,6 @@ skills:
       - aoe
       - combo
       - debuff
-      - enemy
     target_summary:
       target_team: enemy
       target_type: enemy
@@ -121,7 +120,7 @@ skills:
 evolutionStat:
   damage: 300
   attackRange: 1.0
-  attackSpeed: 90.0
+  attackSpeed: 110.0
   critChance: 50.0
   critMultiplier: 1.5
   mana: 120
@@ -140,7 +139,6 @@ evolution_skills:
       - aoe
       - combo
       - debuff
-      - enemy
     target_summary:
       target_team: enemy
       target_type: enemy

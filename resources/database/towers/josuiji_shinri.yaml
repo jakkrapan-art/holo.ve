@@ -42,7 +42,6 @@ skills:
       - projectile
       - aoe
       - damage
-      - self
     target_summary:
       target_team: enemy
       target_type: enemy
@@ -88,7 +87,6 @@ evolution_skills:
       - projectile
       - aoe
       - damage
-      - self
     target_summary:
       target_team: enemy
       target_type: enemy

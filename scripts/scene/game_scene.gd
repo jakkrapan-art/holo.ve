@@ -25,7 +25,7 @@ const BOSS_WAVE_END_POPUP_DELAY := 2.2
 
 # Pacing beat between a regular (non-boss) wave end and the wave-end popup, so the
 # wave-clear effects land before the UI cuts in. Inspector-editable feel knob.
-@export var wave_end_popup_delay: float = 0.6
+@export var wave_end_popup_delay: float = 0.8
 
 var mission: Mission = null;
 var t: Tower = null

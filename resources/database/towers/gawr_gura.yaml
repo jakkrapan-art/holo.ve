@@ -46,7 +46,6 @@ skills:
       - projectile
       - aoe
       - stun
-      - enemy
       - persistent
     target_summary:
       target_team: enemy
@@ -114,7 +113,6 @@ evolution_skills:
       - projectile
       - aoe
       - stun
-      - enemy
       - persistent
     target_summary:
       target_team: enemy

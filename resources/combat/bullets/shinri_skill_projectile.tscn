@@ -8,10 +8,6 @@ size = Vector2(640, 512)
 [node name="ShinriSkillProjectile" type="Area2D"]
 script = ExtResource("1_proj")
 
-[node name="Placeholder" type="Polygon2D" parent="."]
-color = Color(1, 0.85, 0.2, 0.55)
-polygon = PackedVector2Array(0, -64, 640, -64, 640, 64, 0, 64)
-
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(320, 0)
 shape = SubResource("RectangleShape2D_shinri")

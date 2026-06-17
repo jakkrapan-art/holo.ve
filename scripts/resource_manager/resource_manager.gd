@@ -140,6 +140,15 @@ static func warmSkillEffectShaders(host: Node) -> void:
 					if sp != "":
 						shaderPaths[sp] = true
 
+		# Passive-fired effect shaders (e.g. Shinri's crit pierce arrow): a passive spawns its own
+		# effect controller, so it never shows up as a play_effect action above. Read effect_script
+		# off the passive + evolutionPassive param dicts and resolve its SHADER_PATH the same way.
+		for passive in [data.passive, data.evolutionPassive]:
+			if passive is Dictionary and str(passive.get("effect_script", "")) != "":
+				var psp := _shaderPathFromEffectScript(str(passive["effect_script"]))
+				if psp != "":
+					shaderPaths[psp] = true
+
 		# Normal-attack projectile bullet shader (not a skill effect) — warm it too
 		# so the first shot doesn't hitch on pipeline compile. Its shader lives in a
 		# ShaderMaterial inside the bullet .tscn, invisible to the SHADER_PATH scan, so

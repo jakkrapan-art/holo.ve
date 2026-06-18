@@ -1,6 +1,8 @@
 shader_type canvas_item;
 render_mode blend_add;
 
+#include "res://resources/tower/shared/lane_fx.gdshaderinc"
+
 // ════════════════════════════════════════════════════════════════
 // Kiara · Flame Slash — normal skill VFX
 // A single leaf-tapered crescent blade swung along an arc (วงฟัน):
@@ -113,10 +115,10 @@ void fragment() {
 	a = max(a, ember);
 
 	// ── Envelope + life applied to the whole stack ───────────
-	float ex   = 1.0 - smoothstep(aspect * 0.5 - 0.12, aspect * 0.5 - 0.02, abs(uv.x));
-	float ey   = 1.0 - smoothstep(0.44, 0.49, abs(uv.y));
 	float life = smoothstep(0.0, 0.05, progress) * (1.0 - smoothstep(0.66, 1.0, progress));
-	float mask = ex * ey * life;
+	// Frame vignette via the shared corner-free helper (was ex*ey; fade starts match the old
+	// 0.12/0.05 bands, only the empty corner is rounded). See lane_fx.gdshaderinc.
+	float mask = lane_frame_mask(uv, aspect, 0.12, 0.06) * life;
 	col *= mask;
 	a   *= mask;
 

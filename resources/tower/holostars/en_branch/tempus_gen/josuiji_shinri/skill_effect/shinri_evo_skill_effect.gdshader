@@ -1,6 +1,8 @@
 shader_type canvas_item;
 render_mode blend_premul_alpha;
 
+#include "res://resources/tower/shared/lane_fx.gdshaderinc"
+
 // Josuiji Shinri "Heartpierce Shot" crit pierce-arrow VFX - EVOLVE tier.
 // Seamless pink COMET core (cel bands + living fbm warp) + braided light FILAMENTS tied to a
 // binding KNOT at the front tip + scattered sparkle/heart charm dots that linger past the bolt.
@@ -59,8 +61,9 @@ float heart(vec2 d, float s){
 }
 
 void fragment(){
-	float x = mix(-lane_pad, 1.0 + lane_pad, UV.x);
-	float y = UV.y - 0.5;
+	vec2 lc = lane_coord(UV, lane_pad);
+	float x = lc.x;
+	float y = lc.y;
 
 	float hr = max(head_r, 1e-3)    * 1.55;
 	float bw = max(beam_width, 1e-3)* 1.40;
@@ -70,7 +73,7 @@ void fragment(){
 	float launch = smoothstep(0.0, 0.10, progress);
 	float bolt_life = 1.0 - smoothstep(0.88, 1.0, progress);
 	float pop = mix(0.6, 1.0, smoothstep(0.0, 0.55, clamp(scale_p, 0.01, 1.2)));
-	float tower_gate = smoothstep(0.0, origin_soft, x);   // soft fade-in instead of a hard cut at the origin
+	float tower_gate = lane_origin_gate(x, origin_soft);   // soft fade-in at the lane origin (shared helper)
 
 	float dx = head_x - x;
 	float tt = clamp(dx / L, 0.0, 1.0);

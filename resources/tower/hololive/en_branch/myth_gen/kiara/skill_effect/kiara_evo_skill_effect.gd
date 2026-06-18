@@ -47,11 +47,7 @@ func setup(tower, context = null) -> void:
 	# Orient toward the locked target — same lane as find_multi_enemy. Falls back
 	# to the snapshotted aim_dir if the enemy died during the cast animation.
 	var forward := Vector2.RIGHT
-	var aim := Vector2.ZERO
-	if tower != null and tower.enemy != null and is_instance_valid(tower.enemy):
-		aim = tower.enemy.global_position - tower.global_position
-	elif context != null and context.extra.has("aim_dir"):
-		aim = context.extra["aim_dir"]
+	var aim := SkillVfx.resolve_aim(tower, context)
 	if aim.length() > 0.001:
 		forward = aim.normalized()
 		rotation = forward.angle() + ROT_OFFSET
@@ -67,13 +63,8 @@ func setup(tower, context = null) -> void:
 	_spawn_effect(eff, aspect, hx, hy, cx)
 
 func _spawn_effect(eff: Vector2, aspect: float, hx: float, hy: float, cx: float) -> void:
-	var rect := ColorRect.new()
-	rect.size = eff
-	rect.position = -eff * 0.5            # centre on the node origin
-	rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
-
-	var mat := ShaderMaterial.new()
-	mat.shader = load(SHADER_PATH)
+	var rect := SkillVfx.make_lane_rect(self, eff, SHADER_PATH)
+	var mat := rect.material as ShaderMaterial
 	# dynamic uniforms only — the look (shape/evo/show_*/body_scale/burst) is
 	# baked as defaults in the shader.
 	mat.set_shader_parameter("progress", 0.0)
@@ -82,8 +73,6 @@ func _spawn_effect(eff: Vector2, aspect: float, hx: float, hy: float, cx: float)
 	mat.set_shader_parameter("corridor_hx", hx)
 	mat.set_shader_parameter("corridor_hy", hy)
 	mat.set_shader_parameter("corridor_cx", cx)
-	rect.material = mat
-	add_child(rect)
 
 	var pop := create_tween()
 	pop.set_ease(Tween.EASE_OUT)

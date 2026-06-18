@@ -39,18 +39,11 @@ func _spawn_effect(lane_len: float, dur: float) -> void:
 	var visual_len := lane_len * (1.0 + 2.0 * LANE_PAD)
 	var visual_h := VISUAL_H_CELLS * float(GridHelper.CELL_SIZE)
 
-	var rect := ColorRect.new()
-	rect.size = Vector2(visual_len, visual_h)
-	rect.position = -rect.size * 0.5           # centre on the node origin
-	rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
-
-	var mat := ShaderMaterial.new()
-	mat.shader = load(SHADER_PATH)
+	var rect := SkillVfx.make_lane_rect(self, Vector2(visual_len, visual_h), SHADER_PATH)
+	var mat := rect.material as ShaderMaterial
 	mat.set_shader_parameter("progress", 0.0)
 	mat.set_shader_parameter("scale_p", 0.0)
 	mat.set_shader_parameter("lane_pad", LANE_PAD)
-	rect.material = mat
-	add_child(rect)
 
 	var pop := create_tween()
 	pop.set_ease(Tween.EASE_OUT)

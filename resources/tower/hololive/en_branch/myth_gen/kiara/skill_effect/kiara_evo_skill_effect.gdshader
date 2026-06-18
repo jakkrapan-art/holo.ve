@@ -3,6 +3,8 @@ render_mode blend_premul_alpha;   // premultiplied: dark magma bands show over t
                                   // map (true colour) while bright core/glow still adds.
                                   // (blend_add washed the violet/crimson over a lit bg.)
 
+#include "res://resources/tower/shared/lane_fx.gdshaderinc"
+
 // ════════════════════════════════════════════════════════════════
 // Kiara · Hinotori (evo) — production VFX (magma-violet Wingsweep phoenix)
 // Ported from test/kiara_vfx_preview/evo3_magma.gdshader with the chosen
@@ -280,10 +282,10 @@ void fragment() {
 	//  the phoenix. Director cut it; the bird silhouette carries the read on its own.)
 
 	// ── Envelope + VANISH (body fade + sparkles that outlive it) ─
-	// edge_fade widens the lane-end fade so bright mouth layers dissolve instead of hard-cutting.
-	float ex = 1.0 - smoothstep(aspect * 0.5 - edge_fade, aspect * 0.5, abs(uv.x));
-	float ey = 1.0 - smoothstep(0.47, 0.50, abs(uv.y));
-	float env = ex * ey * smoothstep(0.0, 0.04, progress);
+	// Frame vignette via the shared corner-free helper (was ex*ey, which left a rectangle).
+	// fade_x = edge_fade; fade_y = 0.03 (the old 0.47->0.50 band). Identical on the edges
+	// where content lives; only the empty corner is rounded. See lane_fx.gdshaderinc.
+	float env = lane_frame_mask(uv, aspect, edge_fade, 0.03) * smoothstep(0.0, 0.04, progress);
 	float keep = 1.0 - smoothstep(0.80, 0.95, progress);
 	float body_env = env * keep;
 	float spark_env = env * (1.0 - smoothstep(0.90, 1.04, progress));

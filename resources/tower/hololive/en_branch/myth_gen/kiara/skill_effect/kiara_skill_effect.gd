@@ -29,11 +29,7 @@ func setup(tower, context = null) -> void:
 	# Aim from the live target, else the snapshotted aim_dir (set in
 	# find_multi_enemy while the enemy was valid) — so a target dying during the
 	# skill animation no longer leaves the slash centred on the tower.
-	var forward := Vector2.ZERO
-	if tower != null and tower.enemy != null and is_instance_valid(tower.enemy):
-		forward = tower.enemy.global_position - tower.global_position
-	elif context != null and context.extra.has("aim_dir"):
-		forward = context.extra["aim_dir"]
+	var forward := SkillVfx.resolve_aim(tower, context)
 	if forward.length() > 0.001:
 		forward = forward.normalized()
 		global_position += forward * (GridHelper.CELL_SIZE * FORWARD_CELLS)
@@ -44,18 +40,11 @@ func _spawn_effect() -> void:
 	var width := AREA_W_CELLS * GridHelper.CELL_SIZE * WIDTH_PAD
 	var height := width / EFFECT_ASPECT
 
-	var rect := ColorRect.new()
-	rect.size = Vector2(width, height)
-	rect.position = -rect.size * 0.5          # centre on the node origin
-	rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
-
-	var mat := ShaderMaterial.new()
-	mat.shader = load(SHADER_PATH)
+	var rect := SkillVfx.make_lane_rect(self, Vector2(width, height), SHADER_PATH)
+	var mat := rect.material as ShaderMaterial
 	mat.set_shader_parameter("progress", 0.0)
 	mat.set_shader_parameter("scale_p", 0.0)
 	mat.set_shader_parameter("aspect", EFFECT_ASPECT)
-	rect.material = mat
-	add_child(rect)
 
 	var pop := create_tween()
 	pop.set_ease(Tween.EASE_OUT)

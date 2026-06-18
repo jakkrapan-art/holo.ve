@@ -24,6 +24,7 @@ var crit_chance_per_stack: float
 var reset_on_crit: bool
 var bonus_crit_damage: Array          # per-level additive crit damage (x); index by level-1
 var projectile_scene: PackedScene
+var effect_script: Script             # lane-static pierce VFX controller (normal or evolve slot)
 var arrow_speed: float                # tiles/sec
 var arrow_range: float                # tiles
 var stacks: int = 0
@@ -41,6 +42,11 @@ func _init(owner: Tower, params: Dictionary) -> void:
 	var path: String = str(params.get("projectile", ""))
 	if path != "" and ResourceLoader.exists(path):
 		projectile_scene = load(path)
+	# Pierce-arrow VFX controller for this slot (normal/evolve picked by tower._setupPassive).
+	# Guard like the projectile: a bad path degrades to "arrow fires, no VFX", never errors.
+	var fx_path: String = str(params.get("effect_script", ""))
+	if fx_path != "" and ResourceLoader.exists(fx_path):
+		effect_script = load(fx_path)
 
 # Does a crit replace the normal instant hit with the arrow? (Tower asks before attacking.)
 func replaces_attack_on_crit() -> bool:
@@ -87,6 +93,22 @@ func _fire_arrow(target: Enemy) -> void:
 	p.prevent_rehit = true
 	p.setup_direction(tower, direction, dmg, lifetime,
 			ProjectileCallback.new(Callable(self, "_on_arrow_hit"), Callable(), Callable()))
+
+	_spawn_vfx(direction, lifetime)
+
+# Spawn the lane-static pierce VFX aimed along the shot. Mirrors SkillActionPlayEffect:
+# a bare Node2D gets the effect controller script, parented to the tower's VFX layer.
+func _spawn_vfx(direction: Vector2, travel_dur: float) -> void:
+	if effect_script == null:
+		return
+	var parent := tower.get_parent()
+	if parent == null or not is_instance_valid(parent):
+		return
+	var fx := Node2D.new()
+	fx.set_script(effect_script)
+	parent.add_child(fx)
+	if fx.has_method("setup"):
+		fx.setup(tower, direction, travel_dur)
 
 func _on_arrow_hit(_projectile: Projectile, hit) -> void:
 	if hit is Enemy and is_instance_valid(hit):

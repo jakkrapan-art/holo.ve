@@ -33,6 +33,12 @@ func setupProjectile(projectile: Projectile, i: int, context: SkillContext):
 		# Snapshotted at find_multi_enemy time — survives the enemy dying mid-cast.
 		direction = context.extra["aim_dir"]
 
+	# Push the spawn out from the tower center toward the aim direction (muzzle
+	# offset) so the projectile/VFX leaves the character edge, not its belly.
+	# execute() spawned it at the center before the direction was known; now that
+	# direction is resolved, override the origin before setup_direction reads it.
+	projectile.global_position = Utility.muzzle_origin(tower.global_position, direction)
+
 	# Cap travel by range if specified. Pierce projectiles can have a long
 	# configured lifetime but should stop at the AOE corridor edge.
 	var effective_lifetime: float = lifetime

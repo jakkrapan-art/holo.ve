@@ -58,9 +58,11 @@ func setup(tower, context = null) -> void:
 
 	# Push the rect forward so the corridor mouth (slash) sits ~MOUTH_AHEAD cells
 	# ahead of the caster. The rect centre is (hx - cx) author-units ahead of the
-	# corridor's left edge; 1 author-unit == eff.y px.
+	# corridor's left edge; 1 author-unit == eff.y px. Add the shared muzzle offset
+	# (matches the damage projectile) so the rush leaves the character edge, not its belly.
 	var center_ahead_px := (hx - cx) * eff.y
-	global_position += forward * (center_ahead_px + MOUTH_AHEAD * cell)
+	var muzzle_px := Utility.MUZZLE_OFFSET_TILES * cell
+	global_position += forward * (muzzle_px + center_ahead_px + MOUTH_AHEAD * cell)
 
 	_spawn_effect(eff, aspect, hx, hy, cx)
 

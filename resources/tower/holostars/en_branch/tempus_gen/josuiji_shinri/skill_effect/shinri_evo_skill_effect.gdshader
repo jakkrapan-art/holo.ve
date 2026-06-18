@@ -19,6 +19,7 @@ uniform float tail_len     : hint_range(0.10, 1.20) = 0.50;
 uniform float beam_width   : hint_range(0.008, 0.12) = 0.035;
 uniform float intensity    : hint_range(0.0, 2.5)   = 1.1;
 uniform float spark_amount : hint_range(0.0, 1.5)   = 0.6;
+uniform float origin_soft  : hint_range(0.0, 0.30)  = 0.08;   // soft tail fade at the lane origin (was a hard scissor at the tower)
 
 const float XR = 2.5;   // x-unit px / y-unit px -> isotropic hearts/knot
 const vec3 PCORE = vec3(1.00, 0.99, 0.97);
@@ -69,7 +70,7 @@ void fragment(){
 	float launch = smoothstep(0.0, 0.10, progress);
 	float bolt_life = 1.0 - smoothstep(0.88, 1.0, progress);
 	float pop = mix(0.6, 1.0, smoothstep(0.0, 0.55, clamp(scale_p, 0.01, 1.2)));
-	float tower_gate = step(0.0, x);
+	float tower_gate = smoothstep(0.0, origin_soft, x);   // soft fade-in instead of a hard cut at the origin
 
 	float dx = head_x - x;
 	float tt = clamp(dx / L, 0.0, 1.0);

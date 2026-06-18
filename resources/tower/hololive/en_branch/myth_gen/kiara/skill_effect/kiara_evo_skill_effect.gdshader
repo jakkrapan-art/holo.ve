@@ -12,7 +12,7 @@ render_mode blend_premul_alpha;   // premultiplied: dark magma bands show over t
 // (progress, scale_p, aspect, corridor_hx/hy/cx) + orients onto the 3×5 lane.
 // Plays the whole rush internally via `progress`; damage is the separate
 // wide-pierce kiara_skill_projectile. In-rect only — no scene FX.
-// Perf: the fbm() calls are gated (born / slash-active / passed) so the
+// Perf: the fbm() calls are gated (born / slash-active) so the
 // padded rect doesn't pay full noise cost where alpha is 0 — no look change.
 // ════════════════════════════════════════════════════════════════
 
@@ -32,6 +32,7 @@ uniform float feather_count    : hint_range(4.0, 16.0) = 9.0;
 uniform float outline_strength : hint_range(0.0, 1.0) = 0.6;
 uniform float wing_sweep       : hint_range(0.0, 1.2) = 0.8;
 uniform int   burst_mode  : hint_range(0, 2) = 1;        // baked: no terminal burst
+uniform float edge_fade   : hint_range(0.02, 0.6) = 0.30; // lane-end envelope fade band: bigger = softer dissolve near the caster (was a hard 0.05 scissor)
 
 const vec3 P_CORE = vec3(1.00, 0.99, 0.92);
 const vec3 P_B1   = vec3(1.00, 0.82, 0.28);
@@ -275,17 +276,12 @@ void fragment() {
 	sc += mix(P_B2, P_B3, hash(cell + 4.0)) * spark * 1.9;
 	sa = max(sa, spark);
 
-	// ── Lingering scorched bed (fbm `bednz` gated by `passed`) ──
-	float in_lane = step(LEFT - 0.05, uv.x) * step(uv.x, RIGHT + 0.05);
-	float passed = smoothstep(0.0, 0.06, head_x - uv.x) * in_lane;
-	float bed = passed * (1.0 - smoothstep(hy * 0.80, hy, abs(uv.y)));
-	float bednz = (passed > 0.0) ? fbm(vec2(uv.x * 4.0 - progress * 2.0, uv.y * 6.0 + progress)) : 0.0;
-	float linger = bed * mix(0.12, 0.45, bednz) * (0.45 + 0.55 * smoothstep(1.0, 0.40, progress));
-	col += mix(P_B3, P_B4, 0.5) * linger * 0.9;
-	a = max(a, linger * 0.55);
+	// (Lingering scorched bed removed — its magenta corridor trail read as a rectangle behind
+	//  the phoenix. Director cut it; the bird silhouette carries the read on its own.)
 
 	// ── Envelope + VANISH (body fade + sparkles that outlive it) ─
-	float ex = 1.0 - smoothstep(aspect * 0.5 - 0.05, aspect * 0.5, abs(uv.x));
+	// edge_fade widens the lane-end fade so bright mouth layers dissolve instead of hard-cutting.
+	float ex = 1.0 - smoothstep(aspect * 0.5 - edge_fade, aspect * 0.5, abs(uv.x));
 	float ey = 1.0 - smoothstep(0.47, 0.50, abs(uv.y));
 	float env = ex * ey * smoothstep(0.0, 0.04, progress);
 	float keep = 1.0 - smoothstep(0.80, 0.95, progress);

@@ -87,7 +87,7 @@ func _fire_arrow(target: Enemy) -> void:
 	var lifetime: float = arrow_range / arrow_speed if arrow_speed > 0.0 else 1.0
 
 	var p: Projectile = projectile_scene.instantiate() as Projectile
-	p.global_position = tower.global_position
+	p.global_position = Utility.muzzle_origin(tower.global_position, direction)
 	tower.get_tree().root.add_child(p)
 	p.speed = arrow_speed * GridHelper.CELL_SIZE
 	p.prevent_rehit = true

@@ -25,9 +25,13 @@ func setup(tower, aim_dir: Vector2, travel_dur: float) -> void:
 		aim_dir = Vector2.RIGHT
 	aim_dir = aim_dir.normalized()
 	var lane_len := RANGE_TILES * float(GridHelper.CELL_SIZE)
-	# Push forward half a lane so lane-x 0 lands on the tower and lane-x 1 on the range end
-	# (the ColorRect is centred on this node; the padded quad spans the lane midpoint).
-	global_position = tower.global_position + aim_dir * (lane_len * 0.5)
+	# Lane origin (lane-x 0) starts at the muzzle point (pushed off the tower centre
+	# along the aim), matching the damage projectile so the visible arrow leaves the
+	# character edge, not its belly. Then push forward half a lane so lane-x 1 lands
+	# on the range end (the ColorRect is centred on this node; the padded quad spans
+	# the lane midpoint).
+	var muzzle := Utility.muzzle_origin(tower.global_position, aim_dir)
+	global_position = muzzle + aim_dir * (lane_len * 0.5)
 	rotation = aim_dir.angle()
 	_spawn_effect(lane_len, maxf(travel_dur, 0.05))
 

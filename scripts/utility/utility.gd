@@ -15,6 +15,18 @@ static func get_angle_to_target(from_position: Vector2, target_position: Vector2
 	var direction = target_position - from_position
 	return direction.angle()
 
+# Muzzle origin: push a projectile's spawn point out from the caster center
+# along the aim direction, so the projectile/VFX leaves the character edge
+# instead of its belly. Shared by every directional/homing projectile spawn.
+# MUZZLE_OFFSET_TILES is the single tuning knob (in tiles); circle/orbit
+# projectiles deliberately keep spawning at the caster center (orbit pivot).
+const MUZZLE_OFFSET_TILES: float = 0.5
+
+static func muzzle_origin(caster_position: Vector2, aim_dir: Vector2) -> Vector2:
+	if aim_dir.length() < 0.001:
+		return caster_position
+	return caster_position + aim_dir.normalized() * (MUZZLE_OFFSET_TILES * GridHelper.CELL_SIZE)
+
 static func show_damage_text(position: Vector2, parent: Node2D, damage: int, color: Color = Color(1, 0, 0)):
 	var atkNumber = load("res://resources/ui_component/damage_number.tscn").instantiate() as DamageNumber;
 	atkNumber.setup(damage, color);

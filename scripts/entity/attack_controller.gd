@@ -92,7 +92,8 @@ func _spawnBullet(target: Enemy, cfg: TowerAttackConfig, dmg: Damage, saved_gen:
 	if proj == null:
 		return
 	tower.get_tree().root.add_child(proj)
-	proj.global_position = tower.global_position
+	var aim_dir := (target.global_position - tower.global_position).normalized()
+	proj.global_position = Utility.muzzle_origin(tower.global_position, aim_dir)
 	proj.speed = cfg.speed * GridHelper.CELL_SIZE
 	_applyBulletVisual(proj, cfg)
 

@@ -10,9 +10,9 @@ evolve_sound: "evo_shinri"
 
 # Normal attack = homing arrow bullet (dynamic arrow VFX). Damage lands ONCE per shot
 # (projectile mode); on a crit the passive fires the citrine pierce arrow instead.
-# Colours MUST be set here: TowerAttackConfig defaults are warm-gold, and the bullet
-# visual always pushes core_color/mid_color into the shader. Shape is baked in
-# shinri_arrow.gdshader; speed/size/glow/colour are tunable here. size = arrow HEIGHT px.
+# Colours set here OVERRIDE shinri_arrow.gdshader's own defaults; omit a colour to keep
+# the shader default. Shape is baked in the shader; speed/size/glow/colour are tunable
+# here. size = arrow HEIGHT px.
 attack:
   mode: projectile
   projectile: "res://resources/combat/bullets/shinri_normal_bullet.tscn"

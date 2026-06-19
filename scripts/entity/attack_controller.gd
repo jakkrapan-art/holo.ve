@@ -121,9 +121,10 @@ func _onProjectileHit(proj: Projectile, target, saved_gen: int) -> void:
 		(target as Enemy).recvDamage(proj.damage)
 		executeModifier()
 
-# Scales sprite + collision to cfg.size and pushes the Soft Glow uniforms. Duplicates
-# the shared ShaderMaterial / CircleShape2D so per-bullet (and per-tower) tuning never
-# mutates the scene's shared resources.
+# Scales sprite + collision to cfg.size and pushes ONLY the shader-uniform overrides the
+# YAML actually set (cfg.visual_overrides); anything omitted keeps the shader's own default.
+# Duplicates the shared ShaderMaterial / CircleShape2D so per-bullet (and per-tower) tuning
+# never mutates the scene's shared resources.
 func _applyBulletVisual(proj: Projectile, cfg: TowerAttackConfig) -> void:
 	for child in proj.get_children():
 		if child is Sprite2D:
@@ -133,10 +134,8 @@ func _applyBulletVisual(proj: Projectile, cfg: TowerAttackConfig) -> void:
 			if spr.material is ShaderMaterial:
 				var mat := (spr.material as ShaderMaterial).duplicate() as ShaderMaterial
 				spr.material = mat
-				mat.set_shader_parameter("core_color", cfg.core_color)
-				mat.set_shader_parameter("mid_color", cfg.mid_color)
-				mat.set_shader_parameter("edge_color", cfg.edge_color)
-				mat.set_shader_parameter("glow_softness", cfg.glow_softness)
+				for uniform_name in cfg.visual_overrides:
+					mat.set_shader_parameter(uniform_name, cfg.visual_overrides[uniform_name])
 		elif child is CollisionShape2D:
 			var cs := child as CollisionShape2D
 			if cs.shape is CircleShape2D:

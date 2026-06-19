@@ -1,6 +1,8 @@
 shader_type canvas_item;
 render_mode blend_add;
 
+#include "res://resources/tower/shared/lane_fx.gdshaderinc"
+
 // Josuiji Shinri "Bull Eyes" crit pierce-arrow VFX - NORMAL tier.
 // Citrine comet: head orb + seamless tapered tail + release flash + Burst & Streak particles.
 // Lane-static: the head travels across the 1x4 lane via `progress` (0->1); the controller
@@ -26,14 +28,15 @@ float hash11(float x){ return fract(sin(x * 127.1) * 43758.5453); }
 float headx_at(float p){ return smoothstep(0.08, 0.95, p) * (1.0 + lane_pad * 0.35); }
 
 void fragment(){
-	float x = mix(-lane_pad, 1.0 + lane_pad, UV.x);
-	float y = UV.y - 0.5;
+	vec2 lc = lane_coord(UV, lane_pad);
+	float x = lc.x;
+	float y = lc.y;
 
 	float head_x = headx_at(progress);
 	float launch = smoothstep(0.0, 0.10, progress);
 	float life   = 1.0 - smoothstep(0.88, 1.0, progress);
 	float pop    = mix(0.6, 1.0, smoothstep(0.0, 0.55, clamp(scale_p, 0.01, 1.2)));
-	float tower_gate = smoothstep(0.0, origin_soft, x);   // soft fade-in instead of a hard cut at the origin
+	float tower_gate = lane_origin_gate(x, origin_soft);   // soft fade-in at the lane origin (shared helper)
 
 	float dx = head_x - x;
 	float bw = max(beam_width, 1e-3);

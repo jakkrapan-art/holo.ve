@@ -8,6 +8,22 @@ attack_sound: "hit_shinri"
 open_sound: "debut_shinri"
 evolve_sound: "evo_shinri"
 
+# Normal attack = homing arrow bullet (dynamic arrow VFX). Damage lands ONCE per shot
+# (projectile mode); on a crit the passive fires the citrine pierce arrow instead.
+# Colours MUST be set here: TowerAttackConfig defaults are warm-gold, and the bullet
+# visual always pushes core_color/mid_color into the shader. Shape is baked in
+# shinri_arrow.gdshader; speed/size/glow/colour are tunable here. size = arrow HEIGHT px.
+attack:
+  mode: projectile
+  projectile: "res://resources/combat/bullets/shinri_normal_bullet.tscn"
+  vfx_shader: "res://resources/tower/holostars/en_branch/tempus_gen/josuiji_shinri/normal_effect/shinri_arrow.gdshader"
+  speed: 12
+  size: 72
+  burst: 1
+  glow_softness: 0.12
+  core_color: [1.0, 1.0, 1.0]
+  mid_color: [0.90, 0.94, 1.0]
+
 # Josuiji Shinri has no Active skill and no Energy — her kit is a pure Passive.
 # Stats omit mana/intialMana on purpose: with no active skill the tower builds
 # no Energy bar (see Tower._hasActiveSkill / _setupPassive).

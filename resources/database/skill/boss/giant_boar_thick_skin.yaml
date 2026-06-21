@@ -1,0 +1,11 @@
+name: Thick Skin
+cooldown: 45
+desc: thick_skin_desc
+action:
+  - type: target_self
+  - type: apply_status_effect
+    data:
+      type: IncreaseDefBuff
+      duration: 5
+      level: 1
+      increaseValue: 7.5

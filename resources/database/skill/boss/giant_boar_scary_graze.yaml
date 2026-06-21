@@ -1,0 +1,10 @@
+name: Scary Graze
+cooldown: 30
+desc: scary_graze_desc
+action:
+  - type: target_self
+  - type: decrease_damage_all_area
+    data:
+      duration: 3
+      radius: 1
+      decreaseValue: 0.10

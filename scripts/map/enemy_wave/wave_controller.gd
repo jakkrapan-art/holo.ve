@@ -13,6 +13,14 @@ var enemyTextures: Dictionary = {};
 
 @onready var waveCounterText: Label = $"../GameUI/WaveCounter/Text"
 
+# Top-center wave-time countdown. Shows wave-timeline progression during a normal
+# wave's spawn window; hides at zero (enemies may remain - wave end is field-clear,
+# not the timer) and during the Managing Phase / on boss waves.
+@onready var waveTimer: Control = $"../GameUI/WaveTimer"
+@onready var waveTimerText: Label = $"../GameUI/WaveTimer/Text"
+var _wave_elapsed: float = 0.0
+var _countdown_active: bool = false
+
 var active: bool = false
 var currWave: int = 0
 var endWaveCalled: bool = false
@@ -29,6 +37,22 @@ var deadList: Array[Enemy] = [];
 
 func _ready():
 	spawnParent = map.path
+	if waveTimer != null:
+		waveTimer.visible = false
+
+# Drives the top-center wave countdown. Counts down the wave's authored duration;
+# at zero the spawn timeline is done so the timer hides (the wave continues until
+# the field is clear). delta scales with the game-speed time_scale, matching spawns.
+func _process(delta):
+	if not _countdown_active:
+		return
+	_wave_elapsed += delta
+	var remaining: float = waveData.duration - _wave_elapsed
+	if remaining <= 0.0:
+		_stopCountdown()
+		return
+	if waveTimerText != null:
+		waveTimerText.text = _format_time(remaining)
 
 func _input(event):
 	if event is InputEventKey and event.pressed:
@@ -71,8 +95,10 @@ func startNextWave():
 	isBossWave = wData.isBossWave;
 
 	if isBossWave:
+		_stopCountdown()
 		spawnBoss();
 	else:
+		_startCountdown()
 		setupSpawnTask()
 
 	updateUI();
@@ -83,6 +109,7 @@ func endWave():
 		return;
 
 	endWaveCalled = true;
+	_stopCountdown();
 	deadList.clear();
 
 	if(currWave >= data.waveDatas.size()):
@@ -105,12 +132,36 @@ func setupSpawnTask():
 
 func spawnEnemyTask(groupIndex: int):
 	var groupData = waveData.groupList[groupIndex]
+
+	# Per-group start delay on the wave timeline. The await sits HERE (after
+	# setupSpawnTask has already registered groupSpawnRemain for every group), so a
+	# delayed group keeps remain > 0 and _allGroupsSpawned() can't end the wave early.
+	if groupData.startAt > 0:
+		var gen := currWave
+		await get_tree().create_timer(groupData.startAt).timeout
+		# Wave may have ended / advanced during the delay - bail if so (await guard).
+		if not is_instance_valid(self) or currWave != gen or endWaveCalled:
+			return
+
 	var interval = groupData.spawnInterval;
 	var remain = groupData.count;
+	var spawned := 0;
 
 	groupSpawnRemain[groupIndex] = remain
 	while remain > 0:
+		# Hard cap: do NOT spawn an enemy scheduled past the wave timer (duration).
+		# Safety net for a too-long interval / bad startAt (the load-time warning in
+		# MapParser flags it; this enforces it). The k-th enemy (0-indexed) is
+		# scheduled at startAt + k*interval. When we cut off, mark the group spawned
+		# so the wave can still end (else _allGroupsSpawned stays false -> softlock),
+		# and re-check end since the field may already be clear at the cutoff moment.
+		if groupData.startAt + float(spawned) * interval > waveData.duration:
+			groupSpawnRemain[groupIndex] = 0
+			isSpawnAllEnemy = _allGroupsSpawned()
+			checkEndWave()
+			return
 		spawnEnemy(groupIndex);
+		spawned += 1;
 		remain -= 1;
 		groupSpawnRemain[groupIndex] = remain
 
@@ -125,13 +176,26 @@ func spawnEnemy(groupIndex: int):
 
 	var waveGroup = waveData.groupList[groupIndex];
 
-	var health = waveGroup.health
-	var def = waveGroup.def
-	var mDef = waveGroup.mDef
-	var moveSpeed = waveGroup.moveSpeed
-	var texture = enemyTextures.get(waveGroup.texture, null)
+	# Look up the enemy definition (stats + skills + tier) from the per-map enemy DB.
+	# Fail loud on a bad id instead of silently spawning a default-tier enemy (R7).
+	var db: EnemyDBData = ResourceManager.getEnemyData(waveGroup.enemy)
+	if db == null:
+		push_error("WaveController: unknown enemy id '" + str(waveGroup.enemy) + "' (not in the map's enemy DB)")
+		return
+
+	# Resolve final base stats: enemy DB stats + stage modifiers + this wave's
+	# modifiers, stacked additively (EnemyModifier). Applied BEFORE the enemy is
+	# built so Enemy.setup() seeds maxHp/currentHp/healthbar from the final numbers.
+	var final_stats = EnemyModifier.resolve(db.stats, [data.stageModifiers, waveData.waveModifiers])
+	var health = int(final_stats.hp)
+	var def = int(final_stats.def)
+	var mDef = int(final_stats.mDef)
+	var moveSpeed = final_stats.moveSpeed
+	var damageReduction = final_stats.damageReduction
+
+	var texture = enemyTextures.get(waveGroup.enemy, null)
 	var skills: Array[Skill] = []
-	for skill in waveGroup.skill:
+	for skill in db.skills:
 		skills.append(Utility.deep_duplicate_resource(skill))
 
 	# Reserve count BEFORE the async spawn so the in-flight createEnemyObject
@@ -142,13 +206,12 @@ func spawnEnemy(groupIndex: int):
 	# and call endWave() before the uncounted enemy is even on the map.
 	enemyAliveCount += 1;
 
-	# Resolve enemy tier from the texture key (registered by ResourceManager.
-	# preloadEnemy via enemy_list.yaml). Elite enemies deal Elite-tier damage
-	# (10) on reach-end and are correctly tagged for any downstream type-aware
-	# logic. Default to Normal if the texture wasn't registered.
-	var enemy_type := _tierToEnemyType(ResourceManager.getEnemyTier(waveGroup.texture))
+	# Resolve enemy tier from the id (registered by ResourceManager.preloadEnemy
+	# from the enemy DB). Elite enemies deal Elite-tier damage (10) on reach-end
+	# and are correctly tagged for downstream type-aware logic. Default to Normal.
+	var enemy_type := _tierToEnemyType(ResourceManager.getEnemyTier(waveGroup.enemy))
 
-	var enemy: Enemy = await createEnemyObject(enemy_type, health, def, mDef, moveSpeed, texture, skills);
+	var enemy: Enemy = await createEnemyObject(enemy_type, health, def, mDef, moveSpeed, texture, skills, damageReduction);
 
 	if enemy == null:
 		# Spawn failed — undo the reservation so the count stays accurate.
@@ -190,7 +253,12 @@ func spawnBoss():
 	var def = bossData.stats.def
 	var mDef = bossData.stats.mDef
 	var moveSpeed = bossData.stats.moveSpeed
-	var skills = bossData.skills;
+	# Deep-duplicate per spawn: SkillLibrary caches one template per id, so the boss
+	# must get its own copy or per-instance state (cooldownRemaining/using/disable)
+	# would collide across boss spawns. Mirrors spawnEnemy.
+	var skills: Array[Skill] = []
+	for skill in bossData.skills:
+		skills.append(Utility.deep_duplicate_resource(skill))
 
 	# Reserve count BEFORE the async spawn (same race-condition guard as
 	# spawnEnemy — checkEndWave can fire while boss creation is still in flight).
@@ -208,6 +276,23 @@ func spawnBoss():
 func updateUI():
 	if waveCounterText != null:
 		waveCounterText.text = "wave " + str(currWave)
+
+func _startCountdown():
+	_wave_elapsed = 0.0
+	_countdown_active = true
+	if waveTimerText != null:
+		waveTimerText.text = _format_time(waveData.duration)
+	if waveTimer != null:
+		waveTimer.visible = true
+
+func _stopCountdown():
+	_countdown_active = false
+	if waveTimer != null:
+		waveTimer.visible = false
+
+func _format_time(sec: float) -> String:
+	var total: int = int(ceil(sec))
+	return "%d:%02d" % [total / 60, total % 60]
 
 func testSpawnBoss(index: int = -1):
 	if(bossList.size() == 0):
@@ -242,12 +327,12 @@ func connectSignalToEnemy(enemy: Enemy):
 	Utility.ConnectSignal(enemy, "onReachEndPoint", Callable(self, "enemyReachEndPoint").bind(enemy));
 	Utility.ConnectSignal(enemy, "onDead", Callable(self, "enemyDead"));
 
-func createEnemyObject(type: Enemy.EnemyType, health: int, def: int, mDef: int, moveSpeed: int, texture: Texture2D = null, skills: Array[Skill] = []):
+func createEnemyObject(type: Enemy.EnemyType, health: int, def: int, mDef: int, moveSpeed: int, texture: Texture2D = null, skills: Array[Skill] = [], damageReduction: float = 0.0):
 
 	if(enemyFactory == null):
 		return;
 
-	var instance = await enemyFactory.createEnemy(type, spawnParent, health, def, mDef, moveSpeed, texture, skills);
+	var instance = await enemyFactory.createEnemy(type, spawnParent, health, def, mDef, moveSpeed, texture, skills, damageReduction);
 	return instance
 
 func enemyReachEndPoint(enemy: Enemy):

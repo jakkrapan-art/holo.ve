@@ -90,7 +90,7 @@ func _ready():
 
 	# Map folder name = selected_map_file minus ".yaml" (e.g. "forest01.yaml" -> "forest01"),
 	# so a new map preloads its own enemy set instead of always forest01's.
-	ResourceManager.preloadEnemy(TowerCenter.selected_map_file.get_basename(), ["boss","elite", "normal"]);
+	ResourceManager.preloadEnemy(TowerCenter.selected_map_file.get_basename());
 
 	mission = Mission.new();
 
@@ -105,6 +105,7 @@ func _ready():
 
 		var waveControllerData: WaveControllerData = WaveControllerData.new();
 		waveControllerData.waveDatas = waves;
+		waveControllerData.stageModifiers = mapData.stageModifiers;
 		waveControllerData.onEnemyReachEndpoint = Callable(self, "reducePlayerHp");
 		waveControllerData.onWaveEnd = Callable(self, "on_wave_ended");
 

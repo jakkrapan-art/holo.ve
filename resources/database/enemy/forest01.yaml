@@ -1,0 +1,107 @@
+# Enemy DB for forest01. One entry per enemy id; waves reference these by `enemy: <id>`.
+# tier ("normal"/"elite"/"boss") drives the sprite path (resources/enemy/forest01/<tier>/<id>/<id>.png)
+# and leak damage. stats live here; `skill:` is a list of skill IDS resolved from
+# resources/database/skill/enemy/<id>.yaml (one file per skill). Boss entries are kept
+# for sprite preload + tier; bosses spawn from the boss DB.
+
+salam:
+  tier: normal
+  stats:
+    hp: 60
+    def: 0
+    mDef: 0
+    moveSpeed: 20
+  skill: []
+
+rolling_stone:
+  tier: normal
+  stats:
+    hp: 100
+    def: 0
+    mDef: 0
+    moveSpeed: 20
+  skill: []
+
+goblin:
+  tier: normal
+  stats:
+    hp: 150
+    def: 0
+    mDef: 0
+    moveSpeed: 40
+  skill: []
+
+armored_salam:
+  tier: normal
+  stats:
+    hp: 225
+    def: 0
+    mDef: 0
+    moveSpeed: 40
+  skill: []
+
+baby_garlic:
+  tier: normal
+  stats:
+    hp: 350
+    def: 0
+    mDef: 0
+    moveSpeed: 60
+  skill: []
+
+wild_boar:
+  tier: normal
+  stats:
+    hp: 525
+    def: 0
+    mDef: 0
+    moveSpeed: 80
+  skill: []
+
+armored_goblin:
+  tier: elite
+  stats:
+    hp: 500
+    def: 0
+    mDef: 0
+    moveSpeed: 20
+  skill:
+    - armored_goblin_wooden_shield
+
+flying_flower:
+  tier: elite
+  stats:
+    hp: 3000
+    def: 0
+    mDef: 2
+    moveSpeed: 40
+  skill:
+    - flying_flower_sweat_spore
+
+armored_boar:
+  tier: elite
+  stats:
+    hp: 5000
+    def: 2
+    mDef: 0
+    moveSpeed: 50
+  skill:
+    - armored_boar_protector_aura
+
+king_salam:
+  tier: boss
+  stats:
+    hp: 8000
+    def: 5
+    mDef: 5
+    moveSpeed: 30
+  skill: []
+
+giant_boar:
+  tier: boss
+  stats:
+    hp: 20000
+    def: 5
+    mDef: 5
+    moveSpeed: 100
+  skill: []

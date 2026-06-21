@@ -22,7 +22,7 @@ func _init():
 
 			var bossSkills: Array[Skill] = [];
 			if bd.has("skill") and bd.skill.size() > 0:
-				bossSkills = SkillUtility.ParseSkill(bd.skill);
+				bossSkills = SkillLibrary.resolve("boss", bd.skill);
 
 			var bossDBData = BossDBData.new(name, wave, texture, bd.scale, bd.stats, bossSkills);
 			bossList.append(bossDBData);

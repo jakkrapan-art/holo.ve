@@ -52,38 +52,40 @@ static func preloadSynergy():
 			var path = "ui_asset/synergies/" + key + ".png"
 			loadImage("synergy", key, path)
 
-static var _enemy_tier: Dictionary = {}  # texture key -> tier string ("boss"/"elite"/"normal")
+static var _enemy_db: Dictionary = {}    # id -> EnemyDBData (stats + skills + tier)
+static var _enemy_tier: Dictionary = {}  # id -> tier string ("boss"/"elite"/"normal")
 
-static func preloadEnemy(mapName: String, types: Array[String]) -> void:
+# Loads the per-map enemy DB (resources/database/enemy/<map>.yaml): builds the
+# stats/skills registry, derives the tier registry, and caches each enemy sprite.
+# The sprite path is still tier-foldered (resources/enemy/<map>/<tier>/<id>/<id>.png),
+# tier now coming from the DB entry instead of the retired enemy_list.yaml.
+static func preloadEnemy(mapName: String) -> void:
 	var enemyPrefix := "res://resources/enemy"
 	var loaded: Dictionary = {}
 
-	var enemies = YamlParser.load_data(enemyPrefix + "/" + mapName + "/enemy_list.yaml")
+	_enemy_db = EnemyDataLoader.load_map(mapName)
+	_enemy_tier = {}
 
-	for type in types:
-		var enemyNames: Array = enemies.get(type, [])
-		for enemy in enemyNames:
-			# Record the tier this texture belongs to so spawn-time code can
-			# resolve the correct Enemy.EnemyType (Elite vs Normal vs Boss).
-			# Without this, wave_controller defaults every non-boss spawn to
-			# Normal, causing elites to deal Normal-tier damage (1 instead of
-			# 10 per PlayerHealth.DAMAGE_BY_MONSTER_TYPE).
-			_enemy_tier[enemy] = type
+	for id in _enemy_db.keys():
+		var data: EnemyDBData = _enemy_db[id]
+		# Record the tier so spawn-time code resolves the correct Enemy.EnemyType
+		# (Elite vs Normal vs Boss) for leak damage (PlayerHealth.DAMAGE_BY_MONSTER_TYPE).
+		_enemy_tier[id] = data.tier
 
-			var full_path := "%s/%s/%s/%s/%s.png" % [
-				enemyPrefix,
-				mapName,
-				type,
-				enemy,
-				enemy
-			]
+		var full_path := "%s/%s/%s/%s/%s.png" % [
+			enemyPrefix,
+			mapName,
+			data.tier,
+			id,
+			id
+		]
 
-			if ResourceLoader.exists(full_path):
-				var texture: Texture2D = load(full_path)
-				loaded[enemy] = texture
-				print("Loaded: ", full_path)
-			else:
-				push_warning("Missing texture: " + full_path)
+		if ResourceLoader.exists(full_path):
+			var texture: Texture2D = load(full_path)
+			loaded[id] = texture
+			print("Loaded: ", full_path)
+		else:
+			push_warning("Missing texture: " + full_path)
 
 	_sprites["enemy"] = loaded
 	print("loaded: ", loaded)
@@ -94,10 +96,15 @@ static func getSpriteGroup(group: String):
 		return null
 	return _sprites[group]
 
-# Returns the tier string ("boss"/"elite"/"normal") for an enemy texture key,
-# defaulting to "normal" when the texture wasn't registered in enemy_list.yaml.
-static func getEnemyTier(texture_key: String) -> String:
-	return _enemy_tier.get(texture_key, "normal")
+# Returns the full enemy definition (stats + skills + tier) for an enemy id, or
+# null if the id was not in the map's enemy DB.
+static func getEnemyData(id: String) -> EnemyDBData:
+	return _enemy_db.get(id, null)
+
+# Returns the tier string ("boss"/"elite"/"normal") for an enemy id, defaulting
+# to "normal" when the id wasn't registered in the enemy DB.
+static func getEnemyTier(id: String) -> String:
+	return _enemy_tier.get(id, "normal")
 
 static func getSprite(group: String, key: String):
 	if !_sprites.has(group):

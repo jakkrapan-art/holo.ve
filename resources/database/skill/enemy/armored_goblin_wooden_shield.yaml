@@ -1,0 +1,9 @@
+name: Wooden Shield
+cooldown: 0
+desc: ป้องกันความเสียหายทุกอย่าง 1 ครั้ง
+oneTime: true
+action:
+  - type: target_self
+  - type: block_damage
+    data:
+      count: 1

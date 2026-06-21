@@ -1,196 +1,122 @@
 mapName: "forest01"
-width: 0
-height: 0
+
+# ============================================================================
+# Stage Modifier - ปรับสเตตัสมอน "ทั้งสเตจ" (มีผลทุก wave ในแมพนี้)
+# ตอนนี้เว้นว่าง [] ไว้ก่อน กลไกพร้อมแล้ว แต่รอ UI โชว์ modifier ให้ผู้เล่นเห็นก่อน
+#
+# วิธีใช้: ลบ [] ออก แล้วก๊อปบล็อกตัวอย่างข้างล่างมาวาง (ลบ # หน้าบรรทัดที่อยากใช้)
+# *** ระวังเรื่องการเว้นวรรค (เว้น 2 ช่องในแต่ละชั้น เหมือนตัวอย่าง) ***
+#
+# ตัวอย่าง (dummy) - แก้ตัวเลขได้เลย:
+# stageModifiers:
+#   - stat: hp              # เลือดมอน
+#     op: mult              # แบบคูณ
+#     value: 2              # เลือด x2   (ใส่หลายตัว = เอาตัวคูณมาบวกกัน เช่น x2 + x1.5 -> x3.5)
+#   - stat: moveSpeed       # ความเร็วเดิน
+#     op: percent           # แบบเปอร์เซ็นต์
+#     value: 20             # เร็วขึ้น 20%
+#
+# ตารางค่าที่ปรับได้  ->  op (วิธีปรับ) ที่ใช้คู่กัน:
+#   hp               ->  mult                (คูณเลือด)
+#   def              ->  flat | percent      (เกราะกายภาพ: บวกตรง ๆ / เป็น %)
+#   mDef             ->  flat | percent      (เกราะเวท)
+#   moveSpeed        ->  mult | percent      (ความเร็ว)
+#   damageReduction  ->  add                 (ลดดาเมจที่รับ 0..0.9  เช่น 0.1 = ลด 10%)
+# ============================================================================
+stageModifiers: []
+
+# ----------------------------------------------------------------------------
+# จังหวะการเกิดมอน (spawn timing)
+# เพื่อกันไม่ให้มอนยัง spawn อยู่ "หลังเวลานับถอยหลัง (duration) หมด" ใช้สูตร spawnInterval <= (duration - startAt) / count
+# ----------------------------------------------------------------------------
 waves:
-  - waveTime: 30.0 #wave1
+  - duration: 60  # wave1
+    # waveModifiers ใช้เหมือน stageModifiers แต่มีผลเฉพาะ wave นี้ wave เดียว (เคสพิเศษ) เช่น:
+    # waveModifiers:
+    #   - stat: hp
+    #     op: mult
+    #     value: 1.5
     groupList:
-      - texture: "salam"
-        health: 60
-        def: 1
-        mDef: 1
-        moveSpeed: 20
-        count: 30
-        spawnInterval: 1  #interval = count/60 (60 = 60 second)
+      - enemy: salam
+        count: 60
+        spawnInterval: 1                    #   spawnInterval = วินาทีระหว่างการเกิดมอนแต่ละตัวในกลุ่ม
+        startAt: 0                          #   startAt = วินาทีที่เริ่ม spawn มอนตัวแรกในกลุ่ม (นับจากเริ่ม wave)       
 
-  - waveTime: 30.0  #wave2
+  - duration: 60  # wave2
     groupList:
-      - texture: "rolling_stone"
-        health: 100
-        def: 1
-        mDef: 1
-        moveSpeed: 20
-        count: 30
+      - enemy: rolling_stone
+        count: 60
         spawnInterval: 1
+        startAt: 0
 
-  - waveTime: 30.0  #wave3
+  - duration: 60  # wave3
     groupList:
-      - texture: "goblin"
-        health: 150
-        def: 1
-        mDef: 1
-        moveSpeed: 40
-        count: 30
+      - enemy: goblin
+        count: 60
         spawnInterval: 1
+        startAt: 0
+      - enemy: armored_goblin
+        count: 10
+        spawnInterval: 5
+        startAt: 10
 
-      - texture: "armored_goblin"
-        health: 500
-        def: 1
-        mDef: 1
-        moveSpeed: 20
-        count: 5
-        spawnInterval: 6
-        skill:
-          - name: Wooden Shield
-            cooldown: 0
-            desc: ป้องกันความเสียหายทุกอย่าง 1 ครั้ง
-            oneTime: true
-            action:
-              - type: target_self
-              - type: block_damage
-                data:
-                  count: 1
-                  
-  - waveTime: 30.0  #wave4
+  - duration: 60  # wave4
     groupList:
-      - texture: "armored_salam"
-        health: 225
-        def: 1
-        mDef: 1
-        moveSpeed: 40
-        count: 30
+      - enemy: armored_salam
+        count: 60
         spawnInterval: 1
+        startAt: 0
+      - enemy: armored_goblin
+        count: 10
+        spawnInterval: 5
+        startAt: 0
 
-      - texture: "armored_goblin"
-        health: 500
-        def: 1
-        mDef: 1
-        moveSpeed: 20
-        count: 5
-        spawnInterval: 6
-        skill:
-          - name: Wooden Shield
-            cooldown: 0
-            desc: ป้องกันความเสียหายทุกอย่าง 1 ครั้ง
-            oneTime: true
-            action:
-              - type: target_self
-              - type: block_damage
-                data:
-                  count: 1
-
-  - waveTime: 60.0  #wave5
+  - duration: 60  # wave5
     boss: true
 
-  - waveTime: 30.0  #wave6
+  - duration: 60  # wave6
     groupList:
-      - texture: "baby_garlic"
-        health: 350
-        def: 1
-        mDef: 1
-        moveSpeed: 60
-        count: 30
+      - enemy: baby_garlic
+        count: 60
         spawnInterval: 1
+        startAt: 0
 
-  - waveTime: 30.0  #wave7
+  - duration: 60  # wave7
     groupList:
-      - texture: "baby_garlic"
-        health: 350
-        def: 1
-        mDef: 1
-        moveSpeed: 60
-        count: 30
+      - enemy: baby_garlic
+        count: 60
         spawnInterval: 1
-
-      - texture: "wild_boar"
-        health: 525
-        def: 1
-        mDef: 1
-        moveSpeed: 80
-        count: 15
-        spawnInterval: 2
-
-  - waveTime: 30.0  #wave8
-    groupList:
-
-      - texture: "wild_boar"
-        health: 525
-        def: 1
-        mDef: 1
-        moveSpeed: 80
-        count: 30
-        spawnInterval: 1
-        
-      - texture: "flying_flower"
-        health: 3000
-        def: 10
-        mDef: 1
-        moveSpeed: 40
-        count: 5
+        startAt: 0
+      - enemy: wild_boar
+        count: 10
         spawnInterval: 6
-        skill:
-          - name: Sweat Spore
-            cooldown: 0
-            oneTime: true
-            desc: เพิ่ม def ให้ตนเอง 5%
-            action:
-              - type: target_self
-              - type: apply_status_effect
-                data:
-                  type: IncreaseDefBuff
-                  duration: 10000
-                  level: 1
-                  increaseValue: 5
-                  
-  - waveTime: 30.0  #wave9
-    groupList:
-      - texture: "wild_boar"
-        health: 525
-        def: 1
-        mDef: 1
-        moveSpeed: 80
-        count: 30
-        spawnInterval: 1
+        startAt: 0
 
-      - texture: "flying_flower"
-        health: 3000
-        def: 10
-        mDef: 1
-        moveSpeed: 40
+  - duration: 60  # wave8
+    groupList:
+      - enemy: wild_boar
+        count: 60
+        spawnInterval: 1
+        startAt: 0
+      - enemy: flying_flower
+        count: 10
+        spawnInterval: 6
+        startAt: 0
+
+  - duration: 60  # wave9
+    groupList:
+      - enemy: wild_boar
+        count: 60
+        spawnInterval: 1
+        startAt: 0
+      - enemy: flying_flower
         count: 10
         spawnInterval: 3
-        skill:
-          - name: Sweat Spore
-            cooldown: 0
-            oneTime: true
-            desc: เพิ่ม def ให้ตนเอง 5%
-            action:
-              - type: target_self
-              - type: apply_status_effect
-                data:
-                  type: IncreaseDefBuff
-                  duration: 10000
-                  level: 1
-                  increaseValue: 5
-
-      - texture: "armored_boar"
-        health: 5000
-        def: 1
-        mDef: 10
-        moveSpeed: 50
+        startAt: 0
+      - enemy: armored_boar
         count: 5
         spawnInterval: 6
-        skill:
-          - name: Protector Aura
-            cooldown: 0
-            oneTime: true
-            desc: สร้างออร่าเพิ่ม Defense 2.5% ให้กับฝ่ายเดียวกันในระยะ 1*1 ช่อง
-            action:
-              - type: target_self
-              - type: increase_def_area
-                data:
-                  duration: 10000
-                  radius: 1
-                  value: 2.5
+        startAt: 0
 
-  - waveTime: 60.0  #wave10
+  - duration: 60  # wave10
     boss: true

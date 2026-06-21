@@ -3,7 +3,7 @@ class_name EnemyFactory
 
 @export var enemyTemplate: PackedScene;
 
-func createEnemy(type: Enemy.EnemyType, parent: Node2D, health: int, def: int, mDef: int, moveSpeed: int, texture: Texture2D, skillPool: Array[Skill] = []):
+func createEnemy(type: Enemy.EnemyType, parent: Node2D, health: int, def: int, mDef: int, moveSpeed: int, texture: Texture2D, skillPool: Array[Skill] = [], damageReduction: float = 0.0):
 	if(enemyTemplate == null):
 		return;
 
@@ -18,7 +18,7 @@ func createEnemy(type: Enemy.EnemyType, parent: Node2D, health: int, def: int, m
 		parent.move_child(enemy, 0);
 
 		await get_tree().process_frame
-		enemy.setup(type, health, def, mDef, moveSpeed, texture, skillPool);
+		enemy.setup(type, health, def, mDef, moveSpeed, texture, skillPool, damageReduction);
 
 	return enemy
 

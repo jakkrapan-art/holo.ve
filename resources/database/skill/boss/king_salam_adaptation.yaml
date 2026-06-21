@@ -1,0 +1,11 @@
+name: Adaptation
+cooldown: 20
+desc: ลดดาเมจที่ได้รับ 10%
+action:
+  - type: target_self
+  - type: apply_status_effect
+    data:
+      type: DamageReductionBuff
+      duration: 5
+      level: 1
+      reduction: 0.1

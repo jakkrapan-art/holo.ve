@@ -1,0 +1,20 @@
+# Enemy roster for forest01 (manifest). tier -> list of enemy ids.
+# Each id has its own file at resources/database/enemy/forest01/<tier>/<id>.yaml
+# holding stats + inline skills. tier drives the sprite path
+# (resources/enemy/forest01/<tier>/<id>/<id>.png) and leak damage.
+# Waves (resources/database/map/forest01.yaml) reference normal/elite ids by `enemy: <id>`.
+# Bosses are loaded by BossLibrary from the boss tier; the enemy registry skips them.
+normal:
+  - salam
+  - rolling_stone
+  - goblin
+  - armored_salam
+  - baby_garlic
+  - wild_boar
+elite:
+  - armored_goblin
+  - flying_flower
+  - armored_boar
+boss:
+  - king_salam
+  - giant_boar

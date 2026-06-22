@@ -1,0 +1,46 @@
+# Boss. `name` is the display name; the sprite + id come from the file path
+# (resources/enemy/forest01/boss/king_salam/king_salam.png). `wave` lists the
+# waves this boss is eligible to spawn on. skill is inline (3 boss skills).
+name: King Salam
+scale: 1.75
+wave:
+  - 5
+stats:
+  hp: 8000
+  def: 5
+  mDef: 5
+  moveSpeed: 30
+  skillCount: 3
+  buffCount: 3
+skill:
+  - name: Adaptation
+    cooldown: 20
+    desc: ลดดาเมจที่ได้รับ 10%
+    action:
+      - type: target_self
+      - type: apply_status_effect
+        data:
+          type: DamageReductionBuff
+          duration: 5
+          level: 1
+          reduction: 0.1
+  - name: Slime Fluid
+    cooldown: 40
+    desc: "สร้าง Aura รอบตัว ลดความเร็วการโจมตี 10% ของป้อมในรัศมี 5 ช่อง"
+    action:
+      - type: target_self
+      - type: decrease_atk_spd_area
+        data:
+          duration: 5
+          radius: 5
+          value: 0.1
+  - name: King's Command
+    cooldown: 30
+    desc: "มอนเตอร์นรัศมีการบัฟจะได้รับ Move Speed เพิ่มขึ้น 10%  (Non-stackable)  Duration : 5 Sec ในระยะ 5 ช่อง"
+    action:
+      - type: target_self
+      - type: increase_move_spd_area
+        data:
+          duration: 5
+          radius: 5
+          value: 0.1

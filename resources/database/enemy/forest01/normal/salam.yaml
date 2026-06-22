@@ -1,0 +1,6 @@
+stats:
+  hp: 60
+  def: 0
+  mDef: 0
+  moveSpeed: 20
+skill: []

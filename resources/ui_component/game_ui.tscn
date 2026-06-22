@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://bcyr1l11fwy7"]
+[gd_scene load_steps=23 format=3 uid="uid://bcyr1l11fwy7"]
 
 [ext_resource type="PackedScene" uid="uid://dsshuu1axf1t8" path="res://resources/ui_component/synergy/ui_synergy.tscn" id="1_hk82f"]
 [ext_resource type="Script" path="res://scripts/ui/currency.gd" id="2_rqmfg"]
@@ -38,6 +38,12 @@ corner_radius_bottom_right = 9
 line_spacing = 0.0
 font = ExtResource("3_pj1e5")
 font_size = 20
+
+[sub_resource type="LabelSettings" id="LabelSettings_wavetimer"]
+font = ExtResource("3_pj1e5")
+font_size = 44
+outline_size = 6
+outline_color = Color(0, 0, 0, 0.7)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_n2g8i"]
 bg_color = Color(0.6, 0.6, 0.6, 0.00392157)
@@ -220,6 +226,27 @@ layout_mode = 2
 size_flags_horizontal = 4
 text = "wave 1"
 label_settings = SubResource("LabelSettings_06q5m")
+
+[node name="WaveTimer" type="Control" parent="."]
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -150.0
+offset_top = 12.0
+offset_right = 150.0
+offset_bottom = 108.0
+grow_horizontal = 2
+
+[node name="Text" type="Label" parent="WaveTimer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "1:00"
+label_settings = SubResource("LabelSettings_wavetimer")
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="PauseButton" type="Button" parent="."]
 visible = false

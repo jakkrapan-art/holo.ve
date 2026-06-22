@@ -249,7 +249,10 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_v8yjg")
 
-[node name="TopRightControls" type="HBoxContainer" parent="."]
+[node name="TopControlsLayer" type="CanvasLayer" parent="."]
+layer = 3
+
+[node name="TopRightControls" type="HBoxContainer" parent="TopControlsLayer"]
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
@@ -260,14 +263,14 @@ offset_bottom = 58.0
 grow_horizontal = 0
 theme_override_constants/separation = 20
 
-[node name="SpeedButton" type="Button" parent="TopRightControls"]
+[node name="SpeedButton" type="Button" parent="TopControlsLayer/TopRightControls"]
 custom_minimum_size = Vector2(76, 42)
 layout_mode = 2
 focus_mode = 0
 text = "x2"
 script = ExtResource("7_6qfka")
 
-[node name="Button" type="Button" parent="TopRightControls"]
+[node name="Button" type="Button" parent="TopControlsLayer/TopRightControls"]
 custom_minimum_size = Vector2(76, 42)
 layout_mode = 2
 text = "Pause"

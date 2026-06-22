@@ -1,47 +1,21 @@
 extends Control
 class_name UISynergy
 
-var synergyDatas: Dictionary = {};
-var contentList: Dictionary = {};
-
-@onready var camera: Camera2D = $"../../Camera2D"
 @export var contentTemplate: PackedScene;
 
-var currentYPos = 0;
+var contentList: Dictionary = {};   # synergy name -> UISynergyContent
+var currentYPos := 0;
 
-func _ready() -> void:
-	addNewSynergy("test1", 10, 20);
-
-func hasContent(name: String):
-	return synergyDatas.has(name);
-
-func addNewSynergy(name: String, min: int, max: int):
-	if(synergyDatas.has(name)):
-		printerr("adding exist synergy: ", name);
-		return;
-
-	synergyDatas[name] = {"current": 0, "max": max, "min": min};
-
-func addSynergy(synergyName: String):
-	if !synergyDatas.has(synergyName):
-		print("adding not exist synergy: ", synergyName);
-		return;
-
-	var data = synergyDatas.get(synergyName);
-	var newVal = data.get("current", 0) + 1;
-	var minActive = data.get("min", 0);
-	var active = false if minActive <= 0 else newVal >= minActive;
-	synergyDatas[synergyName]["current"] = newVal;
-	if(contentList.has(synergyName)):
-		var existContent: UISynergyContent = contentList.get(synergyName);
-		existContent.setup(synergyName, newVal, data.get("max", 0), active);
-	else:
-		createContent(synergyName, newVal, data.get("max", 0), active);
-
-func createContent(synergyName: String, current: int, maxCount: int, active: bool):
-	var newContent = contentTemplate.instantiate() as UISynergyContent;
-	contentList[synergyName] = newContent;
-	add_child(newContent);
-	newContent.position.y = currentYPos;
-	currentYPos += 100;
-	newContent.setup(synergyName, current, maxCount, active);
+# Create or update a synergy row from the single TowerTrait.synergy_updated signal:
+# count + tier drive the row (count, proc breakpoints, tier colour); synergy_id
+# resolves the SynergyData for the rich hover. Numbers come from SynergyData
+# parameters so the hover text cannot drift from the applied effect.
+func updateSynergy(synergyName: String, count: int, tier: int, synergy_id: int) -> void:
+	var content: UISynergyContent = contentList.get(synergyName, null)
+	if content == null:
+		content = contentTemplate.instantiate() as UISynergyContent
+		contentList[synergyName] = content
+		add_child(content)
+		content.position.y = currentYPos
+		currentYPos += 100
+	content.setup(synergyName, count, tier, ResourceManager.getSynergyData(synergy_id))

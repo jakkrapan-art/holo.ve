@@ -1,0 +1,10 @@
+# Synergy roster manifest. Each id maps to <id>.yaml in this folder.
+# Manifest-driven (not a folder scan) so it works in an exported PCK,
+# matching enemy_list.yaml / decks.yaml.
+synergies:
+  - myth
+  - assassin
+  - diva
+  - hero
+  - gen1
+  - tempus

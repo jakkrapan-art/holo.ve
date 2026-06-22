@@ -41,7 +41,6 @@ var enemy: Enemy = null;
 
 var IDLE_ANIMATION = "idle";
 var ATTACK_ANIMATION = "n_attack";
-var noActionKey = ["synergy_id", "syn_attack_percent", "tier"];
 
 
 func getAttackAnimationSpeed():
@@ -64,6 +63,7 @@ func _ready():
 
 		skillController = SkillController.new(self,maxMana, initMana, data.skill);
 		Utility.ConnectSignal(skillController, "on_mana_updated", Callable(self, "update_mana_bar"));
+		Utility.ConnectSignal(skillController, "cast_succeeded", Callable(self, "_on_cast_succeeded"));
 	elif manaBar != null:
 		# No active skill (e.g. passive-only tower) -> no Energy bar.
 		manaBar.visible = false;
@@ -182,6 +182,7 @@ func evolve():
 			var stat = data.getStat()
 			skillController = SkillController.new(self, stat.mana, stat.intialMana, data.evolutionSkill)
 			Utility.ConnectSignal(skillController, "on_mana_updated", Callable(self, "update_mana_bar"))
+			Utility.ConnectSignal(skillController, "cast_succeeded", Callable(self, "_on_cast_succeeded"))
 			# Refresh manaBar visual to match the new evolved stat:
 			# - setup() re-applies the new max so the bar's full-bar fills at the
 			#   evolved cap (e.g., Kiara 50 -> 80) instead of the base cap.
@@ -338,60 +339,9 @@ func update_mana_bar(current: float):
 
 	manaBar.updateValue(current)
 
-func processActiveBuff(buff: Dictionary, extraKey: String = ""):
-	if(!isReady):
-		call_deferred("processActiveBuff", buff, extraKey);
-		return;
-
-	var synergy_id = buff.get("synergy_id", null)
-	if synergy_id == null:
-		return
-
-	for key in buff.keys():
-		if noActionKey.has(key):
-			continue;
-
-		var value = buff[key]
-		match key:
-			"attack_bonus":
-				var b := BuffInstance.new(
-					str(synergy_id) + extraKey + "_atk_flat",
-					BuffInstance.StatType.ATTACK_FLAT,
-					float(value),
-					BuffInstance.Category.BUFF,
-				)
-				data.buffs.add(b)
-			"attack_bonus_percent":
-				var b := BuffInstance.new(
-					str(synergy_id) + extraKey + "_atk_mult",
-					BuffInstance.StatType.ATTACK_MULT,
-					float(value),
-					BuffInstance.Category.BUFF,
-				)
-				data.buffs.add(b)
-			"rangeBuff":
-				data.addAttackRangeBuff(value, str(synergy_id) + extraKey)
-			"mana_regen":
-				data.addManaRegenBuff(value, str(synergy_id) + extraKey)
-			"crit_chance_bonus_percent":
-				data.addCritChanceBuff(value, str(synergy_id) + extraKey)
-			"on_skill_cast":
-				if(skillController):
-					skillController.addModifier(synergy_id, value)
-			"on_attack":
-				if(attackController):
-					attackController.addModifier(synergy_id, value)
-			"mission":
-				onReceiveMission.emit(value);
-			"interval_action":
-				var isBonus = (value.get("bonus").condition as Callable).call(synergy_id);
-				addIntervalAction(str(synergy_id), value.interval, value.action, value.value if !isBonus else value.bonus.value);
-			"syn_attack_percent":
-				pass;
-			"tier":
-				pass;
-			_:
-				print("Unknown synergy buff key: ", key)
+func _on_cast_succeeded(_skill):
+	# A fully successful skill cast -> notify the synergy system (e.g. Myth team battery).
+	skill_cast_succeeded.emit(self)
 
 func resetForWave():
 	attacking = false
@@ -425,29 +375,6 @@ func resetForWave():
 			child.queue_free()
 
 	play_animation_default()
-
-func addIntervalAction(key,interval: float, action: String, value: float):
-	var callable: Callable;
-	match action:
-		"regen_mana":
-			callable = Callable(self, "regenMana").bind(value);
-
-	if not callable:
-		printerr("invalid interval action: ", action);
-		return
-
-	var exist = find_child(key);
-
-	if(exist):
-		exist.queue_free();
-
-	var timer = Timer.new();
-	timer.name = key;
-	timer.set_wait_time(interval);
-	timer.set_one_shot(false);
-	timer.connect("timeout", callable);
-	add_child(timer);
-	timer.start();
 
 func showAttackRange(show: bool):
 	if enemyDetector != null:
@@ -487,3 +414,5 @@ func removeDecreaseDmgAllPercent(key: String):
 
 signal onReceiveMission(mission: MissionDetail);
 signal on_animation_finished(name: String);
+# Emitted after this tower completes a skill cast (drives synergy effects).
+signal skill_cast_succeeded(tower);

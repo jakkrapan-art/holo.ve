@@ -1,0 +1,9 @@
+id: tempus
+name: "Tempus"
+kind: generation
+# Quest-type: tier unlocks by completing a condition (e.g. kill count).
+# Placeholder: the quest mechanic is not wired yet (see agent_lessons P2-C).
+type: quest
+effect: none
+thresholds: [2, 4, 6]
+desc: "Tempus quest synergy not yet defined."

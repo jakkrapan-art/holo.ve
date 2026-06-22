@@ -1,0 +1,18 @@
+stats:
+  hp: 3000
+  def: 0
+  mDef: 2
+  moveSpeed: 40
+skill:
+  - name: Sweat Spore
+    cooldown: 0
+    oneTime: true
+    desc: เพิ่ม def ให้ตนเอง 5%
+    action:
+      - type: target_self
+      - type: apply_status_effect
+        data:
+          type: IncreaseDefBuff
+          duration: 10000
+          level: 1
+          increaseValue: 5

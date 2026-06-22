@@ -253,9 +253,9 @@ func spawnBoss():
 	var def = bossData.stats.def
 	var mDef = bossData.stats.mDef
 	var moveSpeed = bossData.stats.moveSpeed
-	# Deep-duplicate per spawn: SkillLibrary caches one template per id, so the boss
-	# must get its own copy or per-instance state (cooldownRemaining/using/disable)
-	# would collide across boss spawns. Mirrors spawnEnemy.
+	# Deep-duplicate per spawn: BossDBData holds one parsed skill template per boss,
+	# so each spawn must get its own copy or per-instance state
+	# (cooldownRemaining/using/disable) would collide across boss spawns. Mirrors spawnEnemy.
 	var skills: Array[Skill] = []
 	for skill in bossData.skills:
 		skills.append(Utility.deep_duplicate_resource(skill))

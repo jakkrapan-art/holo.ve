@@ -1,0 +1,56 @@
+# Boss. `name` is the display name; the sprite + id come from the file path
+# (resources/enemy/forest01/boss/giant_boar/giant_boar.png). `wave` lists the
+# waves this boss is eligible to spawn on. skill is inline (3 boss skills).
+name: Giant Boar
+scale: 2
+wave:
+  - 10
+stats:
+  hp: 20000
+  def: 5
+  mDef: 5
+  moveSpeed: 100
+  skillCount: 3
+  buffCount: 3
+skill:
+  - name: Charge
+    cooldown: 20
+    desc: charge_desc
+    action:
+      - type: target_self
+      - type: set_speed
+        data:
+          speed: 0
+      - type: delay
+        data:
+          delay: 2
+      - type: set_speed
+        data:
+          speed: 150
+      - type: delay
+        data:
+          delay: 2
+      - type: set_speed
+        data:
+          speed: 100
+  - name: Thick Skin
+    cooldown: 45
+    desc: thick_skin_desc
+    action:
+      - type: target_self
+      - type: apply_status_effect
+        data:
+          type: IncreaseDefBuff
+          duration: 5
+          level: 1
+          increaseValue: 7.5
+  - name: Scary Graze
+    cooldown: 30
+    desc: scary_graze_desc
+    action:
+      - type: target_self
+      - type: decrease_damage_all_area
+        data:
+          duration: 3
+          radius: 1
+          decreaseValue: 0.10

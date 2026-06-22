@@ -1,7 +1,8 @@
 class_name EnemyDBData
 
-# One enemy definition from the per-map enemy DB (resources/database/enemy/<map>.yaml).
-# Mirrors BossDBData: stats is a plain Dictionary { hp, def, mDef, moveSpeed }.
+# One enemy definition from the map's enemy roster
+# (resources/database/enemy/<map>/<tier>/<id>.yaml). Mirrors BossDBData:
+# stats is a plain Dictionary { hp, def, mDef, moveSpeed }.
 var id: String
 var tier: String                 # "normal" / "elite" / "boss" - drives sprite path + leak damage
 var stats: Dictionary

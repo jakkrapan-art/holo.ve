@@ -70,7 +70,11 @@ func _process(_delta):
 
 func _ready():
 	TowerCenter.clearData();
-	var b: BossLibrary = BossLibrary.new();
+	# Map folder name = selected_map_file minus ".yaml" (e.g. "forest01.yaml" ->
+	# "forest01"). Single source of identity for this run's enemy/boss data so the
+	# boss pool key matches the getBossList lookup below.
+	var mapName := TowerCenter.selected_map_file.get_basename();
+	var b: BossLibrary = BossLibrary.new(mapName);
 
 	TowerCenter.addDeck(TowerCenter.selected_deck)
 	var default = TowerDataLoader.load_data("res://resources/database/towers/", "default_tower")
@@ -88,9 +92,8 @@ func _ready():
 
 	show_popup_panel();
 
-	# Map folder name = selected_map_file minus ".yaml" (e.g. "forest01.yaml" -> "forest01"),
-	# so a new map preloads its own enemy set instead of always forest01's.
-	ResourceManager.preloadEnemy(TowerCenter.selected_map_file.get_basename());
+	# Preload this run's enemy set (sprites + stats/skills registry) for the map.
+	ResourceManager.preloadEnemy(mapName);
 
 	mission = Mission.new();
 
@@ -111,7 +114,7 @@ func _ready():
 
 		waveController.setup(waveControllerData);
 
-		var bossList: Array[BossDBData] = b.getBossList(mapData.mapName);
+		var bossList: Array[BossDBData] = b.getBossList(mapName);
 		waveController.setBossList(bossList);
 
 		waveController.connect("onWaveStart", Callable(towerFactory, "onWaveStart"));

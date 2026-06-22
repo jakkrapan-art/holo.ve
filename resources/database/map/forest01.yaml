@@ -111,11 +111,11 @@ waves:
         startAt: 0
       - enemy: flying_flower
         count: 10
-        spawnInterval: 3
+        spawnInterval: 6
         startAt: 0
       - enemy: armored_boar
         count: 5
-        spawnInterval: 6
+        spawnInterval: 12
         startAt: 0
 
   - duration: 60  # wave10

@@ -52,13 +52,14 @@ static func preloadSynergy():
 			var path = "ui_asset/synergies/" + key + ".png"
 			loadImage("synergy", key, path)
 
-static var _enemy_db: Dictionary = {}    # id -> EnemyDBData (stats + skills + tier)
-static var _enemy_tier: Dictionary = {}  # id -> tier string ("boss"/"elite"/"normal")
+static var _enemy_db: Dictionary = {}    # id -> EnemyDBData (stats + skills + tier); normal/elite only
+static var _enemy_tier: Dictionary = {}  # id -> tier string ("elite"/"normal")
 
-# Loads the per-map enemy DB (resources/database/enemy/<map>.yaml): builds the
-# stats/skills registry, derives the tier registry, and caches each enemy sprite.
-# The sprite path is still tier-foldered (resources/enemy/<map>/<tier>/<id>/<id>.png),
-# tier now coming from the DB entry instead of the retired enemy_list.yaml.
+# Loads the map's enemy roster (resources/database/enemy/<map>/enemy_list.yaml +
+# per-enemy files) into the stats/skills + tier registries and caches each enemy
+# sprite. Only normal/elite tiers are registered here; bosses are owned by
+# BossLibrary. The sprite path is tier-foldered
+# (resources/enemy/<map>/<tier>/<id>/<id>.png), tier coming from the roster.
 static func preloadEnemy(mapName: String) -> void:
 	var enemyPrefix := "res://resources/enemy"
 	var loaded: Dictionary = {}

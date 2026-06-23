@@ -2,10 +2,10 @@
 
 [ext_resource type="Script" path="res://scripts/ui/tower_select/tower_select_button.gd" id="1_ydvhw"]
 [ext_resource type="Shader" path="res://resources/ui_component/tower_select/ui_tower_choice.gdshader" id="1_ye0gs"]
-[ext_resource type="FontFile" uid="uid://vc6emo5px8ld" path="res://resources/ui_component/font/Roboto-Regular.ttf" id="2_oispt"]
-[ext_resource type="Texture2D" uid="uid://cxr6gm84cu055" path="res://resources/currency/evo_token.png" id="3_lbarx"]
+[ext_resource type="FontFile" uid="uid://ce4s1cmnygtoe" path="res://resources/ui_component/font/Roboto-Regular.ttf" id="2_oispt"]
+[ext_resource type="Texture2D" uid="uid://dvh3dsjhqj5dx" path="res://resources/currency/evo_token.png" id="3_lbarx"]
 [ext_resource type="Shader" path="res://resources/ui_component/tower_select/ui_tower_choice_trait.gdshader" id="5_kba5i"]
-[ext_resource type="Texture2D" uid="uid://drat5dnv8y74b" path="res://resources/ui_asset/synergies/assassin.png" id="7_681fe"]
+[ext_resource type="Texture2D" uid="uid://ch01k51aeraua" path="res://resources/ui_asset/synergies/assassin.png" id="7_681fe"]
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_wd61a"]
 resource_name = "tower_buttons"

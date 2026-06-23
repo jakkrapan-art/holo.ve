@@ -1,6 +1,6 @@
 [gd_scene load_steps=11 format=3 uid="uid://eqqkxeyb5r1q"]
 
-[ext_resource type="Texture2D" uid="uid://b8d1cb0j7k6yu" path="res://resources/tower/hololive/en_branch/myth_gen/kiara/sprite/kiara_vfx01.png" id="1_hqdic"]
+[ext_resource type="Texture2D" uid="uid://drfpg230f5xh3" path="res://resources/tower/hololive/en_branch/myth_gen/kiara/sprite/kiara_vfx01.png" id="1_hqdic"]
 [ext_resource type="Script" path="res://scripts/combat/attack_vfx_object.gd" id="2_k8okj"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_53gdh"]

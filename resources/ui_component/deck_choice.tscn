@@ -2,9 +2,9 @@
 
 [ext_resource type="Script" path="res://scripts/ui_scenes/deck_choice.gd" id="1_hcuko"]
 [ext_resource type="Script" path="res://scripts/ui/ui_toggle.gd" id="2_bf4cs"]
-[ext_resource type="Texture2D" uid="uid://7oqqoq5oo2a" path="res://resources/ui_component/ui_asset/deck_on.png" id="3_t8s65"]
-[ext_resource type="FontFile" uid="uid://bvunhnjan4hqu" path="res://resources/ui_component/font/Balthazar-Regular.ttf" id="4_t50qw"]
-[ext_resource type="Texture2D" uid="uid://dhat3a5sddxfi" path="res://resources/ui_component/ui_asset/deck_off.png" id="5_llp5e"]
+[ext_resource type="Texture2D" uid="uid://co5w7agayr126" path="res://resources/ui_component/ui_asset/deck_on.png" id="3_t8s65"]
+[ext_resource type="FontFile" uid="uid://c71u2py3r42lf" path="res://resources/ui_component/font/Balthazar-Regular.ttf" id="4_t50qw"]
+[ext_resource type="Texture2D" uid="uid://u8xsdixfdx12" path="res://resources/ui_component/ui_asset/deck_off.png" id="5_llp5e"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_vb3iw"]
 font = ExtResource("4_t50qw")

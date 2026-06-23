@@ -2,8 +2,8 @@
 
 [ext_resource type="Script" path="res://scripts/entity/enemy/enemy.gd" id="1_wei2r"]
 [ext_resource type="Script" path="res://scripts/entity/enemy/enemy_area.gd" id="2_wqjs0"]
-[ext_resource type="Texture2D" uid="uid://dm22s75aqe0qh" path="res://resources/enemy/forest01/normal/baby_garlic/baby_garlic.png" id="3_sr7qx"]
-[ext_resource type="Texture2D" uid="uid://cbqnd2tlx4sjh" path="res://resources/ui_component/ui_asset/tower_mana_bg.png" id="4_74rq7"]
+[ext_resource type="Texture2D" uid="uid://dgm3awwn0uoy6" path="res://resources/enemy/forest01/normal/baby_garlic/baby_garlic.png" id="3_sr7qx"]
+[ext_resource type="Texture2D" uid="uid://ndhp4h3w4nam" path="res://resources/ui_component/ui_asset/tower_mana_bg.png" id="4_74rq7"]
 [ext_resource type="Script" path="res://scripts/ui/health_bar.gd" id="5_rn7ke"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_gnwf4"]

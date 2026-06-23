@@ -10,6 +10,7 @@ extends TextureButton
 # tooltip triggers (tooltip delay is lowered globally in project.godot).
 
 var skill: Skill = null
+var max_charges: int = -1  # StaffData.skill_max_charges: -1 = unlimited, N = N uses per game
 
 func _make_custom_tooltip(_for_text: String) -> Object:
 	var panel := PanelContainer.new()
@@ -26,7 +27,9 @@ func _build_hover_bbcode() -> String:
 		return ""
 	var lines: PackedStringArray = []
 	lines.append("[b]" + skill.get_display_name(1) + "[/b]")
+	lines.append("Limit: " + ("Unlimited" if max_charges < 0 else str(max_charges)))
 	var desc := skill.get_display_desc(1)
 	if desc != "":
+		lines.append("")
 		lines.append(desc)
 	return "\n".join(lines)

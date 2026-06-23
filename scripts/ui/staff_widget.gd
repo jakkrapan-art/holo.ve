@@ -62,6 +62,7 @@ func _apply_skill_hover(data: StaffData) -> void:
 	if _skill_icon == null or data == null or data.skill == null:
 		return
 	_skill_icon.skill = data.skill
+	_skill_icon.max_charges = data.skill_max_charges
 	_skill_icon.tooltip_text = data.skill.get_display_name(1)
 
 func _apply_hp(current: int, max_hp: int) -> void:

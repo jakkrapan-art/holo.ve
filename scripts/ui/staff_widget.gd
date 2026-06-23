@@ -12,7 +12,7 @@ signal skill_pressed  # forwarded by GameScene → Staff.requestCastSkill (Phase
 @onready var _hp_gauge: TextureProgressBar = $HpGauge
 @onready var _hp_label: Label = $HpLabel
 @onready var _skill_mask: TextureRect = $SkillMask
-@onready var _skill_icon: TextureButton = $SkillMask/SkillButton
+@onready var _skill_icon: StaffSkillTooltip = $SkillMask/SkillButton
 @onready var _skill_border: TextureRect = $SkillBorder
 
 # Hover effect — subtle scale tween on the skill area when mouse enters / leaves the button.
@@ -32,6 +32,7 @@ func setup(staff: Staff) -> void:
 		return
 	_staff = staff
 	_apply_staff_textures(staff.data)
+	_apply_skill_hover(staff.data)
 	_apply_hp(staff.getCurrentHp(), staff.getMaxHp())
 	if not staff.is_connected("hp_changed", Callable(self, "_on_hp_changed")):
 		staff.hp_changed.connect(_on_hp_changed)
@@ -53,6 +54,15 @@ func _apply_staff_textures(data: StaffData) -> void:
 		_portrait.texture = load("res://resources/" + data.hud_portrait)
 	if data.hud_skill_icon != "":
 		_skill_icon.texture_normal = load("res://resources/" + data.hud_skill_icon)
+
+func _apply_skill_hover(data: StaffData) -> void:
+	# Placeholder skill-info hover (name + desc) on the skill button. The rich tooltip
+	# is built by StaffSkillTooltip._make_custom_tooltip; tooltip_text just needs to be
+	# non-empty so the tooltip triggers (delay lowered globally in project.godot).
+	if _skill_icon == null or data == null or data.skill == null:
+		return
+	_skill_icon.skill = data.skill
+	_skill_icon.tooltip_text = data.skill.get_display_name(1)
 
 func _apply_hp(current: int, max_hp: int) -> void:
 	_hp_gauge.max_value = float(max_hp)

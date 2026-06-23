@@ -1,13 +1,14 @@
-[gd_scene load_steps=9 format=3 uid="uid://omnglvjm0xyi"]
+[gd_scene load_steps=10 format=3 uid="uid://omnglvjm0xyi"]
 
 [ext_resource type="Script" path="res://scripts/ui/staff_widget.gd" id="1_script"]
-[ext_resource type="Texture2D" uid="uid://dirflpewxylbn" path="res://resources/ui_asset/staff/bg.png" id="2_bg"]
-[ext_resource type="Texture2D" uid="uid://bsvnv5u67vlrv" path="res://resources/staffs/a_chan/hud/portrait.png" id="3_portrait"]
-[ext_resource type="Texture2D" uid="uid://b1qmtl8ktewvf" path="res://resources/ui_asset/staff/border.png" id="4_border"]
-[ext_resource type="Texture2D" uid="uid://b0cs1do08aqpk" path="res://resources/ui_asset/staff/hp_border.png" id="5_hp_border"]
-[ext_resource type="Texture2D" uid="uid://dl086p0jt33jj" path="res://resources/ui_asset/staff/hp_gauge.png" id="6_hp_gauge"]
-[ext_resource type="Texture2D" uid="uid://cdtc4uurl8x5m" path="res://resources/ui_asset/staff/skill_border.png" id="7_skill_border"]
-[ext_resource type="Texture2D" uid="uid://cc27qry4n02k2" path="res://resources/staffs/a_chan/hud/skill_icon.png" id="8_skill_icon"]
+[ext_resource type="Texture2D" uid="uid://cadkh62jlagwi" path="res://resources/ui_asset/staff/bg.png" id="2_bg"]
+[ext_resource type="Texture2D" uid="uid://bjdctlxpbwr4r" path="res://resources/staffs/a_chan/hud/portrait.png" id="3_portrait"]
+[ext_resource type="Texture2D" uid="uid://cj0f7j184vjoi" path="res://resources/ui_asset/staff/border.png" id="4_border"]
+[ext_resource type="Texture2D" uid="uid://c66wy6ms1ur6k" path="res://resources/ui_asset/staff/hp_border.png" id="5_hp_border"]
+[ext_resource type="Texture2D" uid="uid://bx74hpdw3wr5a" path="res://resources/ui_asset/staff/hp_gauge.png" id="6_hp_gauge"]
+[ext_resource type="Texture2D" uid="uid://bxcvwa5v0c2dc" path="res://resources/ui_asset/staff/skill_border.png" id="7_skill_border"]
+[ext_resource type="Texture2D" uid="uid://31qqqswybwhs" path="res://resources/staffs/a_chan/hud/skill_icon.png" id="8_skill_icon"]
+[ext_resource type="Script" path="res://scripts/ui/staff_skill_tooltip.gd" id="9_tooltip"]
 
 [node name="StaffWidget" type="Control"]
 custom_minimum_size = Vector2(520, 236)
@@ -126,6 +127,7 @@ grow_vertical = 2
 texture_normal = ExtResource("8_skill_icon")
 ignore_texture_size = true
 stretch_mode = 0
+script = ExtResource("9_tooltip")
 
 [node name="SkillBorder" type="TextureRect" parent="."]
 layout_mode = 1

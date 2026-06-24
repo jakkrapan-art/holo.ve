@@ -231,9 +231,9 @@ func _commit_staff_skill_cast():
 		return
 	# Snap mouse to grid cell center (same logic as the indicator) and execute.
 	var cell: Vector2i = GridHelper.WorldToCell(get_global_mouse_position())
-	var snapped: Vector2 = GridHelper.CellToWorld(cell)
+	var snapped_pos: Vector2 = GridHelper.CellToWorld(cell)
 	_exit_skill_cast_state()
-	staff.executeSkillAtPosition(snapped)
+	staff.executeSkillAtPosition(snapped_pos)
 
 func _cancel_staff_skill_cast():
 	_exit_skill_cast_state()

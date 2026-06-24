@@ -109,7 +109,7 @@ static func ParseAction(data: Dictionary, parameters: Dictionary = {}) -> SkillA
 			# ATTACK_SPEED is decimal scale (0.5 = +50%) — see tower_data.getAttackSpeed.
 			skill.percent = skillData.get("percent", 0.5)
 			skill.paramName = skillData.get("param_name", "")
-			skill.range = skillData.get("range", 1)
+			skill.range_cells = skillData.get("range", 1)
 		"crit_chance_buff":
 			skill = SkillActionCritChanceBuff.new()
 			var skillData = data.get("data", {})

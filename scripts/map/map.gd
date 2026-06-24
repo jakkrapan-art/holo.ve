@@ -11,10 +11,10 @@ static var startY: int = 3;
 
 static var availableCells: Array[Vector2i];
 
-func toggle_grid(is_visible: bool):
+func toggle_grid(p_is_visible: bool):
 	if drawer:
-		drawer.visible = is_visible
-		if is_visible:
+		drawer.visible = p_is_visible
+		if p_is_visible:
 			drawer.queue_redraw()
 
 # Internal helper to refresh when data changes

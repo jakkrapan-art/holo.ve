@@ -306,32 +306,32 @@ func clearEnemy(_enemy = null, _cause = null, _reward = null):
 	enemy = null;
 	attacking = false;
 
-func play_animation(name: String, speed: float = 1):
+func play_animation(p_name: String, speed: float = 1):
 	if(anim != null):
-		return anim.play(name, speed);
+		return anim.play(p_name, speed);
 	return false;
 
-func get_animation_duration(name: String) -> float:
+func get_animation_duration(p_name: String) -> float:
 	if(anim != null):
-		return anim.get_native_duration(name);
+		return anim.get_native_duration(p_name);
 	return 0.0;
 
-func has_animation(name: String) -> bool:
+func has_animation(p_name: String) -> bool:
 	if(anim != null):
-		return anim.has_animation(name);
+		return anim.has_animation(p_name);
 	return false;
 
 func play_animation_default():
 	if(anim != null):
 		anim.playDefault();
 
-func animation_finished(name: String):
-	match name:
+func animation_finished(p_name: String):
+	match p_name:
 		_:
 			pass;
 			# play_animation_default();
 
-	on_animation_finished.emit(name);
+	on_animation_finished.emit(p_name);
 
 func update_mana_bar(current: float):
 	if(manaBar == null):
@@ -376,9 +376,9 @@ func resetForWave():
 
 	play_animation_default()
 
-func showAttackRange(show: bool):
+func showAttackRange(p_show: bool):
 	if enemyDetector != null:
-		enemyDetector.setEnabledDrawRange(show);
+		enemyDetector.setEnabledDrawRange(p_show);
 
 func setTowerStar(tier: int):
 	if(towerStar != null):

@@ -159,9 +159,9 @@ func _apply_cards_to_buttons(cards: Array) -> void:
 		else:
 			buttons[index].visible = false
 
-func _on_select_tower_button(name):
-	print("signal: tower_select,"+str(name))
-	emit_signal("tower_select", name)
+func _on_select_tower_button(p_name):
+	print("signal: tower_select,"+str(p_name))
+	emit_signal("tower_select", p_name)
 	# emit_signal("tower_select", "gawr_gura") #temp
 	queue_free()
 	#get_tree().quit()

@@ -11,8 +11,8 @@ var damage: int;
 var type: DamageType
 var isCritical: bool = false;
 
-func _init(source: Node2D, amount: int, type: DamageType, isCritical: bool = false):
-	self.source = source;
+func _init(p_source: Node2D, amount: int, p_type: DamageType, p_isCritical: bool = false):
+	self.source = p_source;
 	self.damage = amount;
-	self.type = type;
-	self.isCritical = isCritical;
+	self.type = p_type;
+	self.isCritical = p_isCritical;

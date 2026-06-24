@@ -39,44 +39,44 @@ enum ProjectileMoveType
 # New Modifier Callable
 var callback: ProjectileCallback = null
 
-func _base_setup(shooter: Tower, damage: Damage, lifetime: float = 5.0, callback: ProjectileCallback = null):
-	self.shooter = shooter
-	self.damage = damage
-	self.lifetime = lifetime
-	self.callback = callback if callback else ProjectileCallback.new(Callable(), Callable(), Callable())
+func _base_setup(p_shooter: Tower, p_damage: Damage, p_lifetime: float = 5.0, p_callback: ProjectileCallback = null):
+	self.shooter = p_shooter
+	self.damage = p_damage
+	self.lifetime = p_lifetime
+	self.callback = p_callback if p_callback else ProjectileCallback.new(Callable(), Callable(), Callable())
 
-func setupTarget(shooter: Tower, target: Enemy, damage: Damage, lifetime: float = 5.0, callback: ProjectileCallback = null):
-	_base_setup(shooter, damage, lifetime, callback)
-	self.target = target
+func setupTarget(p_shooter: Tower, p_target: Enemy, p_damage: Damage, p_lifetime: float = 5.0, p_callback: ProjectileCallback = null):
+	_base_setup(p_shooter, p_damage, p_lifetime, p_callback)
+	self.target = p_target
 	moveType = ProjectileMoveType.Target
-	rotation = Utility.get_angle_to_target(global_position, target.global_position)
+	rotation = Utility.get_angle_to_target(global_position, p_target.global_position)
 	connect("area_entered", Callable(self, "onAreaEntered"))
 
-func setupTargetPosition(shooter: Tower, target_position: Vector2, damage: Damage, lifetime: float = 5.0, callback: ProjectileCallback = null):
-	_base_setup(shooter, damage, lifetime, callback)
-	self.target_position = target_position
+func setupTargetPosition(p_shooter: Tower, p_target_position: Vector2, p_damage: Damage, p_lifetime: float = 5.0, p_callback: ProjectileCallback = null):
+	_base_setup(p_shooter, p_damage, p_lifetime, p_callback)
+	self.target_position = p_target_position
 	moveType = ProjectileMoveType.Position
-	rotation = Utility.get_angle_to_target(global_position, target_position)
+	rotation = Utility.get_angle_to_target(global_position, p_target_position)
 
-func setup_direction(shooter: Tower, direction: Vector2, damage: Damage, lifetime: float = 5.0, callback: ProjectileCallback = null):
-	_base_setup(shooter, damage, lifetime, callback)
+func setup_direction(p_shooter: Tower, direction: Vector2, p_damage: Damage, p_lifetime: float = 5.0, p_callback: ProjectileCallback = null):
+	_base_setup(p_shooter, p_damage, p_lifetime, p_callback)
 	self.move_direction = direction.normalized()
 	moveType = ProjectileMoveType.Direction
 	rotation = Utility.get_angle_to_target(global_position, global_position + direction)
 	connect("area_entered", Callable(self, "onAreaEntered"))
 
-func setup_circle(shooter: Tower, damage: Damage, circle_radius: float = 100.0, angular_speed: float = 180.0, initial_angle: float = 0.0, lifetime: float = 5.0, callback: ProjectileCallback = null):
-	_base_setup(shooter, damage, lifetime, callback)
+func setup_circle(p_shooter: Tower, p_damage: Damage, p_circle_radius: float = 100.0, angular_speed: float = 180.0, initial_angle: float = 0.0, p_lifetime: float = 5.0, p_callback: ProjectileCallback = null):
+	_base_setup(p_shooter, p_damage, p_lifetime, p_callback)
 	spawn_position = global_position
-	self.circle_radius = circle_radius * GridHelper.CELL_SIZE
+	self.circle_radius = p_circle_radius * GridHelper.CELL_SIZE
 	self.circle_angle = initial_angle
 	self.circle_angular_speed = angular_speed
 	moveType = ProjectileMoveType.Circle
 	connect("area_entered", Callable(self, "onAreaEntered"))
 
-func setupStatusEffects(statusEffects: Array[StatusEffect]):
-	if statusEffects:
-		self.statusEffects = statusEffects
+func setupStatusEffects(p_statusEffects: Array[StatusEffect]):
+	if p_statusEffects:
+		self.statusEffects = p_statusEffects
 
 func _process(delta: float) -> void:
 	match moveType:

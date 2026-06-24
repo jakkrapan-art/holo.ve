@@ -4,6 +4,6 @@ extends RefCounted
 var onEnter: Callable = Callable()
 var onExit: Callable = Callable()
 
-func _init(onEnter: Callable = Callable(), onExit: Callable = Callable()):
-	self.onEnter = onEnter
-	self.onExit = onExit
+func _init(p_onEnter: Callable = Callable(), p_onExit: Callable = Callable()):
+	self.onEnter = p_onEnter
+	self.onExit = p_onExit

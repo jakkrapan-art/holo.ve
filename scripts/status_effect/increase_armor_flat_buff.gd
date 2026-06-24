@@ -4,9 +4,9 @@ extends StatusEffect
 @export var increaseAmount: int = 1 # Flat armor amount
 var elapsedTime: float = 0.0
 
-func _init(duration: float = 5.0, increaseAmount: int = 1):
-	super._init(duration, 1, "IncreaseArmorFlatBuff")
-	self.increaseAmount = increaseAmount
+func _init(p_duration: float = 5.0, p_increaseAmount: int = 1):
+	super._init(p_duration, 1, "IncreaseArmorFlatBuff")
+	self.increaseAmount = p_increaseAmount
 
 func _process_effect(delta: float, target: Node) -> void:
 	elapsedTime += delta

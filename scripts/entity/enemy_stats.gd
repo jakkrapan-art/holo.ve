@@ -17,13 +17,13 @@ var blockCount: int = 0; # Number of damage blocks available
 
 var buffs: Dictionary = {};
 
-func _init(hp: int, armor: int, mArmor: int, moveSpeed: float, damageReduction: float = 0.0):
+func _init(hp: int, p_armor: int, p_mArmor: int, p_moveSpeed: float, p_damageReduction: float = 0.0):
 	maxHp = hp;
 	currentHp = hp;
-	self.armor = armor;
-	self.mArmor = mArmor;
-	self.moveSpeed = moveSpeed;
-	self.damageReduction = damageReduction;
+	self.armor = p_armor;
+	self.mArmor = p_mArmor;
+	self.moveSpeed = p_moveSpeed;
+	self.damageReduction = p_damageReduction;
 
 func updateHealth(amount: int):
 	currentHp = clamp(currentHp + amount, 0, maxHp);

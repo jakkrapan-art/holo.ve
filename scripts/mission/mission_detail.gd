@@ -8,14 +8,14 @@ var description: String;
 var onComplete: Callable;
 var completed: bool
 
-func _init(id: int,keyword: String, progress: int, max: int, desc: String, onComplete: Callable):
-	self.id = id;
-	self.keyword = keyword;
-	self.progress = progress;
-	self.max = max;
+func _init(p_id: int,p_keyword: String, p_progress: int, p_max: int, desc: String, p_onComplete: Callable):
+	self.id = p_id;
+	self.keyword = p_keyword;
+	self.progress = p_progress;
+	self.max = p_max;
 	description = desc;
-	self.onComplete = onComplete;
-	completed = progress == max;
+	self.onComplete = p_onComplete;
+	completed = p_progress == p_max;
 
 func updateProgress(updateAmount: int):
 	if (completed):

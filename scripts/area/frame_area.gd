@@ -11,9 +11,9 @@ var tickTime: float = 0.0;
 func _ready():
 	setup(radius, EffectAreaCallback.new(Callable(self, "enemyEntered"), Callable(self, "enemyExited")))
 
-func setup(radius: float = 2.0, callback: EffectAreaCallback = EffectAreaCallback.new(Callable(), Callable())):
+func setup(p_radius: float = 2.0, callback: EffectAreaCallback = EffectAreaCallback.new(Callable(), Callable())):
 	var circle_shape = CircleShape2D.new()
-	circle_shape.radius = radius * GridHelper.CELL_SIZE
+	circle_shape.radius = p_radius * GridHelper.CELL_SIZE
 
 	_base_setup(circle_shape, callback)
 

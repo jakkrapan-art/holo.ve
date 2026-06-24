@@ -4,9 +4,9 @@ extends StatusEffect
 @export var multiplierValue: float = 0.5 # Decimal: +0.5 = +50% haste, -0.5 = 50% slow
 var elapsedTime: float = 0.0
 
-func _init(duration: float = 5.0, multiplierValue: float = 0.5):
-	super._init(duration, 1, "MoveSpeedMultiplierBuff")
-	self.multiplierValue = multiplierValue
+func _init(p_duration: float = 5.0, p_multiplierValue: float = 0.5):
+	super._init(p_duration, 1, "MoveSpeedMultiplierBuff")
+	self.multiplierValue = p_multiplierValue
 
 func _process_effect(delta: float, target: Node) -> void:
 	elapsedTime += delta

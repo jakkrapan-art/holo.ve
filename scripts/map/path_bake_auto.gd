@@ -28,7 +28,7 @@ func bake():
 	print("Path set with %d points." % path.size())
 	return path
 
-func get_marked_points(layer: int) -> Array[Vector2i]:
+func get_marked_points(p_layer: int) -> Array[Vector2i]:
 	var marked: Array[Vector2i] = []
 	var allowed_atlas_coords: Array[Vector2i] = [
 		Vector2i(0, 0), Vector2i(0, 1), Vector2i(0, 2),
@@ -37,19 +37,19 @@ func get_marked_points(layer: int) -> Array[Vector2i]:
 	]
 
 	# Step 1: Collect from the base layer (layer 0)
-	for pos in tilemap.get_used_cells(layer):
-		var source_id: int = tilemap.get_cell_source_id(layer, pos)
+	for pos in tilemap.get_used_cells(p_layer):
+		var source_id: int = tilemap.get_cell_source_id(p_layer, pos)
 		if source_id != target_source_id:
 			continue
 
-		var atlas_coord: Vector2i = tilemap.get_cell_atlas_coords(layer, pos)
+		var atlas_coord: Vector2i = tilemap.get_cell_atlas_coords(p_layer, pos)
 		if allowed_atlas_coords.has(atlas_coord):
 			marked.append(pos)
 
 	# Step 2: Check other layers and remove positions if they exist there
 	var final_marked := marked.duplicate()
 	for check_layer in range(2):
-		if check_layer == layer:
+		if check_layer == p_layer:
 			continue
 		for pos in marked:
 			if tilemap.get_used_cells(check_layer).has(pos):

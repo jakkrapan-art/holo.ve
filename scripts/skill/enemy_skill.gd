@@ -4,9 +4,9 @@ extends Skill
 @export var cooldown: float = 3
 var cooldownRemaining: float = 0.0;
 
-func _init(name:String="EnemySkill", desc:String="Just an enemy skill", actions:Array[SkillAction]=[], parameters:Dictionary={}, oneTimeUse: bool = false, cooldown:float=3.0):
-	super(name, desc, actions, parameters, oneTimeUse);
-	self.cooldown = cooldown;
+func _init(p_name:String="EnemySkill", p_desc:String="Just an enemy skill", p_actions:Array[SkillAction]=[], p_parameters:Dictionary={}, p_oneTimeUse: bool = false, p_cooldown:float=3.0):
+	super(p_name, p_desc, p_actions, p_parameters, p_oneTimeUse);
+	self.cooldown = p_cooldown;
 
 func isReady():
 	return super.isReady() and cooldownRemaining <= 0.0

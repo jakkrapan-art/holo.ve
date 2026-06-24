@@ -34,8 +34,8 @@ func enemyExited(area: Area2D):
 
 	effectedTargets.erase(area);
 
-func isEnemy(user: Node, target: Node):
-	return (user is Enemy and target is Tower) || (user is Tower and (target is Enemy or target is EnemyArea))
+func isEnemy(p_user: Node, target: Node):
+	return (p_user is Enemy and target is Tower) || (p_user is Tower and (target is Enemy or target is EnemyArea))
 
 func getDebuffKey():
 	return "skill_" + str(get_instance_id());

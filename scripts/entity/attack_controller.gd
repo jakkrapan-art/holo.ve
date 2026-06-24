@@ -10,9 +10,9 @@ var tower: Tower;
 
 var modifier: Dictionary = {}
 
-func setup(tower: Tower, getCooldown: Callable):
+func setup(p_tower: Tower, getCooldown: Callable):
 	getAttackCooldown = getCooldown;
-	self.tower = tower;
+	self.tower = p_tower;
 
 func addModifier(key: int, mod: Callable):
 	modifier[key] = mod

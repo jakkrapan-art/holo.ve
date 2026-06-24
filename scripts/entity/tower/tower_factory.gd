@@ -17,9 +17,9 @@ enum TowerId {
 	Test
 }
 
-func setup(onPlace: Callable, onRemove: Callable):
-	self.onPlace = onPlace
-	self.onRemove = onRemove
+func setup(p_onPlace: Callable, p_onRemove: Callable):
+	self.onPlace = p_onPlace
+	self.onRemove = p_onRemove
 
 	synergyController = SynergyController.new()
 	synergyController.setup(self)

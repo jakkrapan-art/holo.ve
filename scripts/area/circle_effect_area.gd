@@ -8,15 +8,15 @@ extends EffectArea
 
 var elapsedTime: float = 0.0;
 
-func setup(radius: float = 2.0, duration: float = 5.0, callback: EffectAreaCallback = null, drawColor: Color = Color(0, 0, 1, 0.2)):
+func setup(p_radius: float = 2.0, p_duration: float = 5.0, callback: EffectAreaCallback = null, p_drawColor: Color = Color(0, 0, 1, 0.2)):
 	var circle_shape = CircleShape2D.new()
-	circle_shape.radius = radius
+	circle_shape.radius = p_radius
 	_base_setup(circle_shape, callback);
-	collisionShape.scale = Vector2.ONE * radius;
+	collisionShape.scale = Vector2.ONE * p_radius;
 	elapsedTime = 0.0
-	self.drawColor = drawColor
-	self.radius = radius
-	self.duration = duration
+	self.drawColor = p_drawColor
+	self.radius = p_radius
+	self.duration = p_duration
 
 func _process(delta: float) -> void:
 	elapsedTime += delta

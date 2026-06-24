@@ -24,8 +24,8 @@ var _removed: bool = false;
 enum EnemyType {Normal, Elite, Boss}
 const FACING_X_EPSILON: float = 0.01
 
-func setup(enemyType: EnemyType, hp: int, armor: int, mArmor: int, moveSpeed: int, texture: Texture2D, skills: Array[Skill] = [], damageReduction: float = 0.0):
-	self.enemyType = enemyType;
+func setup(p_enemyType: EnemyType, hp: int, armor: int, mArmor: int, moveSpeed: int, texture: Texture2D, skills: Array[Skill] = [], damageReduction: float = 0.0):
+	self.enemyType = p_enemyType;
 	setTexture(texture);
 	stats = EnemyStat.new(hp, armor, mArmor, moveSpeed, damageReduction);
 	originalModulate = sprite.modulate

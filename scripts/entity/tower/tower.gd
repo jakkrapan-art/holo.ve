@@ -128,17 +128,17 @@ func _process(delta):
 	if enableAttack && !attacking && !usingSkill && !skillReady:
 		attackEnemy();
 
-func setup(id: String, onPlace: Callable, onRemove: Callable):
-	self.id = id;
-	self.name = id;
-	towerName = id;
-	self.onPlace = onPlace;
-	self.onRemove = onRemove;
+func setup(p_id: String, p_onPlace: Callable, p_onRemove: Callable):
+	self.id = p_id;
+	self.name = p_id;
+	towerName = p_id;
+	self.onPlace = p_onPlace;
+	self.onRemove = p_onRemove;
 
-	var towerData = TowerCenter._towers_data.get(id.to_lower(), null);
+	var towerData = TowerCenter._towers_data.get(p_id.to_lower(), null);
 
 	if towerData == null:
-		printerr("tower data not found: " + id + ", exists: " + str(TowerCenter._towers_data.keys()));
+		printerr("tower data not found: " + p_id + ", exists: " + str(TowerCenter._towers_data.keys()));
 		return;
 
 	self.data = towerData.data;
@@ -282,12 +282,12 @@ func updateSpriteColor(available: bool):
 	else:
 		spr.self_modulate = Color("#ff0000", 1);
 
-func _onEnemyDetected(enemy: Enemy):
+func _onEnemyDetected(p_enemy: Enemy):
 	if self.enemy != null:
 		clearEnemy(null, null, null);
 
-	self.enemy = enemy;
-	if(enemy != null):
+	self.enemy = p_enemy;
+	if(p_enemy != null):
 		Utility.ConnectSignal(self.enemy, "onDead", Callable(self, "clearEnemy"));
 		Utility.ConnectSignal(self.enemy, "onReachEndPoint", Callable(self, "clearEnemy"));
 

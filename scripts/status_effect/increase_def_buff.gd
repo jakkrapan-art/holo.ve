@@ -6,20 +6,20 @@ var elapsedTime: float = 0.0
 var originColor: Color
 var buffKey: String = ""
 
-func _init(duration: float = 5.0, increaseAmount: float = 0.1):
-	super._init(duration, 1, "IncreaseDefBuff")
-	self.increaseAmount = increaseAmount
+func _init(p_duration: float = 5.0, p_increaseAmount: float = 0.1):
+	super._init(p_duration, 1, "IncreaseDefBuff")
+	self.increaseAmount = p_increaseAmount
 
 func _process_effect(delta: float, target: Node) -> void:
 	elapsedTime += delta
 	if elapsedTime >= duration:
 		_on_expire(target)
 
-func _on_apply(target: Node, buffKey: String = "") -> void:
-	self.buffKey = buffKey if buffKey != "" else ""
+func _on_apply(target: Node, p_buffKey: String = "") -> void:
+	self.buffKey = p_buffKey if p_buffKey != "" else ""
 	if target.stats != null && target.stats is EnemyStat:
 		var stats := target.stats as EnemyStat
-		stats.addDefPercent(increaseAmount, buffKey);
+		stats.addDefPercent(increaseAmount, p_buffKey);
 
 func _on_expire(target: Node) -> void:
 	if(!is_instance_valid(target)):

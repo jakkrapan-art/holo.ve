@@ -63,8 +63,8 @@ func _input(event):
 		elif event.keycode == KEY_3:
 			testSpawnBoss(2);
 
-func setup(data: WaveControllerData):
-	self.data = data;
+func setup(p_data: WaveControllerData):
+	self.data = p_data;
 	enemyTextures = ResourceManager.getSpriteGroup("enemy");
 
 func setBossList(list: Array[BossDBData]):

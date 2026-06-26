@@ -52,6 +52,16 @@ static func preloadSynergy():
 			var path = "ui_asset/synergies/" + key + ".png"
 			loadImage("synergy", key, path)
 
+# Synergy definitions (resources/database/synergy/) keyed by TowerTrait enum id.
+# Loaded next to preloadSynergy() at each addDeck; rebuilt (not accumulated).
+static var _synergy_data: Dictionary = {}
+
+static func loadSynergyData() -> void:
+	_synergy_data = SynergyDataLoader.load_all()
+
+static func getSynergyData(synergyId: int) -> SynergyData:
+	return _synergy_data.get(synergyId, null)
+
 static var _enemy_db: Dictionary = {}    # id -> EnemyDBData (stats + skills + tier); normal/elite only
 static var _enemy_tier: Dictionary = {}  # id -> tier string ("elite"/"normal")
 

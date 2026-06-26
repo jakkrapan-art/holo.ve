@@ -6,6 +6,11 @@ var modifier: Dictionary = {}
 
 var cancelled = false;
 
+# Emitted after a fully successful (non-cancelled) cast, post onSuccess. Towers
+# re-emit this as Tower.skill_cast_succeeded for the synergy system; enemies also
+# emit it but nothing listens on the enemy side.
+signal cast_succeeded(skill)
+
 func _init(user: Node, skills: Array[Skill]):
 	self.skills = skills;
 	self.user = user;
@@ -57,6 +62,7 @@ func execute_skill_actions(skill: Skill, context: SkillContext):
 		return
 
 	onSuccess(skill);
+	cast_succeeded.emit(skill);
 
 func resetUsingSkill(skill: Skill):
 	skill.using = false;

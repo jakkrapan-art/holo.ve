@@ -30,11 +30,8 @@ func Setup(name: String, sprite, towerClass: TowerTrait.TowerClass, towerGen: To
 		if(portrait):
 			towerPortrait.texture = portrait
 	var tClassName = TowerTrait.TOWER_CLASS_NAMES.get(towerClass, "default").to_lower();
-	var tGenName = TowerTrait.TOWER_GENERATION_NAMES.get(towerGen, "default").to_lower();
 	var classSprite = ResourceManager.getSprite("synergy", tClassName);
 	var genSprite = ResourceManager.getSprite("synergy", TowerTrait.TOWER_GENERATION_NAMES.get(towerGen, "default").to_lower());
-	print("synergy class for ", tClassName, " :", classSprite);
-	print("synergy generation for ", tGenName, " :", genSprite);
 	if(towerClassImage):
 		towerClassImage.texture = classSprite
 

@@ -1,9 +1,6 @@
 extends Node
 class_name TowerFactory
 
-const TowerClass = preload("res://scripts/entity/tower/tower_trait.gd").TowerClass
-const TowerGeneration = preload("res://scripts/entity/tower/tower_trait.gd").TowerGeneration
-
 @onready var uiSynergy: UISynergy = $"../GameUI/UISynergy"
 
 @export var towerTemplate: PackedScene
@@ -14,8 +11,7 @@ var towerTrait: TowerTrait = TowerTrait.new()
 var towersByName: Dictionary = {}
 var towers: Dictionary = {}
 var _evolutionList: Dictionary = {}
-var activeSynergies: Dictionary = {}
-var activeMissionBuff: Dictionary = {}
+var synergyController: SynergyController
 
 enum TowerId {
 	Test
@@ -25,8 +21,9 @@ func setup(onPlace: Callable, onRemove: Callable):
 	self.onPlace = onPlace
 	self.onRemove = onRemove
 
-	Utility.ConnectSignal(towerTrait, "synergy_activated", Callable(self, "onActivateSynergy"));
-	Utility.ConnectSignal(towerTrait, "mission_completed", Callable(self, "onMissionCompleted"));
+	synergyController = SynergyController.new()
+	synergyController.setup(self)
+	Utility.ConnectSignal(towerTrait, "synergy_updated", Callable(self, "_on_synergy_updated"));
 
 func getTower(name: String, evoToken: int = 0) -> GetTowerResult:
 	var resource = ResourceManager.getTower(name);
@@ -34,7 +31,6 @@ func getTower(name: String, evoToken: int = 0) -> GetTowerResult:
 	if(resource == null && towerTemplate != null):
 		resource = towerTemplate
 
-	print("resource:", resource, " towerTemplate:", towerTemplate);
 	if (resource == null):
 		return null
 
@@ -68,48 +64,13 @@ func getTower(name: String, evoToken: int = 0) -> GetTowerResult:
 	result.tower = tower;
 	tower.setup(name, onPlace, onRemove)
 	Utility.ConnectSignal(tower, "onReceiveMission", Callable(self, "towerReceiveMission"));
+	Utility.ConnectSignal(tower, "skill_cast_succeeded", Callable(synergyController, "on_tower_cast"));
+	# Register traits in the keyed list BEFORE add_tower_traits so a synergy that
+	# activates on this placement already counts the new tower.
 	for towerSyn in [tower.data.towerClass, tower.data.generation]:
-		if towerSyn == 0:  # Skip default/unset values
-			continue
-
-		# Apply active towerSynergy buffs to new tower
-		var activeSyn = activeSynergies.get(towerSyn, [])
-		for buff: Dictionary in activeSyn:
-			var mission: MissionDetail = buff.get("mission", null);
-			if(mission == null):
-				var tier = buff.get("tier", "")
-				tower.processActiveBuff(buff, str(tier))
-
-			var checkAndProcessActiveMissionSyn = func(synergyId, tier, missionBuff):
-				if synergyId == tower.data.generation || synergyId == tower.data.towerClass:
-					tower.processActiveBuff(missionBuff, str(tier));
-
-			for missionBuff in activeMissionBuff.values():
-				var tier = missionBuff.get("tier", "")
-				var synergyId = missionBuff.get("synergy_id", -1);
-				if not synergyId is Array:
-					checkAndProcessActiveMissionSyn.call(synergyId, tier, missionBuff);
-				else:
-					var synergyArray: Array = synergyId as Array;
-					for syn in synergyArray:
-						checkAndProcessActiveMissionSyn.call(syn, tier, missionBuff);
-
 		addTowerToDict(name, tower, towerSyn)
-
-		if uiSynergy != null:
-			var synName = towerTrait.getSynergyName(towerSyn);
-			if (synName == "Unknown"):
-				printerr("found unknown synergy:", towerSyn);
-				return;
-			# print("setup syn:", synName);
-			if not uiSynergy.hasContent(synName):
-				var maxSyn = towerTrait.getSynergyMaxCount(towerSyn);
-				var minReq = towerTrait.getMinRequirement(towerSyn);
-				uiSynergy.addNewSynergy(synName, minReq, maxSyn);
-
-			uiSynergy.addSynergy(synName);
-
 	towerTrait.add_tower_traits([tower.data.towerClass, tower.data.generation])
+	synergyController.on_tower_added(tower)
 	return result
 
 func returnTower(tower: Tower):
@@ -170,68 +131,24 @@ func evolutionTower(name: String):
 		_evolutionList.erase(dataName);
 		TowerCenter._evolvedList.append(dataName);
 
-func onActivateSynergy(synergy_id: int, tier: int, buff: Dictionary):
-	if not activeSynergies.has(synergy_id):
-		activeSynergies[synergy_id] = []
-
-	activeSynergies[synergy_id].append(buff)
-
-	# Apply buff to all towers with this synergy
-	if towers.has(synergy_id):
-		var starGen1Damage = 0;
-		var isStarGen1 = false;
-
-		for tower: Tower in towers[synergy_id]:
-			tower.processActiveBuff(buff, str(tier));
-
-			if synergy_id == TowerGeneration.Gen1:
-				isStarGen1 = true;
-				starGen1Damage += tower.data.getDamage(null, tower).damage;
-
-		if isStarGen1:
-			towerTrait.setStarGen1Damage(starGen1Damage);
-
-func onMissionCompleted(id: int, buff: Dictionary):
-	var synergyId = buff.get("synergy_id", -1);
-	if not synergyId is Array && synergyId == -1:
-		return;
-	var tier = buff.get("tier", 0);
-	var process = func(syn) -> Array:
-		var towersArr: Array = towers.get(syn, []);
-		for tower: Tower in towersArr:
-			tower.processActiveBuff(buff, str(synergyId) + str(tier));
-		return towersArr;
-
-	if synergyId is Array:
-		var synergyArray = synergyId as Array;
-		print("processing buff to:", synergyArray);
-		for syn in synergyArray:
-			process.call(syn);
-	else:
-		process.call(synergyId);
-
-	activeMissionBuff[id] = buff;
-	#print("on mission complete id:", id, "synergy: ", synergyId, " buff:", buff);
+func _on_synergy_updated(synergy_id: int, count: int, tier: int):
+	synergyController.on_synergy_updated(synergy_id, count, tier)
+	if uiSynergy == null:
+		return
+	# Only show synergies that are actually defined in YAML; an undefined trait
+	# (no data) can never activate, so it is not a meaningful panel row.
+	var data: SynergyData = ResourceManager.getSynergyData(synergy_id)
+	if data == null:
+		return
+	uiSynergy.updateSynergy(data.display_name, count, tier, synergy_id)
 
 func onWaveStart():
-	processGen0Buff()
+	pass   # reserved for future per-wave synergy hooks
 
 func onWaveEnd():
 	for tower: Tower in towersByName.values():
 		if is_instance_valid(tower):
 			tower.resetForWave()
-
-func processGen0Buff():
-	if (!activeSynergies.has(TowerGeneration.Gen0)):
-		return;
-
-	var buffs:Dictionary = activeSynergies.get(TowerGeneration.Gen0);
-	var buffDmgPercent:int = buffs.get("syn_atk_percent", 0);
-
-	var towerList: Array = towers.get(TowerGeneration.Gen0);
-	for t: Tower in towerList:
-		var buff: Dictionary = {"synergy_id": TowerGeneration.Gen0, "attack_bonus": (buffDmgPercent * towerList.size())};
-		t.processActiveBuff(buff)
 
 func towerReceiveMission(mission: MissionDetail):
 	onReceiveMission.emit(mission);

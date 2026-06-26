@@ -1,0 +1,8 @@
+id: hero
+name: "Hero"
+kind: class
+type: normal
+# Placeholder: thresholds carried for UI counting; effect not wired yet.
+effect: none
+thresholds: [3]
+desc: "Hero synergy effect not yet defined."

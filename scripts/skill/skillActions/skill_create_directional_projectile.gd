@@ -19,7 +19,7 @@ extends SkillActionProjectile
 func setupProjectile(projectile: Projectile, i: int, context: SkillContext):
 	var tower: Tower = context.user as Tower
 	var multi: float = getDamageMultiplier(context)
-	var damage: Damage = Damage.new(tower, multi * tower.data.getDamage(null, null).damage, damageType)
+	var damage: Damage = Damage.new(tower, int(multi * tower.data.getDamage(null, null).damage), damageType)
 
 	# Direction = from tower toward primary target. Prefer the first target
 	# picked by find_multi_enemy (closest-to-path-end after sorting). Fall

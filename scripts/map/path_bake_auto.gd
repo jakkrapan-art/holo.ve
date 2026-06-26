@@ -86,7 +86,6 @@ func find_path_from_marked_points(points: Array[Vector2i]) -> Array[Vector2i]:
 	return path
 
 func get_direction(from: Vector2i, to: Vector2i):
-	var cell_size = GridHelper.CELL_SIZE;
 	return (to - from)
 
 func get_adjacent_offsets() -> Array[Vector2i]:
@@ -120,7 +119,7 @@ func get_available_tiles(path_tiles: Array[Vector2i], _excluded_layers: Array[in
 	var available_tiles: Array[Vector2i] = []
 
 	var target_layer := 1
-	var target_source := 3
+	var _target_source := 3
 	var used_cells := tilemap.get_used_cells(target_layer)
 
 	for pos in used_cells:

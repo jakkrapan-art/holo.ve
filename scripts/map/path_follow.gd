@@ -1,6 +1,6 @@
 extends PathFollow2D
 
-func _process(delta):
+func _process(_delta):
 	if(progress_ratio == 1):
 		queue_free()
 

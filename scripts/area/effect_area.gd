@@ -12,5 +12,5 @@ func _base_setup(shape: Shape2D,callback: EffectAreaCallback = null):
 		collisionShape.shape = shape
 		add_child(collisionShape)
 
-func _process(delta):
+func _process(_delta):
 	queue_redraw()

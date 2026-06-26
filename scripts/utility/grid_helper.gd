@@ -11,7 +11,7 @@ static func CellToWorld(cell_position: Vector2i) -> Vector2:
 	return Vector2(cell_position.x * CELL_SIZE + CELL_SIZE / 2, cell_position.y * CELL_SIZE + CELL_SIZE / 2)
 
 
-static func snapToGrid(screenSize, position):
+static func snapToGrid(_screenSize, position):
 	var gridX = floor(position.x / CELL_SIZE) * CELL_SIZE + CELL_SIZE / 2
 	var gridY = floor(position.y / CELL_SIZE) * CELL_SIZE + CELL_SIZE / 2
 	return Vector2(gridX, gridY)

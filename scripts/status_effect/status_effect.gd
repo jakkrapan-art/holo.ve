@@ -21,7 +21,7 @@ func _init(duration: float = 5.0, level: int = 1, effectType: String = ""):
 	self.level = level
 	self.effectType = effectType
 
-func _process_effect(delta: float, target: Node) -> void:
+func _process_effect(_delta: float, _target: Node) -> void:
 	if not applied:
 		triggeredTime = scaledAge
 		applied = true
@@ -38,7 +38,7 @@ func checkExpired(delta: float) -> bool:
 func _on_apply(target: Node) -> void:
 	appliedTarget = target
 
-func _on_expire(target: Node) -> void:
+func _on_expire(_target: Node) -> void:
 	pass
 
 # Optional hook for effects that need the casting tower at apply time

@@ -116,7 +116,7 @@ func draw_path_line(points: Array[Vector2i]) -> void:
 
 	path2d.add_child(line)
 
-func get_available_tiles(path_tiles: Array[Vector2i], excluded_layers: Array[int] = []) -> Array[Vector2i]:
+func get_available_tiles(path_tiles: Array[Vector2i], _excluded_layers: Array[int] = []) -> Array[Vector2i]:
 	var available_tiles: Array[Vector2i] = []
 
 	var target_layer := 1

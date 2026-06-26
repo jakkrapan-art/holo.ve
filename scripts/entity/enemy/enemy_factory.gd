@@ -22,8 +22,8 @@ func createEnemy(type: Enemy.EnemyType, parent: Node2D, health: int, def: int, m
 
 	return enemy
 
-func addBuff(count: int):
+func addBuff(_count: int):
 	pass
 
-func addSkill(count: int):
+func addSkill(_count: int):
 	pass

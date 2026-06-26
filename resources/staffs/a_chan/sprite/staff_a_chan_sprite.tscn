@@ -1,7 +1,6 @@
-[gd_scene load_steps=17 format=3 uid="uid://cbvsli7h2xgda"]
+[gd_scene load_steps=10 format=3 uid="uid://cbvsli7h2xgda"]
 
-[ext_resource type="Texture2D" uid="uid://ctoggex1gqn4" path="res://resources/staffs/a_chan/sprite/manestand.png" id="1_sa5fc"]
-[ext_resource type="Texture2D" uid="uid://ckv1mcuwniogb" path="res://resources/tower/hololive/en_branch/myth_gen/kiara/sprite/test_character_idle.png" id="2_gh881"]
+[ext_resource type="Texture2D" uid="uid://b7yaocdpffwaa" path="res://resources/staffs/a_chan/sprite/manestand.png" id="1_sa5fc"]
 [ext_resource type="Script" path="res://scripts/entity/staff/staff_sprite.gd" id="3_e3kds"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_cmnq7"]
@@ -28,30 +27,6 @@ region = Rect2(512, 512, 512, 512)
 atlas = ExtResource("1_sa5fc")
 region = Rect2(1024, 512, 512, 512)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_hsakj"]
-atlas = ExtResource("2_gh881")
-region = Rect2(0, 0, 512, 512)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_5cab7"]
-atlas = ExtResource("2_gh881")
-region = Rect2(512, 0, 512, 512)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_lh4qf"]
-atlas = ExtResource("2_gh881")
-region = Rect2(1024, 0, 512, 512)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_6koqb"]
-atlas = ExtResource("2_gh881")
-region = Rect2(0, 512, 512, 512)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_vepo6"]
-atlas = ExtResource("2_gh881")
-region = Rect2(512, 512, 512, 512)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_2sq5h"]
-atlas = ExtResource("2_gh881")
-region = Rect2(1024, 512, 512, 512)
-
 [sub_resource type="SpriteFrames" id="SpriteFrames_e7eyb"]
 animations = [{
 "frames": [{
@@ -74,36 +49,13 @@ animations = [{
 "texture": SubResource("AtlasTexture_egg1y")
 }],
 "loop": true,
-"name": &"a_chan",
-"speed": 12.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_hsakj")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_5cab7")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_lh4qf")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_6koqb")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_vepo6")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_2sq5h")
-}],
-"loop": true,
-"name": &"idel",
+"name": &"idle",
 "speed": 12.0
 }]
 
 [node name="AnimatedSprite2D_a_chan" type="AnimatedSprite2D"]
 sprite_frames = SubResource("SpriteFrames_e7eyb")
-animation = &"a_chan"
+animation = &"idle"
 frame_progress = 0.667521
 script = ExtResource("3_e3kds")
-animationName = "a_chan"
+animationName = "idle"

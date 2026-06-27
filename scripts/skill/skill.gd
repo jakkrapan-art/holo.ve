@@ -19,13 +19,13 @@ enum TARGET_TYPE {ENEMY, FRIENDLY}
 var using = false;
 var disable = false;
 
-func _init(name:String="Skill", desc:String="Just a skill", actions:Array[SkillAction]=[], parameters:Dictionary={}, oneTimeUse: bool = false, castTime: float = 0.0):
-	self.name = name;
-	self.desc = desc;
-	self.actions = actions;
-	self.parameters = parameters;
-	self.oneTimeUse = oneTimeUse;
-	self.castTime = castTime;
+func _init(p_name:String="Skill", p_desc:String="Just a skill", p_actions:Array[SkillAction]=[], p_parameters:Dictionary={}, p_oneTimeUse: bool = false, p_castTime: float = 0.0):
+	self.name = p_name;
+	self.desc = p_desc;
+	self.actions = p_actions;
+	self.parameters = p_parameters;
+	self.oneTimeUse = p_oneTimeUse;
+	self.castTime = p_castTime;
 
 func get_display_name(level: int) -> String:
 	if names.size() > 0:

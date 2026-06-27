@@ -4,8 +4,8 @@ class_name HealthController
 var maxHealth: int = 0
 var currHealth: int = 0
 
-func setup(max: int, current: int):
-	maxHealth = max
+func setup(p_max: int, current: int):
+	maxHealth = p_max
 	currHealth = current
 
 func _ready():

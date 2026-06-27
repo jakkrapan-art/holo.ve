@@ -17,16 +17,16 @@ enum TowerId {
 	Test
 }
 
-func setup(onPlace: Callable, onRemove: Callable):
-	self.onPlace = onPlace
-	self.onRemove = onRemove
+func setup(p_onPlace: Callable, p_onRemove: Callable):
+	self.onPlace = p_onPlace
+	self.onRemove = p_onRemove
 
 	synergyController = SynergyController.new()
 	synergyController.setup(self)
 	Utility.ConnectSignal(towerTrait, "synergy_updated", Callable(self, "_on_synergy_updated"));
 
-func getTower(name: String, evoToken: int = 0) -> GetTowerResult:
-	var resource = ResourceManager.getTower(name);
+func getTower(p_name: String, evoToken: int = 0) -> GetTowerResult:
+	var resource = ResourceManager.getTower(p_name);
 
 	if(resource == null && towerTemplate != null):
 		resource = towerTemplate
@@ -36,8 +36,8 @@ func getTower(name: String, evoToken: int = 0) -> GetTowerResult:
 
 	var result: GetTowerResult = GetTowerResult.new()
 
-	if (towersByName.has(name)):
-		var t = towersByName.get(name, null);
+	if (towersByName.has(p_name)):
+		var t = towersByName.get(p_name, null);
 		if (t != null):
 			if(t.data.level >= t.data.maxLevel && !t.isEvolved() && t.data.evolutionCost >= evoToken):
 				result.state = GetTowerResult.State.Evolve;
@@ -49,7 +49,7 @@ func getTower(name: String, evoToken: int = 0) -> GetTowerResult:
 			result.state = GetTowerResult.State.Upgrade;
 
 			if(t.canEvolve() && not t.isEvolved()):
-				_evolutionList[name] = t.data;
+				_evolutionList[p_name] = t.data;
 
 			return result;
 
@@ -62,13 +62,13 @@ func getTower(name: String, evoToken: int = 0) -> GetTowerResult:
 
 	result.state = GetTowerResult.State.New
 	result.tower = tower;
-	tower.setup(name, onPlace, onRemove)
+	tower.setup(p_name, onPlace, onRemove)
 	Utility.ConnectSignal(tower, "onReceiveMission", Callable(self, "towerReceiveMission"));
 	Utility.ConnectSignal(tower, "skill_cast_succeeded", Callable(synergyController, "on_tower_cast"));
 	# Register traits in the keyed list BEFORE add_tower_traits so a synergy that
 	# activates on this placement already counts the new tower.
 	for towerSyn in [tower.data.towerClass, tower.data.generation]:
-		addTowerToDict(name, tower, towerSyn)
+		addTowerToDict(p_name, tower, towerSyn)
 	towerTrait.add_tower_traits([tower.data.towerClass, tower.data.generation])
 	synergyController.on_tower_added(tower)
 	return result
@@ -89,12 +89,12 @@ func returnTower(tower: Tower):
 	towerTrait.remove_tower_traits(traits)
 	tower.queue_free()
 
-func addTowerToDict(name: String, tower: Tower, key: int):
+func addTowerToDict(p_name: String, tower: Tower, key: int):
 	if key <= 0:  # Skip invalid keys
 		return
 
-	if not towersByName.has(name):
-		towersByName[name] = tower
+	if not towersByName.has(p_name):
+		towersByName[p_name] = tower
 
 	var list: Array = towers.get(key, [])
 	if(list.find(tower) >= 0):
@@ -115,10 +115,10 @@ func removeTowerFromDict(tower: Tower, key: int):
 	list.remove_at(index)
 	towers[key] = list
 
-func evolutionTower(name: String):
-	var towerData = TowerCenter.getTowerDataByName(name);
+func evolutionTower(p_name: String):
+	var towerData = TowerCenter.getTowerDataByName(p_name);
 	if towerData == null:
-		print("Error: Tower data not found for evolution:", name)
+		print("Error: Tower data not found for evolution:", p_name)
 		return;
 
 	var dataName = towerData.data_name;

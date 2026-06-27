@@ -128,17 +128,17 @@ func _process(delta):
 	if enableAttack && !attacking && !usingSkill && !skillReady:
 		attackEnemy();
 
-func setup(id: String, onPlace: Callable, onRemove: Callable):
-	self.id = id;
-	self.name = id;
-	towerName = id;
-	self.onPlace = onPlace;
-	self.onRemove = onRemove;
+func setup(p_id: String, p_onPlace: Callable, p_onRemove: Callable):
+	self.id = p_id;
+	self.name = p_id;
+	towerName = p_id;
+	self.onPlace = p_onPlace;
+	self.onRemove = p_onRemove;
 
-	var towerData = TowerCenter._towers_data.get(id.to_lower(), null);
+	var towerData = TowerCenter._towers_data.get(p_id.to_lower(), null);
 
 	if towerData == null:
-		printerr("tower data not found: " + id + ", exists: " + str(TowerCenter._towers_data.keys()));
+		printerr("tower data not found: " + p_id + ", exists: " + str(TowerCenter._towers_data.keys()));
 		return;
 
 	self.data = towerData.data;
@@ -282,12 +282,12 @@ func updateSpriteColor(available: bool):
 	else:
 		spr.self_modulate = Color("#ff0000", 1);
 
-func _onEnemyDetected(enemy: Enemy):
+func _onEnemyDetected(p_enemy: Enemy):
 	if self.enemy != null:
 		clearEnemy(null, null, null);
 
-	self.enemy = enemy;
-	if(enemy != null):
+	self.enemy = p_enemy;
+	if(p_enemy != null):
 		Utility.ConnectSignal(self.enemy, "onDead", Callable(self, "clearEnemy"));
 		Utility.ConnectSignal(self.enemy, "onReachEndPoint", Callable(self, "clearEnemy"));
 
@@ -306,32 +306,32 @@ func clearEnemy(_enemy = null, _cause = null, _reward = null):
 	enemy = null;
 	attacking = false;
 
-func play_animation(name: String, speed: float = 1):
+func play_animation(p_name: String, speed: float = 1):
 	if(anim != null):
-		return anim.play(name, speed);
+		return anim.play(p_name, speed);
 	return false;
 
-func get_animation_duration(name: String) -> float:
+func get_animation_duration(p_name: String) -> float:
 	if(anim != null):
-		return anim.get_native_duration(name);
+		return anim.get_native_duration(p_name);
 	return 0.0;
 
-func has_animation(name: String) -> bool:
+func has_animation(p_name: String) -> bool:
 	if(anim != null):
-		return anim.has_animation(name);
+		return anim.has_animation(p_name);
 	return false;
 
 func play_animation_default():
 	if(anim != null):
 		anim.playDefault();
 
-func animation_finished(name: String):
-	match name:
+func animation_finished(p_name: String):
+	match p_name:
 		_:
 			pass;
 			# play_animation_default();
 
-	on_animation_finished.emit(name);
+	on_animation_finished.emit(p_name);
 
 func update_mana_bar(current: float):
 	if(manaBar == null):
@@ -376,9 +376,9 @@ func resetForWave():
 
 	play_animation_default()
 
-func showAttackRange(show: bool):
+func showAttackRange(p_show: bool):
 	if enemyDetector != null:
-		enemyDetector.setEnabledDrawRange(show);
+		enemyDetector.setEnabledDrawRange(p_show);
 
 func setTowerStar(tier: int):
 	if(towerStar != null):

@@ -93,8 +93,8 @@ func setTowerData(datas: Dictionary):
 func setDefaultTowerData(data):
 	_default_tower_data = data
 
-func preloadPortrait(name: String):
-	return ResourceManager.loadImage("portrait", name, "tower/portrait/" + name + ".png")
+func preloadPortrait(p_name: String):
+	return ResourceManager.loadImage("portrait", p_name, "tower/portrait/" + p_name + ".png")
 
 func getTowerData(key: String):
 	if(key == "default"):
@@ -105,14 +105,14 @@ func getTowerData(key: String):
 
 	return _towers_data.get(key, null)
 
-func getTowerDataByName(name: String):
-	if(name == "default"):
+func getTowerDataByName(p_name: String):
+	if(p_name == "default"):
 		return _default_tower_data;
 
 	if _towers_data_by_name == null:
 		return null
 
-	return _towers_data_by_name.get(name.to_lower(), null)
+	return _towers_data_by_name.get(p_name.to_lower(), null)
 
 func getTowerNames():
 	var names = []
@@ -123,25 +123,25 @@ func getTowerNames():
 
 	return names
 
-func getTowerSelectDataByName(name: String):
+func getTowerSelectDataByName(p_name: String):
 	if _own_towers == null:
 		return null
 
-	var data = _own_towers.get(name.to_lower(), null);
+	var data = _own_towers.get(p_name.to_lower(), null);
 	if(data != null):
 		var maxed: bool = data.level >= data.maxLevel and not data.isEvolved
 		return {"level": data.level, "evoCost": data.evoCost if maxed else 0}
 
 	return {"level":0, "evoCost":0}
 
-func validateSelectTower(name: String, evoToken: int):
-	if(_evolvedList.find(name) >= 0):
+func validateSelectTower(p_name: String, evoToken: int):
+	if(_evolvedList.find(p_name) >= 0):
 		return false
 
 	if _own_towers == null:
 		return false
 
-	var data = _own_towers.get(name.to_lower(), null);
+	var data = _own_towers.get(p_name.to_lower(), null);
 	if(data != null):
 		var maxed: bool = data.level >= data.maxLevel and not data.isEvolved
 		if(data.isEvolved or (maxed and data.evoCost > evoToken)):
@@ -151,11 +151,11 @@ func validateSelectTower(name: String, evoToken: int):
 
 	return true
 
-func getTowerEvolutionCostByName(name: String):
+func getTowerEvolutionCostByName(p_name: String):
 	if _own_towers == null:
 		return null
 
-	var data = _own_towers.get(name.to_lower(), null);
+	var data = _own_towers.get(p_name.to_lower(), null);
 	if(data != null):
 		if(data.level >= data.maxLevel):
 			return data.evoCost
@@ -164,34 +164,34 @@ func getTowerEvolutionCostByName(name: String):
 
 	return 0
 
-func upgradeTowerLevelByName(name: String):
+func upgradeTowerLevelByName(p_name: String):
 	if _own_towers == null:
 		return null
 
-	var data = _own_towers.get(name.to_lower(), null);
+	var data = _own_towers.get(p_name.to_lower(), null);
 	if(data != null):
 		if(data.isEvolved):
 			return
 		if(data.level >= data.maxLevel):
 			data.isEvolved = true;
-			_canEvoList.erase(name);
+			_canEvoList.erase(p_name);
 		else:
 			data.level += 1
 			if(data.level >= data.maxLevel):
-				_canEvoList.append(name);
+				_canEvoList.append(p_name);
 	else:
-		var tData = getTowerDataByName(name);
+		var tData = getTowerDataByName(p_name);
 		if(tData == null):
 			return
 		var d = tData.data;
 		var evoCost = d.evolutionCost;
 		var maxLevel = d.maxLevel;
-		_own_towers[name.to_lower()] = {"level": 1, "maxLevel": maxLevel, "evoCost": evoCost, "isEvolved": false};
+		_own_towers[p_name.to_lower()] = {"level": 1, "maxLevel": maxLevel, "evoCost": evoCost, "isEvolved": false};
 
-func getTowerPortraitByName(name: String):
+func getTowerPortraitByName(p_name: String):
 	if _tower_portrait_by_name == null:
 		return null
-	var portrait = _tower_portrait_by_name.get(name.to_lower(), null);
+	var portrait = _tower_portrait_by_name.get(p_name.to_lower(), null);
 	if(portrait != null):
 		return portrait
 

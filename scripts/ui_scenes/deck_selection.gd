@@ -74,10 +74,10 @@ func _setup_branch_filter():
 		filter_button.pressed.connect(Callable(self, "_on_branch_filter_pressed").bind(filter_button.name.to_lower()))
 
 func _display_character():
-	var char = characters[current_character_index]
-	%CharacterImage.texture = load(char["image"])
-	%CharacterName.text = char["name"]
-	%CharacterDescription.text = char["description"]
+	var character = characters[current_character_index]
+	%CharacterImage.texture = load(character["image"])
+	%CharacterName.text = character["name"]
+	%CharacterDescription.text = character["description"]
 
 func _setup_buttons():
 	if is_instance_valid(startBtn):

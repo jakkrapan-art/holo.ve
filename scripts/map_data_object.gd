@@ -5,7 +5,7 @@ var name: String;
 var key: String;
 var wave: int;
 
-func _init(name: String, key: String, wave: int):
-	self.name = name;
-	self.key = key;
-	self.wave = wave;
+func _init(p_name: String, p_key: String, p_wave: int):
+	self.name = p_name;
+	self.key = p_key;
+	self.wave = p_wave;

@@ -19,8 +19,8 @@ var _tier: int = -1
 var _stylebox: StyleBoxFlat = null   # this row's own panel StyleBox (see setup)
 
 # tier: current active tier (-1 = not yet proc'd). data: SynergyData or null.
-func setup(name: String, current: int, tier: int, data) -> void:
-	_name = name
+func setup(p_name: String, current: int, tier: int, data) -> void:
+	_name = p_name
 	_data = data
 	_tier = tier
 
@@ -37,7 +37,7 @@ func setup(name: String, current: int, tier: int, data) -> void:
 			_stylebox.bg_color = Color(_tier_color(tier))
 
 	if synergyName != null:
-		synergyName.text = name
+		synergyName.text = p_name
 
 	if synergyValue != null:
 		# current count - proc breakpoints, active one bracketed (e.g. "4 - 3 [4] 5").

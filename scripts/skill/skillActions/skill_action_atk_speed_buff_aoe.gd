@@ -5,7 +5,7 @@ extends SkillAction
 # ATTACK_SPEED is decimal scale (0.5 = +50%) — see tower_data.getAttackSpeed.
 @export var percent: float = 0.5
 @export var paramName: String = ""
-@export var range: int = 1
+@export var range_cells: int = 1
 @export var displayName: String = "Attack Speed Up"
 @export var iconPath: String = ""
 
@@ -25,7 +25,7 @@ func execute(context: SkillContext) -> void:
 		if tower == null:
 			continue
 		var cell: Vector2 = GridHelper.WorldToCell(tower.global_position)
-		if abs(cell.x - source_cell.x) <= range and abs(cell.y - source_cell.y) <= range:
+		if abs(cell.x - source_cell.x) <= range_cells and abs(cell.y - source_cell.y) <= range_cells:
 			var buff := BuffInstance.new(
 				BUFF_KEY,
 				BuffInstance.StatType.ATTACK_SPEED,

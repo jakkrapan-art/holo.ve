@@ -1,9 +1,9 @@
 class_name EnemySkillController
 extends BaseSkillController
 
-func _init(user: Node, skills: Array[Skill]):
-	super._init(user, skills);
-	for s in skills:
+func _init(p_user: Node, p_skills: Array[Skill]):
+	super._init(p_user, p_skills);
+	for s in p_skills:
 		(s as EnemySkill).initCooldown();
 
 func process(delta: float):

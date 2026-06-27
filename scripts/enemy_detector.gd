@@ -11,8 +11,8 @@ var enableDrawRange: bool = false
 signal onEnemyDetected(enemy: Enemy)
 signal onRemoveTarget()
 
-func setup(radius: float):
-	self.radius = radius + 0.5
+func setup(p_radius: float):
+	self.radius = p_radius + 0.5
 
 	# 🔥 Make shape unique so it won't affect other towers
 	if collision and collision.shape:

@@ -21,14 +21,14 @@ var _title_label: Label = null
 func _ready() -> void:
 	setupRefreshText(refreshLeft, maxRefresh);
 
-func setup(evoToken: int = 0, maxRefresh: int = 0, title: String = ""):
+func setup(evoToken: int = 0, p_maxRefresh: int = 0, title: String = ""):
 	var cards = _build_card_list(evoToken)
-	_apply_setup(cards, maxRefresh, evoToken, title)
+	_apply_setup(cards, p_maxRefresh, evoToken, title)
 
 # Entry point for callers that already have a card list (e.g. deck-add popup at wave-5 end).
 # Bypasses _build_card_list so the popup is not tied to TowerCenter tower pool.
-func setup_with_cards(cards: Array, maxRefresh: int = 0, title: String = ""):
-	_apply_setup(cards, maxRefresh, 0, title)
+func setup_with_cards(cards: Array, p_maxRefresh: int = 0, title: String = ""):
+	_apply_setup(cards, p_maxRefresh, 0, title)
 
 func _apply_setup(cards: Array, max_refresh: int, evoTokenForRefresh: int, title: String = ""):
 	self.refreshLeft = max_refresh;
@@ -73,9 +73,9 @@ func _ensure_title_label(title: String) -> void:
 		panel.add_child(_title_label)
 	_title_label.text = title
 
-func setupRefreshText(refreshCount: int, maxRefresh: int):
+func setupRefreshText(refreshCount: int, p_maxRefresh: int):
 	if(refreshText):
-		refreshText.text = str(refreshCount) + "/" + str(maxRefresh)
+		refreshText.text = str(refreshCount) + "/" + str(p_maxRefresh)
 
 func refreshList(evoToken: int = 0):
 	if(refreshLeft <= 0):
@@ -159,9 +159,9 @@ func _apply_cards_to_buttons(cards: Array) -> void:
 		else:
 			buttons[index].visible = false
 
-func _on_select_tower_button(name):
-	print("signal: tower_select,"+str(name))
-	emit_signal("tower_select", name)
+func _on_select_tower_button(p_name):
+	print("signal: tower_select,"+str(p_name))
+	emit_signal("tower_select", p_name)
 	# emit_signal("tower_select", "gawr_gura") #temp
 	queue_free()
 	#get_tree().quit()

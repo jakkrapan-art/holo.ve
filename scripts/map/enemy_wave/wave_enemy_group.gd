@@ -13,7 +13,7 @@ var startAt: float = 0
 # which still calls the legacy 6-arg setup(). Maps the old `texture` column to the
 # new `enemy` id and ignores the inline stat args (stats now live in the enemy DB).
 # Remove together with that dead tool (pending Lead - see coding log).
-func setup(texture: String, _health: int = 0, _def: float = 0, _mDef: float = 0, _moveSpeed: float = 0, count: int = 20, spawnInterval: float = 1):
+func setup(texture: String, _health: int = 0, _def: float = 0, _mDef: float = 0, _moveSpeed: float = 0, p_count: int = 20, p_spawnInterval: float = 1):
 	self.enemy = texture
-	self.count = count
-	self.spawnInterval = spawnInterval
+	self.count = p_count
+	self.spawnInterval = p_spawnInterval

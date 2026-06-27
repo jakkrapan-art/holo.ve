@@ -4,8 +4,8 @@ var effects: Dictionary = {}  # key = effect_type, value = Array[StatusEffect]
 
 var host: Node = null
 
-func _init(host: Node):
-	self.host = host
+func _init(p_host: Node):
+	self.host = p_host
 
 func addEffect(effect: StatusEffect) -> void:
 	if not effects.has(effect.effectType):

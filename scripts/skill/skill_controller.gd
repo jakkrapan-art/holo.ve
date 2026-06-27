@@ -4,9 +4,9 @@ extends BaseSkillController
 var maxMana := 0.0;
 var currentMana := 0.0;
 
-func _init(user: Node, maxMana: float, initialMana: float, skill: Skill):
-	super._init(user, [skill]);
-	self.maxMana = maxMana;
+func _init(p_user: Node, p_maxMana: float, initialMana: float, skill: Skill):
+	super._init(p_user, [skill]);
+	self.maxMana = p_maxMana;
 	currentMana = initialMana;
 
 func updateMana(amount: float):

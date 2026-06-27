@@ -12,7 +12,7 @@ var towerGenImage: TextureRect;
 func _ready():
 	add_to_group("tower_buttons")  # Ensures buttons register correctly
 
-func Setup(name: String, sprite, towerClass: TowerTrait.TowerClass, towerGen: TowerTrait.TowerGeneration, level: int, evolutionCost: int):
+func Setup(p_name: String, sprite, towerClass: TowerTrait.TowerClass, towerGen: TowerTrait.TowerGeneration, level: int, evolutionCost: int):
 	towerNameText = $TowerName
 	evolutionCostText = $Evolution/EvolutionCost
 	evolutionNode = $Evolution
@@ -20,13 +20,13 @@ func Setup(name: String, sprite, towerClass: TowerTrait.TowerClass, towerGen: To
 	towerClassImage = $Synergies/Class
 	towerGenImage = $Synergies/Gen
 
-	towerNameText.text = name + ("\nLevel " + str(level) if level > 0 else "")
+	towerNameText.text = p_name + ("\nLevel " + str(level) if level > 0 else "")
 	evolutionNode.visible = evolutionCost > 0
 	evolutionCostText.text = " " + str(evolutionCost)
 	if sprite != null:
 		towerPortrait.texture = sprite
 	else:
-		var portrait = TowerCenter.getTowerPortraitByName(name.to_lower());
+		var portrait = TowerCenter.getTowerPortraitByName(p_name.to_lower());
 		if(portrait):
 			towerPortrait.texture = portrait
 	var tClassName = TowerTrait.TOWER_CLASS_NAMES.get(towerClass, "default").to_lower();

@@ -16,10 +16,10 @@ var applied: bool = false;
 var expired: bool = false;
 var appliedTarget: Node = null
 
-func _init(duration: float = 5.0, level: int = 1, effectType: String = ""):
-	self.duration = duration
-	self.level = level
-	self.effectType = effectType
+func _init(p_duration: float = 5.0, p_level: int = 1, p_effectType: String = ""):
+	self.duration = p_duration
+	self.level = p_level
+	self.effectType = p_effectType
 
 func _process_effect(delta: float, target: Node) -> void:
 	if not applied:

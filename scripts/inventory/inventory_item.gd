@@ -8,10 +8,10 @@ var stack: int = 1
 var maxStack: int = 64;
 var icon: Texture2D = null
 
-func _init(id: int, name: String, desc: String, stack: int, maxStack: int, icon: Texture2D) -> void:
-	self.id = id
-	self.name = name
-	self.desc = desc
-	self.stack = stack
-	self.maxStack = maxStack
-	self.icon = icon
+func _init(p_id: int, p_name: String, p_desc: String, p_stack: int, p_maxStack: int, p_icon: Texture2D) -> void:
+	self.id = p_id
+	self.name = p_name
+	self.desc = p_desc
+	self.stack = p_stack
+	self.maxStack = p_maxStack
+	self.icon = p_icon

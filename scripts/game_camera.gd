@@ -32,7 +32,7 @@ func _ready():
 	
 	position = Vector2(center.x * cell_size, center.y * cell_size)
 
-func get_tilemap_center(tilemap: TileMap) -> Vector2:
-	var used_rect = tilemap.get_used_rect()
+func get_tilemap_center(p_tilemap: TileMap) -> Vector2:
+	var used_rect = p_tilemap.get_used_rect()
 	var center_cell = used_rect.position + (used_rect.size / 2)
 	return center_cell

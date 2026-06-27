@@ -8,12 +8,12 @@ var value: int = 0
 
 var onUpdate: Dictionary; #key = String, value = Callable
 
-func _init(id: int, name: String, desc: String, icon: Texture2D, value: int) -> void:
-	self.id = id
-	self.name = name
-	self.desc = desc
-	self.icon = icon
-	self.value = value
+func _init(p_id: int, p_name: String, p_desc: String, p_icon: Texture2D, p_value: int) -> void:
+	self.id = p_id
+	self.name = p_name
+	self.desc = p_desc
+	self.icon = p_icon
+	self.value = p_value
 
 func update(updateAmount: int):
 	if updateAmount == 0:

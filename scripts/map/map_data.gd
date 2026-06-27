@@ -9,5 +9,5 @@ var waves: Array[WaveData] = []
 # tuning tool. Each entry: { stat, op, value } - validated by EnemyModifier.
 var stageModifiers: Array = []
 
-func setWave(waves: Array[WaveData]):
-	self.waves = waves;
+func setWave(p_waves: Array[WaveData]):
+	self.waves = p_waves;

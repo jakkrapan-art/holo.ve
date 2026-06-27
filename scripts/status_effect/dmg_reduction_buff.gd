@@ -5,9 +5,9 @@ extends StatusEffect
 var elapsedTime: float = 0.0
 var originColor: Color
 
-func _init(duration: float = 5.0, reductionAmount: float = 0.1):
-	super._init(duration, 1, "DamageReductionBuff")
-	self.reductionAmount = reductionAmount
+func _init(p_duration: float = 5.0, p_reductionAmount: float = 0.1):
+	super._init(p_duration, 1, "DamageReductionBuff")
+	self.reductionAmount = p_reductionAmount
 
 func _process_effect(delta: float, target: Node) -> void:
 	elapsedTime += delta

@@ -11,9 +11,9 @@ var cancelled = false;
 # emit it but nothing listens on the enemy side.
 signal cast_succeeded(skill)
 
-func _init(user: Node, skills: Array[Skill]):
-	self.skills = skills;
-	self.user = user;
+func _init(p_user: Node, p_skills: Array[Skill]):
+	self.skills = p_skills;
+	self.user = p_user;
 
 func useSkill():
 	if(!canUseSkill()):
@@ -82,8 +82,8 @@ func canUseSkill() -> bool:
 
 	return true;
 
-func addModifier(key: int, modifier: Callable):
-	self.modifier[key] = modifier
+func addModifier(key: int, p_modifier: Callable):
+	self.modifier[key] = p_modifier
 
 func removeModifier(key: int):
 	if(!modifier.has(key)):

@@ -1,5 +1,6 @@
-# Godot 4 imports
-*.import
+# Godot 4 imports: .import sidecars are TRACKED so asset UIDs stay stable across
+# checkouts/worktrees (prevents recurring "invalid UID" warnings). Do not re-ignore
+# *.import. Only the .godot/ cache below (the actual reimported binaries) is ignored.
 
 # Godot 4 editor files
 .godot/

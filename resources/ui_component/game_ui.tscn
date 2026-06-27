@@ -2,12 +2,12 @@
 
 [ext_resource type="PackedScene" uid="uid://dsshuu1axf1t8" path="res://resources/ui_component/synergy/ui_synergy.tscn" id="1_hk82f"]
 [ext_resource type="Script" path="res://scripts/ui/currency.gd" id="2_rqmfg"]
-[ext_resource type="FontFile" uid="uid://ce4s1cmnygtoe" path="res://resources/ui_component/font/Roboto-Regular.ttf" id="3_pj1e5"]
-[ext_resource type="Texture2D" uid="uid://u0sdtsp7xu4m" path="res://resources/ui_asset/UIExport_0001s_0003_Group-39.png" id="4_7yvjc"]
-[ext_resource type="Texture2D" uid="uid://brxp7v86fgewc" path="res://resources/ui_asset/UIExport_0001s_0005_Layer-33.png" id="5_r4mlk"]
+[ext_resource type="FontFile" uid="uid://scv78fddnukv" path="res://resources/ui_component/font/Roboto-Regular.ttf" id="3_pj1e5"]
+[ext_resource type="Texture2D" uid="uid://dftxnty0s2sve" path="res://resources/ui_asset/UIExport_0001s_0003_Group-39.png" id="4_7yvjc"]
+[ext_resource type="Texture2D" uid="uid://dhmneasn7e8hd" path="res://resources/ui_asset/UIExport_0001s_0005_Layer-33.png" id="5_r4mlk"]
 [ext_resource type="Script" path="res://scripts/ui/ui_speed_btn.gd" id="7_6qfka"]
 [ext_resource type="Script" path="res://scripts/ui/ui_pause_btn.gd" id="7_7oet5"]
-[ext_resource type="Texture2D" uid="uid://bgwhb4nnv1e26" path="res://resources/ui_component/btn_pause.png" id="7_8wafk"]
+[ext_resource type="Texture2D" uid="uid://bkxk2vx0idyr3" path="res://resources/ui_component/btn_pause.png" id="7_8wafk"]
 [ext_resource type="PackedScene" path="res://resources/ui_component/staff_widget.tscn" id="9_staff"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uyb7r"]

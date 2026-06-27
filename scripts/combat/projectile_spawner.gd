@@ -3,7 +3,7 @@ class_name ProjectileSpawner
 
 @export var projectile: PackedScene
 
-func _process(delta):
+func _process(_delta):
 	pass
 
 func attack(target: Node2D):

@@ -11,7 +11,7 @@ func setup(p_max: int, current: int):
 func _ready():
 	pass
 
-func _process(delta):
+func _process(_delta):
 	pass
 	
 func updateHealth(updateAmount: int):

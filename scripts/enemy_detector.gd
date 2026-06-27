@@ -42,7 +42,7 @@ func _draw():
 		var targetLocalPos = to_local(target.global_position)
 		draw_line(position, targetLocalPos, Color.RED, 2.0)
 
-func _process(delta):
+func _process(_delta):
 	queue_redraw();
 
 func onCollisionHit(area: Area2D):

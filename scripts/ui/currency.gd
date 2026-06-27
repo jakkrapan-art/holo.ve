@@ -8,5 +8,5 @@ func updateEssenceOfMem(amount: int):
 	essenceOfMem.visible = amount >= 1
 	essenceOfMemText.text = str(amount);
 
-func updateGold(value: int):
+func updateGold(_value: int):
 	pass

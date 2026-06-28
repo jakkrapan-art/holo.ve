@@ -19,8 +19,8 @@ var _attackModifierBuff: Array[Callable] = []
 var buffs: TowerBuffContainer = TowerBuffContainer.new()
 
 @export var maxLevel: int = 3;
-@export var towerClass: TowerClass;
-@export var generation: TowerGeneration;
+@export var towerClass: TowerClass = TowerClass.Assassin;
+@export var generation: TowerGeneration = TowerGeneration.Myth;
 @export var attackType: Damage.DamageType = Damage.DamageType.PHYSIC;
 
 @export var stats: Array[TowerStat];

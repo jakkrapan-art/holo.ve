@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://c7edf64d0mbkp"]
 
 [ext_resource type="Script" path="res://scripts/ui/synergy/ui_synergy_content.gd" id="1_88chj"]
-[ext_resource type="FontFile" uid="uid://ce4s1cmnygtoe" path="res://resources/ui_component/font/Roboto-Regular.ttf" id="3_4m7xq"]
+[ext_resource type="FontFile" uid="uid://scv78fddnukv" path="res://resources/ui_component/font/Roboto-Regular.ttf" id="3_4m7xq"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6stgc"]
 bg_color = Color(0.952941, 0.709804, 0.470588, 1)

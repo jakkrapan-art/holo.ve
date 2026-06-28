@@ -1,6 +1,6 @@
 [gd_scene load_steps=10 format=3 uid="uid://cbvsli7h2xgda"]
 
-[ext_resource type="Texture2D" uid="uid://b7yaocdpffwaa" path="res://resources/staffs/a_chan/sprite/manestand.png" id="1_sa5fc"]
+[ext_resource type="Texture2D" uid="uid://wu87gd707nbo" path="res://resources/staffs/a_chan/sprite/manestand.png" id="1_sa5fc"]
 [ext_resource type="Script" path="res://scripts/entity/staff/staff_sprite.gd" id="3_e3kds"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_cmnq7"]

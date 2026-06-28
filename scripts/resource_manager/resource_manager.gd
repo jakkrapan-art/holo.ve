@@ -195,9 +195,10 @@ static func warmSkillEffectShaders(host: Node) -> void:
 		# Mark the resolved path warmed regardless of load result (a missing file
 		# must not retry every unlock); keep the Shader ref so its compiled
 		# pipeline survives scene changes and the skip stays valid next run.
-		_warmed_shaders[sp] = shader if shader != null else true
 		if shader == null:
+			_warmed_shaders[sp] = true
 			continue
+		_warmed_shaders[sp] = shader
 		var mat := ShaderMaterial.new()
 		mat.shader = shader
 		var rect := ColorRect.new()

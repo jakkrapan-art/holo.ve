@@ -42,7 +42,7 @@ static func load_data(file_path: String) -> Variant:
 			_fail(i, "Indentation is not consistent.")
 		var level := 0
 		if indent_unit > 0:
-			level = indent_spaces / indent_unit
+			level = int(indent_spaces / float(indent_unit))
 
 		# Unwind stack to correct parent
 		while stack.size() > 0 and level <= stack[-1]["indent"]:

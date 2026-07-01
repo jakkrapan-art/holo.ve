@@ -292,7 +292,7 @@ func _stopCountdown():
 
 func _format_time(sec: float) -> String:
 	var total: int = int(ceil(sec))
-	return "%d:%02d" % [total / 60, total % 60]
+	return "%d:%02d" % [int(total / 60.0), total % 60]
 
 func testSpawnBoss(index: int = -1):
 	if(bossList.size() == 0):

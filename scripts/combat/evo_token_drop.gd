@@ -97,7 +97,7 @@ static func _get_sparkle_texture() -> ImageTexture:
 		var size := 8
 		var img := Image.create(size, size, false, Image.FORMAT_RGBA8)
 		img.fill(Color(0, 0, 0, 0))
-		var c := size / 2
+		var c := int(size / 2.0)
 		for i in range(size):
 			img.set_pixel(i, c, Color.WHITE)
 			img.set_pixel(c, i, Color.WHITE)

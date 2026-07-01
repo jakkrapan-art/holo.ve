@@ -3,7 +3,7 @@ class_name Metheor
 
 var spawn_position: Vector2
 var delay_explode: float
-var max_radius: float = GridHelper.CELL_SIZE / 2
+var max_radius: float = GridHelper.CELL_SIZE / 2.0
 var elapsed_time: float = 0.0
 var damage: Damage;
 

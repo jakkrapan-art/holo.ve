@@ -18,13 +18,13 @@ static func ParseSkill(skillDataList: Array) -> Array[Skill]:
 			if action != null:
 				actions.append(action);
 			else:
-				print("Warning: Failed to parse action in skill", skillName);
+				push_warning("Failed to parse action in skill ", skillName);
 
 		var s = EnemySkill.new(skillName, desc, actions, {}, oneTime, cooldown);
 		if s != null:
 			result.append(s);
 		else:
-			print("Warning: Skill", s, "not found");
+			push_warning("Skill ", s, " not found");
 	return result
 
 static func ParseAction(data: Dictionary, parameters: Dictionary = {}) -> SkillAction:
@@ -247,7 +247,7 @@ static func ParseAction(data: Dictionary, parameters: Dictionary = {}) -> SkillA
 				skill.statusEffects = dirStatusEffects;
 			skill.projectileTemplate = load(skillData.get("projectile", "res://resources/combat/bullets/gawr_gura_skill_projectile.tscn"));
 		_:
-			print("Warning: Unknown skill type:", skillType);
+			push_warning("Unknown skill type: ", skillType);
 			return null;
 
 	return skill;

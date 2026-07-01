@@ -40,7 +40,6 @@ func _ready():
 
 func _load_deck():
 	_data = YamlParser.load_data("res://resources/database/towers/decks/decks.yaml")
-	print("Loaded JSON Data: ", _data.keys())
 
 	if !is_instance_valid(deckContainer):
 		push_error("DeckContainer node is not valid. Please check the scene hierarchy.");
@@ -59,9 +58,7 @@ func _load_deck():
 func _setup_gen_filter():
 	var genGroupBtn = genGroupContainer.get_children();
 
-	print("Setting up generation filters. Found buttons:", genGroupBtn.size())
 	for filter_button in genGroupBtn:
-		print("btn: ", filter_button.name, " is button: ", (filter_button is Button));
 		filter_button.pressed.connect(Callable(self, "_on_gen_filter_pressed").bind(filter_button.name))
 
 	if(genGroupBtn.size() > 0): # Set default filter to first button's group
@@ -141,7 +138,6 @@ func _on_deck_selected(deck_name: String, toggle: UIToggle):
 		selectingDeckToggle = toggle
 
 	_selected_deck = _data[deck_name]
-	print("Selected Deck:", _selected_deck)
 	setActiveStartBtn(true)
 
 func setActiveStartBtn(isActive: bool):
@@ -153,7 +149,6 @@ func setActiveStartBtn(isActive: bool):
 			startToggle.toggleActive(isActive);
 
 func _on_confirm():
-	print("Deck selected:", _selected_deck)
 	TowerCenter.selected_deck = _selected_deck["name"]
 	TowerCenter.selected_data_file = _selected_deck["data_file"]
 	# Staff selection: persisted via StaffCenter.selected_staff (already set by _refresh_staff_card on bullet/arrow).

@@ -47,13 +47,11 @@ func preloadAudio():
 			sfx[key] = soundCache[fullPath]
 			continue;
 		var sound = ResourceLoader.load(fullPath)
-		print("Loaded SFX: ", fullPath, " for key: ", key)
 		if sound:
-			print("Successfully loaded SFX: ", key)
 			sfx[key] = sound
 			soundCache[fullPath] = sound
 		else:
-			print("Failed to load SFX: " + fullPath)
+			push_warning("Failed to load SFX: " + fullPath)
 
 	var bgmList = SoundDatabase.bgm.keys()
 	for key in bgmList:
@@ -63,13 +61,11 @@ func preloadAudio():
 			bgm[key] = soundCache[fullPath]
 			continue;
 		var sound = ResourceLoader.load(fullPath)
-		print("Loaded BGM: ", fullPath, " for key: ", key)
 		if sound:
-			print("Successfully loaded BGM: ", key)
 			bgm[key] = sound
 			soundCache[fullPath] = sound
 		else:
-			print("Failed to load BGM: " + fullPath)
+			push_warning("Failed to load BGM: " + fullPath)
 
 	var voiceList = SoundDatabase.voice.keys()
 	for key in voiceList:

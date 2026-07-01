@@ -26,7 +26,7 @@ func _on_start_pressed():
 	#get_tree().change_scene_to_file("res://scenes/tower_select_tmp_scene.tscn")  # Change to your actual game scene
 	get_tree().change_scene_to_file("res://resources/ui_component/deck_selection.tscn")  # Change to your actual game scene
 func _on_options_pressed():
-	print("Options menu (To be implemented)")
+	pass # Options menu not implemented yet
 
 func _on_exit_pressed():
 	get_tree().quit()

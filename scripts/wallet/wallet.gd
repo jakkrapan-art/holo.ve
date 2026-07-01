@@ -10,7 +10,6 @@ func _init(onGoldUpdate: Callable, onEvoTokenUpdate: Callable):
 func updateGold(value: int):
 	if value == 0:
 		return
-	print("update gold", value);
 	gold.update(value);
 
 func getGold() -> int:
@@ -19,7 +18,6 @@ func getGold() -> int:
 func updateEvoToken(amount: int):
 	if amount == 0:
 		return
-	print("update evo token", amount);
 	evoToken.update(amount);
 
 func getEvoToken() -> int:

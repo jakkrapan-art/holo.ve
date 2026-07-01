@@ -42,7 +42,7 @@ func _load_boss(mapName: String, id: String) -> BossDBData:
 	var texturePath := SPRITE_PREFIX + mapName + "/boss/" + id + "/" + id + ".png"
 	var texture = load(texturePath)
 	if texture == null:
-		print("Error: Failed to load texture at path:", texturePath)
+		push_error("Failed to load texture at path: ", texturePath)
 
 	var bossSkills: Array[Skill] = []
 	var skillRaw = bd.get("skill", [])

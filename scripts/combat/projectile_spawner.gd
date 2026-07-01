@@ -8,7 +8,7 @@ func _process(_delta):
 
 func attack(target: Node2D):
 	if(projectile == null):
-		printerr("cannot shoot, projectile is null")
+		push_error("cannot shoot, projectile is null")
 		return;
 	var projectileInstance = projectile.instantiate();
 	get_tree().root.add_child(projectileInstance)

@@ -34,7 +34,6 @@ static func getTower(key: String):
 static func loadImage(group, key, path):
 	var fullPath = "%s%s" % [resourcePrefix, path]
 	var texture: Texture2D = load(fullPath)
-	print("Loaded image: ", fullPath, ", group: ", group, ", key: ", key, ", res:", texture);
 	if(texture):
 		if(_sprites.has(group) == false):
 			_sprites[group] = {}
@@ -94,12 +93,10 @@ static func preloadEnemy(mapName: String) -> void:
 		if ResourceLoader.exists(full_path):
 			var texture: Texture2D = load(full_path)
 			loaded[id] = texture
-			print("Loaded: ", full_path)
 		else:
 			push_warning("Missing texture: " + full_path)
 
 	_sprites["enemy"] = loaded
-	print("loaded: ", loaded)
 
 
 static func getSpriteGroup(group: String):

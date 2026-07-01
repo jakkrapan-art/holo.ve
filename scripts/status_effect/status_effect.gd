@@ -32,7 +32,6 @@ func checkExpired(delta: float) -> bool:
 		return false;
 	_on_expire(appliedTarget)
 	expired = true
-	print("effect expired: ", effectType, " time used: ", scaledAge - triggeredTime)
 	return expired
 
 func _on_apply(target: Node) -> void:

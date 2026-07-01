@@ -4,7 +4,7 @@ static func load_data(prefix: String, name: String) -> TowerData:
 	var path = prefix + name + ".yaml";
 	var file := FileAccess.open(path, FileAccess.READ)
 	if file == null:
-		print("Failed to open YAML: " + path + " try loading default.")
+		push_warning("Failed to open YAML: " + path + " try loading default.")
 		path = prefix + "default_tower.yaml";
 		file = FileAccess.open(path, FileAccess.READ);
 		if file == null:

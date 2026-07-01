@@ -104,7 +104,6 @@ func startNextWave():
 	updateUI();
 
 func endWave():
-	print("End Wave ", currWave);
 	if endWaveCalled:
 		return;
 
@@ -113,7 +112,6 @@ func endWave():
 	deadList.clear();
 
 	if(currWave >= data.waveDatas.size()):
-		print("All waves completed!");
 		var ui = UIEndDemo.create();
 		if(ui):
 			get_tree().current_scene.add_child(ui);
@@ -121,7 +119,6 @@ func endWave():
 		data.onWaveEnd.call();
 
 func setupSpawnTask():
-	print("wave data: ", waveData, " wave index:", currWave);
 	# Initialize remaining counts early so end-wave checks don't trigger before all groups have been registered.
 	for group in range(0, waveData.groupList.size()):
 		var groupData = waveData.groupList[group]
@@ -231,14 +228,11 @@ func _tierToEnemyType(tier: String) -> Enemy.EnemyType:
 
 func spawnBoss():
 	var result = bossList.filter(func(b):
-		print("[test] checking boss wave: ", b.name, " wave: ", b.wave, " against current wave: ", currWave)
 		return b.wave.has(currWave);
 	)
 
 	if result.is_empty():
-		for b in bossList:
-			print("[test] Boss wave: ", b.name, " wave: ", b.wave, " current wave:", currWave, " has:", b.wave.has(currWave))
-		printerr("Error: No boss found for current wave ", currWave)
+		push_error("No boss found for current wave ", currWave)
 		return
 
 	var bossData: BossDBData;
@@ -296,14 +290,12 @@ func _format_time(sec: float) -> String:
 
 func testSpawnBoss(index: int = -1):
 	if(bossList.size() == 0):
-		print("No boss available to spawn.");
 		return;
 
 	if(index < 0):
 		index = randi_range(0, bossList.size() - 1);
 
 	if(index >= bossList.size()):
-		print("No boss at index ", index, " (bossList size: ", bossList.size(), ")");
 		return;
 
 	var boss = bossList[index]; # For testing, spawn the first boss in the list.
@@ -347,14 +339,11 @@ func _allGroupsSpawned() -> bool:
 	return true
 
 func checkEndWave():
-	print("check end wave called alive: " + str(enemyAliveCount) + " is spawn all: " + str(isSpawnAllEnemy));
-
 	if isBossWave:
 		if isSpawnAllEnemy && enemyAliveCount <= 0:
 			endWave()
 	else:
 		if isSpawnAllEnemy && enemyAliveCount <= 0 && _allGroupsSpawned():
-			print("end wave: " + str(isSpawnAllEnemy) + " alive: " + str(enemyAliveCount))
 			groupSpawnRemain.clear()
 			endWave()
 

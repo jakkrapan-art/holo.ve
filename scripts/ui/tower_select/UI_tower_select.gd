@@ -35,7 +35,7 @@ func _apply_setup(cards: Array, max_refresh: int, evoTokenForRefresh: int, title
 	self.maxRefresh = max_refresh;
 
 	if cards.is_empty():
-		emit_signal("tower_select_skipped")
+		tower_select_skipped.emit()
 		queue_free()
 		return
 
@@ -84,7 +84,7 @@ func refreshList(evoToken: int = 0):
 
 	var cards = _build_card_list(evoToken)
 	if cards.is_empty():
-		emit_signal("tower_select_skipped")
+		tower_select_skipped.emit()
 		queue_free()
 		return
 
@@ -161,7 +161,7 @@ func _apply_cards_to_buttons(cards: Array) -> void:
 
 func _on_select_tower_button(p_name):
 	print("signal: tower_select,"+str(p_name))
-	emit_signal("tower_select", p_name)
+	tower_select.emit(p_name)
 	# emit_signal("tower_select", "gawr_gura") #temp
 	queue_free()
 	#get_tree().quit()

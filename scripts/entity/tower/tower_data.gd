@@ -168,5 +168,3 @@ func evolve():
 	_isEvolved = true;
 	print("evolve success");
 	return true;
-
-signal onAttack(target);

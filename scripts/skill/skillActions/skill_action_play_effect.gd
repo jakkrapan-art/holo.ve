@@ -10,7 +10,7 @@ func execute(context: SkillContext) -> void:
 
 	var script = load(effectScriptPath)
 	if script == null:
-		printerr("SkillActionPlayEffect: script not found at ", effectScriptPath)
+		push_error("SkillActionPlayEffect: script not found at ", effectScriptPath)
 		return
 
 	var effect := Node2D.new()

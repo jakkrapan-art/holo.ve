@@ -118,7 +118,7 @@ func removeTowerFromDict(tower: Tower, key: int):
 func evolutionTower(p_name: String):
 	var towerData = TowerCenter.getTowerDataByName(p_name);
 	if towerData == null:
-		print("Error: Tower data not found for evolution:", p_name)
+		push_error("Tower data not found for evolution: ", p_name)
 		return;
 
 	var dataName = towerData.data_name;

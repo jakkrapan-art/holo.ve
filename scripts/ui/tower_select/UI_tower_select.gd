@@ -114,7 +114,6 @@ func _build_card_list(evoToken: int) -> Array:
 		if (!available_towers.has(t) && !evoList.has(t)):
 			available_towers.append(t)
 
-	print("available towers: ", available_towers);
 	if remain > 0:
 		finalList.append_array(_dealer.get_random_cards(available_towers, remain, evoToken))
 
@@ -160,7 +159,6 @@ func _apply_cards_to_buttons(cards: Array) -> void:
 			buttons[index].visible = false
 
 func _on_select_tower_button(p_name):
-	print("signal: tower_select,"+str(p_name))
 	tower_select.emit(p_name)
 	# emit_signal("tower_select", "gawr_gura") #temp
 	queue_free()

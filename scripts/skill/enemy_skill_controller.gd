@@ -13,6 +13,5 @@ func process(delta: float):
 
 func onSuccess(skill: Skill):
 	super.onSuccess(skill);
-	print("Enemy used skill: ", skill.name);
 	if skill is EnemySkill:
 		(skill as EnemySkill).startCooldown();

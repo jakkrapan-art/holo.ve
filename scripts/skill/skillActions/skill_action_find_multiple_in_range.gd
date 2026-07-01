@@ -164,8 +164,7 @@ func debug_draw(canvas_item: CanvasItem, context: SkillContext, color: Color = C
 		return
 
 	var tower := context.user as Tower
-	var grid_helper_script = preload("res://scripts/utility/grid_helper.gd")
-	var user_position = grid_helper_script.WorldToCell(context.user.global_position)
+	var user_position = GridHelper.WorldToCell(context.user.global_position)
 	if tower.enemy == null:
 		return
 

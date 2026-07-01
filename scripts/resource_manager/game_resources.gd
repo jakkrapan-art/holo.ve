@@ -12,7 +12,6 @@ func loadResource(prefix: String, resourceList: Array):
 			resource.to_lower()
 		]
 		
-		print("full path:", full_path)
 		if(ResourceLoader.exists(full_path)):
 			var key = resource.to_lower();
 			if(collection.has(key)):
@@ -24,8 +23,5 @@ func loadResource(prefix: String, resourceList: Array):
 		else:
 			push_warning("Missing resource: " + full_path)
 
-	print("Loaded resources. prefix: ", prefix, " count: ", collection.size(), " keys: ", collection.keys());
-
 func getResource(key: String):
-	print("get resource:", key);
 	return collection.get(key, null);

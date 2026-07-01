@@ -153,12 +153,10 @@ func _addBuffByStat(statType: int, value: float, key) -> void:
 	buffs.add(BuffInstance.new(keyStr, statType, value, category))
 
 func levelUp():
-	print("level up, current level ", _level, " max level ", maxLevel);
 	if _level >= stats.size():
 		return false;
 
 	_level = mini(_level + 1, maxLevel);
-	print("level up to ", _level);
 	return true;
 
 func evolve():
@@ -166,5 +164,4 @@ func evolve():
 		return false;
 
 	_isEvolved = true;
-	print("evolve success");
 	return true;

@@ -86,7 +86,6 @@ func _ready():
 	setup_staff()
 	var camera = get_node("Camera2D")
 	camera.make_current()
-	print("Camera forced to current:", camera.is_current())
 	if(map != null):
 		map.setup();
 
@@ -278,7 +277,6 @@ func show_deck_popup():
 	if state == "game_over":
 		return
 	if _popup_open:
-		print("show_deck_popup: popup already open, ignoring duplicate call")
 		return
 
 	var popup: UITowerSelect = PopupPanelScene.instantiate() as UITowerSelect
@@ -322,7 +320,6 @@ func show_popup_panel():
 		return
 	# Prevent opening multiple popups if this function is called repeatedly
 	if _popup_open:
-		print("show_popup_panel: popup already open, ignoring duplicate call")
 		return
 
 	var popup: UITowerSelect = PopupPanelScene.instantiate() as UITowerSelect;
@@ -348,16 +345,15 @@ func _on_popup_closed():
 	_active_popup = null
 
 func _on_tower_select_skipped():
-	print("Tower select skipped — no valid towers available")
+	push_warning("Tower select skipped - no valid towers available")
 	startWave()
 
 # Handle the selection from the popup
 func _on_option_selected(selection):
 	# selection = "gawr_gura"
-	print("Selected:", selection)
 	var tower = TowerCenter.getTowerDataByName(selection);
 	if(tower == null):
-		print("Error: Tower data not found for selection:", selection)
+		push_error("Tower data not found for selection: ", selection)
 		return
 
 	TowerCenter.upgradeTowerLevelByName(selection);

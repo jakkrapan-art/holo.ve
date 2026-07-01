@@ -9,12 +9,12 @@ class_name PathBakeAuto
 func bake():
 	var marked_points: Array[Vector2i] = get_marked_points(layer)
 	if marked_points.is_empty():
-		print("No marked tiles found!")
+		push_warning("No marked tiles found!")
 		return
 
 	var path: Array[Vector2i] = find_path_from_marked_points(marked_points)
 	if path.is_empty():
-		print("No valid path found.")
+		push_warning("No valid path found.")
 		return
 
 	# Clear existing path
@@ -25,7 +25,6 @@ func bake():
 		path2d.curve.add_point(point)
 
 	draw_path_line(path);
-	print("Path set with %d points." % path.size())
 	return path
 
 func get_marked_points(p_layer: int) -> Array[Vector2i]:

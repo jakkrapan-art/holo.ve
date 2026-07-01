@@ -20,6 +20,10 @@ mono_crash.*.json
 # Build results
 *.translation
 
+# Build / export artifacts (exported game builds must never be committed)
+*.pck
+/build/
+
 # Temporaries
 *.tmp
 *.log

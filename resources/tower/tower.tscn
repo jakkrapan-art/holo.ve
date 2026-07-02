@@ -267,7 +267,7 @@ offset_bottom = -446.0
 grow_horizontal = 2
 grow_vertical = 0
 mouse_filter = 2
-alignment = 1
+theme_override_constants/separation = 10
 script = ExtResource("1_efrow")
 
 [connection signal="onEnemyDetected" from="EnemyDetector" to="." method="_onEnemyDetected"]

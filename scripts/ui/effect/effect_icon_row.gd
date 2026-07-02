@@ -5,7 +5,9 @@ extends HBoxContainer
 # HP bar). Purely signal-driven off one EffectContainer - no per-frame work.
 # Icons are built in code from the registry texture (green/red/purple
 # placeholders today; artists swap art via the icon path in effects.yaml).
-# Stack count shows bottom-right when stacks > 1.
+# Stack count shows bottom-right when stacks > 1. Left-aligned, oldest first;
+# only the first max_visible show - when one expires, the next hidden icon
+# shifts in (Director 2026-07-03).
 
 const FALLBACK_COLORS := {
 	EffectTypes.Category.BUFF: Color(0.27, 0.78, 0.35),
@@ -14,9 +16,11 @@ const FALLBACK_COLORS := {
 }
 
 @export var icon_size: int = 44
+@export var max_visible: int = 5
 
 var _container: EffectContainer = null
 var _icons: Dictionary = {}    # EffectInstance.key() -> TextureRect
+var _order: Array = []         # keys in apply order (drives overflow)
 
 # Bind (or rebind) to a container. Existing effects are drawn immediately so
 # a row bound after effects were applied never shows stale-empty (plan F3).
@@ -44,14 +48,26 @@ func _on_effect_added(inst: EffectInstance) -> void:
 		return
 	var icon := _make_icon(inst)
 	_icons[k] = icon
+	_order.append(k)
 	add_child(icon)
 	_update_stack_label(icon, inst)
+	_refresh_overflow()
 
 func _on_effect_removed(inst: EffectInstance) -> void:
 	var icon: TextureRect = _icons.get(inst.key(), null)
 	if icon != null:
 		_icons.erase(inst.key())
+		_order.erase(inst.key())
 		icon.queue_free()
+		_refresh_overflow()
+
+# First max_visible icons (apply order) show; the rest wait hidden and shift
+# in as earlier effects expire.
+func _refresh_overflow() -> void:
+	for i in range(_order.size()):
+		var icon: TextureRect = _icons.get(_order[i], null)
+		if icon != null:
+			icon.visible = i < max_visible
 
 func _on_effect_updated(inst: EffectInstance) -> void:
 	var icon: TextureRect = _icons.get(inst.key(), null)
@@ -99,3 +115,4 @@ func _clear_icons() -> void:
 		if is_instance_valid(icon):
 			icon.queue_free()
 	_icons.clear()
+	_order.clear()

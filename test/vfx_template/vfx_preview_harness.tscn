@@ -1,0 +1,20 @@
+[gd_scene load_steps=2 format=3 uid="uid://pupqu6ucrmh2"]
+
+[ext_resource type="Script" path="res://test/vfx_template/vfx_preview_harness.gd" id="1_harness"]
+
+[node name="VfxPreviewHarness" type="Node2D"]
+script = ExtResource("1_harness")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(900, 0)
+zoom = Vector2(0.55, 0.55)
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="Label" type="Label" parent="HUD"]
+offset_left = 24.0
+offset_top = 16.0
+offset_right = 1896.0
+offset_bottom = 64.0
+theme_override_font_sizes/font_size = 26
+text = "loading..."

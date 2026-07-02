@@ -20,6 +20,11 @@ const EFFECT_SCRIPT := "res://test/vfx_template/lane_effect_template.gd"
 const LANE_CELLS := 3    # target cells drawn in front of the caster (match the controller)
 const REPLAY_GAP := 0.7  # seconds between auto-replays
 
+# Static caster sprite for scale/overview context (Director 2026-07-02) -
+# first frame only, no animation. Swap the path for the tower being built.
+const CASTER_SPRITE := "res://resources/tower/hololive/en_branch/myth_gen/kiara/sprite/kiara_stand001.png"
+const CASTER_SHEET_GRID := 3  # kiara_stand001.png is a 3x3 sheet of 512px frames
+
 # Max 3 variants. name = short label, intent = one-line artistic intent
 # (never a parameter diff), params = shader uniform overrides.
 var _variants := {
@@ -50,6 +55,12 @@ var _timer: Timer
 
 func _ready() -> void:
 	_label = $HUD/Label
+	var caster := Sprite2D.new()
+	caster.texture = load(CASTER_SPRITE)
+	caster.hframes = CASTER_SHEET_GRID
+	caster.vframes = CASTER_SHEET_GRID
+	caster.frame = 0
+	add_child(caster)  # added before the effect -> effect draws on top
 	_timer = Timer.new()
 	_timer.one_shot = true
 	_timer.timeout.connect(_fire)

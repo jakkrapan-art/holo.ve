@@ -49,8 +49,10 @@ skill:
     desc: scary_graze_desc
     action:
       - type: target_self
-      - type: decrease_damage_all_area
+      - type: effect_area
         data:
+          effect: attack_mult_down
+          value: 10           # percent scale (10 = -10% damage); same result as legacy 0.10 decimal
           duration: 3
           radius: 1
-          decreaseValue: 0.10
+          affects: towers

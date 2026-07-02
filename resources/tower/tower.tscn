@@ -1,6 +1,7 @@
-[gd_scene load_steps=36 format=3 uid="uid://d5g7c6yxmrv4"]
+[gd_scene load_steps=37 format=3 uid="uid://d5g7c6yxmrv4"]
 
 [ext_resource type="Script" path="res://scripts/entity/tower/tower.gd" id="1_mmirn"]
+[ext_resource type="Script" path="res://scripts/ui/effect/effect_icon_row.gd" id="1_efrow"]
 [ext_resource type="Script" path="res://scripts/enemy_detector.gd" id="3_57u27"]
 [ext_resource type="Script" path="res://scripts/entity/attack_controller.gd" id="4_ar3mn"]
 [ext_resource type="Texture2D" uid="uid://yg18n4ppetvx" path="res://resources/tower/hololive/en_branch/myth_gen/kiara/sprite/kiara_stand001.png" id="5_puk85"]
@@ -252,6 +253,22 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("13_rihwy")
+
+[node name="EffectIconRow" type="HBoxContainer" parent="."]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -154.0
+offset_top = -490.0
+offset_right = 106.0
+offset_bottom = -446.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+alignment = 1
+script = ExtResource("1_efrow")
 
 [connection signal="onEnemyDetected" from="EnemyDetector" to="." method="_onEnemyDetected"]
 [connection signal="timeout" from="AttackController/AttackDelayTimer" to="AttackController" method="_onAttackDelayTimerTimeout"]

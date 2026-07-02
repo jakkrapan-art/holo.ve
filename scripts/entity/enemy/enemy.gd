@@ -11,6 +11,9 @@ var originalModulate: Color
 var enemyType: EnemyType = EnemyType.Normal;
 
 var statusEffects: StatusEffectContainer;
+# Unified effect container (replaces statusEffects in the enemy-side
+# migration; declared now so shared behaviors compile).
+var effects: EffectContainer = null;
 var skillController: EnemySkillController;
 var enableMove: bool = true;
 
@@ -118,7 +121,7 @@ func recvDamage(damage: Damage) -> int:
 		if damage.source != null and damage.source is Tower:
 			var towerData: TowerData = (damage.source as Tower).data
 			if towerData != null:
-				sigmaAmp = towerData.buffs.aggregate(BuffInstance.StatType.DAMAGE_AMPLIFIER)
+				sigmaAmp = towerData.effects.aggregate(EffectTypes.Kind.DAMAGE_AMPLIFIER)
 
 		var sigmaRed: float = stats.getDamageReduction()  # already clamped + handles blockCount
 		damageVal = int(damage.damage * defense_factor * (1.0 + sigmaAmp) * (1.0 - sigmaRed))

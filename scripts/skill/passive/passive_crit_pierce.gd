@@ -4,10 +4,10 @@ extends RefCounted
 # Crit-pierce passive (Josuiji Shinri "Bull Eyes" / "Heartpierce Shot").
 #
 # Loop:
-#   - Each NON-crit auto-attack -> +1 Bull Eyes stack. Stacks are kept as a single
-#     counter and pushed as ONE CRIT_CHANCE buff = crit_chance_per_stack * stacks
-#     (state stays O(1); no per-stack BuffInstance churn). No cap -- overcap is a
-#     deliberate buffer against enemy crit-chance debuffs.
+#   - Each NON-crit auto-attack -> +1 Bull Eyes stack. Stacks live on ONE
+#     EffectInstance (STACK rule: effective = crit_chance_per_stack * stacks;
+#     state stays O(1)). No cap -- overcap is a deliberate buffer against
+#     enemy crit-chance debuffs.
 #   - The auto-attack that CRITS fires a guaranteed-crit pierce arrow (w1xhN line)
 #     toward the crit target instead of the normal single hit (tower replaces the
 #     instant hit with this). The crit shot does not grant a stack.
@@ -17,7 +17,10 @@ extends RefCounted
 # Crit roll itself stays in TowerData.calculateFinalDamage (uses getCritChance,
 # which already includes the Bull Eyes CRIT_CHANCE buff), so the ramp is automatic.
 
-const BULL_EYES_KEY := "bull_eyes"
+# Registry effect id + per-passive source; stacks live on the EffectInstance
+# (STACK rule: each apply = +1 stack, effective = per-stack value * stacks).
+const BULL_EYES_EFFECT := "bull_eyes"
+const BULL_EYES_SOURCE := "passive_bull_eyes"
 
 var tower: Tower
 var crit_chance_per_stack: float
@@ -27,7 +30,6 @@ var projectile_scene: PackedScene
 var effect_script: Script             # lane-static pierce VFX controller (normal or evolve slot)
 var arrow_speed: float                # tiles/sec
 var arrow_range: float                # tiles
-var stacks: int = 0
 
 func _init(owner: Tower, params: Dictionary) -> void:
 	tower = owner
@@ -52,10 +54,12 @@ func _init(owner: Tower, params: Dictionary) -> void:
 func replaces_attack_on_crit() -> bool:
 	return projectile_scene != null
 
-# Called after a NON-crit auto-attack landed.
+# Called after a NON-crit auto-attack landed. Duration 0 = no self-expiry;
+# reset()/wave clear removes it.
 func on_normal_attack() -> void:
-	stacks += 1
-	tower.data.addCritChanceBuff(crit_chance_per_stack * stacks, BULL_EYES_KEY)
+	var inst := EffectUtility.make_instance(BULL_EYES_EFFECT, BULL_EYES_SOURCE, crit_chance_per_stack, 0.0)
+	if inst != null:
+		tower.data.effects.apply(inst)
 
 # Called when the auto-attack rolled a crit; fires the arrow and updates stacks.
 func on_crit_attack(target: Enemy) -> void:
@@ -63,10 +67,9 @@ func on_crit_attack(target: Enemy) -> void:
 	if reset_on_crit:
 		reset()
 
-# Wave reset / re-setup: drop all stacks and the Bull Eyes buff.
+# Wave reset / re-setup: drop the Bull Eyes buff (and all its stacks).
 func reset() -> void:
-	stacks = 0
-	tower.data.removeCritChanceBuff(BULL_EYES_KEY)
+	tower.data.effects.remove_key(BULL_EYES_SOURCE + "/" + BULL_EYES_EFFECT)
 
 func _bonus_for_level() -> float:
 	if not (bonus_crit_damage is Array) or bonus_crit_damage.is_empty():

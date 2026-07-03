@@ -35,6 +35,7 @@ static func _build_def(effect_id: String, entry: Dictionary) -> EffectDef:
 	def.id = effect_id
 	def.kind = EffectTypes.KIND_FROM_STRING[kind_str]
 	def.display_name = str(entry.get("name", effect_id))
+	def.desc = str(entry.get("desc", ""))
 	def.icon_path = str(entry.get("icon", ""))
 	var category_str := str(entry.get("category", "buff"))
 	def.category = EffectTypes.CATEGORY_FROM_STRING.get(category_str, EffectTypes.Category.BUFF)

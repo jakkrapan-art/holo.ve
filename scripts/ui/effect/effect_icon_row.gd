@@ -79,8 +79,10 @@ func _make_icon(inst: EffectInstance) -> TextureRect:
 	icon.custom_minimum_size = Vector2(icon_size, icon_size)
 	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	icon.tooltip_text = inst.def.display_name
+	# PASS (not STOP): hover tooltip works without consuming world clicks.
+	# Interim desc surface for functional checks - the durable home is the
+	# future tower/enemy stats UI (see buff_debuff.md Plan and Status).
+	icon.mouse_filter = Control.MOUSE_FILTER_PASS
 	icon.texture = ResourceManager.getSprite(EffectRegistry.ICON_GROUP, inst.def.id)
 	if icon.texture == null:
 		# Registry icon missing/unloaded: flat category-colored square so the
@@ -104,6 +106,11 @@ func _make_icon(inst: EffectInstance) -> TextureRect:
 	return icon
 
 func _update_stack_label(icon: TextureRect, inst: EffectInstance) -> void:
+	var tooltip := inst.def.display_name
+	var desc := inst.display_desc()
+	if desc != "":
+		tooltip += "\n" + desc
+	icon.tooltip_text = tooltip
 	var label: Label = icon.get_node_or_null("StackLabel")
 	if label == null:
 		return

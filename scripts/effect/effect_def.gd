@@ -7,6 +7,11 @@ extends RefCounted
 
 var id: String = ""
 var display_name: String = ""
+# Player-facing tooltip line (game_copy.md voice). Numbers are NEVER typed
+# in: the "{value}" token resolves to the instance's real applied magnitude
+# (stacks included) at display time - same single-source rule as skill
+# desc_template.
+var desc: String = ""
 var icon_path: String = ""
 var category: EffectTypes.Category = EffectTypes.Category.BUFF
 var kind: EffectTypes.Kind = EffectTypes.Kind.ATTACK_SPEED

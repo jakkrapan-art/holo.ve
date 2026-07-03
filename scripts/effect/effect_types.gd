@@ -88,3 +88,21 @@ const LIFETIME_FROM_STRING := {
 
 static func is_stat_kind(kind: int) -> bool:
 	return kind < Kind.STUN
+
+# Decimal-scale kinds display as percent (0.5 -> "50%"); percent-scale kinds
+# append % directly; flats show the plain number. Used by the {value} desc
+# token - display and applied value share one source.
+const _DECIMAL_PERCENT_KINDS := [
+	Kind.ATTACK_SPEED, Kind.MOVE_SPEED_MULT, Kind.ARMOR_MULT,
+	Kind.MARMOR_MULT, Kind.DAMAGE_AMPLIFIER, Kind.DAMAGE_REDUCTION,
+	Kind.CRIT_DAMAGE_BONUS,
+]
+const _PERCENT_POINT_KINDS := [Kind.ATTACK_MULT, Kind.MAGIC_MULT, Kind.CRIT_CHANCE]
+
+static func format_value(kind: int, value: float) -> String:
+	var v: float = absf(value)
+	if kind in _DECIMAL_PERCENT_KINDS:
+		return String.num(v * 100.0, 2) + "%"
+	if kind in _PERCENT_POINT_KINDS:
+		return String.num(v, 2) + "%"
+	return String.num(v, 2)

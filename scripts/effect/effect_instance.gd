@@ -26,3 +26,10 @@ func effective_value() -> float:
 func set_applier(applier: Node) -> void:
 	if behavior != null:
 		behavior.capture(applier, self)
+
+# Player-facing tooltip line: def.desc with the {value} token resolved to the
+# REAL applied magnitude (stacks included) - numbers are never hand-typed.
+func display_desc() -> String:
+	if def.desc == "":
+		return ""
+	return def.desc.replace("{value}", EffectTypes.format_value(def.kind, effective_value()))

@@ -1,6 +1,7 @@
-[gd_scene load_steps=9 format=3 uid="uid://cs2xxi3vk21js"]
+[gd_scene load_steps=10 format=3 uid="uid://cs2xxi3vk21js"]
 
 [ext_resource type="Script" path="res://scripts/entity/enemy/enemy.gd" id="1_wei2r"]
+[ext_resource type="Script" path="res://scripts/ui/effect/effect_icon_row.gd" id="1_efrow"]
 [ext_resource type="Script" path="res://scripts/entity/enemy/enemy_area.gd" id="2_wqjs0"]
 [ext_resource type="Texture2D" uid="uid://cblnrunfkgeme" path="res://resources/enemy/forest01/normal/baby_garlic/baby_garlic.png" id="3_sr7qx"]
 [ext_resource type="Texture2D" uid="uid://df4gxk4itvij7" path="res://resources/ui_component/ui_asset/tower_mana_bg.png" id="4_74rq7"]
@@ -56,3 +57,19 @@ value = 72.24
 show_percentage = false
 script = ExtResource("5_rn7ke")
 metadata/_edit_use_anchors_ = true
+
+[node name="EffectIconRow" type="HBoxContainer" parent="."]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -130.0
+offset_top = -355.0
+offset_right = 130.0
+offset_bottom = -311.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+theme_override_constants/separation = 10
+script = ExtResource("1_efrow")

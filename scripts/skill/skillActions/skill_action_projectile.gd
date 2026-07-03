@@ -7,7 +7,7 @@ extends SkillAction
 @export var damageMultiplierParamName: String = "";
 @export var damageType: Damage.DamageType = Damage.DamageType.PHYSIC
 @export var projectileTemplate: PackedScene;
-@export var statusEffects: Array[StatusEffect] = [];
+@export var statusEffects: Array[EffectSpec] = [];
 
 func execute(context: SkillContext):
 	for i in count:
@@ -41,10 +41,11 @@ func addStatusEffects(projectile: Projectile):
 	if not statusEffects || !is_instance_valid(projectile):
 		return
 
-	for effect in statusEffects:
-		var e = effect.duplicate() as StatusEffect
-		if is_instance_valid(effect):
-			projectile.statusEffects.append(e)
+	# Specs are immutable templates; the projectile instantiates a fresh
+	# EffectInstance per hit, so sharing the spec list is safe.
+	for spec in statusEffects:
+		if spec != null:
+			projectile.statusEffects.append(spec)
 
 func onHit(projectile: Projectile, target: Enemy):
 	if target is Enemy:

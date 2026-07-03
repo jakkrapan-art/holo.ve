@@ -27,10 +27,10 @@ class_name SkillActionAttack
 @export var damageType: Damage.DamageType = Damage.DamageType.PHYSIC
 @export var damageTypeOverride: bool = false
 
-# Status effects applied to each target after all hits land (e.g., Kiara's
-# Phoenix Flame DOT). Effects are duplicated per target so per-target state
-# (applied, scaledAge, snapshot fields) doesn't bleed between enemies.
-@export var statusEffects: Array[StatusEffect] = []
+# Registry effects applied to each target after all hits land (e.g., Kiara's
+# Phoenix Flame DOT). A fresh EffectInstance is built per target so per-target
+# state never bleeds between enemies.
+@export var statusEffects: Array[EffectSpec] = []
 
 func execute(context: SkillContext):
 	var tower: Tower = context.user as Tower
@@ -88,17 +88,16 @@ func execute(context: SkillContext):
 				hitDamage *= sigmaCD
 			target.recvDamage(Damage.new(tower, int(hitDamage), dmgType, isCrit))
 
-	# Apply status effects once per target after all hits land. Duplicate per
-	# target so Resource state (applied/scaledAge/snapshotAttack) is isolated.
-	# set_applier passes the casting tower so effects like PhoenixFlame can
-	# snapshot caster-side stats at apply time.
+	# Apply registry effects once per target after all hits land. instantiate()
+	# builds a fresh isolated instance and snapshots caster-side stats (e.g.
+	# the Phoenix Flame DOT's attack snapshot) from the casting tower.
 	if statusEffects.size() > 0:
 		for target in context.target:
-			if not is_instance_valid(target) or not target.has_method("addStatusEffect"):
+			if not is_instance_valid(target) or not target.has_method("apply_effect"):
 				continue
-			for effect in statusEffects:
-				if effect == null or not is_instance_valid(effect):
+			for spec: EffectSpec in statusEffects:
+				if spec == null:
 					continue
-				var dup_effect: StatusEffect = effect.duplicate(true)
-				dup_effect.set_applier(tower)
-				target.addStatusEffect(dup_effect)
+				var inst := spec.instantiate(tower)
+				if inst != null:
+					target.apply_effect(inst)

@@ -13,9 +13,15 @@ var remaining: float = 0.0
 var stacks: int = 1
 var lifetime: EffectTypes.Lifetime = EffectTypes.Lifetime.WAVE
 var behavior: EffectBehavior = null
+# Per-application overrides of def.params (skill YAML can rebind e.g. a DOT's
+# max_hp_percent); read through param().
+var params: Dictionary = {}
 # Caster-dependent data captured at apply time (e.g. DOT attack snapshot);
 # effects must never hold a live caster reference past apply.
 var snapshot: Dictionary = {}
+
+func param(name: String, default_value):
+	return params.get(name, def.params.get(name, default_value))
 
 func key() -> String:
 	return source_id + "/" + def.id

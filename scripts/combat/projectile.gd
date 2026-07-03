@@ -22,7 +22,7 @@ var target_position: Vector2 = Vector2.ZERO
 var move_direction: Vector2 = Vector2.ZERO
 var moveType: ProjectileMoveType = ProjectileMoveType.Direction
 var lifetime: float = 5.0
-var statusEffects: Array[StatusEffect] = []
+var statusEffects: Array[EffectSpec] = []
 var _hit_ids: Dictionary = {}  # enemy.instance_id → true; used when prevent_rehit
 
 # for circle movement
@@ -74,7 +74,7 @@ func setup_circle(p_shooter: Tower, p_damage: Damage, p_circle_radius: float = 1
 	moveType = ProjectileMoveType.Circle
 	connect("area_entered", Callable(self, "onAreaEntered"))
 
-func setupStatusEffects(p_statusEffects: Array[StatusEffect]):
+func setupStatusEffects(p_statusEffects: Array[EffectSpec]):
 	if p_statusEffects:
 		self.statusEffects = p_statusEffects
 
@@ -152,14 +152,14 @@ func hitTarget(hit_area: EnemyArea):
 			_hit_ids[key] = true
 
 		if statusEffects:
-			for effect in statusEffects:
-				if effect and is_instance_valid(effect):
-					var dup_effect = effect.duplicate(true)
-					# Snapshot caster-side state for effects that need it
-					# (e.g., PhoenixFlame reads applier.totalAttack at apply).
-					if shooter and is_instance_valid(shooter):
-						dup_effect.set_applier(shooter)
-					enemy.addStatusEffect(dup_effect)
+			for spec: EffectSpec in statusEffects:
+				# Fresh instance per hit (per-target isolation); instantiate
+				# snapshots caster-side state (e.g. DOT attack) when the
+				# shooter is still alive.
+				var applier: Node = shooter if (shooter and is_instance_valid(shooter)) else null
+				var inst := spec.instantiate(applier)
+				if inst != null:
+					enemy.apply_effect(inst)
 
 	if moveType == ProjectileMoveType.Target:
 		if target and is_instance_valid(target) and hit_area == target.area:

@@ -38,12 +38,12 @@ skill:
     desc: thick_skin_desc
     action:
       - type: target_self
-      - type: apply_status_effect
+      - type: apply_effect
         data:
-          type: IncreaseDefBuff
+          effect: armor_mult_up
+          target: targets
+          value: 7.5
           duration: 5
-          level: 1
-          increaseValue: 7.5
   - name: Scary Graze
     cooldown: 30
     desc: scary_graze_desc

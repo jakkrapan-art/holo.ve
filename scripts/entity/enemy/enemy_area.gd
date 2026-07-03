@@ -3,17 +3,13 @@ class_name  EnemyArea
 
 @onready var enemy: Enemy = $"..";
 
-func addIncreaseMoveSpeed(value: float, key: String):
-	enemy.addIncreaseMoveSpeed(value, key);
+# Zones and actions hit this child Area2D, not the PathFollow2D - forward the
+# uniform effect surface to the owning enemy.
+func apply_effect(inst: EffectInstance) -> void:
+	enemy.apply_effect(inst);
 
-func removeIncreaseMoveSpeed(key: String):
-	enemy.removeIncreaseMoveSpeed(key);
+func remove_effect_source(source_id: String) -> void:
+	enemy.remove_effect_source(source_id);
 
 func addBlockDamageCount(value: int):
 	enemy.addBlockDamageCount(value);
-
-func addIncreaseDef(value: float, key: String):
-	enemy.addIncreaseDefPercent(value, key);
-
-func removeIncreaseDef(key: String):
-	enemy.removeIncreaseDefPercent(key);

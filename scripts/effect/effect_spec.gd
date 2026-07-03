@@ -1,9 +1,11 @@
 class_name EffectSpec
-extends RefCounted
+extends Resource
 
 # Parsed reference from skill YAML to a registry effect: def + resolved
 # value/duration. instantiate() builds a fresh EffectInstance per target
 # (per-target isolation - replaces the legacy duplicate(true) pattern).
+# Resource (not RefCounted) because skill actions hold it in @export arrays
+# (Godot only exports built-ins/Resources/Nodes/enums).
 
 var def: EffectDef = null
 var source_id: String = ""

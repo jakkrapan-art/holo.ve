@@ -114,30 +114,14 @@ func draw_path_line(points: Array[Vector2i]) -> void:
 
 	path2d.add_child(line)
 
-func get_available_tiles(path_tiles: Array[Vector2i], _excluded_layers: Array[int] = []) -> Array[Vector2i]:
+func get_available_tiles(path_tiles: Array[Vector2i]) -> Array[Vector2i]:
 	var available_tiles: Array[Vector2i] = []
-
 	var target_layer := 1
-	var _target_source := 3
 	var used_cells := tilemap.get_used_cells(target_layer)
 
 	for pos in used_cells:
 		if path_tiles.has(pos):
 			continue
-
-		#var source_id := tilemap.get_cell_source_id(target_layer, pos)
-		#if source_id != target_source:
-			#continue
-#
-		#var is_used_elsewhere := false
-		#for check_layer in range(tilemap.get_layers_count()):
-			#if check_layer == target_layer or excluded_layers.has(check_layer):
-				#continue
-			#if tilemap.get_used_cells(check_layer).has(pos):
-				#is_used_elsewhere = true
-				#break
-
 		available_tiles.append(pos)
-		#if not is_used_elsewhere:
 
 	return available_tiles

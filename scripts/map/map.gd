@@ -44,6 +44,6 @@ func addAvailableCell(cell: Vector2i):
 
 func setup():
 	var path_data = path_bake.bake();
-	availableCells = path_bake.get_available_tiles(path_data, [6]);
+	availableCells = path_bake.get_available_tiles(path_data);
 	# Default to visible on setup, or call toggle_grid(false) if you want it off by default
 	toggle_grid(false)

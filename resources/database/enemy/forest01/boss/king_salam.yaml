@@ -18,12 +18,12 @@ skill:
     desc: ลดดาเมจที่ได้รับ 10%
     action:
       - type: target_self
-      - type: apply_status_effect
+      - type: apply_effect
         data:
-          type: DamageReductionBuff
+          effect: damage_reduction_up
+          target: targets
+          value: 0.1
           duration: 5
-          level: 1
-          reduction: 0.1
   - name: Slime Fluid
     cooldown: 40
     desc: "สร้าง Aura รอบตัว ลดความเร็วการโจมตี 10% ของป้อมในรัศมี 5 ช่อง"
@@ -41,8 +41,10 @@ skill:
     desc: "มอนเตอร์นรัศมีการบัฟจะได้รับ Move Speed เพิ่มขึ้น 10%  (Non-stackable)  Duration : 5 Sec ในระยะ 5 ช่อง"
     action:
       - type: target_self
-      - type: increase_move_spd_area
+      - type: effect_area
         data:
+          effect: move_speed_up
+          value: 0.1
           duration: 5
           radius: 5
-          value: 0.1
+          affects: enemies

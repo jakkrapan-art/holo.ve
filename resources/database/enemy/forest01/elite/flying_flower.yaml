@@ -10,9 +10,9 @@ skill:
     desc: เพิ่ม def ให้ตนเอง 5%
     action:
       - type: target_self
-      - type: apply_status_effect
+      - type: apply_effect
         data:
-          type: IncreaseDefBuff
+          effect: armor_mult_up
+          target: targets
+          value: 5
           duration: 10000
-          level: 1
-          increaseValue: 5

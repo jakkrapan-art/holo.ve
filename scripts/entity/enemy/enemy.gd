@@ -10,9 +10,9 @@ var originalModulate: Color
 
 var enemyType: EnemyType = EnemyType.Normal;
 
-var statusEffects: StatusEffectContainer;
-# Unified effect container (replaces statusEffects in the enemy-side
-# migration; declared now so shared behaviors compile).
+# Unified buff/debuff store (created in setup; icon row binds there too -
+# _ready runs a frame BEFORE setup in the factory flow, so never bind at
+# _ready).
 var effects: EffectContainer = null;
 var skillController: EnemySkillController;
 var enableMove: bool = true;
@@ -31,6 +31,12 @@ func setup(p_enemyType: EnemyType, hp: int, armor: int, mArmor: int, moveSpeed: 
 	self.enemyType = p_enemyType;
 	setTexture(texture);
 	stats = EnemyStat.new(hp, armor, mArmor, moveSpeed, damageReduction);
+	effects = EffectContainer.new();
+	effects.set_host(self);
+	stats.effects = effects;
+	var iconRow := get_node_or_null("EffectIconRow") as EffectIconRow
+	if iconRow != null:
+		iconRow.setup(effects)
 	originalModulate = sprite.modulate
 	skillController = EnemySkillController.new(self, skills);
 	initialized = true;
@@ -43,8 +49,8 @@ func _process(_delta):
 	if(!initialized):
 		return;
 
-	if statusEffects:
-		statusEffects.processEffects(_delta, self)
+	if effects:
+		effects.tick(_delta)
 
 	if skillController:
 		skillController.process(_delta)
@@ -159,9 +165,9 @@ func updateHealthBar(value: float):
 func dead(cause: Damage):
 	# Mutex guard (see _removed comment near top). If the reach-end branch
 	# already fired, suppress onDead so the enemy doesn't double-decrement.
-	# Note: ordering inside _process matters — statusEffects.processEffects
-	# (line 39) runs BEFORE the reach-end check (line 45), so a DOT-lethal
-	# tick at progress_ratio >= 1.0 will set _removed here first, suppressing
+	# Note: ordering inside _process matters — effects.tick (DOT damage)
+	# runs BEFORE the reach-end check, so a DOT-lethal tick at
+	# progress_ratio >= 1.0 will set _removed here first, suppressing
 	# the reach-end emit later in the same frame.
 	if _removed:
 		return
@@ -170,10 +176,14 @@ func dead(cause: Damage):
 	onDead.emit(self, cause, reward);
 	queue_free();
 
-func addStatusEffect(effect: StatusEffect):
-	if statusEffects == null:
-		statusEffects = StatusEffectContainer.new(self)
-	statusEffects.addEffect(effect)
+# Uniform effect surface (same shape as Tower).
+func apply_effect(inst: EffectInstance) -> void:
+	if effects != null:
+		effects.apply(inst)
+
+func remove_effect_source(source_id: String) -> void:
+	if effects != null:
+		effects.remove_source(source_id)
 
 func calcurateReward() -> EnemyReward:
 	# var evoTokenRand = randi_range(0, 100)
@@ -181,36 +191,6 @@ func calcurateReward() -> EnemyReward:
 	if enemyType == EnemyType.Boss:
 		reward.evoToken = 1;
 	return reward
-
-func addIncreaseMoveSpeed(value: float, key: String):
-	stats.addMoveSpeedMultiplier(value, key);
-
-func removeIncreaseMoveSpeed(key: String):
-	stats.removeMoveSpeedMultiplier(key);
-
-func addIncreaseDefPercent(value: float, key: String):
-	stats.addDefPercent(value, key);
-
-func removeIncreaseDefPercent(key: String):
-	stats.removeDefPercent(key);
-
-func addIncreaseMArmorPercent(value: float, key: String):
-	stats.addMArmorPercent(value, key);
-
-func removeIncreaseMArmorPercent(key: String):
-	stats.removeMArmorPercent(key);
-
-func addIncreaseArmorFlat(value: int, key: String):
-	stats.addArmorFlat(value, key);
-
-func removeIncreaseArmorFlat(key: String):
-	stats.removeArmorFlat(key);
-
-func addIncreaseMArmorFlat(value: int, key: String):
-	stats.addMArmorFlat(value, key);
-
-func removeIncreaseMArmorFlat(key: String):
-	stats.removeMArmorFlat(key);
 
 func addBlockDamageCount(value: int):
 	stats.blockCount += value;

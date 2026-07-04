@@ -31,27 +31,6 @@ static func ParseAction(data: Dictionary, parameters: Dictionary = {}) -> SkillA
 	var skillType = data.get("type", "");
 	var skill: SkillAction;
 	match skillType:
-		"apply_status_effect":
-			var skillData = data.get("data", {});
-			var duration = skillData.get("duration", 0);
-			var type = skillData.get("type", "");
-			if(type == ""):
-				push_error("invalid type for apply_status_effect");
-				return null;
-			var buff: StatusEffect;
-			match type:
-				"DamageReductionBuff":
-					var reduction = skillData.get("reduction", 0.0);
-					buff = DamageReductionBuff.new(duration, reduction); #for test
-				"IncreaseDefBuff":
-					var increaseValue = skillData.get("increaseValue", 0.0);
-					buff = IncreaseDefBuff.new(duration, increaseValue);
-				_:
-					push_error("invalid type for apply_status_effect, type: ", type);
-					return null;
-
-			skill = SkillActionAddBuff.new();
-			skill.buff = buff;
 		"attack_with_param":
 			pass;
 		"target_self":
@@ -76,24 +55,6 @@ static func ParseAction(data: Dictionary, parameters: Dictionary = {}) -> SkillA
 			skill.duration = float(skillData.get("duration", 3.0));
 			skill.radius = float(skillData.get("radius", 1.0));
 			skill.affects = skillData.get("affects", "enemies");
-		"increase_move_spd_area":
-			skill = SkillActionIncreaseMoveSpdArea.new();
-			var skillData = data.get("data", {});
-			var duration = skillData.get("duration", 0);
-			var increaseValue = skillData.get("value", 0.0);
-			var radius = skillData.get("radius", 0.0);
-			skill.duration = duration;
-			skill.increaseValue = increaseValue;
-			skill.radius = radius;
-		"increase_def_area":
-			skill = SkillActionIncreaseDefArea.new();
-			var skillData = data.get("data", {});
-			var duration = skillData.get("duration", 0);
-			var increaseValue = skillData.get("value", 0.0);
-			var radius = skillData.get("radius", 0.0);
-			skill.duration = duration;
-			skill.increaseValue = increaseValue;
-			skill.radius = radius;
 		"delay":
 			skill = SkillActionDelay.new();
 			var skillData = data.get("data", {});
@@ -159,16 +120,11 @@ static func ParseAction(data: Dictionary, parameters: Dictionary = {}) -> SkillA
 			if skillData.has("damage_type"):
 				skill.damageType = Utility.parse_string_to_enum(Damage.DamageType, skillData["damage_type"])
 				skill.damageTypeOverride = true
-			# Status effects applied to each target after damage (e.g., Kiara
+			# Registry effects applied to each target after damage (e.g., Kiara
 			# Phoenix Flame DOT). Same shape as create_circle_projectile.
-			var attackStatusEffectDataList = skillData.get("status_effects", []);
-			if attackStatusEffectDataList.size() > 0:
-				var attackStatusEffects: Array[StatusEffect] = [];
-				for statusEffectData in attackStatusEffectDataList:
-					var se: StatusEffect = StatusEffectUtility.ParseStatusEffect(statusEffectData, parameters);
-					if se:
-						attackStatusEffects.append(se);
-				skill.statusEffects = attackStatusEffects;
+			var attackEffectList = skillData.get("effects", []);
+			if attackEffectList.size() > 0:
+				skill.statusEffects = EffectUtility.parse_effect_list(attackEffectList, parameters, "action_" + str(skill.get_instance_id()));
 		"clear_enemy":
 			skill = SkillActionClearEnemy.new();
 		"find_multi_enemy":
@@ -199,14 +155,9 @@ static func ParseAction(data: Dictionary, parameters: Dictionary = {}) -> SkillA
 			skill.damageMultiplierParamName = skillData.get("damage_multiplier_param_name", "damageMultiplier");
 			skill.projectile_size_w = skillData.get("projectile_size_w", 1.0);
 			skill.projectile_size_h = skillData.get("projectile_size_h", 1.0);
-			var statusEffects: Array[StatusEffect] = [];
-			var statusEffectDataList = skillData.get("status_effects", []);
-			if(statusEffectDataList.size() > 0):
-				for statusEffectData in statusEffectDataList:
-					var se: StatusEffect = StatusEffectUtility.ParseStatusEffect(statusEffectData, parameters);
-					if se:
-						statusEffects.append(se);
-				skill.statusEffects = statusEffects;
+			var circleEffectList = skillData.get("effects", []);
+			if(circleEffectList.size() > 0):
+				skill.statusEffects = EffectUtility.parse_effect_list(circleEffectList, parameters, "action_" + str(skill.get_instance_id()));
 			skill.projectileTemplate = load(skillData.get("projectile", "res://resources/combat/bullets/gawr_gura_skill_projectile.tscn"));
 		"create_directional_projectile":
 			# Linear projectile that travels from caster toward primary target.
@@ -220,14 +171,9 @@ static func ParseAction(data: Dictionary, parameters: Dictionary = {}) -> SkillA
 			skill.damageMultiplier = float(skillData.get("damage_multiplier", 1.0));
 			skill.damageType = Utility.parse_string_to_enum(Damage.DamageType, skillData.get("damage_type", "physic"));
 			skill.damageMultiplierParamName = skillData.get("damage_multiplier_param_name", "damageMultiplier");
-			var dirStatusEffectDataList = skillData.get("status_effects", []);
-			if dirStatusEffectDataList.size() > 0:
-				var dirStatusEffects: Array[StatusEffect] = [];
-				for statusEffectData in dirStatusEffectDataList:
-					var se: StatusEffect = StatusEffectUtility.ParseStatusEffect(statusEffectData, parameters);
-					if se:
-						dirStatusEffects.append(se);
-				skill.statusEffects = dirStatusEffects;
+			var dirEffectList = skillData.get("effects", []);
+			if dirEffectList.size() > 0:
+				skill.statusEffects = EffectUtility.parse_effect_list(dirEffectList, parameters, "action_" + str(skill.get_instance_id()));
 			skill.projectileTemplate = load(skillData.get("projectile", "res://resources/combat/bullets/gawr_gura_skill_projectile.tscn"));
 		_:
 			push_warning("Unknown skill type: ", skillType);

@@ -88,8 +88,8 @@ skills:
           # 1.0 keeps the .tscn default size; raise both to widen each wave's hitbox.
           projectile_size_w: 1
           projectile_size_h: 1
-          status_effects:
-            - type: "stun"
+          effects:
+            - effect: "stun"
               duration: 0.1
   passive: null
 
@@ -149,7 +149,7 @@ evolution_skills:
           damage_type: "magic"
           projectile_size_w: 1
           projectile_size_h: 1
-          status_effects:
-            - type: "stun"
+          effects:
+            - effect: "stun"
               duration: 0.1
   passive: null

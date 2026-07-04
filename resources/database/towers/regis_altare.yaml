@@ -92,11 +92,10 @@ skills:
         data:
           damage_multiplier_param_name: "beat1Damage"
           damage_type: physic
-          status_effects:
-            - type: "DecreaseDefBuff"           # positive magnitude in YAML, applied as a reduction
-              decreaseValue_param: "armorShred"
+          effects:
+            - effect: "armor_mult_down"         # positive magnitude in YAML; system negates
+              value_param: "armorShred"
               duration_param: "shredDuration"
-              refresh_on_apply: true
       - type: clear_enemy
       - type: find_multi_enemy        # beat 2: gun line, 1 wide x 3 deep
         data:
@@ -177,11 +176,10 @@ evolution_skills:
         data:
           damage_multiplier_param_name: "beat1Damage"
           damage_type: physic
-          status_effects:
-            - type: "DecreaseDefBuff"
-              decreaseValue_param: "armorShred"
+          effects:
+            - effect: "armor_mult_down"
+              value_param: "armorShred"
               duration_param: "shredDuration"
-              refresh_on_apply: true
       - type: clear_enemy
       - type: find_multi_enemy        # beat 2: longer gun line, 1 wide x 6 deep
         data:

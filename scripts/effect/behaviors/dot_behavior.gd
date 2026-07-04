@@ -14,7 +14,7 @@ func capture(applier: Node, inst: EffectInstance) -> void:
 		inst.snapshot["attack"] = float((applier as Tower).data.getTotalAttack())
 
 func process(delta: float, host: Node, inst: EffectInstance) -> void:
-	var interval := float(inst.def.params.get("interval", 1.0))
+	var interval := float(inst.param("interval", 1.0))
 	var elapsed := float(inst.snapshot.get("elapsed", 0.0)) + delta
 	inst.snapshot["elapsed"] = elapsed
 	var last := float(inst.snapshot.get("last_tick", 0.0))
@@ -27,6 +27,6 @@ func process(delta: float, host: Node, inst: EffectInstance) -> void:
 	if enemy.stats == null:
 		return
 	var snapshot_attack := float(inst.snapshot.get("attack", 0.0))
-	var hp_pct := float(inst.def.params.get("max_hp_percent", 0.0))
+	var hp_pct := float(inst.param("max_hp_percent", 0.0))
 	var dmg := int(inst.effective_value() * snapshot_attack + hp_pct * float(enemy.stats.maxHp))
 	enemy.recvDamage(Damage.new(null, dmg, Damage.DamageType.MAGIC))

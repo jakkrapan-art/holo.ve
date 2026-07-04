@@ -26,7 +26,11 @@ static func make_instance(effect_id: String, source_id: String, value: float, du
 
 # Parse a skill-YAML `effects:` list into EffectSpecs (on-hit effects on
 # attack/projectile actions). Numeric fields support the *_param single-source
-# binding, same rules as the legacy status_effect_utility parser.
+# binding, same rules as the legacy status_effect_utility parser. Any entry
+# key beyond effect/value/duration becomes a def.params override (literal, or
+# `<name>_param` binding), e.g. Kiara's max_hp_percent_param.
+const _SPEC_BASE_KEYS := ["effect", "value", "value_param", "duration", "duration_param"]
+
 static func parse_effect_list(list: Array, parameters: Dictionary, source_id: String) -> Array[EffectSpec]:
 	var result: Array[EffectSpec] = []
 	for entry in list:
@@ -41,6 +45,14 @@ static func parse_effect_list(list: Array, parameters: Dictionary, source_id: St
 		spec.source_id = source_id
 		spec.value = float(_resolve_field(entry, parameters, "value", "value_param", 0.0))
 		spec.duration = float(_resolve_field(entry, parameters, "duration", "duration_param", def.default_duration))
+		for key in entry.keys():
+			if key in _SPEC_BASE_KEYS:
+				continue
+			if str(key).ends_with("_param"):
+				var base := str(key).trim_suffix("_param")
+				spec.extra_params[base] = _resolve_field(entry, parameters, base, str(key), def.params.get(base, 0.0))
+			elif not spec.extra_params.has(key):
+				spec.extra_params[key] = entry[key]
 		result.append(spec)
 	return result
 

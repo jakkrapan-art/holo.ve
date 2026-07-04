@@ -11,7 +11,7 @@ extends SkillActionProjectile
 #                effective lifetime is min(lifetime, max_range / speed).
 #   lifetime:    seconds (inherited from SkillActionProjectile)
 #   damage_multiplier / damage_multiplier_param_name / damage_type /
-#   status_effects / projectile (scene) — all inherited from base
+#   effects / projectile (scene) — all inherited from base
 
 @export var speed: float = 12.0     # tiles/sec
 @export var max_range: float = -1.0 # tiles; -1 = unlimited

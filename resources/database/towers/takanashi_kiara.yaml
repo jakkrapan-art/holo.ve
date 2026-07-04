@@ -92,11 +92,11 @@ skills:
           # Skill multiplier reads parameters.damageMultiplier (single source w/ desc).
           damage_multiplier_param_name: "damageMultiplier"
           can_crit: false   # Kiara design: skill cannot crit
-          status_effects:
-            - type: "phoenix_flame"
+          effects:
+            - effect: "phoenix_flame"
               duration_param: "phoenixDuration"   # binds to parameters (single source)
               interval: 1.0                       # fixed default tick
-              attack_percent_param: "phoenixAtk"
+              value_param: "phoenixAtk"           # attack-percent per tick
               max_hp_percent_param: "phoenixHp"
       - type: "play_animation"
         data:
@@ -181,11 +181,11 @@ evolution_skills:
           damage_multiplier: 3.0   # Fallback; runtime reads parameters.damageMultiplier (default param name)
           damage_type: "physic"
           can_crit: false
-          status_effects:
-            - type: "phoenix_flame"
+          effects:
+            - effect: "phoenix_flame"
               duration_param: "phoenixDuration"   # binds to parameters (single source)
               interval: 1.0                       # fixed default tick
-              attack_percent_param: "phoenixAtk"
+              value_param: "phoenixAtk"           # attack-percent per tick
               max_hp_percent_param: "phoenixHp"
       - type: "play_animation"
         data:

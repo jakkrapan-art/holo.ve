@@ -71,7 +71,7 @@ func execute(context: SkillContext):
 	# Cache crit context (avoid recomputing per-target)
 	var stat = tower.data.getStat()
 	var critChance: float = tower.data.getCritChance() if canCrit else 0.0
-	var sigmaCD: float = stat.critMultiplier + tower.data.buffs.aggregate(BuffInstance.StatType.CRIT_DAMAGE_BONUS)
+	var sigmaCD: float = stat.critMultiplier + tower.data.effects.aggregate(EffectTypes.Kind.CRIT_DAMAGE_BONUS)
 
 	# Apply damage: per (hit, target) — each crit roll independent
 	for hitRatio in hits:

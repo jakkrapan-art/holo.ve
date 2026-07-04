@@ -48,6 +48,8 @@ func getAttackAnimationSpeed():
 
 func _ready():
 	add_to_group("tower")
+	if data != null:
+		data.effects.set_host(self)
 	anim = AnimationController.new(spr, IDLE_ANIMATION);
 	Utility.ConnectSignal(anim,"on_animation_finished", Callable(self, "animation_finished"));
 
@@ -82,6 +84,12 @@ func _ready():
 	if(towerStar != null):
 		towerStar.setStar(data.level);
 
+	# Overhead status icons. Bound after the data-null guard above; setup()
+	# also draws any effects already on the shared container (re-placed tower).
+	var iconRow := get_node_or_null("EffectIconRow") as EffectIconRow
+	if iconRow != null and data != null:
+		iconRow.setup(data.effects)
+
 	isReady = true;
 
 func _hasActiveSkill() -> bool:
@@ -105,6 +113,11 @@ func _setupPassive() -> void:
 			push_warning("Tower '" + towerName + "': unknown passive behavior '" + str(params.get("behavior", "")) + "'");
 
 func _process(delta):
+	# Effect expiry clock: the container owns all durations (no scene-tree
+	# timers - R2/R3 root fix). Freezes with pause, scales with x2 speed.
+	if data != null:
+		data.effects.tick(delta)
+
 	if attackCooldownRemaining > 0.0:
 		attackCooldownRemaining = maxf(0.0, attackCooldownRemaining - delta)
 		if attackCooldownRemaining <= 0.0:
@@ -368,7 +381,7 @@ func resetForWave():
 		if node is Projectile and node.shooter == self:
 			node.queue_free()
 
-	data.buffs.clear_skill_buffs()
+	data.effects.clear_wave_scoped()
 
 	for child in get_children():
 		if child is CircleEffectArea:
@@ -384,33 +397,24 @@ func setTowerStar(tier: int):
 	if(towerStar != null):
 		towerStar.setStar(tier);
 
-func addDecreaseAtkSpeed(value: float, key: String = ""):
-	# ATTACK_SPEED is decimal scale (0.5 = +50%) — caller passes decimal directly.
-	var buff := BuffInstance.new(
-		key,
-		BuffInstance.StatType.ATTACK_SPEED,
-		-value,
-		BuffInstance.Category.DEBUFF,
-	)
-	buff.sourceSkill = key
-	data.buffs.add(buff)
+# Uniform effect surface (same shape as Enemy) so actions/areas/projectiles
+# never care about the host type.
+func apply_effect(inst: EffectInstance) -> void:
+	if data != null:
+		data.effects.apply(inst)
 
-func removeDecreaseAtkSpeed(key: String):
-	data.buffs.remove(key)
+func remove_effect_source(source_id: String) -> void:
+	if data != null:
+		data.effects.remove_source(source_id)
 
-func addDecreaseDmgAllPercent(value: float, key: String = ""):
-	# value is decimal (0.10 = 10%), BuffInstance ATTACK_MULT expects percent (-10)
-	var buff := BuffInstance.new(
-		key,
-		BuffInstance.StatType.ATTACK_MULT,
-		-value * 100.0,
-		BuffInstance.Category.DEBUFF,
-	)
-	buff.sourceSkill = key
-	data.buffs.add(buff)
-
-func removeDecreaseDmgAllPercent(key: String):
-	data.buffs.remove(key)
+# TowerData (and its EffectContainer) is shared per-character and outlives
+# this node: clear wave-scoped effects when the tower leaves the board so a
+# re-placed tower never resumes a frozen buff (plan F3).
+func _exit_tree():
+	if data != null:
+		data.effects.clear_wave_scoped()
+		if data.effects.get_host() == self:
+			data.effects.set_host(null)
 
 signal onReceiveMission(mission: MissionDetail);
 signal on_animation_finished(name: String);

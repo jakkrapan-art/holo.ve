@@ -60,6 +60,9 @@ func addDeck(deck_key: String) -> bool:
 
 	ResourceManager.preloadSynergy();
 	ResourceManager.loadSynergyData();
+	# Effect registry + icon cache (buff/debuff defs referenced by skill YAML).
+	EffectRegistry.load_all();
+	EffectRegistry.preload_icons();
 	# Rebuild the tower-scene cache so a deck added mid-run (the wave-clear deck
 	# unlock) has its tower .tscn loaded; otherwise getTower misses and the new
 	# deck's towers fall back to the default/placeholder scene.

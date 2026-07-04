@@ -56,15 +56,26 @@ static func ParseAction(data: Dictionary, parameters: Dictionary = {}) -> SkillA
 			pass;
 		"target_self":
 			skill = SkillActionSetTargetSelf.new();
-		"decrease_atk_spd_area":
-			skill = SkillActionDecreaseAtkSpdArea.new();
+		"apply_effect":
+			# Unified registry effect (self / allied towers / context targets).
+			skill = SkillActionApplyEffect.new();
 			var skillData = data.get("data", {});
-			var duration = skillData.get("duration", 0);
-			var decreaseValue = skillData.get("value", 0.0);
-			var radius = skillData.get("radius", 0.0);
-			skill.duration = duration;
-			skill.decreaseValue = decreaseValue;
-			skill.radius = radius;
+			skill.effectId = skillData.get("effect", "");
+			skill.targetMode = skillData.get("target", "self");
+			skill.value = float(skillData.get("value", 0.0));
+			skill.valueParam = skillData.get("value_param", "");
+			skill.duration = float(skillData.get("duration", 0.0));
+			skill.durationParam = skillData.get("duration_param", "");
+			skill.range_cells = skillData.get("range", 1);
+		"effect_area":
+			# Aura zone applying a registry effect while hosts stay inside.
+			skill = SkillActionEffectArea.new();
+			var skillData = data.get("data", {});
+			skill.effectId = skillData.get("effect", "");
+			skill.value = float(skillData.get("value", 0.0));
+			skill.duration = float(skillData.get("duration", 3.0));
+			skill.radius = float(skillData.get("radius", 1.0));
+			skill.affects = skillData.get("affects", "enemies");
 		"increase_move_spd_area":
 			skill = SkillActionIncreaseMoveSpdArea.new();
 			var skillData = data.get("data", {});
@@ -93,38 +104,10 @@ static func ParseAction(data: Dictionary, parameters: Dictionary = {}) -> SkillA
 			var skillData = data.get("data", {});
 			var speed = skillData.get("speed", 1.0);
 			skill.speed = speed;
-		"decrease_damage_all_area":
-			skill = DecreaseDamageAllArea.new();
-			var skillData = data.get("data", {});
-			var duration = skillData.get("duration", 3);
-			var radius = skillData.get("radius", 1.0);
-			var decreaseValue = skillData.get("decreaseValue", 0.0);
-			skill.duration = duration;
-			skill.radius = radius;
-			skill.decreaseValue = decreaseValue;
-		"atk_speed_buff_aoe":
-			skill = SkillActionAtkSpeedBuffAOE.new()
-			var skillData = data.get("data", {})
-			skill.duration = skillData.get("duration", 4.0)
-			# ATTACK_SPEED is decimal scale (0.5 = +50%) — see tower_data.getAttackSpeed.
-			skill.percent = skillData.get("percent", 0.5)
-			skill.paramName = skillData.get("param_name", "")
-			skill.range_cells = skillData.get("range", 1)
-		"crit_chance_buff":
-			skill = SkillActionCritChanceBuff.new()
-			var skillData = data.get("data", {})
-			skill.duration = skillData.get("duration", 4.0)
-			skill.percent = skillData.get("percent", 100.0)
-			skill.paramName = skillData.get("param_name", "")
 		"play_effect":
 			skill = SkillActionPlayEffect.new()
 			var skillData = data.get("data", {})
 			skill.effectScriptPath = skillData.get("effect_script", "")
-		"atk_speed_buff":
-			skill = SkillActionAtkSpeedBuff.new()
-			var skillData = data.get("data", {})
-			skill.duration = skillData.get("duration", 4.0)
-			skill.paramName = skillData.get("param_name", "attackSpeedBuff")
 		"block_damage":
 			skill = SkillActionBlockDamage.new();
 			var skillData = data.get("data", {});

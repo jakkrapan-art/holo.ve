@@ -1,0 +1,282 @@
+# Effect registry - the single source of truth for every buff/debuff/mark id.
+# Skills reference an id and supply value/duration; identity, category, icon,
+# and stacking live here. Designers tune numbers in skill YAML; artists swap
+# icons by editing the icon path here (assets under resources/ui_asset/effects/).
+#
+# Fields per entry:
+#   name       display name (player-facing, English - see game_copy.md)
+#   desc       player-facing tooltip line (game_copy.md voice). Numbers are
+#              NEVER typed in: the {value} token resolves to the real applied
+#              magnitude (stacks included) at display time.
+#   icon       texture path relative to resources/
+#   category   buff | debuff | mark
+#   host       tower | enemy (documentation; not enforced at runtime)
+#   kind       stat or behavior kind - see effect_types.gd KIND_FROM_STRING
+#   stack      refresh (default) | stack (Batrider-style stack counter)
+#   max_stacks stack rule only; 0 = unlimited
+#   duration   default seconds when the skill omits it; 0 = no self-expiry
+#   lifetime   wave (default; cleared at wave end) | board (synergy only)
+#   params     behavior extras (interval, tint_modulate, max_hp_percent, ...)
+#
+# Unit conventions (must match effect_types.gd):
+#   attack_speed / move_speed  decimal (0.5 = +50%)
+#   attack_mult / magic_mult   percent (10 = +10%)
+#   armor_mult / marmor_mult   decimal (0.05 = +5%)
+#   crit_chance                percent points
+#   damage_amp / damage_reduction  decimal
+# Sign rule: designers ALWAYS enter positive magnitudes; ids ending in _down
+# are negated by the system (EffectDef.negate_value).
+#
+# NOTE: no enemy attack-speed debuff exists by design - enemies never attack
+# (Director decision 2026-07-02). Do not add one.
+
+# ---- Tower buffs ----
+
+attack_flat_up:
+  name: "Attack Up"
+  desc: "Attack increased by {value}."
+  icon: "ui_asset/effects/buff_generic.png"
+  category: buff
+  host: tower
+  kind: attack_flat
+
+attack_mult_up:
+  name: "Attack Up"
+  desc: "Attack increased by {value}."
+  icon: "ui_asset/effects/buff_generic.png"
+  category: buff
+  host: tower
+  kind: attack_mult
+
+magic_flat_up:
+  name: "Magic Up"
+  desc: "Magic power increased by {value}."
+  icon: "ui_asset/effects/buff_generic.png"
+  category: buff
+  host: tower
+  kind: magic_flat
+
+magic_mult_up:
+  name: "Magic Up"
+  desc: "Magic power increased by {value}."
+  icon: "ui_asset/effects/buff_generic.png"
+  category: buff
+  host: tower
+  kind: magic_mult
+
+damage_amp_up:
+  name: "Damage Amplifier"
+  desc: "All damage dealt is amplified by {value}."
+  icon: "ui_asset/effects/buff_generic.png"
+  category: buff
+  host: tower
+  kind: damage_amp
+
+attack_speed_up:
+  name: "Attack Speed Up"
+  desc: "Attack speed increased by {value}."
+  icon: "ui_asset/effects/buff_generic.png"
+  category: buff
+  host: tower
+  kind: attack_speed
+  duration: 4.0
+
+crit_chance_up:
+  name: "Critical Chance Up"
+  desc: "Critical chance increased by {value}."
+  icon: "ui_asset/effects/buff_generic.png"
+  category: buff
+  host: tower
+  kind: crit_chance
+  duration: 4.0
+
+crit_damage_up:
+  name: "Critical Damage Up"
+  desc: "Critical damage increased by {value}."
+  icon: "ui_asset/effects/buff_generic.png"
+  category: buff
+  host: tower
+  kind: crit_damage
+
+mana_regen_up:
+  name: "Energy Regen Up"
+  desc: "Energy gained per attack increased by {value}."
+  icon: "ui_asset/effects/buff_generic.png"
+  category: buff
+  host: tower
+  kind: mana_regen
+
+range_up:
+  name: "Range Up"
+  desc: "Attack range increased by {value}."
+  icon: "ui_asset/effects/buff_generic.png"
+  category: buff
+  host: tower
+  kind: range
+
+# Shinri passive (Bull Eyes / Heartpierce Shot): stack counter with no cap -
+# overcap is a deliberate buffer against crit-chance debuffs (P3-L family
+# verdict, PR #36). No self-expiry; the passive resets it on crit / wave end.
+bull_eyes:
+  name: "Bull Eyes"
+  desc: "Josuiji Shinri's focus sharpens, increasing his critical chance by {value}."
+  icon: "ui_asset/effects/buff_generic.png"
+  category: buff
+  host: tower
+  kind: crit_chance
+  stack: stack
+  max_stacks: 0
+  duration: 0
+
+# ---- Tower debuffs (enemy/boss auras) ----
+
+attack_speed_down:
+  name: "Attack Speed Down"
+  desc: "Attack speed reduced by {value}."
+  icon: "ui_asset/effects/debuff_generic.png"
+  category: debuff
+  host: tower
+  kind: attack_speed
+
+attack_mult_down:
+  name: "Damage Down"
+  desc: "Damage dealt is reduced by {value}."
+  icon: "ui_asset/effects/debuff_generic.png"
+  category: debuff
+  host: tower
+  kind: attack_mult
+
+# ---- Enemy buffs (boss/elite self and aura skills) ----
+
+armor_mult_up:
+  name: "Thick Skin"
+  desc: "Armor increased by {value}."
+  icon: "ui_asset/effects/buff_generic.png"
+  category: buff
+  host: enemy
+  kind: armor_mult
+
+armor_flat_up:
+  name: "Armor Up"
+  desc: "Armor increased by {value}."
+  icon: "ui_asset/effects/buff_generic.png"
+  category: buff
+  host: enemy
+  kind: armor_flat
+
+marmor_mult_up:
+  name: "Magic Resist Up"
+  desc: "Magic resist increased by {value}."
+  icon: "ui_asset/effects/buff_generic.png"
+  category: buff
+  host: enemy
+  kind: marmor_mult
+
+marmor_flat_up:
+  name: "Magic Resist Up"
+  desc: "Magic resist increased by {value}."
+  icon: "ui_asset/effects/buff_generic.png"
+  category: buff
+  host: enemy
+  kind: marmor_flat
+
+move_speed_up:
+  name: "Haste"
+  desc: "Movement speed increased by {value}."
+  icon: "ui_asset/effects/buff_generic.png"
+  category: buff
+  host: enemy
+  kind: move_speed
+
+damage_reduction_up:
+  name: "Hardened"
+  desc: "Damage taken is reduced by {value}."
+  icon: "ui_asset/effects/buff_generic.png"
+  category: buff
+  host: enemy
+  kind: damage_reduction
+  params:
+    tint_modulate: "0.2,0.2,0.2"
+
+# ---- Enemy debuffs (tower skills) ----
+
+armor_mult_down:
+  name: "Armor Shred"
+  desc: "Armor reduced by {value}."
+  icon: "ui_asset/effects/debuff_generic.png"
+  category: debuff
+  host: enemy
+  kind: armor_mult
+
+armor_flat_down:
+  name: "Armor Shred"
+  desc: "Armor reduced by {value}."
+  icon: "ui_asset/effects/debuff_generic.png"
+  category: debuff
+  host: enemy
+  kind: armor_flat
+
+marmor_mult_down:
+  name: "Magic Resist Shred"
+  desc: "Magic resist reduced by {value}."
+  icon: "ui_asset/effects/debuff_generic.png"
+  category: debuff
+  host: enemy
+  kind: marmor_mult
+
+marmor_flat_down:
+  name: "Magic Resist Shred"
+  desc: "Magic resist reduced by {value}."
+  icon: "ui_asset/effects/debuff_generic.png"
+  category: debuff
+  host: enemy
+  kind: marmor_flat
+
+move_speed_down:
+  name: "Slow"
+  desc: "Movement speed reduced by {value}."
+  icon: "ui_asset/effects/debuff_generic.png"
+  category: debuff
+  host: enemy
+  kind: move_speed
+
+move_speed_flat_down:
+  name: "Slow"
+  desc: "Movement speed reduced by {value}."
+  icon: "ui_asset/effects/debuff_generic.png"
+  category: debuff
+  host: enemy
+  kind: move_speed_flat
+
+stun:
+  name: "Stun"
+  desc: "Stunned and unable to move."
+  icon: "ui_asset/effects/debuff_generic.png"
+  category: debuff
+  host: enemy
+  kind: stun
+
+phoenix_flame:
+  name: "Phoenix Flame"
+  desc: "Wreathed in phoenix fire, taking magic damage every second."
+  icon: "ui_asset/effects/debuff_generic.png"
+  category: debuff
+  host: enemy
+  kind: dot
+  params:
+    interval: 1.0
+    max_hp_percent: 0.01
+
+# ---- Marks (framework shipped; no tower uses one yet) ----
+# A mark changes no stat by itself; skills query/consume it via the container
+# mark API (has_mark / mark_stacks / consume_mark / set_mark_threshold).
+
+mark_generic:
+  name: "Mark"
+  desc: "Marked as prey - certain skills gain bonus effects against marked enemies."
+  icon: "ui_asset/effects/mark_generic.png"
+  category: mark
+  host: enemy
+  kind: mark
+  stack: stack
+  max_stacks: 0

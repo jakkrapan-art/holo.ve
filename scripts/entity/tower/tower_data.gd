@@ -16,7 +16,10 @@ var _isEvolved: bool = false;
 
 var _attackModifierBuff: Array[Callable] = []
 
-var buffs: TowerBuffContainer = TowerBuffContainer.new()
+# Unified buff/debuff store. NOTE: TowerData is shared per-character and
+# outlives the tower node (sell/re-place) - the Tower clears wave-scoped
+# effects on exit and rebinds the host on ready.
+var effects: EffectContainer = EffectContainer.new()
 
 @export var maxLevel: int = 3;
 @export var towerClass: TowerClass = TowerClass.Assassin;
@@ -64,11 +67,11 @@ func getTotalAttack() -> int:
 	var mult: float
 	match attackType:
 		Damage.DamageType.MAGIC:
-			flat = buffs.aggregate(BuffInstance.StatType.MAGIC_FLAT)
-			mult = buffs.aggregate(BuffInstance.StatType.MAGIC_MULT)
+			flat = effects.aggregate(EffectTypes.Kind.MAGIC_FLAT)
+			mult = effects.aggregate(EffectTypes.Kind.MAGIC_MULT)
 		_:
-			flat = buffs.aggregate(BuffInstance.StatType.ATTACK_FLAT)
-			mult = buffs.aggregate(BuffInstance.StatType.ATTACK_MULT)
+			flat = effects.aggregate(EffectTypes.Kind.ATTACK_FLAT)
+			mult = effects.aggregate(EffectTypes.Kind.ATTACK_MULT)
 	var total: float = (base + flat) * (1.0 + mult / 100.0)
 	return int(clampf(total, 1.0, INF))
 
@@ -89,68 +92,37 @@ func calculateFinalDamage(baseDamage: float, enemy: Enemy) -> Damage:
 	var critChance: float = getCritChance()
 	# randi_range(1, 100) → 100 values for exact critChance/100 probability (§6.2 #1 fix)
 	var isCrit: bool = critChance > 0 and randi_range(1, 100) <= critChance
-	var sigmaCD: float = getStat().critMultiplier + buffs.aggregate(BuffInstance.StatType.CRIT_DAMAGE_BONUS)
+	var sigmaCD: float = getStat().critMultiplier + effects.aggregate(EffectTypes.Kind.CRIT_DAMAGE_BONUS)
 	var critCheck: float = 1.0 if isCrit else 0.0
 	finalDamage *= 1.0 + (critCheck * (sigmaCD - 1.0))
 
 	return Damage.new(null, int(finalDamage), attackType, isCrit)
 
 func getAttackRange():
-	return getStat().attackRange + buffs.aggregate(BuffInstance.StatType.RANGE)
-
-func addAttackRangeBuff(amount, key):
-	_addBuffByStat(BuffInstance.StatType.RANGE, float(amount), key)
-
-func removeAttackRangeBuff(key):
-	if key:
-		buffs.remove(str(key))
+	return getStat().attackRange + effects.aggregate(EffectTypes.Kind.RANGE)
 
 func getAttackSpeed() -> float:
 	# ATTACK_SPEED is decimal scale (0.5 = +50%) — matches MOVE_SPEED post-PR #9.
-	var sigma := 1.0 + buffs.aggregate(BuffInstance.StatType.ATTACK_SPEED)
+	var sigma := 1.0 + effects.aggregate(EffectTypes.Kind.ATTACK_SPEED)
 	return clampf(getStat().attackSpeed * sigma, AS_MIN, AS_MAX)
 
 func getAttackDelay() -> float:
 	return 100.0 / getAttackSpeed()
 
 func getManaRegen():
-	return BASE_MANA_REGEN + buffs.aggregate(BuffInstance.StatType.MANA_REGEN)
+	return BASE_MANA_REGEN + effects.aggregate(EffectTypes.Kind.MANA_REGEN)
 
 func getAttackAnimationSpeed(anim: AnimatedSprite2D, name: String) -> float:
 	return getStat().getAttackAnimationSpeed(anim, name, getAttackDelay())
 
-func addManaRegenBuff(amount: float, key):
-	_addBuffByStat(BuffInstance.StatType.MANA_REGEN, amount, key)
-
-func removeManaRegenBuff(key):
-	if key:
-		buffs.remove(str(key))
-
 func getCritChance():
-	return getStat().critChance + buffs.aggregate(BuffInstance.StatType.CRIT_CHANCE)
+	return getStat().critChance + effects.aggregate(EffectTypes.Kind.CRIT_CHANCE)
 
 # Current critical-damage multiplier (base + additive CRIT_DAMAGE_BONUS).
 # Mirrors the `sigmaCD` term in calculateFinalDamage so callers (e.g. the
 # crit_pierce passive arrow) reuse the same additive crit-damage rule.
 func getCritDamage() -> float:
-	return getStat().critMultiplier + buffs.aggregate(BuffInstance.StatType.CRIT_DAMAGE_BONUS)
-
-func addCritChanceBuff(amount: float, key):
-	_addBuffByStat(BuffInstance.StatType.CRIT_CHANCE, amount, key)
-
-func removeCritChanceBuff(key):
-	if key:
-		buffs.remove(str(key))
-
-# Internal helper — REFRESH-on-key semantics (matches legacy behavior).
-# Inserts BuffInstance into `buffs`; if `key` already exists it's replaced.
-func _addBuffByStat(statType: int, value: float, key) -> void:
-	if not key:
-		return
-	var keyStr := str(key)
-	buffs.remove(keyStr)
-	var category: int = BuffInstance.Category.BUFF if value >= 0 else BuffInstance.Category.DEBUFF
-	buffs.add(BuffInstance.new(keyStr, statType, value, category))
+	return getStat().critMultiplier + effects.aggregate(EffectTypes.Kind.CRIT_DAMAGE_BONUS)
 
 func levelUp():
 	if _level >= stats.size():

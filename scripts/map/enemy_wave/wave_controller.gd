@@ -11,7 +11,7 @@ var data: WaveControllerData = null;
 # and the first enemy spawning - a short "wave incoming" telegraph. Applies to every
 # wave incl. the first and boss waves. Symmetric to game_scene.wave_end_popup_delay.
 # Inspector-editable feel knob; scales with game-speed time_scale like spawns.
-@export var pre_wave_start_delay: float = 1.0
+@export var pre_wave_start_delay: float = 0.8
 var spawnParent: Node2D = null;
 
 var enemyTextures: Dictionary = {};

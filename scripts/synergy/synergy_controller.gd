@@ -10,6 +10,10 @@ var _factory                       # TowerFactory (tower lists)
 var _active_tier: Dictionary = {}  # synergy_id -> int (highest tier, -1 none)
 var _effects: Dictionary = {}      # synergy_id -> SynergyEffect
 
+# Emitted when a quest-type synergy's cumulative progress changes (drives the UI
+# tracker line). Single-arg: only one quest synergy (Tempus) exists today.
+signal quest_progress_changed(current: int)
+
 func setup(factory) -> void:
 	_factory = factory
 
@@ -50,6 +54,16 @@ func on_tower_cast(tower) -> void:
 	for effect in _effects.values():
 		effect.on_tower_cast(tower)
 
+# From TowerFactory.onEnemyKilled (WaveController.onEnemyDead - real kills only).
+func on_enemy_killed(enemy, cause, reward) -> void:
+	for effect in _effects.values():
+		effect.on_enemy_killed(enemy, cause, reward)
+
+# Per-frame tick from TowerFactory._process (time-based synergy effects).
+func tick(delta: float) -> void:
+	for effect in _effects.values():
+		effect.tick(delta)
+
 func active_tier(synergy_id: int) -> int:
 	return _active_tier.get(synergy_id, -1)
 
@@ -58,3 +72,10 @@ func towers_with(synergy_id: int) -> Array:
 	if _factory == null:
 		return []
 	return _factory.towers.get(synergy_id, [])
+
+# Every placed tower on the field (one instance per character) for field-wide
+# rewards that hit all units, not just a synergy's holders.
+func all_towers() -> Array:
+	if _factory == null:
+		return []
+	return _factory.towersByName.values()

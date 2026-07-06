@@ -416,7 +416,6 @@ func _exit_tree():
 		if data.effects.get_host() == self:
 			data.effects.set_host(null)
 
-signal onReceiveMission(mission: MissionDetail);
 signal on_animation_finished(name: String);
 # Emitted after this tower completes a skill cast (drives synergy effects).
 signal skill_cast_succeeded(tower);

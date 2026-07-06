@@ -24,6 +24,8 @@ func setup(p_onPlace: Callable, p_onRemove: Callable):
 	synergyController = SynergyController.new()
 	synergyController.setup(self)
 	Utility.ConnectSignal(towerTrait, "synergy_updated", Callable(self, "_on_synergy_updated"));
+	if uiSynergy != null:
+		Utility.ConnectSignal(synergyController, "quest_progress_changed", Callable(uiSynergy, "setQuestProgress"));
 
 func getTower(p_name: String, evoToken: int = 0) -> GetTowerResult:
 	var resource = ResourceManager.getTower(p_name);
@@ -63,7 +65,6 @@ func getTower(p_name: String, evoToken: int = 0) -> GetTowerResult:
 	result.state = GetTowerResult.State.New
 	result.tower = tower;
 	tower.setup(p_name, onPlace, onRemove)
-	Utility.ConnectSignal(tower, "onReceiveMission", Callable(self, "towerReceiveMission"));
 	Utility.ConnectSignal(tower, "skill_cast_succeeded", Callable(synergyController, "on_tower_cast"));
 	# Register traits in the keyed list BEFORE add_tower_traits so a synergy that
 	# activates on this placement already counts the new tower.
@@ -150,7 +151,11 @@ func onWaveEnd():
 		if is_instance_valid(tower):
 			tower.resetForWave()
 
-func towerReceiveMission(mission: MissionDetail):
-	onReceiveMission.emit(mission);
+func _process(delta: float) -> void:
+	if synergyController != null:
+		synergyController.tick(delta)
 
-signal onReceiveMission(mission: MissionDetail);
+# Wired to WaveController.onEnemyDead (real kills only) -> quest synergies.
+func onEnemyKilled(enemy, cause, reward) -> void:
+	if synergyController != null:
+		synergyController.on_enemy_killed(enemy, cause, reward)

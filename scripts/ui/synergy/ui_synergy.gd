@@ -7,6 +7,25 @@ const ROW_HEIGHT := 100
 
 var contentList: Dictionary = {};   # synergy name -> UISynergyContent
 var _nextOrder := 0;                 # creation order, frozen per row (stable-sort tie-break)
+var _questLabel: Label = null       # quest-synergy progress tracker (bottom line)
+
+func _ready() -> void:
+	_questLabel = Label.new()
+	_questLabel.visible = false
+	add_child(_questLabel)
+
+# A quest-type synergy (e.g. Tempus) pushes its cumulative progress here; shown
+# as a plain line below the last synergy row.
+func setQuestProgress(current: int) -> void:
+	if _questLabel == null:
+		return
+	_questLabel.text = "Current Progress: %d" % current
+	_questLabel.visible = true
+	_position_quest_label()
+
+func _position_quest_label() -> void:
+	if _questLabel != null:
+		_questLabel.position.y = contentList.size() * ROW_HEIGHT
 
 # Create or update a synergy row from the single TowerTrait.synergy_updated signal:
 # count + tier drive the row (count, proc breakpoints, tier colour); synergy_id
@@ -32,6 +51,7 @@ func _reflow() -> void:
 	rows.sort_custom(_compare_rows)
 	for i in rows.size():
 		rows[i].position.y = i * ROW_HEIGHT
+	_position_quest_label()
 
 func _compare_rows(a: UISynergyContent, b: UISynergyContent) -> bool:
 	if a.getTier() != b.getTier():

@@ -32,11 +32,21 @@ func on_tower_added(_tower) -> void:
 func on_tower_cast(_tower) -> void:
 	pass
 
+# An enemy was killed (routed for every kill; the effect counts/filters).
+func on_enemy_killed(_enemy, _cause, _reward) -> void:
+	pass
+
+# Per-frame tick from TowerFactory._process (time-based effects, e.g. periodic grants).
+func tick(_delta: float) -> void:
+	pass
+
 # effect key -> concrete SynergyEffect. "" / unknown -> null (placeholder, not wired).
 static func create(effect_key: String) -> SynergyEffect:
 	match effect_key:
 		"energy_on_skill_cast":
 			return SynergyEffectEnergyOnCast.new()
+		"quest_kill_tempus":
+			return SynergyEffectQuestTempus.new()
 		"", "none":
 			return null   # placeholder synergy: declared but no effect handler yet
 		_:

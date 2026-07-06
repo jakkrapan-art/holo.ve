@@ -15,7 +15,7 @@ stats:
     critChance: 0
     critMultiplier: 1.5
     mana: 120
-    intialMana: 40
+    initialMana: 40
 
   - damage: 140
     attackRange: 1.0
@@ -23,7 +23,7 @@ stats:
     critChance: 0
     critMultiplier: 1.5
     mana: 120
-    intialMana: 40
+    initialMana: 40
 
   - damage: 200
     attackRange: 1.0
@@ -31,7 +31,7 @@ stats:
     critChance: 0
     critMultiplier: 1.5
     mana: 120
-    intialMana: 40
+    initialMana: 40
 
 # Active Skill — "Gun and Blade" combo (2 beats, both physic).
 # Reference example for: combo beat model + armor-shred debuff + guaranteed crit.
@@ -123,7 +123,7 @@ evolutionStat:
   critChance: 50.0
   critMultiplier: 1.5
   mana: 120
-  intialMana: 40
+  initialMana: 40
 
 # Evolved Active Skill — "Heroic Requiem" (same combo, stronger + longer gun line).
 evolution_skills:

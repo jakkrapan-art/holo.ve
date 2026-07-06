@@ -17,8 +17,10 @@ var _name: String = ""
 var _data: SynergyData = null
 var _tier: int = -1
 var _count: int = 0                   # live unit count (sort key; drops when units removed)
+var _quest_progress: int = -1         # quest cumulative progress (-1 = not a quest / unset)
 var _order: int = -1                  # creation order, frozen by UISynergy (stable-sort tie-break)
 var _stylebox: StyleBoxFlat = null   # this row's own panel StyleBox (see setup)
+var _tooltip_label: RichTextLabel = null  # open hover's rich label, for live quest-progress refresh
 
 # tier: current active tier (-1 = not yet proc'd). data: SynergyData or null.
 func setup(p_name: String, current: int, tier: int, data) -> void:
@@ -58,6 +60,14 @@ func getCount() -> int: return _count
 func getOrder() -> int: return _order
 func setOrder(value: int) -> void: _order = value
 
+# A quest synergy's cumulative progress; shown at the bottom of this row's hover.
+# Refreshes the open tooltip live (TFT-style); Godot builds it once per hover, so
+# without this the number would freeze until the player re-hovers.
+func setQuestProgress(current: int) -> void:
+	_quest_progress = current
+	if _tooltip_label != null and is_instance_valid(_tooltip_label):
+		_tooltip_label.text = _build_hover_bbcode()
+
 func _tier_color(tier: int) -> String:
 	if tier < 0:
 		return INACTIVE_COLOR
@@ -83,6 +93,8 @@ func _make_custom_tooltip(_for_text: String) -> Object:
 	rich.custom_minimum_size = Vector2(320, 0)
 	rich.text = _build_hover_bbcode()
 	panel.add_child(rich)
+	# Keep a ref so live kills can refresh the open tooltip (see setQuestProgress).
+	_tooltip_label = rich
 	return panel
 
 func _build_hover_bbcode() -> String:
@@ -107,4 +119,8 @@ func _build_hover_bbcode() -> String:
 			else:
 				row = "[color=" + DIM_COLOR + "]" + row + "[/color]"
 			lines.append(row)
+
+	if _quest_progress >= 0:
+		lines.append("")
+		lines.append("[b]Current Progress: " + str(_quest_progress) + "[/b]")
 	return "\n".join(lines)

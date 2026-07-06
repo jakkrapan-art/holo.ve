@@ -27,7 +27,6 @@ const BOSS_WAVE_END_POPUP_DELAY := 2.2
 # wave-clear effects land before the UI cuts in. Inspector-editable feel knob.
 @export var wave_end_popup_delay: float = 0.8
 
-var mission: Mission = null;
 var t: Tower = null
 var state: String = ""
 var _popup_open: bool = false
@@ -94,11 +93,8 @@ func _ready():
 	# Preload this run's enemy set (sprites + stats/skills registry) for the map.
 	ResourceManager.preloadEnemy(mapName);
 
-	mission = Mission.new();
-
 	if (towerFactory):
 		towerFactory.setup(Callable(self, "placeTower"), Callable(self, "removeTower"));
-		Utility.ConnectSignal(towerFactory, "onReceiveMission", Callable(mission, "addMission"));
 
 	if (waveController):
 		var mapRaw = YamlParser.load_data("res://resources/database/map/" + TowerCenter.selected_map_file);
@@ -118,7 +114,7 @@ func _ready():
 
 		waveController.connect("onWaveStart", Callable(towerFactory, "onWaveStart"));
 		Utility.ConnectSignal(waveController, "onEnemyDead", Callable(player, "processReward"));
-		Utility.ConnectSignal(waveController, "onEnemyDead", Callable(mission, "enemyDeadCheck"));
+		Utility.ConnectSignal(waveController, "onEnemyDead", Callable(towerFactory, "onEnemyKilled"));
 		Utility.ConnectSignal(waveController, "onEnemyDead", Callable(self, "_on_enemy_dead_visual"));
 
 func placeTower(cell: Vector2):

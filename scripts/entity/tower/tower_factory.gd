@@ -12,6 +12,7 @@ var towersByName: Dictionary = {}
 var towers: Dictionary = {}
 var _evolutionList: Dictionary = {}
 var synergyController: SynergyController
+var _wave_active := false            # gates time-based synergy ticks to active waves
 
 enum TowerId {
 	Test
@@ -24,6 +25,8 @@ func setup(p_onPlace: Callable, p_onRemove: Callable):
 	synergyController = SynergyController.new()
 	synergyController.setup(self)
 	Utility.ConnectSignal(towerTrait, "synergy_updated", Callable(self, "_on_synergy_updated"));
+	if uiSynergy != null:
+		Utility.ConnectSignal(synergyController, "quest_progress_changed", Callable(uiSynergy, "setQuestProgress"));
 
 func getTower(p_name: String, evoToken: int = 0) -> GetTowerResult:
 	var resource = ResourceManager.getTower(p_name);
@@ -63,7 +66,6 @@ func getTower(p_name: String, evoToken: int = 0) -> GetTowerResult:
 	result.state = GetTowerResult.State.New
 	result.tower = tower;
 	tower.setup(p_name, onPlace, onRemove)
-	Utility.ConnectSignal(tower, "onReceiveMission", Callable(self, "towerReceiveMission"));
 	Utility.ConnectSignal(tower, "skill_cast_succeeded", Callable(synergyController, "on_tower_cast"));
 	# Register traits in the keyed list BEFORE add_tower_traits so a synergy that
 	# activates on this placement already counts the new tower.
@@ -132,25 +134,33 @@ func evolutionTower(p_name: String):
 		TowerCenter._evolvedList.append(dataName);
 
 func _on_synergy_updated(synergy_id: int, count: int, tier: int):
+	# Draw/refresh the panel row BEFORE the controller updates the effect, so a
+	# quest effect's activate() (which emits quest_progress_changed) lands on a
+	# row that already exists. Only show synergies defined in YAML; an undefined
+	# trait (no data) can never activate, so it is not a meaningful panel row.
+	if uiSynergy != null:
+		var data: SynergyData = ResourceManager.getSynergyData(synergy_id)
+		if data != null:
+			uiSynergy.updateSynergy(data.display_name, count, tier, synergy_id)
 	synergyController.on_synergy_updated(synergy_id, count, tier)
-	if uiSynergy == null:
-		return
-	# Only show synergies that are actually defined in YAML; an undefined trait
-	# (no data) can never activate, so it is not a meaningful panel row.
-	var data: SynergyData = ResourceManager.getSynergyData(synergy_id)
-	if data == null:
-		return
-	uiSynergy.updateSynergy(data.display_name, count, tier, synergy_id)
 
 func onWaveStart():
-	pass   # reserved for future per-wave synergy hooks
+	_wave_active = true
 
 func onWaveEnd():
+	_wave_active = false
 	for tower: Tower in towersByName.values():
 		if is_instance_valid(tower):
 			tower.resetForWave()
 
-func towerReceiveMission(mission: MissionDetail):
-	onReceiveMission.emit(mission);
+func _process(delta: float) -> void:
+	# Time-based synergy effects (e.g. Tempus energy pulse) run only during an
+	# active wave - not between waves / during the tower-select popup (which does
+	# not pause the tree), so energy does not keep pulsing while the player picks.
+	if _wave_active and synergyController != null:
+		synergyController.tick(delta)
 
-signal onReceiveMission(mission: MissionDetail);
+# Wired to WaveController.onEnemyDead (real kills only) -> quest synergies.
+func onEnemyKilled(enemy, cause, reward) -> void:
+	if synergyController != null:
+		synergyController.on_enemy_killed(enemy, cause, reward)

@@ -42,6 +42,8 @@ func setup(container: EffectContainer) -> void:
 		_on_effect_added(inst)
 
 func _on_effect_added(inst: EffectInstance) -> void:
+	if inst == null or not inst.show_icon:
+		return   # e.g. synergy board buffs: aggregated but shown in the synergy panel
 	var k := inst.key()
 	if _icons.has(k):
 		_on_effect_updated(inst)

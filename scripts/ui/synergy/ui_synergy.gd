@@ -8,6 +8,16 @@ const ROW_HEIGHT := 100
 var contentList: Dictionary = {};   # synergy name -> UISynergyContent
 var _nextOrder := 0;                 # creation order, frozen per row (stable-sort tie-break)
 
+# A quest-type synergy (e.g. Tempus) pushes its cumulative progress here; it is
+# stored on that synergy's row and shown at the bottom of the row's hover.
+func setQuestProgress(synergy_id: int, current: int) -> void:
+	var data: SynergyData = ResourceManager.getSynergyData(synergy_id)
+	if data == null:
+		return
+	var content: UISynergyContent = contentList.get(data.display_name, null)
+	if content != null:
+		content.setQuestProgress(current)
+
 # Create or update a synergy row from the single TowerTrait.synergy_updated signal:
 # count + tier drive the row (count, proc breakpoints, tier colour); synergy_id
 # resolves the SynergyData for the rich hover. Numbers come from SynergyData

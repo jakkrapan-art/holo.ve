@@ -86,6 +86,7 @@ skills:
           target: "self"
           value_param: "attackSpeedBuff"
           duration: 4.0
+          title: "Time Traveler"
       - type: "play_animation"
         data:
           animation: "idle"
@@ -151,12 +152,14 @@ evolution_skills:
           value_param: "attackSpeedBuff"
           duration: 4.0
           range: 1
+          title: "Elementary My Dear - Attack Speed"
       - type: "apply_effect"
         data:
           effect: "crit_chance_up"
           target: "self"
           value_param: "critChanceBuff"
           duration: 4.0
+          title: "Elementary My Dear - Critical Chance"
       - type: "play_animation"
         data:
           animation: "idle"

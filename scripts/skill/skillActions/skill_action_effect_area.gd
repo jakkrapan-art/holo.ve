@@ -29,6 +29,7 @@ extends SkillAction
 @export var duration: float = 3.0
 @export var radius: float = 1.0
 @export var affects: String = "enemies"
+@export var authoredTitle: String = ""
 
 var user: Node2D
 
@@ -48,7 +49,7 @@ func _on_enter(node: Area2D) -> void:
 	if node.has_method("apply_effect"):
 		# duration 0: aura-bound life - removed on exit / zone death only
 		# (wave clear catches any orphan).
-		var inst := EffectUtility.make_instance(effectId, _source_id(), value, 0.0, user)
+		var inst := EffectUtility.make_instance(effectId, _source_id(), value, 0.0, user, authoredTitle)
 		if inst != null:
 			node.apply_effect(inst)
 

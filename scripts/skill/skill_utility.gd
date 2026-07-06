@@ -46,6 +46,7 @@ static func ParseAction(data: Dictionary, parameters: Dictionary = {}) -> SkillA
 			skill.duration = float(skillData.get("duration", 0.0));
 			skill.durationParam = skillData.get("duration_param", "");
 			skill.range_cells = skillData.get("range", 1);
+			skill.authoredTitle = skillData.get("title", "");
 		"effect_area":
 			# Aura zone applying a registry effect while hosts stay inside.
 			skill = SkillActionEffectArea.new();
@@ -55,6 +56,7 @@ static func ParseAction(data: Dictionary, parameters: Dictionary = {}) -> SkillA
 			skill.duration = float(skillData.get("duration", 3.0));
 			skill.radius = float(skillData.get("radius", 1.0));
 			skill.affects = skillData.get("affects", "enemies");
+			skill.authoredTitle = skillData.get("title", "");
 		"delay":
 			skill = SkillActionDelay.new();
 			var skillData = data.get("data", {});

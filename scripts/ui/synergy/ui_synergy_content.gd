@@ -16,6 +16,8 @@ const ACTIVE_HIGHLIGHT := "#FFD15A"                       # active tier row in t
 var _name: String = ""
 var _data: SynergyData = null
 var _tier: int = -1
+var _count: int = 0                   # live unit count (sort key; drops when units removed)
+var _order: int = -1                  # creation order, frozen by UISynergy (stable-sort tie-break)
 var _stylebox: StyleBoxFlat = null   # this row's own panel StyleBox (see setup)
 
 # tier: current active tier (-1 = not yet proc'd). data: SynergyData or null.
@@ -23,6 +25,7 @@ func setup(p_name: String, current: int, tier: int, data) -> void:
 	_name = p_name
 	_data = data
 	_tier = tier
+	_count = current
 
 	if bg != null:
 		# The scene's panel StyleBox is one shared sub-resource across every row
@@ -47,6 +50,13 @@ func setup(p_name: String, current: int, tier: int, data) -> void:
 	# non-empty so the tooltip triggers (delay lowered globally in project.godot).
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	tooltip_text = name
+
+# Sort keys read by UISynergy._reflow - kept on the row so its sort state has a
+# single source of truth (mirrors how _tier is already threaded via setup).
+func getTier() -> int: return _tier
+func getCount() -> int: return _count
+func getOrder() -> int: return _order
+func setOrder(value: int) -> void: _order = value
 
 func _tier_color(tier: int) -> String:
 	if tier < 0:

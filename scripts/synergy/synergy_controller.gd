@@ -10,9 +10,10 @@ var _factory                       # TowerFactory (tower lists)
 var _active_tier: Dictionary = {}  # synergy_id -> int (highest tier, -1 none)
 var _effects: Dictionary = {}      # synergy_id -> SynergyEffect
 
-# Emitted when a quest-type synergy's cumulative progress changes (drives the UI
-# tracker line). Single-arg: only one quest synergy (Tempus) exists today.
-signal quest_progress_changed(current: int)
+# Emitted when a quest-type synergy's cumulative progress changes (drives that
+# synergy's hover progress line). Carries synergy_id so the UI routes it to the
+# right panel row.
+signal quest_progress_changed(synergy_id: int, current: int)
 
 func setup(factory) -> void:
 	_factory = factory

@@ -12,6 +12,7 @@ var towersByName: Dictionary = {}
 var towers: Dictionary = {}
 var _evolutionList: Dictionary = {}
 var synergyController: SynergyController
+var _wave_active := false            # gates time-based synergy ticks to active waves
 
 enum TowerId {
 	Test
@@ -133,26 +134,30 @@ func evolutionTower(p_name: String):
 		TowerCenter._evolvedList.append(dataName);
 
 func _on_synergy_updated(synergy_id: int, count: int, tier: int):
+	# Draw/refresh the panel row BEFORE the controller updates the effect, so a
+	# quest effect's activate() (which emits quest_progress_changed) lands on a
+	# row that already exists. Only show synergies defined in YAML; an undefined
+	# trait (no data) can never activate, so it is not a meaningful panel row.
+	if uiSynergy != null:
+		var data: SynergyData = ResourceManager.getSynergyData(synergy_id)
+		if data != null:
+			uiSynergy.updateSynergy(data.display_name, count, tier, synergy_id)
 	synergyController.on_synergy_updated(synergy_id, count, tier)
-	if uiSynergy == null:
-		return
-	# Only show synergies that are actually defined in YAML; an undefined trait
-	# (no data) can never activate, so it is not a meaningful panel row.
-	var data: SynergyData = ResourceManager.getSynergyData(synergy_id)
-	if data == null:
-		return
-	uiSynergy.updateSynergy(data.display_name, count, tier, synergy_id)
 
 func onWaveStart():
-	pass   # reserved for future per-wave synergy hooks
+	_wave_active = true
 
 func onWaveEnd():
+	_wave_active = false
 	for tower: Tower in towersByName.values():
 		if is_instance_valid(tower):
 			tower.resetForWave()
 
 func _process(delta: float) -> void:
-	if synergyController != null:
+	# Time-based synergy effects (e.g. Tempus energy pulse) run only during an
+	# active wave - not between waves / during the tower-select popup (which does
+	# not pause the tree), so energy does not keep pulsing while the player picks.
+	if _wave_active and synergyController != null:
 		synergyController.tick(delta)
 
 # Wired to WaveController.onEnemyDead (real kills only) -> quest synergies.

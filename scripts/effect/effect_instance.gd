@@ -13,6 +13,9 @@ var remaining: float = 0.0
 var stacks: int = 1
 var lifetime: EffectTypes.Lifetime = EffectTypes.Lifetime.WAVE
 var behavior: EffectBehavior = null
+# false = applied normally (still aggregates) but hidden from the overhead
+# status-icon row; synergy board buffs use this - they show in the synergy panel.
+var show_icon: bool = true
 # Per-application overrides of def.params (skill YAML can rebind e.g. a DOT's
 # max_hp_percent); read through param().
 var params: Dictionary = {}

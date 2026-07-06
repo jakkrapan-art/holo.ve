@@ -17,6 +17,7 @@ var _name: String = ""
 var _data: SynergyData = null
 var _tier: int = -1
 var _count: int = 0                   # live unit count (sort key; drops when units removed)
+var _quest_progress: int = -1         # quest cumulative progress (-1 = not a quest / unset)
 var _order: int = -1                  # creation order, frozen by UISynergy (stable-sort tie-break)
 var _stylebox: StyleBoxFlat = null   # this row's own panel StyleBox (see setup)
 
@@ -57,6 +58,9 @@ func getTier() -> int: return _tier
 func getCount() -> int: return _count
 func getOrder() -> int: return _order
 func setOrder(value: int) -> void: _order = value
+
+# A quest synergy's cumulative progress; shown at the bottom of this row's hover.
+func setQuestProgress(current: int) -> void: _quest_progress = current
 
 func _tier_color(tier: int) -> String:
 	if tier < 0:
@@ -107,4 +111,8 @@ func _build_hover_bbcode() -> String:
 			else:
 				row = "[color=" + DIM_COLOR + "]" + row + "[/color]"
 			lines.append(row)
+
+	if _quest_progress >= 0:
+		lines.append("")
+		lines.append("[b]Current Progress: " + str(_quest_progress) + "[/b]")
 	return "\n".join(lines)

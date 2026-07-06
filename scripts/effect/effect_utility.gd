@@ -16,6 +16,9 @@ static func make_instance(effect_id: String, source_id: String, value: float, du
 	var inst := EffectInstance.new()
 	inst.def = def
 	inst.source_id = source_id
+	# Synergy board buffs (source_id "synergy_...") aggregate like any effect but
+	# are surfaced in the synergy panel, never as a per-unit status icon.
+	inst.show_icon = not source_id.begins_with("synergy_")
 	inst.value = -value if def.negate_value else value
 	inst.duration = duration
 	inst.lifetime = def.lifetime

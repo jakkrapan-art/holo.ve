@@ -56,7 +56,7 @@ func _ready():
 	var stat = data.getStat();
 
 	var maxMana = stat.mana;
-	var initMana = stat.intialMana;
+	var initMana = stat.initialMana;
 
 	if _hasActiveSkill():
 		if(manaBar != null):
@@ -193,7 +193,7 @@ func evolve():
 				skillController.cancel()
 			usingSkill = false
 			var stat = data.getStat()
-			skillController = SkillController.new(self, stat.mana, stat.intialMana, data.evolutionSkill)
+			skillController = SkillController.new(self, stat.mana, stat.initialMana, data.evolutionSkill)
 			Utility.ConnectSignal(skillController, "on_mana_updated", Callable(self, "update_mana_bar"))
 			Utility.ConnectSignal(skillController, "cast_succeeded", Callable(self, "_on_cast_succeeded"))
 			# Refresh manaBar visual to match the new evolved stat:
@@ -203,7 +203,7 @@ func evolve():
 			#   immediately; no on_mana_updated signal fires from the constructor.
 			if manaBar != null:
 				manaBar.setup(stat.mana, false)
-				manaBar.updateValue(stat.intialMana)
+				manaBar.updateValue(stat.initialMana)
 
 		_setupPassive()
 	return success
@@ -371,7 +371,7 @@ func resetForWave():
 
 	if skillController != null:
 		skillController.cancel()
-		var initMana: float = data.getStat().intialMana
+		var initMana: float = data.getStat().initialMana
 		skillController.currentMana = initMana
 		skillController.on_mana_updated.emit(initMana)
 

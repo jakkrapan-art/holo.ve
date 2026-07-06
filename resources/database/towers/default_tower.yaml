@@ -16,7 +16,7 @@ stats:
     critChance: 15.0
     critMultiplier: 1.5
     mana: 120 # ค่า mana สูงสุด
-    intialMana: 60 # ค่า mana เริ่มต้น
+    initialMana: 60 # ค่า mana เริ่มต้น
 
   - damage: 120
     attackRange: 2.0
@@ -24,7 +24,7 @@ stats:
     critChance: 15.0
     critMultiplier: 1.5
     mana: 120
-    intialMana: 60
+    initialMana: 60
 
   - damage: 180
     attackRange: 2.0
@@ -32,7 +32,7 @@ stats:
     critChance: 15.0
     critMultiplier: 1.5
     mana: 120
-    intialMana: 60
+    initialMana: 60
 
 # ── Skill slots (ทรงใหม่) ────────────────────────────────────────────
 # skills.active = Active Skill (auto-cast ตอน Energy เต็ม)
@@ -166,7 +166,7 @@ evolutionStat:
   critChance: 50.0
   critMultiplier: 1.5
   mana: 120
-  intialMana: 80
+  initialMana: 80
 
 # evolution_skills = สกิลร่างวิวัฒน์ (ทรงเดียวกับ skills) — optional
 evolution_skills:

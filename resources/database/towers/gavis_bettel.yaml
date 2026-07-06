@@ -14,7 +14,7 @@ stats:
     attackRange: 3.0
     attackSpeed: 95
     mana: 140
-    intialMana: 100
+    initialMana: 100
     critChance: 0
     critMultiplier: 1.5
 
@@ -22,7 +22,7 @@ stats:
     attackRange: 3.0
     attackSpeed: 95
     mana: 140
-    intialMana: 100
+    initialMana: 100
     critChance: 0
     critMultiplier: 1.5
 
@@ -30,7 +30,7 @@ stats:
     attackRange: 3.0
     attackSpeed: 95
     mana: 140
-    intialMana: 100
+    initialMana: 100
     critChance: 0
     critMultiplier: 1.5
 
@@ -58,7 +58,7 @@ evolutionStat:
   attackRange: 3.0
   attackSpeed: 95
   mana: 140
-  intialMana: 100
+  initialMana: 100
   critChance: 50.0
   critMultiplier: 1.5
 
@@ -71,4 +71,4 @@ evolutionStat:
 #   critChance: 25.0
 #   critMultiplier: 2.0
 #   mana: 80
-#   intialMana: 20
+#   initialMana: 20

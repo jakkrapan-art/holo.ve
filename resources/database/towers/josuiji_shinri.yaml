@@ -25,7 +25,7 @@ attack:
   mid_color: [0.90, 0.94, 1.0]
 
 # Josuiji Shinri has no Active skill and no Energy — her kit is a pure Passive.
-# Stats omit mana/intialMana on purpose: with no active skill the tower builds
+# Stats omit mana/initialMana on purpose: with no active skill the tower builds
 # no Energy bar (see Tower._hasActiveSkill / _setupPassive).
 stats:
   - damage: 80

@@ -23,6 +23,7 @@ extends SkillAction
 @export var duration: float = 0.0
 @export var durationParam: String = ""
 @export var range_cells: int = 1
+@export var authoredTitle: String = ""
 
 func execute(context: SkillContext) -> void:
 	var user := context.user
@@ -41,7 +42,7 @@ func execute(context: SkillContext) -> void:
 	for target in _resolve_targets(context, user):
 		if not is_instance_valid(target) or not target.has_method("apply_effect"):
 			continue
-		var inst := EffectUtility.make_instance(effectId, source_id, resolved_value, resolved_duration, user)
+		var inst := EffectUtility.make_instance(effectId, source_id, resolved_value, resolved_duration, user, authoredTitle)
 		if inst == null:
 			return
 		target.apply_effect(inst)

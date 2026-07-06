@@ -12,9 +12,10 @@ var source_id: String = ""
 var value: float = 0.0        # authored positive magnitude
 var duration: float = 0.0
 var extra_params: Dictionary = {}   # per-application def.params overrides
+var authored_title: String = ""     # skill-authored status-icon title (else registry name)
 
 func instantiate(applier: Node = null) -> EffectInstance:
-	var inst := EffectUtility.make_instance(def.id, source_id, value, duration, null)
+	var inst := EffectUtility.make_instance(def.id, source_id, value, duration, null, authored_title)
 	if inst == null:
 		return null
 	inst.params = extra_params

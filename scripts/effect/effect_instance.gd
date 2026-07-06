@@ -22,6 +22,10 @@ var params: Dictionary = {}
 # Caster-dependent data captured at apply time (e.g. DOT attack snapshot);
 # effects must never hold a live caster reference past apply.
 var snapshot: Dictionary = {}
+# Skill-authored display title for the overhead status icon (YAML `title:`).
+# Empty = fall back to the registry name (def.display_name). A static label
+# only; the {value} number lives in the desc line, never here.
+var authored_title: String = ""
 
 func param(name: String, default_value):
 	return params.get(name, def.params.get(name, default_value))
@@ -35,6 +39,12 @@ func effective_value() -> float:
 func set_applier(applier: Node) -> void:
 	if behavior != null:
 		behavior.capture(applier, self)
+
+# Overhead status-icon title: the skill-authored title when set, else the
+# registry name. Single-source with the icon tooltip - the UI never hand-builds
+# a title (game_copy.md).
+func display_title() -> String:
+	return authored_title if authored_title != "" else def.display_name
 
 # Player-facing tooltip line: def.desc with the {value} token resolved to the
 # REAL applied magnitude (stacks included) - numbers are never hand-typed.

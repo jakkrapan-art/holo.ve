@@ -108,7 +108,7 @@ func _make_icon(inst: EffectInstance) -> TextureRect:
 	return icon
 
 func _update_stack_label(icon: TextureRect, inst: EffectInstance) -> void:
-	var tooltip := inst.def.display_name
+	var tooltip := inst.display_title()
 	var desc := inst.display_desc()
 	if desc != "":
 		tooltip += "\n" + desc

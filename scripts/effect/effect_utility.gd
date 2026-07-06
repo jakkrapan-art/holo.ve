@@ -6,7 +6,7 @@ class_name EffectUtility
 
 # Build one instance from a registry def. `value` is the authored (positive)
 # magnitude; "_down" defs negate it here. duration <= 0 = no self-expiry.
-static func make_instance(effect_id: String, source_id: String, value: float, duration: float, applier: Node = null) -> EffectInstance:
+static func make_instance(effect_id: String, source_id: String, value: float, duration: float, applier: Node = null, authored_title: String = "") -> EffectInstance:
 	var def := EffectRegistry.get_def(effect_id)
 	if def == null:
 		return null
@@ -23,6 +23,7 @@ static func make_instance(effect_id: String, source_id: String, value: float, du
 	inst.duration = duration
 	inst.lifetime = def.lifetime
 	inst.behavior = _behavior_for(def)
+	inst.authored_title = authored_title
 	if applier != null:
 		inst.set_applier(applier)
 	return inst
@@ -32,7 +33,7 @@ static func make_instance(effect_id: String, source_id: String, value: float, du
 # binding, same rules as the legacy status_effect_utility parser. Any entry
 # key beyond effect/value/duration becomes a def.params override (literal, or
 # `<name>_param` binding), e.g. Kiara's max_hp_percent_param.
-const _SPEC_BASE_KEYS := ["effect", "value", "value_param", "duration", "duration_param"]
+const _SPEC_BASE_KEYS := ["effect", "value", "value_param", "duration", "duration_param", "title"]
 
 static func parse_effect_list(list: Array, parameters: Dictionary, source_id: String) -> Array[EffectSpec]:
 	var result: Array[EffectSpec] = []
@@ -46,6 +47,7 @@ static func parse_effect_list(list: Array, parameters: Dictionary, source_id: St
 		var spec := EffectSpec.new()
 		spec.def = def
 		spec.source_id = source_id
+		spec.authored_title = str(entry.get("title", ""))
 		spec.value = float(_resolve_field(entry, parameters, "value", "value_param", 0.0))
 		spec.duration = float(_resolve_field(entry, parameters, "duration", "duration_param", def.default_duration))
 		for key in entry.keys():

@@ -16,6 +16,8 @@
 #   max_stacks stack rule only; 0 = unlimited
 #   duration   default seconds when the skill omits it; 0 = no self-expiry
 #   lifetime   wave (default; cleared at wave end) | board (synergy only)
+#   negate     true = apply as a reduction while the authored magnitude stays
+#              positive; for themed debuff ids without the _down suffix
 #   params     behavior extras (interval, tint_modulate, max_hp_percent, ...)
 #
 # Unit conventions (must match effect_types.gd):
@@ -146,6 +148,17 @@ attack_mult_down:
   host: tower
   kind: attack_mult
 
+# Themed id (no _down suffix): negate: true keeps the authored magnitude
+# positive while applying as a reduction (effect_registry parse).
+slime_fluid:
+  name: "Slime Fluid"
+  desc: "Sticky royal slime coats the unit, reducing their attack speed by {value}."
+  icon: "ui_asset/effects/debuff_generic.png"
+  category: debuff
+  host: tower
+  kind: attack_speed
+  negate: true
+
 # ---- Enemy buffs (boss/elite self and aura skills) ----
 
 armor_mult_up:
@@ -197,6 +210,25 @@ damage_reduction_up:
   kind: damage_reduction
   params:
     tint_modulate: "0.2,0.2,0.2"
+
+invincible:
+  name: "Invincible"
+  desc: "Immune to all damage and cannot be targeted."
+  icon: "ui_asset/effects/buff_generic.png"
+  category: buff
+  host: enemy
+  kind: invincible
+
+# Self-channel freeze (King's Command): reuses the stun mechanism so it
+# releases correctly when overlapping a tower-applied stun, but reads as the
+# boss's own skill, not a debuff.
+royal_command:
+  name: "King's Command"
+  desc: "Standing firm while commanding the royal guard into battle."
+  icon: "ui_asset/effects/buff_generic.png"
+  category: buff
+  host: enemy
+  kind: stun
 
 # ---- Enemy debuffs (tower skills) ----
 

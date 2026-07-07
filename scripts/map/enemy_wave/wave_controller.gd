@@ -24,6 +24,10 @@ var enemyTextures: Dictionary = {};
 # not the timer) and during the Managing Phase / on boss waves.
 @onready var waveTimer: Control = $"../GameUI/WaveTimer"
 @onready var waveTimerText: Label = $"../GameUI/WaveTimer/Text"
+
+# Top-center boss HP bar; occupies the WaveTimer slot (the countdown hides on
+# boss waves, so the two never show together).
+@onready var bossHpBar: BossHealthBar = $"../GameUI/BossHealthBar"
 var _wave_elapsed: float = 0.0
 var _countdown_active: bool = false
 
@@ -42,6 +46,9 @@ var isSpawnAllEnemy: bool = false;
 var deadList: Array[Enemy] = [];
 
 func _ready():
+	# Skill actions (summon_enemy) locate the controller through this group -
+	# WaveController is not an autoload and actions only receive a SkillContext.
+	add_to_group("wave_controller")
 	spawnParent = map.path
 	if waveTimer != null:
 		waveTimer.visible = false
@@ -265,13 +272,58 @@ func spawnBoss():
 	isSpawnAllEnemy = true;
 	enemyAliveCount += 1;
 
-	var boss: Enemy = await createEnemyObject(Enemy.EnemyType.Boss, health, def, mDef, moveSpeed, texture, skills);
+	var boss: Enemy = await createEnemyObject(Enemy.EnemyType.Boss, health, def, mDef, moveSpeed, texture, skills, 0.0, 0.0, bossData.scale);
 
 	if boss == null:
 		enemyAliveCount -= 1;
 		return;
 
 	connectSignalToEnemy(boss);
+	if bossHpBar != null:
+		bossHpBar.track(boss, bossData.name);
+
+# Skill-driven mid-wave reinforcements (King's Command): spawn `count` copies of a
+# roster enemy at a path position, `interval` seconds apart. Runs through the same
+# accounting as scheduled spawns (modifiers, tier, signals). The WHOLE batch is
+# reserved into enemyAliveCount before the first await (game_stage invariant), so
+# the wave can never end while summons are still trickling out.
+func summon(enemyId: String, count: int, interval: float, pathProgress: float):
+	if count <= 0 or data == null or waveData == null:
+		return
+
+	var db: EnemyDBData = ResourceManager.getEnemyData(enemyId)
+	if db == null:
+		push_error("WaveController.summon: unknown enemy id '" + str(enemyId) + "' (not in the map's enemy DB)")
+		return
+
+	var final_stats = EnemyModifier.resolve(db.stats, [data.stageModifiers, waveData.waveModifiers])
+	var texture = enemyTextures.get(enemyId, null)
+	var enemy_type := _tierToEnemyType(ResourceManager.getEnemyTier(enemyId))
+	var gen := currWave
+
+	enemyAliveCount += count
+
+	for i in range(count):
+		var skills: Array[Skill] = []
+		for skill in db.skills:
+			skills.append(Utility.deep_duplicate_resource(skill))
+
+		var enemy: Enemy = await createEnemyObject(enemy_type, int(final_stats.hp), int(final_stats.def), int(final_stats.mDef), final_stats.moveSpeed, texture, skills, final_stats.damageReduction, pathProgress)
+		if enemy == null:
+			enemyAliveCount -= 1
+		else:
+			# Summons render above everything on the path - the (scaled) boss
+			# sprite must not hide them (Director 2026-07-07).
+			enemy.z_index = 1
+			connectSignalToEnemy(enemy)
+
+		if i < count - 1:
+			await get_tree().create_timer(interval).timeout
+			# Wave advanced during the trickle: its counters were already reset by
+			# startNextWave, so the remaining reservations are void - do NOT
+			# decrement (that would corrupt the new wave's count). Just stop.
+			if not is_instance_valid(self) or currWave != gen:
+				return
 
 func updateUI():
 	if waveCounterText != null:
@@ -311,26 +363,33 @@ func testSpawnBoss(index: int = -1):
 	var def = boss.stats.def
 	var mDef = boss.stats.mDef
 	var moveSpeed = boss.stats.moveSpeed
+	# Deep-dup skills like spawnBoss so debug spawns exercise real boss behavior
+	# (skills + scale) - the whole point of the test keys.
+	var skills: Array[Skill] = []
+	for skill in boss.skills:
+		skills.append(Utility.deep_duplicate_resource(skill))
 
 	# Same race-condition guard as spawnEnemy / spawnBoss (debug-only path).
 	enemyAliveCount += 1;
-	var enemy: Enemy = await createEnemyObject(Enemy.EnemyType.Boss, health, def, mDef, moveSpeed, texture);
+	var enemy: Enemy = await createEnemyObject(Enemy.EnemyType.Boss, health, def, mDef, moveSpeed, texture, skills, 0.0, 0.0, boss.scale);
 	if enemy == null:
 		enemyAliveCount -= 1;
 		return;
 	connectSignalToEnemy(enemy);
+	if bossHpBar != null:
+		bossHpBar.track(enemy, boss.name);
 
 func connectSignalToEnemy(enemy: Enemy):
 	Utility.ConnectSignal(enemy, "onReachEndPoint", Callable(self, "reduceEnemyCount"));
 	Utility.ConnectSignal(enemy, "onReachEndPoint", Callable(self, "enemyReachEndPoint").bind(enemy));
 	Utility.ConnectSignal(enemy, "onDead", Callable(self, "enemyDead"));
 
-func createEnemyObject(type: Enemy.EnemyType, health: int, def: int, mDef: int, moveSpeed: int, texture: Texture2D = null, skills: Array[Skill] = [], damageReduction: float = 0.0):
+func createEnemyObject(type: Enemy.EnemyType, health: int, def: int, mDef: int, moveSpeed: int, texture: Texture2D = null, skills: Array[Skill] = [], damageReduction: float = 0.0, pathProgress: float = 0.0, spawnScale: float = 1.0):
 
 	if(enemyFactory == null):
 		return;
 
-	var instance = await enemyFactory.createEnemy(type, spawnParent, health, def, mDef, moveSpeed, texture, skills, damageReduction);
+	var instance = await enemyFactory.createEnemy(type, spawnParent, health, def, mDef, moveSpeed, texture, skills, damageReduction, pathProgress, spawnScale);
 	return instance
 
 func enemyReachEndPoint(enemy: Enemy):

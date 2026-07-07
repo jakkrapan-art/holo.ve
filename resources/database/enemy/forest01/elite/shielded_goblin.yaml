@@ -1,0 +1,20 @@
+# Elite: Shielded Goblin (renamed from armored_goblin, 2026-07-07).
+# `type: passive` = the skill's actions apply once at spawn - the shield is
+# already up before the first hit (see enemy_skill.md).
+stats:
+  hp: 500
+  def: 0
+  mDef: 0
+  moveSpeed: 20
+skill:
+  - name: Shield Block
+    type: passive
+    tags:
+      - defense
+      - self
+    desc: "A sturdy shield blocks the first hit of any kind, once."
+    action:
+      - type: target_self
+      - type: block_damage
+        data:
+          count: 1

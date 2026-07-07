@@ -84,6 +84,8 @@ static func _behavior_for(def: EffectDef) -> EffectBehavior:
 			return StunBehavior.new()
 		EffectTypes.Kind.DOT:
 			return DotBehavior.new()
+		EffectTypes.Kind.INVINCIBLE:
+			return InvincibleBehavior.new()
 		_:
 			if def.params.has("tint_modulate"):
 				return EffectBehavior.new()

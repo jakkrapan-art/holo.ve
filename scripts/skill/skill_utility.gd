@@ -11,6 +11,9 @@ static func ParseSkill(skillDataList: Array) -> Array[Skill]:
 		var skillName = skill.get("name", "Unnamed Skill");
 		var desc = skill.get("desc", "");
 		var oneTime = skill.get("oneTime", false);
+		# Same key + meaning as the tower skill-level cast_time (idle pre-cast
+		# hold); enemies additionally stand still during it (Enemy.castLocked).
+		var castTime = float(skill.get("cast_time", 0.0));
 		var actions: Array[SkillAction] = [];
 		var actionList = skill.get("action", []);
 		for actionData in actionList:
@@ -20,7 +23,13 @@ static func ParseSkill(skillDataList: Array) -> Array[Skill]:
 			else:
 				push_warning("Failed to parse action in skill ", skillName);
 
-		var s = EnemySkill.new(skillName, desc, actions, {}, oneTime, cooldown);
+		var s = EnemySkill.new(skillName, desc, actions, {}, oneTime, cooldown, castTime);
+		# `type: passive` = apply once at spawn (no gate/cooldown); default active.
+		s.passive = str(skill.get("type", "active")) == "passive";
+		# Player-facing summary tags (same controlled registry as tower skills).
+		# Append str() per entry - a raw YAML Array can't assign into Array[String].
+		for tag in skill.get("tags", []):
+			s.tags.append(str(tag));
 		if s != null:
 			result.append(s);
 		else:
@@ -57,6 +66,13 @@ static func ParseAction(data: Dictionary, parameters: Dictionary = {}) -> SkillA
 			skill.radius = float(skillData.get("radius", 1.0));
 			skill.affects = skillData.get("affects", "enemies");
 			skill.authoredTitle = skillData.get("title", "");
+		"summon_enemy":
+			# Mid-wave reinforcements from the caster's path position (boss skills).
+			skill = SkillActionSummonEnemy.new();
+			var skillData = data.get("data", {});
+			skill.enemyId = str(skillData.get("enemy", ""));
+			skill.count = int(skillData.get("count", 1));
+			skill.interval = float(skillData.get("interval", 0.2));
 		"delay":
 			skill = SkillActionDelay.new();
 			var skillData = data.get("data", {});

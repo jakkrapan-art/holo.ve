@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://bcyr1l11fwy7"]
+[gd_scene load_steps=24 format=3 uid="uid://bcyr1l11fwy7"]
 
 [ext_resource type="PackedScene" uid="uid://dsshuu1axf1t8" path="res://resources/ui_component/synergy/ui_synergy.tscn" id="1_hk82f"]
 [ext_resource type="Script" path="res://scripts/ui/currency.gd" id="2_rqmfg"]
@@ -9,6 +9,7 @@
 [ext_resource type="Script" path="res://scripts/ui/ui_pause_btn.gd" id="7_7oet5"]
 [ext_resource type="Texture2D" uid="uid://bkxk2vx0idyr3" path="res://resources/ui_component/btn_pause.png" id="7_8wafk"]
 [ext_resource type="PackedScene" path="res://resources/ui_component/staff_widget.tscn" id="9_staff"]
+[ext_resource type="PackedScene" path="res://resources/ui_component/boss_health_bar.tscn" id="10_bosshp"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uyb7r"]
 bg_color = Color(0.6, 0.254902, 0.6, 1)
@@ -90,6 +91,7 @@ grow_horizontal = 0
 grow_vertical = 0
 size_flags_horizontal = 8
 size_flags_vertical = 8
+mouse_filter = 2
 
 [node name="Player" type="Control" parent="PlayerUI"]
 custom_minimum_size = Vector2(236, 236)
@@ -101,6 +103,7 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 0
 size_flags_vertical = 2
+mouse_filter = 2
 
 [node name="StaffWidget" parent="PlayerUI/Player" instance=ExtResource("9_staff")]
 offset_left = 34.0
@@ -148,6 +151,7 @@ offset_right = -32.0
 offset_bottom = -308.0
 grow_horizontal = 0
 grow_vertical = 0
+mouse_filter = 2
 script = ExtResource("2_rqmfg")
 
 [node name="EssenseOfMem" type="Control" parent="CurrencyUI"]
@@ -219,6 +223,7 @@ texture = ExtResource("5_r4mlk")
 offset_top = 45.0
 offset_right = 130.0
 offset_bottom = 71.0
+mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_hcpcu")
 
 [node name="Text" type="Label" parent="WaveCounter"]
@@ -235,6 +240,7 @@ offset_top = 12.0
 offset_right = 150.0
 offset_bottom = 108.0
 grow_horizontal = 2
+mouse_filter = 2
 
 [node name="Text" type="Label" parent="WaveTimer"]
 layout_mode = 1
@@ -247,6 +253,15 @@ text = "1:00"
 label_settings = SubResource("LabelSettings_wavetimer")
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="BossHealthBar" parent="." instance=ExtResource("10_bosshp")]
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -300.0
+offset_top = 20.0
+offset_right = 300.0
+offset_bottom = 96.0
+grow_horizontal = 2
 
 [node name="PauseButton" type="Button" parent="."]
 visible = false

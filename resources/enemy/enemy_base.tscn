@@ -50,6 +50,7 @@ offset_right = 130.0
 offset_bottom = -268.0
 grow_horizontal = 2
 grow_vertical = 0
+mouse_filter = 2
 pivot_offset = Vector2(130, 14)
 theme_override_styles/background = SubResource("StyleBoxTexture_igo55")
 theme_override_styles/fill = SubResource("StyleBoxFlat_2wsp2")

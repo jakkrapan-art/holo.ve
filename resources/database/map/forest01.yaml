@@ -55,7 +55,7 @@ waves:
         count: 60
         spawnInterval: 1
         startAt: 0
-      - enemy: armored_goblin
+      - enemy: shielded_goblin
         count: 10
         spawnInterval: 5
         startAt: 10
@@ -66,7 +66,7 @@ waves:
         count: 60
         spawnInterval: 1
         startAt: 0
-      - enemy: armored_goblin
+      - enemy: shielded_goblin
         count: 10
         spawnInterval: 5
         startAt: 0

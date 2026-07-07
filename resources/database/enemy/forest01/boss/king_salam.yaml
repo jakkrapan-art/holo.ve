@@ -1,6 +1,8 @@
 # Boss. `name` is the display name; the sprite + id come from the file path
 # (resources/enemy/forest01/boss/king_salam/king_salam.png). `wave` lists the
-# waves this boss is eligible to spawn on. skill is inline (3 boss skills).
+# waves this boss is eligible to spawn on; `scale` is the visual/hitbox size
+# multiplier applied at spawn. Skills are inline (3 max by design); enemy
+# skills are single-level, so desc uses concrete numbers (see enemy_skill.md).
 name: King Salam
 scale: 1.75
 wave:
@@ -10,12 +12,13 @@ stats:
   def: 5
   mDef: 5
   moveSpeed: 30
-  skillCount: 3
-  buffCount: 3
 skill:
   - name: Adaptation
     cooldown: 20
-    desc: ลดดาเมจที่ได้รับ 10%
+    tags:
+      - defense
+      - self
+    desc: "King Salam adapts his royal hide, reducing all damage he takes by 10% for 5 seconds."
     action:
       - type: target_self
       - type: apply_effect
@@ -24,27 +27,47 @@ skill:
           target: targets
           value: 0.1
           duration: 5
+          title: "Adaptation"
   - name: Slime Fluid
-    cooldown: 40
-    desc: "สร้าง Aura รอบตัว ลดความเร็วการโจมตี 10% ของป้อมในรัศมี 5 ช่อง"
-    action:
-      - type: target_self
-      - type: effect_area
-        data:
-          effect: attack_speed_down
-          value: 0.1          # decimal AS scale (0.1 = -10%); positive, system negates
-          duration: 5         # aura lifetime; debuff lasts while inside
-          radius: 5
-          affects: towers
-  - name: King's Command
     cooldown: 30
-    desc: "มอนเตอร์นรัศมีการบัฟจะได้รับ Move Speed เพิ่มขึ้น 10%  (Non-stackable)  Duration : 5 Sec ในระยะ 5 ช่อง"
+    cast_time: 0.5
+    tags:
+      - debuff
+      - attack_speed
+      - aoe
+    desc: "King Salam splashes his slime across a 7x7 area, coating units in Slime Fluid that slows their attack speed by 10% for 10 seconds."
+    action:
+      - type: apply_effect
+        data:
+          effect: slime_fluid
+          target: towers_in_range
+          range: 3
+          value: 0.1
+          duration: 10
+  - name: King's Command
+    cooldown: 40
+    cast_time: 0.5
+    tags:
+      - invincible
+      - summon
+    desc: "King Salam stands his ground, invincible and untargetable for 2 seconds, then commands 10 Armored Salam to join the battle at his side."
     action:
       - type: target_self
-      - type: effect_area
+      - type: apply_effect
         data:
-          effect: move_speed_up
-          value: 0.1
-          duration: 5
-          radius: 5
-          affects: enemies
+          effect: invincible
+          target: targets
+          duration: 2
+      - type: apply_effect
+        data:
+          effect: royal_command
+          target: targets
+          duration: 2
+      - type: delay
+        data:
+          delay: 2
+      - type: summon_enemy
+        data:
+          enemy: armored_salam
+          count: 10
+          interval: 0.2

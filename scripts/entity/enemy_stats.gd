@@ -12,7 +12,7 @@ extends Resource
 @export var moveSpeed: float = 0;
 @export var damageReduction: float = 0.0; # base Damage Reduction - Master Formula final pipeline
 
-var blockCount: int = 0; # Number of damage blocks available
+var blockCount: int = 0; # Shield Block charges; consumed in Enemy.recvDamage (whole hit, any type)
 
 # Injected by Enemy.setup(); shared with the icon row and skill actions.
 var effects: EffectContainer = null
@@ -56,10 +56,6 @@ func calculatePathfollowSpeed(path: Path2D) -> float:
 	return 1.0 / totalTime  # how much progress_ratio to move per second
 
 func getDamageReduction() -> float:
-	if(blockCount > 0):
-		blockCount -= 1
-		return 1
-
 	return clamp(damageReduction + _agg(EffectTypes.Kind.DAMAGE_REDUCTION), 0.0, 0.9);
 
 const ARMOR_MAX := 95

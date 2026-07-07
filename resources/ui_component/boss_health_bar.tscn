@@ -1,0 +1,73 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/boss_health_bar.gd" id="1_bosshp"]
+[ext_resource type="Script" path="res://scripts/ui/health_bar.gd" id="2_hpbar"]
+[ext_resource type="FontFile" path="res://resources/ui_component/font/Roboto-Regular.ttf" id="3_font"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_bossname"]
+font = ExtResource("3_font")
+font_size = 30
+outline_size = 6
+outline_color = Color(0, 0, 0, 0.7)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bossbg"]
+bg_color = Color(0.09, 0.08, 0.1, 0.85)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bossfill"]
+bg_color = Color(0.82, 0.12, 0.15, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="LabelSettings" id="LabelSettings_bosshp"]
+font = ExtResource("3_font")
+font_size = 18
+font_color = Color(1, 1, 1, 1)
+outline_size = 4
+outline_color = Color(0, 0, 0, 0.8)
+
+[node name="BossHealthBar" type="Control" node_paths=PackedStringArray("bossName", "healthBar")]
+offset_right = 600.0
+offset_bottom = 76.0
+mouse_filter = 2
+script = ExtResource("1_bosshp")
+bossName = NodePath("BossName")
+healthBar = NodePath("Bar")
+
+[node name="BossName" type="Label" parent="."]
+layout_mode = 0
+offset_right = 600.0
+offset_bottom = 34.0
+text = "Boss"
+label_settings = SubResource("LabelSettings_bossname")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Bar" type="ProgressBar" parent="." node_paths=PackedStringArray("hpText")]
+layout_mode = 0
+offset_top = 40.0
+offset_right = 600.0
+offset_bottom = 72.0
+mouse_filter = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_bossbg")
+theme_override_styles/fill = SubResource("StyleBoxFlat_bossfill")
+show_percentage = false
+script = ExtResource("2_hpbar")
+hpText = NodePath("HpText")
+
+[node name="HpText" type="Label" parent="Bar"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "100/100 (100%)"
+label_settings = SubResource("LabelSettings_bosshp")
+horizontal_alignment = 1
+vertical_alignment = 1

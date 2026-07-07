@@ -33,7 +33,7 @@ func cancel():
 	cancelled = true;
 
 func execute_skill_actions(skill: Skill, context: SkillContext):
-	if(user is Tower):
+	if(user is Tower || user is Enemy):
 		user.usingSkill = true;
 
 	skill.using = true;
@@ -66,7 +66,7 @@ func execute_skill_actions(skill: Skill, context: SkillContext):
 
 func resetUsingSkill(skill: Skill):
 	skill.using = false;
-	if(user is Tower):
+	if(user is Tower || user is Enemy):
 		user.usingSkill = skills.any(Callable(self, "checkUsingSkill"));
 
 func onSuccess(skill: Skill):
@@ -77,7 +77,9 @@ func checkUsingSkill(skill:Skill) -> bool:
 	return skill.using;
 
 func canUseSkill() -> bool:
-	if(user == null || user.has_meta("usingSkill") && user.usingSkill):
+	# NOTE: was has_meta("usingSkill") - dead check, no caller ever set that
+	# meta, so overlapping casts were only prevented by Tower's own gate.
+	if(user == null || ("usingSkill" in user && user.usingSkill)):
 		return false;
 
 	return true;

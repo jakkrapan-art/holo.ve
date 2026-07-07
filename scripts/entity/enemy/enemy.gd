@@ -21,10 +21,11 @@ var enableMove: bool = true;
 # a cast ending can't free a stunned one).
 var castLocked: bool = false;
 var usingSkill: bool = false;
-# In-combat gate: skills may only cast while this window is open (refreshed on
-# every recvDamage, ticks down in _process). Keeps bosses from wasting
-# defensive casts on the walk before any tower engages them.
-@export var inCombatWindow: float = 3.0
+# In-combat gate (hybrid, Director 2026-07-07): a hit wakes the enemy and
+# ready skills cast immediately; inCombatWindow seconds without damage puts it
+# back to sleep, looping. A sleeping boss (out of coverage / towers busy
+# elsewhere) is intended, not a bug.
+@export var inCombatWindow: float = 2.0
 var inCombatRemaining: float = 0.0
 
 var initialized: bool = false;
@@ -117,8 +118,8 @@ func setTexture(image: Texture2D):
 		sprite.flip_h = false;
 
 func recvDamage(damage: Damage) -> int:
-	# Refresh the in-combat window before ANY early-return so blocked hits
-	# (e.g. while invincible) still count as being under fire.
+	# Refresh the awake window before ANY early-return so blocked hits
+	# (e.g. while invincible or shield-blocked) still count as engagement.
 	inCombatRemaining = inCombatWindow
 
 	# Invincible: no damage, no flash, no floating text. Single choke point -

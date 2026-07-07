@@ -312,6 +312,9 @@ func summon(enemyId: String, count: int, interval: float, pathProgress: float):
 		if enemy == null:
 			enemyAliveCount -= 1
 		else:
+			# Summons render above everything on the path - the (scaled) boss
+			# sprite must not hide them (Director 2026-07-07).
+			enemy.z_index = 1
 			connectSignalToEnemy(enemy)
 
 		if i < count - 1:

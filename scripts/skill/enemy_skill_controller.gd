@@ -11,9 +11,9 @@ func process(delta: float):
 		if skill is EnemySkill:
 			(skill as EnemySkill).tick(delta)
 
-# Enemy cast rules (differ from towers): casts open only while the enemy is
-# in combat (recently damaged - see Enemy.inCombatWindow), and ONE random
-# ready skill is cast per opportunity instead of every ready skill in order.
+# Enemy cast rules (differ from towers): a hit wakes the enemy for
+# Enemy.inCombatWindow seconds (hybrid sleep loop), and ONE random ready skill
+# is cast per opportunity instead of every ready skill in order.
 func useSkill():
 	if(!canUseSkill()):
 		return;

@@ -22,11 +22,11 @@ var _energy_timer: float = 0.0
 
 func activate() -> void:
 	# Guild formed (2 Tempus units): start the tracker at 0.
-	controller.quest_progress_changed.emit(data.synergy_id, _kills)
+	controller.report_quest_progress(data.synergy_id, _kills)
 
 func on_enemy_killed(_enemy, _cause, _reward) -> void:
 	_kills += 1
-	controller.quest_progress_changed.emit(data.synergy_id, _kills)
+	controller.report_quest_progress(data.synergy_id, _kills)
 	_check_rewards()
 
 func on_tier_changed(_new_tier: int) -> void:

@@ -15,6 +15,12 @@ var _effects: Dictionary = {}      # synergy_id -> SynergyEffect
 # right panel row.
 signal quest_progress_changed(synergy_id: int, current: int)
 
+# Quest effects report progress through this method so the emit lives in the
+# declaring script (the UNUSED_SIGNAL check is per-script; cross-script emits
+# do not count - see agent_lessons.md).
+func report_quest_progress(synergy_id: int, current: int) -> void:
+	quest_progress_changed.emit(synergy_id, current)
+
 func setup(factory) -> void:
 	_factory = factory
 

@@ -35,7 +35,7 @@ skill:
       - debuff
       - attack_speed
       - aoe
-    desc: "King Salam splashes his slime across a 3x3 area, coating units in Slime Fluid that slows their attack speed by 10% for 5 seconds."
+    desc: "King Salam splashes his slime across a 3x3 area, coating units in Slime Fluid that slows their attack speed by 10% for 10 seconds."
     action:
       - type: apply_effect
         data:
@@ -43,7 +43,7 @@ skill:
           target: towers_in_range
           range: 1
           value: 0.1
-          duration: 5
+          duration: 10
   - name: King's Command
     cooldown: 40
     cast_time: 0.5

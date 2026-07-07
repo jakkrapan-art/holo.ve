@@ -2,8 +2,8 @@ class_name EnemySkillController
 extends BaseSkillController
 
 # Dev switch: traces gate wake/sleep, skill readiness, casts, and icon hover
-# in the Output log. Flip to false (or strip) before PR handoff.
-const DEBUG_LOG := true
+# in the Output log. Keep false in committed builds.
+const DEBUG_LOG := false
 
 func _init(p_user: Node, p_skills: Array[Skill]):
 	super._init(p_user, p_skills);

@@ -57,31 +57,32 @@ func execute(context: SkillContext) -> void:
 
 const AREA_FLASH_SECONDS := 0.6
 
+# Show the applied box with the same red Hitbox visual Kiara/Altare skills use
+# (Lead's component). Detection is done by _resolve_targets; the empty Callable
+# skips the Hitbox callback - this instance is visual-only.
 func _spawn_area_flash(user: Node) -> void:
 	var caster := user as Node2D
 	if caster == null or not caster.is_inside_tree():
 		return
-	var flash := SkillCastIndicator.new()
-	var cells := range_cells * 2 + 1   # range 1 = 3x3 box around the caster
-	flash.set_aoe_size(cells, cells)
-	flash.fill_color = Color(1.0, 0.15, 0.1, 0.22)
-	flash.outline_color = Color(1.0, 0.35, 0.2, 1.0)
-	caster.get_parent().add_child(flash)
-	flash.update_position_from_world(caster.global_position)
-	flash.visible = true
-	caster.get_tree().create_timer(AREA_FLASH_SECONDS).timeout.connect(flash.queue_free)
+	var side := float(range_cells * 2 + 1) * GridHelper.CELL_SIZE   # range 1 = 3x3
+	Hitbox.create(side, side, Callable(), caster.global_position, caster.get_parent(), 0.0, Vector2.ZERO, Color(1, 0, 0, 0.25), AREA_FLASH_SECONDS)
 
 func _resolve_targets(context: SkillContext, user: Node) -> Array:
 	match targetMode:
 		"allies_in_range", "towers_in_range":
+			# Body-centered box, NOT cell-snapped: a mid-cell caster (a walking
+			# boss) hits exactly the box the red flash shows. For tower casters
+			# this is equivalent to the old cell-index check (towers sit on cell
+			# centers); range 1 = a 3x3-cell box around the caster's body.
 			var towers: Array = []
-			var source_cell: Vector2 = GridHelper.WorldToCell((user as Node2D).global_position)
+			var half := (float(range_cells) + 0.5) * GridHelper.CELL_SIZE
+			var source_pos: Vector2 = (user as Node2D).global_position
 			for node in user.get_tree().get_nodes_in_group("tower"):
 				var tower := node as Tower
 				if tower == null:
 					continue
-				var cell: Vector2 = GridHelper.WorldToCell(tower.global_position)
-				if abs(cell.x - source_cell.x) <= range_cells and abs(cell.y - source_cell.y) <= range_cells:
+				var d: Vector2 = tower.global_position - source_pos
+				if abs(d.x) <= half and abs(d.y) <= half:
 					towers.append(tower)
 			return towers
 		"targets":

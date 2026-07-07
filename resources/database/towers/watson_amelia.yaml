@@ -67,6 +67,7 @@ skills:
           target_shape: single
     # cast_time: 0.0   # DISABLED — skill timing now lives in play_animation `duration`.
     #                  # cast_time = idle hold BEFORE the cast (no skill anim); kept for team ref / possible future use.
+    recovery: 0.2 # post-cast hold (s) before resuming attack — see default_tower.yaml
     parameters:
       attackSpeedBuff:
         - 0.10
@@ -132,6 +133,7 @@ evolution_skills:
           target_shape: single
     # cast_time: 0.0   # DISABLED — skill timing now lives in play_animation `duration`.
     #                  # cast_time = idle hold BEFORE the cast (no skill anim); kept for team ref / possible future use.
+    recovery: 0.2 # post-cast hold (s) before resuming attack — see default_tower.yaml
     parameters:
       attackSpeedBuff:
         - 0.50

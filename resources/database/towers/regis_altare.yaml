@@ -68,6 +68,7 @@ skills:
           target_team: enemy
           target_type: enemy
           target_shape: area
+    recovery: 0.2 # post-cast hold (s) before resuming attack — see default_tower.yaml
     parameters:
       beat1Damage:
         - 1.5
@@ -158,6 +159,7 @@ evolution_skills:
           target_team: enemy
           target_type: enemy
           target_shape: area
+    recovery: 0.2 # post-cast hold (s) before resuming attack — see default_tower.yaml
     parameters:
       beat1Damage: 3.0
       beat2Damage: 2.0

@@ -61,6 +61,21 @@ func execute_skill_actions(skill: Skill, context: SkillContext):
 		resetUsingSkill(skill);
 		return
 
+	# Recovery hold: keep the caster busy for skill.recoveryTime after the last
+	# action so it doesn't snap straight back to attacking/walking (usingSkill
+	# stays true for towers, castLocked stays true for enemies). Checks only
+	# `cancelled` (not context.cancel - the final play_anim/delay action sets
+	# that routinely) so a wave-end cancel here skips onSuccess, same as above.
+	if skill.recoveryTime > 0:
+		if not is_instance_valid(user):
+			return
+		await user.get_tree().create_timer(skill.recoveryTime).timeout
+		if not is_instance_valid(user):
+			return
+		if(cancelled):
+			resetUsingSkill(skill);
+			return
+
 	onSuccess(skill);
 	cast_succeeded.emit(skill);
 

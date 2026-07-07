@@ -37,6 +37,7 @@ stats:
 skill:
   name: "Skill"
   desc: "Just a skill"
+  recovery: 0.2 # post-cast hold (s) before resuming attack — see default_tower.yaml
   actions:
     - type: find_multi_enemy
       data:

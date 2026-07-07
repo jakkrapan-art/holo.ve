@@ -15,6 +15,7 @@ stats:
 skill:
   - name: Charge
     cooldown: 20
+    recovery: 0.2
     desc: charge_desc
     action:
       - type: target_self
@@ -35,6 +36,7 @@ skill:
           speed: 100
   - name: Thick Skin
     cooldown: 45
+    recovery: 0.2
     desc: thick_skin_desc
     action:
       - type: target_self
@@ -46,6 +48,7 @@ skill:
           duration: 5
   - name: Scary Graze
     cooldown: 30
+    recovery: 0.2
     desc: scary_graze_desc
     action:
       - type: target_self

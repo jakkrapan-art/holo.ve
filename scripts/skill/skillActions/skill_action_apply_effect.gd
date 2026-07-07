@@ -10,11 +10,14 @@ extends SkillAction
 #   - type: apply_effect
 #     data:
 #       effect: attack_speed_up      # registry id
-#       target: self                 # self | allies_in_range | targets
+#       target: self                 # self | allies_in_range | towers_in_range | targets
 #       value: 0.5                   # literal, or:
 #       value_param: "attackSpeedBuff"   # per-level parameters binding
 #       duration: 4.0                # literal, or duration_param
-#       range: 1                     # allies_in_range only (cells)
+#       range: 1                     # allies_in_range / towers_in_range (cells)
+#
+# towers_in_range = same tower box as allies_in_range, named for enemy casters
+# (a boss debuffing towers around itself, e.g. Slime Fluid's 3x3 = range 1).
 
 @export var effectId: String = ""
 @export var targetMode: String = "self"
@@ -49,7 +52,7 @@ func execute(context: SkillContext) -> void:
 
 func _resolve_targets(context: SkillContext, user: Node) -> Array:
 	match targetMode:
-		"allies_in_range":
+		"allies_in_range", "towers_in_range":
 			var towers: Array = []
 			var source_cell: Vector2 = GridHelper.WorldToCell((user as Node2D).global_position)
 			for node in user.get_tree().get_nodes_in_group("tower"):

@@ -11,6 +11,36 @@ func process(delta: float):
 		if skill is EnemySkill:
 			(skill as EnemySkill).tick(delta)
 
+# Enemy cast rules (differ from towers): casts open only while the enemy is
+# in combat (recently damaged - see Enemy.inCombatWindow), and ONE random
+# ready skill is cast per opportunity instead of every ready skill in order.
+func useSkill():
+	if(!canUseSkill()):
+		return;
+
+	var enemy := user as Enemy
+	if(enemy == null || !enemy.isInCombat()):
+		return;
+
+	var ready: Array[Skill] = [];
+	for skill in skills:
+		if(skill != null && skill.isReady()):
+			ready.append(skill);
+	if(ready.is_empty()):
+		return;
+
+	cancelled = false;
+	var skill: Skill = ready.pick_random();
+	var context = SkillContext.new()
+	context.user = user
+	context.skillName = skill.name
+	context.extra["parameter"] = skill.parameters
+
+	enemy.castLocked = true;
+	await execute_skill_actions(skill, context);
+	if(is_instance_valid(enemy)):
+		enemy.castLocked = false;
+
 func onSuccess(skill: Skill):
 	super.onSuccess(skill);
 	if skill is EnemySkill:

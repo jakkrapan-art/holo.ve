@@ -45,7 +45,10 @@ static func _build_def(effect_id: String, entry: Dictionary) -> EffectDef:
 	def.default_duration = float(entry.get("duration", 0.0))
 	var lifetime_str := str(entry.get("lifetime", "wave"))
 	def.lifetime = EffectTypes.LIFETIME_FROM_STRING.get(lifetime_str, EffectTypes.Lifetime.WAVE)
-	def.negate_value = effect_id.ends_with("_down")
+	# Sign rule: authored magnitudes stay positive. `_down` ids negate by
+	# convention; themed debuff ids without the suffix (e.g. slime_fluid)
+	# opt in explicitly with `negate: true`.
+	def.negate_value = effect_id.ends_with("_down") or bool(entry.get("negate", false))
 	var params: Variant = entry.get("params", {})
 	def.params = params if params is Dictionary else {}
 	return def

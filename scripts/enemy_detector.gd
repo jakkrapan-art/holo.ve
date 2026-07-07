@@ -77,6 +77,12 @@ func updateTarget(_enemy, _cause, _reward):
 
 	for enemy in enemyInRange:
 		if enemy:
+			# Untargetable (invincible) enemies are skipped BEFORE the sticky
+			# check, so a locked target that turns invincible is dropped too.
+			# InvincibleBehavior re-runs updateTarget on apply/expire.
+			if enemy.isInvincible():
+				continue
+
 			if (enemy == target):
 				best = enemy
 				break;

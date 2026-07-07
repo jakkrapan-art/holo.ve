@@ -16,6 +16,16 @@ var enemyType: EnemyType = EnemyType.Normal;
 var effects: EffectContainer = null;
 var skillController: EnemySkillController;
 var enableMove: bool = true;
+# Cast telegraph lock: the enemy stands still while casting. Kept separate from
+# enableMove so StunBehavior's restore can't free a casting enemy mid-cast (and
+# a cast ending can't free a stunned one).
+var castLocked: bool = false;
+var usingSkill: bool = false;
+# In-combat gate: skills may only cast while this window is open (refreshed on
+# every recvDamage, ticks down in _process). Keeps bosses from wasting
+# defensive casts on the walk before any tower engages them.
+@export var inCombatWindow: float = 3.0
+var inCombatRemaining: float = 0.0
 
 var initialized: bool = false;
 # Mutex flag: ensures exactly ONE removal signal fires per enemy (onDead OR
@@ -52,6 +62,9 @@ func _process(_delta):
 	if effects:
 		effects.tick(_delta)
 
+	if inCombatRemaining > 0.0:
+		inCombatRemaining = maxf(0.0, inCombatRemaining - _delta)
+
 	if skillController:
 		skillController.process(_delta)
 		skillController.useSkill();
@@ -67,7 +80,7 @@ func _physics_process(delta):
 	if(!initialized):
 		return
 
-	if enableMove:
+	if enableMove and not castLocked:
 		var parent: Path2D = get_parent() as Path2D
 		var moveRatio = stats.getMoveSpeed(parent) * delta;
 		var previousProgressRatio := progress_ratio
@@ -103,6 +116,15 @@ func setTexture(image: Texture2D):
 		sprite.flip_h = false;
 
 func recvDamage(damage: Damage) -> int:
+	# Refresh the in-combat window before ANY early-return so blocked hits
+	# (e.g. while invincible) still count as being under fire.
+	inCombatRemaining = inCombatWindow
+
+	# Invincible: no damage, no flash, no floating text. Single choke point -
+	# every damage source (attacks, projectiles, DoT ticks, TRUE) funnels here.
+	if isInvincible():
+		return 0
+
 	sprite.modulate = Color.RED
 
 	# Create a one-shot timer to reset the color
@@ -161,6 +183,9 @@ func updateHealthBar(value: float):
 	if healthBar:
 		healthBar.visible = true
 		healthBar.updateValue(value)
+	# recvDamage is the only HP mutation path, so this is the one emit site
+	# (data source for the top-center boss HP bar).
+	onHpChanged.emit(value, float(stats.maxHp))
 
 func dead(cause: Damage):
 	# Mutex guard (see _removed comment near top). If the reach-end branch
@@ -198,5 +223,14 @@ func addBlockDamageCount(value: int):
 func setSpeed(value: float):
 	stats.moveSpeed = value;
 
+func isInCombat() -> bool:
+	return inCombatRemaining > 0.0
+
+# Container state is the single source of truth (no bool flag to desync);
+# InvincibleBehavior pushes tower re-target on apply/expire.
+func isInvincible() -> bool:
+	return effects != null and effects.has_kind(EffectTypes.Kind.INVINCIBLE)
+
 signal onReachEndPoint();
 signal onDead(enemy: Enemy,cause: Damage, reward: EnemyReward);
+signal onHpChanged(current: float, maxHp: float);

@@ -32,6 +32,7 @@ enum Kind {
 	STUN,
 	DOT,
 	MARK_ONLY,
+	INVINCIBLE,
 }
 
 enum Category { BUFF, DEBUFF, MARK }
@@ -68,6 +69,7 @@ const KIND_FROM_STRING := {
 	"stun": Kind.STUN,
 	"dot": Kind.DOT,
 	"mark": Kind.MARK_ONLY,
+	"invincible": Kind.INVINCIBLE,
 }
 
 const CATEGORY_FROM_STRING := {

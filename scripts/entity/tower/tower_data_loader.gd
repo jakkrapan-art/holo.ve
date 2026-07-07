@@ -161,6 +161,7 @@ static func _apply_skill_data(skill: Skill, skill_data: Dictionary, default_name
 	skill.desc_template = str(skill_data.get("desc_template", "")).replace("\\n", "\n")
 	skill.parameters = skill_data.get("parameters", {})
 	skill.castTime = skill_data.get("cast_time", 0.0)
+	skill.recoveryTime = skill_data.get("recovery", 0.2)
 	skill.tags = _parse_string_array(skill_data.get("tags", []))
 	skill.target_summary = _parse_dictionary(skill_data.get("target_summary", {}))
 	skill.icon = str(skill_data.get("icon", ""))

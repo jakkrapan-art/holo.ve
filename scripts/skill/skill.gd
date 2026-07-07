@@ -9,6 +9,7 @@ enum TARGET_TYPE {ENEMY, FRIENDLY}
 @export var desc_template: String = ""
 @export var oneTimeUse: bool = false
 @export var castTime: float = 0.0
+@export var recoveryTime: float = 0.0
 @export var actions: Array[SkillAction] = []
 @export var parameters: Dictionary = {}
 @export var tags: Array[String] = []

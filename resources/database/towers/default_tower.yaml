@@ -64,6 +64,9 @@ skills:
           target_shape: area
     # cast_time: 0.0   # DISABLED — skill/combo timing lives in play_animation `duration` (see combo template below).
     #                  # cast_time = idle hold BEFORE the cast (no skill anim); kept for team ref / possible future use.
+    # recovery = ช่วงจบ (วินาที): หลัง action สุดท้ายจบ tower ค้างท่า/ไม่กลับไปตีต่อทันที
+    # ตามโมเดล 3 จังหวะ หัว(cast_time)/ตัว(duration)/หาง(recovery) — ไม่ใส่ = default 0.2
+    recovery: 0.2
     parameters:
       damageBonus:
         - 0.10
@@ -192,6 +195,7 @@ evolution_skills:
           target_shape: area
     # cast_time: 0.0   # DISABLED — skill/combo timing lives in play_animation `duration` (see combo template below).
     #                  # cast_time = idle hold BEFORE the cast (no skill anim); kept for team ref / possible future use.
+    recovery: 0.2 # ช่วงจบ (วินาที) — ดูคอมเมนต์ที่ skills.active
     parameters:
       damageBonus:
         - 0.30

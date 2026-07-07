@@ -24,6 +24,9 @@ static func ParseSkill(skillDataList: Array) -> Array[Skill]:
 				push_warning("Failed to parse action in skill ", skillName);
 
 		var s = EnemySkill.new(skillName, desc, actions, {}, oneTime, cooldown, castTime);
+		# Post-cast hold (seconds); enemy default 0.0 - a 0.2 default would
+		# permanently freeze cooldown-0 every-frame recast skills (aura elites).
+		s.recoveryTime = float(skill.get("recovery", 0.0));
 		# `type: passive` = apply once at spawn (no gate/cooldown); default active.
 		s.passive = str(skill.get("type", "active")) == "passive";
 		# Player-facing summary tags (same controlled registry as tower skills).

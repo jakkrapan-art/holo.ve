@@ -7,6 +7,7 @@ skill:
   - name: Sweat Spore
     cooldown: 0
     oneTime: true
+    recovery: 0 # instant aura pop - no post-cast hold (keep 0: a hold would freeze walking on cast)
     desc: เพิ่ม def ให้ตนเอง 5%
     action:
       - type: target_self

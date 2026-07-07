@@ -66,6 +66,8 @@ func _process(_delta):
 
 	if inCombatRemaining > 0.0:
 		inCombatRemaining = maxf(0.0, inCombatRemaining - _delta)
+		if inCombatRemaining <= 0.0 and EnemySkillController.DEBUG_LOG:
+			print("[EnemySkill] asleep: ", self)
 
 	if skillController:
 		skillController.process(_delta)
@@ -120,6 +122,8 @@ func setTexture(image: Texture2D):
 func recvDamage(damage: Damage) -> int:
 	# Refresh the awake window before ANY early-return so blocked hits
 	# (e.g. while invincible or shield-blocked) still count as engagement.
+	if inCombatRemaining <= 0.0 and EnemySkillController.DEBUG_LOG:
+		print("[EnemySkill] engaged: ", self)
 	inCombatRemaining = inCombatWindow
 
 	# Invincible: no damage, no flash, no floating text. Single choke point -

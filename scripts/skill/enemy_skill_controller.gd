@@ -1,6 +1,10 @@
 class_name EnemySkillController
 extends BaseSkillController
 
+# Dev switch: traces gate wake/sleep, skill readiness, casts, and icon hover
+# in the Output log. Flip to false (or strip) before PR handoff.
+const DEBUG_LOG := true
+
 func _init(p_user: Node, p_skills: Array[Skill]):
 	super._init(p_user, p_skills);
 	for s in p_skills:
@@ -9,7 +13,11 @@ func _init(p_user: Node, p_skills: Array[Skill]):
 func process(delta: float):
 	for skill in skills:
 		if skill is EnemySkill:
-			(skill as EnemySkill).tick(delta)
+			var es := skill as EnemySkill
+			var was_cooling := es.cooldownRemaining > 0.0
+			es.tick(delta)
+			if DEBUG_LOG and was_cooling and es.cooldownRemaining <= 0.0:
+				print("[EnemySkill] ready: ", es.name, " (", user, ")")
 
 # Enemy cast rules (differ from towers): a hit wakes the enemy for
 # Enemy.inCombatWindow seconds (hybrid sleep loop), and ONE random ready skill
@@ -33,6 +41,8 @@ func useSkill():
 
 	cancelled = false;
 	var skill: Skill = ready.pick_random();
+	if DEBUG_LOG:
+		print("[EnemySkill] cast: ", skill.name, " (", user, ", ready pool ", ready.size(), ")")
 	var context = SkillContext.new()
 	context.user = user
 	context.skillName = skill.name

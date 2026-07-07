@@ -85,6 +85,10 @@ func _make_icon(inst: EffectInstance) -> TextureRect:
 	# Interim desc surface for functional checks - the durable home is the
 	# future tower/enemy stats UI (see buff_debuff.md Plan and Status).
 	icon.mouse_filter = Control.MOUSE_FILTER_PASS
+	if EnemySkillController.DEBUG_LOG:
+		# Hover diagnosis (2026-07-07): logs whether the mouse ever reaches the
+		# icon - separates "tooltip broken" from "icon never hovered".
+		icon.mouse_entered.connect(func(): print("[EffectIcon] hover enter: ", inst.def.id))
 	icon.texture = ResourceManager.getSprite(EffectRegistry.ICON_GROUP, inst.def.id)
 	if icon.texture == null:
 		# Registry icon missing/unloaded: flat category-colored square so the

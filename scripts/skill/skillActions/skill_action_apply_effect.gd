@@ -42,6 +42,11 @@ func execute(context: SkillContext) -> void:
 	# skills stack. Fallback keeps the key non-empty for unnamed skills.
 	var source_id := context.skillName if context.skillName != "" else "skill_" + str(get_instance_id())
 
+	# Enemy-cast area debuff: flash the affected box in red so the player (and
+	# playtests) can see the real footprint - reuses the staff SkillCastIndicator.
+	if targetMode == "towers_in_range":
+		_spawn_area_flash(user)
+
 	for target in _resolve_targets(context, user):
 		if not is_instance_valid(target) or not target.has_method("apply_effect"):
 			continue
@@ -49,6 +54,22 @@ func execute(context: SkillContext) -> void:
 		if inst == null:
 			return
 		target.apply_effect(inst)
+
+const AREA_FLASH_SECONDS := 0.6
+
+func _spawn_area_flash(user: Node) -> void:
+	var caster := user as Node2D
+	if caster == null or not caster.is_inside_tree():
+		return
+	var flash := SkillCastIndicator.new()
+	var cells := range_cells * 2 + 1   # range 1 = 3x3 box around the caster
+	flash.set_aoe_size(cells, cells)
+	flash.fill_color = Color(1.0, 0.15, 0.1, 0.22)
+	flash.outline_color = Color(1.0, 0.35, 0.2, 1.0)
+	caster.get_parent().add_child(flash)
+	flash.update_position_from_world(caster.global_position)
+	flash.visible = true
+	caster.get_tree().create_timer(AREA_FLASH_SECONDS).timeout.connect(flash.queue_free)
 
 func _resolve_targets(context: SkillContext, user: Node) -> Array:
 	match targetMode:

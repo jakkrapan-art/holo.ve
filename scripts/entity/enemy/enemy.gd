@@ -29,8 +29,8 @@ var usingSkill: bool = false;
 # A sleeping boss (out of coverage / towers busy elsewhere) is intended, not a
 # bug. Do NOT restore instant-cast-on-wake: with skills ready at spawn it
 # chain-casts the whole kit on first engagement (enemy_skill.md).
-@export var inCombatWindow: float = 2.0
-@export var castWait: float = 3.0
+@export var inCombatWindow: float = 4.0
+@export var castWait: float = 4.0
 var inCombatRemaining: float = 0.0
 var castWaitRemaining: float = 0.0
 

@@ -34,6 +34,7 @@ outline_color = Color(0, 0, 0, 0.8)
 [node name="BossHealthBar" type="Control" node_paths=PackedStringArray("bossName", "healthBar")]
 offset_right = 600.0
 offset_bottom = 76.0
+mouse_filter = 2
 script = ExtResource("1_bosshp")
 bossName = NodePath("BossName")
 healthBar = NodePath("Bar")
@@ -52,6 +53,7 @@ layout_mode = 0
 offset_top = 40.0
 offset_right = 600.0
 offset_bottom = 72.0
+mouse_filter = 2
 theme_override_styles/background = SubResource("StyleBoxFlat_bossbg")
 theme_override_styles/fill = SubResource("StyleBoxFlat_bossfill")
 show_percentage = false

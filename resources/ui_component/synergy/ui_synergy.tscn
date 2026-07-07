@@ -8,5 +8,6 @@ offset_right = 1920.0
 offset_bottom = 1080.0
 size_flags_horizontal = 2
 size_flags_vertical = 2
+mouse_filter = 2
 script = ExtResource("1_x53s6")
 contentTemplate = ExtResource("2_qmn4j")

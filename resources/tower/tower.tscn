@@ -187,6 +187,7 @@ offset_right = 106.0
 offset_bottom = -403.0
 grow_horizontal = 2
 grow_vertical = 0
+mouse_filter = 2
 pivot_offset = Vector2(107, 14)
 theme_override_styles/background = SubResource("StyleBoxTexture_nv7an")
 theme_override_styles/fill = SubResource("StyleBoxTexture_80517")
@@ -212,6 +213,7 @@ offset_right = -156.0
 offset_bottom = -392.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 script = ExtResource("10_yjhyn")
 
 [node name="1" type="TextureRect" parent="TowerStarUI"]
@@ -222,6 +224,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 texture = ExtResource("10_l8pee")
 
 [node name="2" type="TextureRect" parent="TowerStarUI"]
@@ -232,6 +235,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 texture = ExtResource("11_bs2od")
 
 [node name="3" type="TextureRect" parent="TowerStarUI"]
@@ -242,6 +246,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 texture = ExtResource("12_1hg78")
 
 [node name="4" type="TextureRect" parent="TowerStarUI"]
@@ -252,6 +257,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 texture = ExtResource("13_rihwy")
 
 [node name="EffectIconRow" type="HBoxContainer" parent="."]

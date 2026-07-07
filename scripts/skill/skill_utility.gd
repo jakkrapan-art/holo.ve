@@ -24,6 +24,8 @@ static func ParseSkill(skillDataList: Array) -> Array[Skill]:
 				push_warning("Failed to parse action in skill ", skillName);
 
 		var s = EnemySkill.new(skillName, desc, actions, {}, oneTime, cooldown, castTime);
+		# `type: passive` = apply once at spawn (no gate/cooldown); default active.
+		s.passive = str(skill.get("type", "active")) == "passive";
 		# Player-facing summary tags (same controlled registry as tower skills).
 		# Append str() per entry - a raw YAML Array can't assign into Array[String].
 		for tag in skill.get("tags", []):

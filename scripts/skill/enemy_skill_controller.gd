@@ -24,6 +24,8 @@ func useSkill():
 
 	var ready: Array[Skill] = [];
 	for skill in skills:
+		if(skill is EnemySkill && (skill as EnemySkill).passive):
+			continue;
 		if(skill != null && skill.isReady()):
 			ready.append(skill);
 	if(ready.is_empty()):
@@ -45,3 +47,19 @@ func onSuccess(skill: Skill):
 	super.onSuccess(skill);
 	if skill is EnemySkill:
 		(skill as EnemySkill).startCooldown();
+
+# Passive skills (type: passive): apply the action list once at spawn - no
+# in-combat gate, no cast_time/busy flag, no cooldown/onSuccess. Called from
+# Enemy.setup, fire-and-forget.
+func applyPassives():
+	for skill in skills:
+		if(!(skill is EnemySkill) || !(skill as EnemySkill).passive):
+			continue;
+		var context = SkillContext.new()
+		context.user = user
+		context.skillName = skill.name
+		context.extra["parameter"] = skill.parameters
+		for action in skill.actions:
+			if(user == null || !is_instance_valid(user)):
+				return;
+			await action.execute(context)

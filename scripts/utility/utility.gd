@@ -33,6 +33,13 @@ static func show_damage_text(position: Vector2, parent: Node2D, damage: int, col
 	atkNumber.global_position = position;
 	parent.add_child(atkNumber);
 
+# Non-numeric floating text (e.g. "Block") - same rise/fade as damage numbers.
+static func show_float_text(position: Vector2, parent: Node2D, text: String, color: Color = Color(1, 1, 1)):
+	var floatText = load("res://resources/ui_component/damage_number.tscn").instantiate() as DamageNumber;
+	floatText.setup_text(text, color);
+	floatText.global_position = position;
+	parent.add_child(floatText);
+
 # Put this in a global autoload or utility script
 static func deep_duplicate_resource(resource: Resource) -> Resource:
 	if resource == null:

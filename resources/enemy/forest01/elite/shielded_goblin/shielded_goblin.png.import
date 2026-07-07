@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://3vuapm6niqmw"
-path="res://.godot/imported/armored_goblin.png-4ace229faddb965ac12c724b5094c2c4.ctex"
+path="res://.godot/imported/shielded_goblin.png-e7607e711664507fbf1fdd0b2d05024a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/enemy/forest01/elite/armored_goblin/armored_goblin.png"
-dest_files=["res://.godot/imported/armored_goblin.png-4ace229faddb965ac12c724b5094c2c4.ctex"]
+source_file="res://resources/enemy/forest01/elite/shielded_goblin/shielded_goblin.png"
+dest_files=["res://.godot/imported/shielded_goblin.png-e7607e711664507fbf1fdd0b2d05024a.ctex"]
 
 [params]
 

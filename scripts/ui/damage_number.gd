@@ -44,6 +44,16 @@ func setup(damage: int, color: Color = Color(1, 0, 0)):
 	# Reset timer
 	elapsed_time = 0.0
 
+# Non-numeric floating text (e.g. "Block") - same rise/fade as setup().
+func setup_text(text: String, color: Color = Color(1, 1, 1)):
+	textLabel = $Text as Label
+	if textLabel:
+		textLabel.text = text
+		textLabel.show()
+		textLabel.position = Vector2.ZERO
+		textLabel.modulate = color
+	elapsed_time = 0.0
+
 func format_number(number: int) -> String:
 	var str_number = str(abs(number))  # Get absolute value and convert to string
 	var formatted = ""

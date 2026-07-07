@@ -49,6 +49,7 @@ func setup(p_enemyType: EnemyType, hp: int, armor: int, mArmor: int, moveSpeed: 
 		iconRow.setup(effects)
 	originalModulate = sprite.modulate
 	skillController = EnemySkillController.new(self, skills);
+	skillController.applyPassives();
 	initialized = true;
 
 	if healthBar:
@@ -125,6 +126,15 @@ func recvDamage(damage: Damage) -> int:
 	if isInvincible():
 		return 0
 
+	# Shield Block: one charge eats the WHOLE hit regardless of damage type
+	# (TRUE included). Unlike invincible the enemy STAYS targetable - that is
+	# the block vs untargetable line (enemy_skill.md). Charges live on
+	# stats.blockCount, outside the effect system (buff_debuff.md).
+	if stats.blockCount > 0:
+		stats.blockCount -= 1
+		Utility.show_float_text(global_position, get_parent(), "Block", Color(0.7, 0.85, 1.0))
+		return 0
+
 	sprite.modulate = Color.RED
 
 	# Create a one-shot timer to reset the color
@@ -151,7 +161,7 @@ func recvDamage(damage: Damage) -> int:
 			if towerData != null:
 				sigmaAmp = towerData.effects.aggregate(EffectTypes.Kind.DAMAGE_AMPLIFIER)
 
-		var sigmaRed: float = stats.getDamageReduction()  # already clamped + handles blockCount
+		var sigmaRed: float = stats.getDamageReduction()  # already clamped; blocks consumed above
 		damageVal = int(damage.damage * defense_factor * (1.0 + sigmaAmp) * (1.0 - sigmaRed))
 
 	var currentHp = stats.updateHealth(-damageVal)
@@ -180,7 +190,9 @@ func _on_damage_flash_timeout():
 		sprite.modulate = originalModulate
 
 func updateHealthBar(value: float):
-	if healthBar:
+	# Bosses never show the small overhead bar - the top-center BossHealthBar
+	# is their one HP surface (Director 2026-07-07).
+	if healthBar and enemyType != EnemyType.Boss:
 		healthBar.visible = true
 		healthBar.updateValue(value)
 	# recvDamage is the only HP mutation path, so this is the one emit site

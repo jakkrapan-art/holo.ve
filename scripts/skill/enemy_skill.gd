@@ -2,6 +2,9 @@ class_name EnemySkill
 extends Skill
 
 @export var cooldown: float = 3
+# Passive: actions apply once at spawn (EnemySkillController.applyPassives);
+# never enters the in-combat/random cast pool, cooldown unused.
+@export var passive: bool = false
 var cooldownRemaining: float = 0.0;
 
 func _init(p_name:String="EnemySkill", p_desc:String="Just an enemy skill", p_actions:Array[SkillAction]=[], p_parameters:Dictionary={}, p_oneTimeUse: bool = false, p_cooldown:float=3.0, p_castTime: float = 0.0):

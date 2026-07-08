@@ -78,6 +78,7 @@ func _process(_delta):
 
 	if skillController:
 		skillController.process(_delta)
+		skillController.useTriggeredSkill();
 		skillController.useSkill();
 
 	if(progress_ratio >= 1.0):
@@ -185,6 +186,11 @@ func recvDamage(damage: Damage) -> int:
 
 	if currentHp <= 0:
 		dead(damage)
+	elif skillController != null:
+		# HP%-trigger check at the single HP-loss site; a killing blow never
+		# triggers (dead() wins). Only flags pending - the cast fires from the
+		# _process hook (enemy_skill.md Triggered).
+		skillController.check_hp_triggers(float(currentHp) / float(stats.maxHp))
 
 	var dmgColor: Color
 	match damage.type:
@@ -210,9 +216,24 @@ func updateHealthBar(value: float):
 	if healthBar and enemyType != EnemyType.Boss:
 		healthBar.visible = true
 		healthBar.updateValue(value)
-	# recvDamage is the only HP mutation path, so this is the one emit site
-	# (data source for the top-center boss HP bar).
+	# recvDamage and heal() are the only HP mutation paths; both route through
+	# here, so this is the one emit site (data source for the boss HP bar).
 	onHpChanged.emit(value, float(stats.maxHp))
+
+# Single heal entry (instant heal_percent_maxhp action + hot effect ticks).
+# Returns the ACTUAL restored amount - updateHealth clamps at maxHp, so the
+# floating number reflects real healing, not the requested amount.
+func heal(amount: int) -> int:
+	if _removed or amount <= 0 or stats == null:
+		return 0
+	var before: int = stats.currentHp
+	var currentHp = stats.updateHealth(amount)
+	var healed: int = currentHp - before
+	if healed <= 0:
+		return 0
+	updateHealthBar(currentHp)
+	Utility.show_float_text(global_position, get_parent(), "+" + str(healed), Color(0.4, 1.0, 0.45))
+	return healed
 
 func dead(cause: Damage):
 	# Mutex guard (see _removed comment near top). If the reach-end branch

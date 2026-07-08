@@ -21,12 +21,18 @@ var enableMove: bool = true;
 # a cast ending can't free a stunned one).
 var castLocked: bool = false;
 var usingSkill: bool = false;
-# In-combat gate (hybrid, Director 2026-07-07): a hit wakes the enemy and
-# ready skills cast immediately; inCombatWindow seconds without damage puts it
-# back to sleep, looping. A sleeping boss (out of coverage / towers busy
-# elsewhere) is intended, not a bug.
-@export var inCombatWindow: float = 2.0
+# In-combat gate, single pacing timer (Director 2026-07-08): a hit wakes the
+# enemy AND arms the castWait timer; the timer ticks only while awake, and a
+# cast is allowed when it reaches 0 - hit = wait -> cast, never instant and
+# never back-to-back (it re-arms on wake and after each completed cast).
+# inCombatWindow seconds without damage puts the enemy back to sleep, looping.
+# A sleeping boss (out of coverage / towers busy elsewhere) is intended, not a
+# bug. Do NOT restore instant-cast-on-wake: with skills ready at spawn it
+# chain-casts the whole kit on first engagement (enemy_skill.md).
+@export var inCombatWindow: float = 4.0
+@export var castWait: float = 4.0
 var inCombatRemaining: float = 0.0
+var castWaitRemaining: float = 0.0
 
 var initialized: bool = false;
 # Mutex flag: ensures exactly ONE removal signal fires per enemy (onDead OR
@@ -65,6 +71,7 @@ func _process(_delta):
 		effects.tick(_delta)
 
 	if inCombatRemaining > 0.0:
+		castWaitRemaining = maxf(0.0, castWaitRemaining - _delta)
 		inCombatRemaining = maxf(0.0, inCombatRemaining - _delta)
 		if inCombatRemaining <= 0.0 and EnemySkillController.DEBUG_LOG:
 			print("[EnemySkill] asleep: ", self)
@@ -122,8 +129,11 @@ func setTexture(image: Texture2D):
 func recvDamage(damage: Damage) -> int:
 	# Refresh the awake window before ANY early-return so blocked hits
 	# (e.g. while invincible or shield-blocked) still count as engagement.
-	if inCombatRemaining <= 0.0 and EnemySkillController.DEBUG_LOG:
-		print("[EnemySkill] engaged: ", self)
+	if inCombatRemaining <= 0.0:
+		# Waking from sleep: arm the pacing timer - hit = wait -> cast.
+		castWaitRemaining = castWait
+		if EnemySkillController.DEBUG_LOG:
+			print("[EnemySkill] engaged: ", self)
 	inCombatRemaining = inCombatWindow
 
 	# Invincible: no damage, no flash, no floating text. Single choke point -
@@ -242,6 +252,11 @@ func setSpeed(value: float):
 
 func isInCombat() -> bool:
 	return inCombatRemaining > 0.0
+
+# Pacing gate for EnemySkillController.useSkill: awake AND the castWait timer
+# has elapsed (enemy_skill.md cast rules).
+func canCastNow() -> bool:
+	return isInCombat() and castWaitRemaining <= 0.0
 
 # Container state is the single source of truth (no bool flag to desync);
 # InvincibleBehavior pushes tower re-target on apply/expire.

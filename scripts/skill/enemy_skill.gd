@@ -18,9 +18,10 @@ func tick(delta: float):
 	cooldownRemaining = maxf(0.0, cooldownRemaining - delta)
 
 func initCooldown():
-	# Ready at spawn: the first engagement must be answerable immediately
-	# (Director 2026-07-07; was cooldown/2, which muted King Salam for its
-	# first 10s no matter how hard it was hit). Cooldown starts per cast.
+	# Ready at spawn (Director 2026-07-07; was cooldown/2, which muted King
+	# Salam for its first 10s no matter how hard it was hit). First-cast
+	# TIMING is owned by Enemy's castWait pacing gate, not by cooldowns;
+	# cooldown starts per cast.
 	cooldownRemaining = 0.0
 
 func startCooldown():

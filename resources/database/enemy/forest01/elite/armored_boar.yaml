@@ -5,9 +5,7 @@ stats:
   moveSpeed: 50
 skill:
   - name: Protector Aura
-    cooldown: 0
-    oneTime: true
-    recovery: 0 # instant aura pop - no post-cast hold (keep 0: a hold would freeze walking on cast)
+    type: passive # aura up from spawn - a buff that must exist at engagement cannot be an Active under the cast gate
     desc: สร้างออร่าเพิ่ม Defense 2.5% ให้กับฝ่ายเดียวกันในระยะ 1*1 ช่อง
     action:
       - type: target_self

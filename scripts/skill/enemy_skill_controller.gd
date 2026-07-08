@@ -20,14 +20,15 @@ func process(delta: float):
 				print("[EnemySkill] ready: ", es.name, " (", user, ")")
 
 # Enemy cast rules (differ from towers): a hit wakes the enemy for
-# Enemy.inCombatWindow seconds (hybrid sleep loop), and ONE random ready skill
-# is cast per opportunity instead of every ready skill in order.
+# Enemy.inCombatWindow seconds (hybrid sleep loop) and arms its castWait
+# pacing timer; when the timer elapses ONE random ready skill is cast, then
+# the timer re-arms - hit = wait -> cast, never a back-to-back chain.
 func useSkill():
 	if(!canUseSkill()):
 		return;
 
 	var enemy := user as Enemy
-	if(enemy == null || !enemy.isInCombat()):
+	if(enemy == null || !enemy.canCastNow()):
 		return;
 
 	var ready: Array[Skill] = [];
@@ -52,6 +53,10 @@ func useSkill():
 	await execute_skill_actions(skill, context);
 	if(is_instance_valid(enemy)):
 		enemy.castLocked = false;
+		# Re-arm the pacing gap AFTER the full cast (incl. recovery). Also runs
+		# on a cancelled cast (wave-end teardown) - harmless, kept simpler than
+		# splitting it into onSuccess.
+		enemy.castWaitRemaining = enemy.castWait;
 
 func onSuccess(skill: Skill):
 	super.onSuccess(skill);

@@ -14,23 +14,23 @@ stats:
   moveSpeed: 30
 skill:
   - name: Adaptation
-    cooldown: 20
+    cooldown: 12
     recovery: 0.2
     tags:
       - defense
       - self
-    desc: "King Salam adapts his royal hide, reducing all damage he takes by 10% for 5 seconds."
+    desc: "King Salam adapts his royal hide, reducing all damage he takes by 20% for 5 seconds."
     action:
       - type: target_self
       - type: apply_effect
         data:
           effect: damage_reduction_up
           target: targets
-          value: 0.1
+          value: 0.2
           duration: 5
           title: "Adaptation"
   - name: Slime Fluid
-    cooldown: 30
+    cooldown: 15
     cast_time: 0.5
     recovery: 0.2
     tags:
@@ -47,7 +47,7 @@ skill:
           value: 0.1
           duration: 10
   - name: King's Command
-    cooldown: 40
+    cooldown: 30
     cast_time: 0.5
     recovery: 0.2
     tags:

@@ -5,9 +5,7 @@ stats:
   moveSpeed: 40
 skill:
   - name: Sweat Spore
-    cooldown: 0
-    oneTime: true
-    recovery: 0 # instant aura pop - no post-cast hold (keep 0: a hold would freeze walking on cast)
+    type: passive # aura up from spawn - a buff that must exist at engagement cannot be an Active under the cast gate
     desc: เพิ่ม def ให้ตนเอง 5%
     action:
       - type: target_self

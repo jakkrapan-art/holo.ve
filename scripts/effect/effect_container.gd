@@ -40,6 +40,11 @@ func apply(inst: EffectInstance) -> EffectInstance:
 		# Both rules refresh the (shared) timer - player-favorable.
 		existing.duration = inst.duration
 		existing.remaining = inst.duration
+		# Re-adopt caster data captured at this application (e.g. the DOT
+		# attack snapshot - Liquid Fire: snapshot at EVERY apply). A fresh
+		# instance's snapshot holds only capture()-written keys, so runtime
+		# keys (tick clock, prev_modulate) are never clobbered.
+		existing.snapshot.merge(inst.snapshot, true)
 		_agg_cache.clear()
 		effect_updated.emit(existing)
 		_check_mark_threshold(existing)

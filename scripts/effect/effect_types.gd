@@ -33,6 +33,7 @@ enum Kind {
 	DOT,
 	MARK_ONLY,
 	INVINCIBLE,
+	HOT,
 }
 
 enum Category { BUFF, DEBUFF, MARK }
@@ -70,6 +71,7 @@ const KIND_FROM_STRING := {
 	"dot": Kind.DOT,
 	"mark": Kind.MARK_ONLY,
 	"invincible": Kind.INVINCIBLE,
+	"hot": Kind.HOT,
 }
 
 const CATEGORY_FROM_STRING := {

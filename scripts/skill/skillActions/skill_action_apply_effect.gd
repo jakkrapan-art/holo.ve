@@ -27,6 +27,9 @@ extends SkillAction
 @export var durationParam: String = ""
 @export var range_cells: int = 1
 @export var authoredTitle: String = ""
+# false = skip the red footprint flash; for the 2nd+ apply_effect of one skill
+# hitting the same box (e.g. Bulldoze) so the area doesn't double-flash.
+@export var showArea: bool = true
 
 func execute(context: SkillContext) -> void:
 	var user := context.user
@@ -44,7 +47,7 @@ func execute(context: SkillContext) -> void:
 
 	# Enemy-cast area debuff: flash the affected box in red so the player (and
 	# playtests) can see the real footprint - reuses the staff SkillCastIndicator.
-	if targetMode == "towers_in_range":
+	if targetMode == "towers_in_range" and showArea:
 		_spawn_area_flash(user)
 
 	for target in _resolve_targets(context, user):

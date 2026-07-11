@@ -27,8 +27,15 @@ static func ParseSkill(skillDataList: Array) -> Array[Skill]:
 		# Post-cast hold (seconds); enemy default 0.0 - a 0.2 default would
 		# permanently freeze cooldown-0 every-frame recast skills (aura elites).
 		s.recoveryTime = float(skill.get("recovery", 0.0));
-		# `type: passive` = apply once at spawn (no gate/cooldown); default active.
-		s.passive = str(skill.get("type", "active")) == "passive";
+		# Skill kinds: active (default, castWait gate) | passive (once at spawn)
+		# | triggered (fires itself on its trigger condition, bypassing the gate).
+		var typeStr = str(skill.get("type", "active"));
+		s.passive = typeStr == "passive";
+		s.triggered = typeStr == "triggered";
+		var trigger = skill.get("trigger", {});
+		s.trigger_hp_below = float(trigger.get("hp_below", 0.0));
+		if s.triggered and s.trigger_hp_below <= 0.0:
+			push_warning("Triggered skill '", skillName, "' has no trigger condition - it will never fire.");
 		# Player-facing summary tags (same controlled registry as tower skills).
 		# Append str() per entry - a raw YAML Array can't assign into Array[String].
 		for tag in skill.get("tags", []):
@@ -59,6 +66,7 @@ static func ParseAction(data: Dictionary, parameters: Dictionary = {}) -> SkillA
 			skill.durationParam = skillData.get("duration_param", "");
 			skill.range_cells = skillData.get("range", 1);
 			skill.authoredTitle = skillData.get("title", "");
+			skill.showArea = skillData.get("show_area", true);
 		"effect_area":
 			# Aura zone applying a registry effect while hosts stay inside.
 			skill = SkillActionEffectArea.new();
@@ -154,6 +162,17 @@ static func ParseAction(data: Dictionary, parameters: Dictionary = {}) -> SkillA
 			skill.width = skillData.get("width", 1);
 			skill.height = skillData.get("height", 1);
 			skill.cancel_when_empty = skillData.get("cancel_when_empty", true);
+		"dash":
+			# Path dash: slide the casting enemy forward along its path.
+			skill = SkillActionDash.new();
+			var skillData = data.get("data", {});
+			skill.cells = float(skillData.get("cells", 1.0));
+			skill.duration = float(skillData.get("duration", 0.3));
+		"heal_percent_maxhp":
+			# Instant heal = target.maxHp x percent (enemy self heals).
+			skill = SkillActionHealPercentMaxHp.new();
+			var skillData = data.get("data", {});
+			skill.percent = float(skillData.get("percent", 0.0));
 		"damage_percent_maxhp":
 			# Staff-style TRUE damage = enemy.maxHp × percent (boss vs non-boss split).
 			# First caller: A-Chan "Hard Worker Ghost Release!!!".

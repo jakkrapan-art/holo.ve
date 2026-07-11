@@ -81,7 +81,10 @@ func execute_skill_actions(skill: Skill, context: SkillContext):
 
 func resetUsingSkill(skill: Skill):
 	skill.using = false;
-	if(user is Tower || user is Enemy):
+	# Valid guard: a cancel can arrive after the host was freed (e.g. an enemy
+	# leaking/dying during a long mid-cast delay) - `user is Enemy` alone still
+	# passes on a freed instance.
+	if(user != null && is_instance_valid(user) && (user is Tower || user is Enemy)):
 		user.usingSkill = skills.any(Callable(self, "checkUsingSkill"));
 
 func onSuccess(skill: Skill):

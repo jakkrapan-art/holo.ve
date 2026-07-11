@@ -1,6 +1,9 @@
 # Boss. `name` is the display name; the sprite + id come from the file path
 # (resources/enemy/forest01/boss/giant_boar/giant_boar.png). `wave` lists the
-# waves this boss is eligible to spawn on. skill is inline (3 boss skills).
+# waves this boss is eligible to spawn on; `scale` is the visual/hitbox size
+# multiplier applied at spawn. Skills are inline (3 max by design); enemy
+# skills are single-level, so desc uses concrete numbers (see enemy_skill.md).
+# Design source: Director xlsx 2026-07-09 (boss.md Giant Boar).
 name: Giant Boar
 scale: 2
 wave:
@@ -9,53 +12,85 @@ stats:
   hp: 20000
   def: 5
   mDef: 5
-  moveSpeed: 100
-  skillCount: 3
-  buffCount: 3
+  moveSpeed: 60
 skill:
-  - name: Charge
-    cooldown: 20
+  - name: Super Charge
+    cooldown: 12
+    cast_time: 1.0
     recovery: 0.2
-    desc: charge_desc
+    tags:
+      - movement
+    desc: "The Giant Boar braces, then charges 2 tiles forward along the path."
     action:
-      - type: target_self
-      - type: set_speed
+      - type: dash
         data:
-          speed: 0
-      - type: delay
-        data:
-          delay: 2
-      - type: set_speed
-        data:
-          speed: 150
-      - type: delay
-        data:
-          delay: 2
-      - type: set_speed
-        data:
-          speed: 100
+          cells: 2
+          duration: 0.3
   - name: Thick Skin
-    cooldown: 45
+    type: triggered
+    trigger:
+      hp_below: 0.4
+    oneTime: true
+    cast_time: 0.5
     recovery: 0.2
-    desc: thick_skin_desc
+    tags:
+      - defense
+      - heal
+    desc: "When its health falls below 40%, the Giant Boar lies down to rest for 5 seconds - taking 50% less damage and recovering 5% of its max health every second. On waking it gains 50% movement speed for 5 seconds."
     action:
       - type: target_self
       - type: apply_effect
         data:
-          effect: armor_mult_up
+          effect: rest
           target: targets
-          value: 7.5
           duration: 5
-  - name: Scary Graze
-    cooldown: 30
+          title: "Thick Skin - Resting"
+      - type: apply_effect
+        data:
+          effect: damage_reduction_up
+          target: targets
+          value: 0.5
+          duration: 5
+          title: "Thick Skin - Hardened"
+      - type: apply_effect
+        data:
+          effect: rest_recovery
+          target: targets
+          duration: 5
+          title: "Thick Skin - Recovering"
+      - type: delay
+        data:
+          delay: 5
+      - type: apply_effect
+        data:
+          effect: move_speed_up
+          target: targets
+          value: 0.5
+          duration: 5
+          title: "Thick Skin - Haste"
+  - name: Bulldoze
+    cooldown: 20
+    cast_time: 0.5
     recovery: 0.2
-    desc: scary_graze_desc
+    tags:
+      - debuff
+      - aoe
+    desc: "The Giant Boar stomps the ground, shaking a 5x5 area - units caught inside deal 20% less damage for 8 seconds."
     action:
-      - type: target_self
-      - type: effect_area
+      - type: apply_effect
         data:
           effect: attack_mult_down
-          value: 10           # percent scale (10 = -10% damage); same result as legacy 0.10 decimal
-          duration: 3
-          radius: 1
-          affects: towers
+          target: towers_in_range
+          range: 2
+          value: 20
+          duration: 8
+          title: "Bulldoze - Damage Down"
+      - type: apply_effect
+        data:
+          effect: magic_mult_down
+          target: towers_in_range
+          range: 2
+          value: 20
+          duration: 8
+          show_area: false
+          title: "Bulldoze - Magic Down"

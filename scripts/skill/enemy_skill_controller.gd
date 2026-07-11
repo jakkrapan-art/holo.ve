@@ -33,7 +33,7 @@ func useSkill():
 
 	var ready: Array[Skill] = [];
 	for skill in skills:
-		if(skill is EnemySkill && (skill as EnemySkill).passive):
+		if(skill is EnemySkill && ((skill as EnemySkill).passive || (skill as EnemySkill).triggered)):
 			continue;
 		if(skill != null && skill.isReady()):
 			ready.append(skill);
@@ -62,6 +62,50 @@ func onSuccess(skill: Skill):
 	super.onSuccess(skill);
 	if skill is EnemySkill:
 		(skill as EnemySkill).startCooldown();
+
+# Triggered skills (type: triggered): condition checked from Enemy.recvDamage
+# after the HP write; check_hp_triggers only flags PENDING - the cast fires
+# from useTriggeredSkill() in the Enemy._process hook once the busy flag frees,
+# bypassing the castWait pacing gate (the condition is its own telegraph; the
+# gate paces gate-driven Actives, not condition reactions - enemy_skill.md).
+var pendingTriggered: Array[Skill] = []
+
+func check_hp_triggers(hp_ratio: float):
+	for skill in skills:
+		if(!(skill is EnemySkill)):
+			continue;
+		var es := skill as EnemySkill
+		if(!es.triggered || es.triggerUsed):
+			continue;
+		if(es.trigger_hp_below > 0.0 && hp_ratio < es.trigger_hp_below):
+			es.triggerUsed = true;
+			pendingTriggered.append(es);
+			if DEBUG_LOG:
+				print("[EnemySkill] trigger pending: ", es.name, " (", user, ", hp ", hp_ratio, ")")
+
+func useTriggeredSkill():
+	if(pendingTriggered.is_empty() || !canUseSkill()):
+		return;
+	var enemy := user as Enemy
+	if(enemy == null):
+		return;
+
+	cancelled = false;
+	var skill: Skill = pendingTriggered.pop_front();
+	if DEBUG_LOG:
+		print("[EnemySkill] trigger cast: ", skill.name, " (", user, ")")
+	var context = SkillContext.new()
+	context.user = user
+	context.skillName = skill.name
+	context.extra["parameter"] = skill.parameters
+
+	enemy.castLocked = true;
+	await execute_skill_actions(skill, context);
+	if(is_instance_valid(enemy)):
+		enemy.castLocked = false;
+		# Same re-arm invariant as useSkill: without it a gate Active fires
+		# back-to-back right after a long triggered cast (e.g. Thick Skin ~5.5s).
+		enemy.castWaitRemaining = enemy.castWait;
 
 # Passive skills (type: passive): apply the action list once at spawn - no
 # in-combat gate, no cast_time/busy flag, no cooldown/onSuccess. Called from

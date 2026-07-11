@@ -84,6 +84,8 @@ static func _behavior_for(def: EffectDef) -> EffectBehavior:
 			return StunBehavior.new()
 		EffectTypes.Kind.DOT:
 			return DotBehavior.new()
+		EffectTypes.Kind.HOT:
+			return HotBehavior.new()
 		EffectTypes.Kind.INVINCIBLE:
 			return InvincibleBehavior.new()
 		_:

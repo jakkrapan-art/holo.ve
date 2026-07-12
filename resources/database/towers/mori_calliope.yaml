@@ -74,6 +74,10 @@ skills:
         data:
           animation: "skill"
           duration: 0.5
+      - type: play_effect
+        data:
+          # Reaper's dark-energy crescent — self-centered 3x3 sweep (calliope_skill_effect.gd)
+          effect_script: "res://resources/tower/hololive/en_branch/myth_gen/caliolpe/skill_effect/calliope_skill_effect.gd"
       - type: attack
         data:
           damage_multiplier_param_name: "skillDamage"

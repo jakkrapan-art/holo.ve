@@ -19,7 +19,7 @@ var selectingDeckToggle: UIToggle;
 @export var branchFilterContainer: Node;
 
 var currentGroupFilter: String = "";
-var DEFAULT_BRANCH_FILTER: String = "jp";
+var DEFAULT_BRANCH_FILTER: String = "en";
 
 # Manager Card display refs — populated dynamically from the selected StaffData.
 # (Phase 1 has 1 staff; the script is shaped so adding more entries in staffs.yaml
@@ -37,6 +37,8 @@ func _ready():
 	_setup_branch_filter()
 	_setup_buttons()
 	_setup_staff_card()
+
+	_on_branch_filter_pressed(DEFAULT_BRANCH_FILTER)  # Set default branch filter to JP
 
 func _load_deck():
 	_data = YamlParser.load_data("res://resources/database/towers/decks/decks.yaml")

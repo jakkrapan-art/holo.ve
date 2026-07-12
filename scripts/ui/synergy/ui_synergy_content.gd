@@ -12,6 +12,7 @@ const ACTIVE_HIGHLIGHT := "#FFD15A"                       # active tier row in t
 @onready var bg = $"."
 @onready var synergyName = $HBoxContainer/VBoxContainer/SynergyName
 @onready var synergyValue = $HBoxContainer/VBoxContainer/SynergyValue
+@onready var synergyIcon = $HBoxContainer/SynergyIcon
 
 var _name: String = ""
 var _data: SynergyData = null
@@ -23,7 +24,7 @@ var _stylebox: StyleBoxFlat = null   # this row's own panel StyleBox (see setup)
 var _tooltip_label: RichTextLabel = null  # open hover's rich label, for live quest-progress refresh
 
 # tier: current active tier (-1 = not yet proc'd). data: SynergyData or null.
-func setup(p_name: String, current: int, tier: int, data) -> void:
+func setup(p_name: String, current: int, tier: int, icon: Texture2D, data) -> void:
 	_name = p_name
 	_data = data
 	_tier = tier
@@ -47,6 +48,9 @@ func setup(p_name: String, current: int, tier: int, data) -> void:
 	if synergyValue != null:
 		# current count - proc breakpoints, active one bracketed (e.g. "4 - 3 [4] 5").
 		synergyValue.text = "%d - %s" % [current, _breakpoints_text(tier)]
+
+	if synergyIcon != null:
+		synergyIcon.texture = icon
 
 	# Rich tooltip is built in _make_custom_tooltip; tooltip_text just needs to be
 	# non-empty so the tooltip triggers (delay lowered globally in project.godot).

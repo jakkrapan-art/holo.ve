@@ -32,6 +32,12 @@ class_name SkillActionAttack
 # state never bleeds between enemies.
 @export var statusEffects: Array[EffectSpec] = []
 
+# Stack-scaling bonus: adds (caster's stacks of an effect id) x per-stack value
+# to the Skill Multiplier, read at execute time so the count is always live
+# (e.g. Calliope Souls). Generic - a stack-scaling tower authors YAML only.
+@export var stackBonusEffectId: String = ""
+@export var stackBonusPerStack: float = 0.0
+
 func execute(context: SkillContext):
 	var tower: Tower = context.user as Tower
 
@@ -47,6 +53,10 @@ func execute(context: SkillContext):
 	if damageMultiplierPerLevel.size() > 0:
 		var idx: int = clampi(tower.data.level - 1, 0, damageMultiplierPerLevel.size() - 1)
 		mult = damageMultiplierPerLevel[idx]
+
+	# Stack-scaling bonus (live count at execute time - see export note above)
+	if stackBonusEffectId != "" and stackBonusPerStack != 0.0:
+		mult += float(tower.data.effects.stacks_of(stackBonusEffectId)) * stackBonusPerStack
 
 	# Resolve hits — empty distribution = single hit
 	var hits: Array[float] = hitDistribution if hitDistribution.size() > 0 else ([1.0] as Array[float])

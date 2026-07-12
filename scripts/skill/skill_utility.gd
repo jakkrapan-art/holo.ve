@@ -146,6 +146,14 @@ static func ParseAction(data: Dictionary, parameters: Dictionary = {}) -> SkillA
 				skill.hitDistribution = hdArr
 			skill.canCrit = skillData.get("can_crit", true)
 			skill.forcedCrit = skillData.get("force_crit", false)
+			# Stack-scaling bonus (e.g. Calliope Souls): + stacks x per-stack
+			# value on the multiplier, count read live at execute time.
+			skill.stackBonusEffectId = str(skillData.get("stack_bonus_effect", ""))
+			var sbParam = skillData.get("stack_bonus_per_stack_param_name", "")
+			if sbParam != "" and parameters.has(sbParam):
+				skill.stackBonusPerStack = float(parameters[sbParam])
+			else:
+				skill.stackBonusPerStack = float(skillData.get("stack_bonus_per_stack", 0.0))
 			if skillData.has("damage_type"):
 				skill.damageType = Utility.parse_string_to_enum(Damage.DamageType, skillData["damage_type"])
 				skill.damageTypeOverride = true
@@ -154,6 +162,26 @@ static func ParseAction(data: Dictionary, parameters: Dictionary = {}) -> SkillA
 			var attackEffectList = skillData.get("effects", []);
 			if attackEffectList.size() > 0:
 				skill.statusEffects = EffectUtility.parse_effect_list(attackEffectList, parameters, "action_" + str(skill.get_instance_id()));
+		"aftershock":
+			# Delayed non-blocking re-hit of a snapshotted area ("aftershock"
+			# pattern - tower_skill.md). The inner find/attack are built from
+			# this same data block via this parser, so damage_multiplier_param_name,
+			# damage_type, can_crit, and stack_bonus_* all work in the explosion.
+			skill = SkillActionAftershock.new();
+			var skillData = data.get("data", {});
+			skill.width = int(skillData.get("width", 3));
+			skill.height = int(skillData.get("height", 3));
+			var delayParam = skillData.get("delay_param_name", "");
+			if delayParam != "" and parameters.has(delayParam):
+				skill.delay = float(parameters[delayParam]);
+			else:
+				skill.delay = float(skillData.get("delay", 0.5));
+			var findAction := SkillActionFindMultipleInRange.new();
+			findAction.width = skill.width;
+			findAction.height = skill.height;
+			findAction.cancel_when_empty = false;
+			skill.find_action = findAction;
+			skill.attack_action = ParseAction({"type": "attack", "data": skillData}, parameters) as SkillActionAttack;
 		"clear_enemy":
 			skill = SkillActionClearEnemy.new();
 		"find_multi_enemy":
@@ -162,6 +190,8 @@ static func ParseAction(data: Dictionary, parameters: Dictionary = {}) -> SkillA
 			skill.width = skillData.get("width", 1);
 			skill.height = skillData.get("height", 1);
 			skill.cancel_when_empty = skillData.get("cancel_when_empty", true);
+			# Self-centered axis-aligned box (no aim rotation/forward extend).
+			skill.center_on_self = skillData.get("center_on_self", false);
 		"dash":
 			# Path dash: slide the casting enemy forward along its path.
 			skill = SkillActionDash.new();

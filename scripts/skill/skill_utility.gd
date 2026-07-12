@@ -182,6 +182,9 @@ static func ParseAction(data: Dictionary, parameters: Dictionary = {}) -> SkillA
 			findAction.cancel_when_empty = false;
 			skill.find_action = findAction;
 			skill.attack_action = ParseAction({"type": "attack", "data": skillData}, parameters) as SkillActionAttack;
+			# Optional explosion-time VFX, spawned at _fire (e.g. Calliope evolve slash).
+			if skillData.has("effect_script"):
+				skill.effect_action = ParseAction({"type": "play_effect", "data": {"effect_script": skillData["effect_script"]}}, parameters) as SkillActionPlayEffect;
 		"clear_enemy":
 			skill = SkillActionClearEnemy.new();
 		"find_multi_enemy":

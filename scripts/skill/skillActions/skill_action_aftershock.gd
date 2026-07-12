@@ -15,6 +15,10 @@ extends SkillAction
 # so the explosion reuses the full find/attack pipelines.
 var find_action: SkillActionFindMultipleInRange
 var attack_action: SkillActionAttack
+# Optional explosion-time VFX (e.g. Calliope evolve beat-2 slash). Built at parse
+# time like the find/attack actions; spawned in _fire so it rides this same
+# pause/x2 clock and only appears once the bomb actually fires.
+var effect_action: SkillActionPlayEffect
 
 func execute(context: SkillContext):
 	var tower: Tower = context.user as Tower
@@ -74,6 +78,10 @@ class AftershockTimer:
 		# Snapshotted cast-time center -> the finder's centered override path
 		# (axis-aligned box, same query the Staff player-aim uses).
 		ctx.extra["target_position"] = center
+		# Explosion VFX (unconditional - the eruption is committed once planted, so
+		# it plays even if the re-query finds 0 targets). Non-blocking spawn.
+		if action.effect_action != null:
+			action.effect_action.execute(ctx)
 		await action.find_action.execute(ctx)
 		if not is_instance_valid(tower) or tower.skill_lock_generation != gen:
 			queue_free()

@@ -4,14 +4,13 @@ generation: myth
 attackType: physic
 evolutionCost: 1
 
-# skill: "res://resources/database/skill/gawr_gura_skill.tres"
-attack_sound: "hit_calliope"
+attack_sound: "hit_caliope"   # enum key is hit_caliope (sound_database.gd) - the old "hit_calliope" fell back to the generic hit with an error per attack
 open_sound: "debut_caliope"
 evolve_sound: "evo_caliope"
 
 stats:
   - damage: 80
-    attackRange: 2.0
+    attackRange: 1.0
     attackSpeed: 100
     mana: 40
     initialMana: 10
@@ -19,7 +18,7 @@ stats:
     critMultiplier: 1.5
 
   - damage: 100
-    attackRange: 2.0
+    attackRange: 1.0
     attackSpeed: 100
     mana: 40
     initialMana: 10
@@ -27,38 +26,160 @@ stats:
     critMultiplier: 1.5
 
   - damage: 140
-    attackRange: 2.0
+    attackRange: 1.0
     attackSpeed: 100
     mana: 40
     initialMana: 10
     critChance: 0
     critMultiplier: 1.5
 
-skill:
-  name: "Skill"
-  desc: "Just a skill"
-  recovery: 0.2 # post-cast hold (s) before resuming attack — see default_tower.yaml
-  actions:
-    - type: find_multi_enemy
-      data:
-        width: 3
-        height: 1
-    - type: play_animation
-      data:
-        animation: "skill"
-    - type: attack
-      data:
-        damage: 100
-        damage_type: physic
-    - type: play_animation
-      data:
-        animation: "idle"
+# Active Skill - "Ricky": self-centered 3x3 scythe sweep that scales with
+# Souls. Reference example for: center_on_self + attack stack_bonus keys.
+# Souls themselves are granted by the "Soul Harvest" passive below.
+skills:
+  active:
+    name: "Ricky"
+    names: ["Ricky I", "Ricky II", "Ricky III"]
+    desc: "Calliope sweeps her scythe Ricky through the 3x3 area around her, dealing heavy physical damage that grows with every Soul she holds. Each enemy killed by this skill grants her 1 Soul, kept for the whole run."
+    desc_template: "Calliope sweeps her scythe Ricky through the 3x3 area around her, dealing {skillDamage:percent} physical damage plus {soulBonus:percent} more per Soul she holds. Each enemy killed by this skill grants her 1 Soul, kept for the whole run."
+    icon: ""
+    tags:
+      - damage
+      - attack
+      - aoe
+    target_summary:
+      target_team: enemy
+      target_type: enemy
+      target_shape: area
+    effects:
+      - name: "Scythe Sweep"
+        target:
+          target_team: enemy
+          target_type: enemy
+          target_shape: area
+    recovery: 0.2 # post-cast hold (s) before resuming attack - see default_tower.yaml
+    parameters:
+      skillDamage:
+        - 1.2
+        - 1.3
+        - 1.4
+      soulBonus: 0.05
+    actions:
+      - type: find_multi_enemy
+        data:
+          width: 3
+          height: 3
+          center_on_self: true        # box centered on Calliope, hits all sides
+      - type: play_animation
+        data:
+          animation: "skill"
+          duration: 0.5
+      - type: attack
+        data:
+          damage_multiplier_param_name: "skillDamage"
+          damage_type: physic
+          stack_bonus_effect: "soul"                    # registry id (effects.yaml)
+          stack_bonus_per_stack_param_name: "soulBonus" # live count at execute
+      - type: play_animation
+        data:
+          animation: "idle"
+  # Passive - grants the Souls the active spends. Run-permanent by design:
+  # Souls survive wave end AND evolve (Director 2026-07-12).
+  passive:
+    name: "Soul Harvest"
+    desc: "Enemies killed by Calliope's skills each grant her a Soul. Souls last the whole run and strengthen her scythe skills."
+    desc_template: "Enemies killed by Calliope's skills each grant her {soulsPerKill} Soul. Souls last the whole run and strengthen her scythe skills."
+    icon: ""
+    tags:
+      - buff
+      - self
+    target_summary:
+      target_team: self
+      target_type: tower
+      target_shape: single
+    effects:
+      - name: "Soul Stacking"
+        target:
+          target_team: self
+          target_type: tower
+          target_shape: single
+    parameters:
+      soulsPerKill: 1
+    behavior: "soul_harvest"
 
 evolutionStat:
   damage: 200
-  attackRange: 2.0
+  attackRange: 1.0
   attackSpeed: 120
   mana: 80
   initialMana: 40
   critChance: 50.0
   critMultiplier: 1.5
+
+# Evolved Active Skill - the first hit plants an "aftershock": 0.5s later the
+# same ground erupts again WITHOUT interrupting Calliope (she resumes
+# attacking during the delay). Souls are counted live at each hit, so kills
+# by the first hit strengthen the aftershock immediately.
+evolution_skills:
+  active:
+    name: "Excuse My Rudeness, But Could You Please RIP?"
+    desc: "Calliope reaps the 3x3 area around her with massive physical damage, and moments later the same ground erupts again. Both hits grow with her Souls, and each enemy killed grants her 1 Soul."
+    desc_template: "Calliope reaps the 3x3 area around her for {skillDamage:percent} physical damage plus {soulBonus:percent} per Soul. {aftershockDelay}s later the same ground erupts for {aftershockDamage:percent} physical damage plus {aftershockSoulBonus:percent} per Soul she holds at that moment. Each enemy killed grants her 1 Soul."
+    icon: ""
+    tags:
+      - damage
+      - attack
+      - aoe
+    target_summary:
+      target_team: enemy
+      target_type: enemy
+      target_shape: area
+    effects:
+      - name: "Reaping Blow"
+        target:
+          target_team: enemy
+          target_type: enemy
+          target_shape: area
+      - name: "Soul Aftershock"
+        target:
+          target_team: enemy
+          target_type: enemy
+          target_shape: area
+    recovery: 0.2 # post-cast hold (s) before resuming attack - see default_tower.yaml
+    parameters:
+      skillDamage: 2.0
+      soulBonus: 0.05
+      aftershockDamage: 1.0
+      aftershockSoulBonus: 0.025
+      aftershockDelay: 0.5
+    actions:
+      - type: find_multi_enemy
+        data:
+          width: 3
+          height: 3
+          center_on_self: true
+      - type: play_animation
+        data:
+          animation: "skill"
+          duration: 0.5
+      - type: attack
+        data:
+          damage_multiplier_param_name: "skillDamage"
+          damage_type: physic
+          stack_bonus_effect: "soul"
+          stack_bonus_per_stack_param_name: "soulBonus"
+      - type: aftershock                 # plants the bomb and returns - does NOT block the tower
+        data:
+          delay_param_name: "aftershockDelay"
+          width: 3
+          height: 3
+          damage_multiplier_param_name: "aftershockDamage"
+          damage_type: physic
+          stack_bonus_effect: "soul"
+          stack_bonus_per_stack_param_name: "aftershockSoulBonus"
+      - type: play_animation
+        data:
+          animation: "idle"
+  # Empty evolved passive -> the loader falls back to the base Soul Harvest
+  # passive (tower.gd _setupPassive), so Souls keep accruing after evolve.
+  passive: null

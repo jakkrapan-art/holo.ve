@@ -118,6 +118,16 @@ func clear_all() -> void:
 		_remove_instance(inst)
 	_mark_thresholds.clear()
 
+# Total stacks of one effect id across all sources, any category - generic
+# stack-counter reader (e.g. the Calliope soul buff; mark_stacks below is
+# MARK-category only).
+func stacks_of(effect_id: String) -> int:
+	var total := 0
+	for inst: EffectInstance in _effects.values():
+		if inst.def.id == effect_id:
+			total += inst.stacks
+	return total
+
 # ---- Mark API (framework; no consumer tower yet - see buff_debuff.md) ----
 
 func has_mark(effect_id: String) -> bool:

@@ -4,6 +4,10 @@ class_name SkillActionFindMultipleInRange
 @export var width: int = 1 # Width in cells
 @export var height: int = 2 # Height in cells
 var cancel_when_empty: bool = true
+# Self-centered grid AOE (e.g. Calliope scythe): axis-aligned box centered on
+# the caster, no aim rotation or forward extend. A target_position override
+# in context.extra still wins (it re-centers the same box elsewhere).
+var center_on_self: bool = false
 
 var target_group: String = "enemy" # Group name for potential targets
 var max_attempt := 1
@@ -39,6 +43,10 @@ func find_targets_in_rotated_range(context: SkillContext):
 	var override_position = context.extra.get("target_position", null)
 	if override_position != null and override_position is Vector2:
 		user_position = override_position
+		user_rotation = 0.0
+		center_on_anchor = true
+	elif center_on_self:
+		# Same centered/axis-aligned query as the override, anchored on the caster.
 		user_rotation = 0.0
 		center_on_anchor = true
 	elif context.user is Tower:

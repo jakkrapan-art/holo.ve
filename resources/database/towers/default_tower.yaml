@@ -77,6 +77,8 @@ skills:
         data:
           width: 3
           height: 1
+          # center_on_self: true  # optional — กล่องวางกึ่งกลางตัว tower แกนตรง ไม่หมุนตามเป้า
+          #                       # (สกิลตีรอบตัว เช่น 3x3 ของ Calliope) ไม่ใส่ = กล่องพุ่งหาเป้าแบบเดิม
       - type: play_animation
         data:
           animation: "skill"
@@ -112,6 +114,12 @@ skills:
           #     data:
           #       damage_multiplier: [1.4, 1.5, 1.7]
           #       can_crit: false
+          #
+          # stack_bonus_effect + stack_bonus_per_stack_param_name:
+          #   สกิลสเกลตาม stack (เช่น Soul ของ Calliope) — ตัวคูณเพิ่มขึ้น
+          #   จำนวน stack ของ effect id นั้นบน tower x ค่าต่อ stack (อ่านสดตอนตี)
+          #   ตัวอย่าง: stack_bonus_effect: "soul"
+          #             stack_bonus_per_stack_param_name: "soulBonus"
           # ─────────────────────────────────────────────────────────────────
       - type: play_animation
         data:
@@ -158,6 +166,23 @@ skills:
       #     - type: play_animation
       #       data:
       #         animation: "idle"
+      # ─────────────────────────────────────────────────────────────────
+      # AFTERSHOCK (ระเบิดตามหลัง ไม่บล็อกการตี) — ของจริงดู mori_calliope.yaml
+      #
+      #   วางไว้หลัง attack แรก: action นี้วางระเบิดแล้วจบ cast ทันที tower
+      #   กลับไปตีต่อได้ระหว่างรอ ครบ delay แล้วพื้นที่เดิม (กึ่งกลางตำแหน่ง
+      #   ตอน cast) ระเบิดซ้ำด้วยการหาเป้าใหม่สด — คีย์ damage/crit/stack_bonus
+      #   ชุดเดียวกับ attack ใช้ในระเบิดได้หมด
+      #
+      #   - type: aftershock
+      #     data:
+      #       delay_param_name: "aftershockDelay"   # หรือใส่ delay: 0.5 ตรง ๆ
+      #       width: 3
+      #       height: 3
+      #       damage_multiplier_param_name: "aftershockDamage"
+      #       damage_type: physic
+      #       stack_bonus_effect: "soul"
+      #       stack_bonus_per_stack_param_name: "aftershockSoulBonus"
       # ─────────────────────────────────────────────────────────────────
   passive: null
 

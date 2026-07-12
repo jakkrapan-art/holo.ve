@@ -100,6 +100,11 @@ func _hasActiveSkill() -> bool:
 func _setupPassive() -> void:
 	if passive != null:
 		passive.reset();
+		# Detach external listeners (e.g. PassiveSoulHarvest's kill signal)
+		# before the rebuild - the connection keeps the old RefCounted alive,
+		# and a leaked listener would double its effect after evolve.
+		if passive.has_method("dispose"):
+			passive.dispose();
 		passive = null;
 
 	var params: Dictionary = data.evolutionPassive if data.isEvolved and not data.evolutionPassive.is_empty() else data.passive;
@@ -109,6 +114,8 @@ func _setupPassive() -> void:
 	match str(params.get("behavior", "")):
 		"crit_pierce":
 			passive = PassiveCritPierce.new(self, params);
+		"soul_harvest":
+			passive = PassiveSoulHarvest.new(self, params);
 		_:
 			push_warning("Tower '" + towerName + "': unknown passive behavior '" + str(params.get("behavior", "")) + "'");
 
@@ -411,6 +418,8 @@ func remove_effect_source(source_id: String) -> void:
 # this node: clear wave-scoped effects when the tower leaves the board so a
 # re-placed tower never resumes a frozen buff (plan F3).
 func _exit_tree():
+	if passive != null and passive.has_method("dispose"):
+		passive.dispose()
 	if data != null:
 		data.effects.clear_wave_scoped()
 		if data.effects.get_host() == self:

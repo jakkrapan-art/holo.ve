@@ -184,6 +184,27 @@ skills:
       #       stack_bonus_effect: "soul"
       #       stack_bonus_per_stack_param_name: "aftershockSoulBonus"
       # ─────────────────────────────────────────────────────────────────
+      # CHANNEL (ร่ายค้าง ฟาดโซนเดิมซ้ำเป็นจังหวะ) — ของจริงดู ninomae_ina_nis.yaml
+      #
+      #   วางต่อจาก find_multi_enemy แรก: โซนล็อกที่จุดเล็งตอนเริ่มร่าย tower
+      #   ค้าง (ไม่ตีปกติ) จน channel จบ แต่ละ tick หาเป้าใหม่สดในโซนเดิม
+      #   ตีทั้งโซน — คีย์ damage/crit/effects ชุดเดียวกับ attack ใช้ได้หมด
+      #   ยกเลิกกลางคัน (จบเวฟ) = หยุดฟาดทันที ไม่กิน Energy
+      #
+      #   - type: channel
+      #     data:
+      #       width: 3
+      #       height: 3
+      #       duration_param_name: "channelDuration"      # หรือ duration: 3.0 ตรง ๆ
+      #       tick_interval_param_name: "tickInterval"    # หรือ tick_interval: 0.25 ตรง ๆ
+      #       animation: "skill"                          # คลิปร่าย เล่นค้างตลอด channel
+      #       damage_multiplier_param_name: "tickDamage"
+      #       damage_type: magic
+      #       can_crit: false
+      #       effects:
+      #         - effect: "stun"
+      #           duration_param: "tickStun"
+      # ─────────────────────────────────────────────────────────────────
   passive: null
 
 # evolutionStat = stat ตอน evolve (block เดียว ไม่ใช่ array)

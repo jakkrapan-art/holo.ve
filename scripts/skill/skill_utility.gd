@@ -185,6 +185,38 @@ static func ParseAction(data: Dictionary, parameters: Dictionary = {}) -> SkillA
 			# Optional explosion-time VFX, spawned at _fire (e.g. Calliope evolve slash).
 			if skillData.has("effect_script"):
 				skill.effect_action = ParseAction({"type": "play_effect", "data": {"effect_script": skillData["effect_script"]}}, parameters) as SkillActionPlayEffect;
+		"channel":
+			# Blocking zone-locked multi-tick ("channel" pattern - tower_skill.md).
+			# The inner find/attack are built from this same data block via this
+			# parser, so damage_multiplier_param_name, damage_type, can_crit, and
+			# effects all work per tick.
+			skill = SkillActionChannel.new();
+			var skillData = data.get("data", {});
+			skill.width = int(skillData.get("width", 3));
+			skill.height = int(skillData.get("height", 3));
+			var durationParam = skillData.get("duration_param_name", "");
+			if durationParam != "" and parameters.has(durationParam):
+				skill.duration = float(parameters[durationParam]);
+			else:
+				skill.duration = float(skillData.get("duration", 3.0));
+			var intervalParam = skillData.get("tick_interval_param_name", "");
+			if intervalParam != "" and parameters.has(intervalParam):
+				skill.tick_interval = float(parameters[intervalParam]);
+			else:
+				skill.tick_interval = float(skillData.get("tick_interval", 0.25));
+			if skill.tick_interval <= 0.0:
+				push_warning("channel: tick_interval must be > 0; falling back to 0.25.");
+				skill.tick_interval = 0.25;
+			skill.animation = str(skillData.get("animation", "skill"));
+			var channelFind := SkillActionFindMultipleInRange.new();
+			channelFind.width = skill.width;
+			channelFind.height = skill.height;
+			channelFind.cancel_when_empty = false;
+			skill.find_action = channelFind;
+			skill.attack_action = ParseAction({"type": "attack", "data": skillData}, parameters) as SkillActionAttack;
+			# Optional per-tick VFX, spawned each tick alongside the find.
+			if skillData.has("effect_script"):
+				skill.effect_action = ParseAction({"type": "play_effect", "data": {"effect_script": skillData["effect_script"]}}, parameters) as SkillActionPlayEffect;
 		"clear_enemy":
 			skill = SkillActionClearEnemy.new();
 		"find_multi_enemy":

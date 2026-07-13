@@ -74,6 +74,10 @@ skills:
         data:
           animation: "skill"
           duration: 0.5
+      - type: play_effect
+        data:
+          # Reaper's dark-energy crescent — self-centered 3x3 sweep (calliope_skill_effect.gd)
+          effect_script: "res://resources/tower/hololive/en_branch/myth_gen/caliolpe/skill_effect/calliope_skill_effect.gd"
       - type: attack
         data:
           damage_multiplier_param_name: "skillDamage"
@@ -162,6 +166,11 @@ evolution_skills:
         data:
           animation: "skill"
           duration: 0.5
+      - type: play_effect
+        data:
+          # Beat 1 "reap" VFX - elevated reaper crescent (phase 0). Its DURATION (0.45s)
+          # is kept < aftershockDelay (0.5s) so it clears before the beat-2 slash.
+          effect_script: "res://resources/tower/hololive/en_branch/myth_gen/caliolpe/skill_effect/calliope_evo_skill_effect.gd"
       - type: attack
         data:
           damage_multiplier_param_name: "skillDamage"
@@ -177,6 +186,8 @@ evolution_skills:
           damage_type: physic
           stack_bonus_effect: "soul"
           stack_bonus_per_stack_param_name: "aftershockSoulBonus"
+          # Beat 2 "slash" VFX - spawned at the explosion (+aftershockDelay), phase 1.
+          effect_script: "res://resources/tower/hololive/en_branch/myth_gen/caliolpe/skill_effect/calliope_evo_aftershock_effect.gd"
       - type: play_animation
         data:
           animation: "idle"

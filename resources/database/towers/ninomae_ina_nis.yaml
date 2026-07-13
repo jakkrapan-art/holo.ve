@@ -10,7 +10,7 @@ evolve_sound: "evo_ina"
 
 stats:
   - damage: 140
-    attackRange: 4.0
+    attackRange: 3.0
     attackSpeed: 60
     mana: 100
     initialMana: 60
@@ -18,7 +18,7 @@ stats:
     critMultiplier: 1.5
 
   - damage: 160
-    attackRange: 4.0
+    attackRange: 3.0
     attackSpeed: 60
     mana: 100
     initialMana: 60
@@ -26,7 +26,7 @@ stats:
     critMultiplier: 1.5
 
   - damage: 200
-    attackRange: 4.0
+    attackRange: 3.0
     attackSpeed: 60
     mana: 100
     initialMana: 60
@@ -45,6 +45,7 @@ skills:
       - damage
       - aoe
       - stun
+      - duration
     target_summary:
       target_team: enemy
       target_type: enemy
@@ -101,14 +102,15 @@ evolutionStat:
 evolution_skills:
   active:
     name: "Book of Ancient Ones"
-    desc: "Ina'nis opens the Book of Ancient Ones and channels its power for 3 seconds, striking the 3x3 area in front of her every 0.25 seconds. Each strike deals magic damage and stuns enemies caught in the zone for 1 second. These strikes never critically hit."
-    desc_template: "Ina'nis opens the Book of Ancient Ones and channels its power for {channelDuration} seconds, striking the 3x3 area in front of her every {tickInterval} seconds. Each strike deals {tickDamage:percent} magic damage and stuns enemies caught in the zone for {tickStun}s. These strikes never critically hit."
+    desc: "Ina'nis opens the Book of Ancient Ones and channels its power for 3 seconds, striking the 3x3 area in front of her every 0.25 seconds. Each strike deals magic damage and stuns enemies caught in the zone for 1 second."
+    desc_template: "Ina'nis opens the Book of Ancient Ones and channels its power for {channelDuration} seconds, striking the 3x3 area in front of her every {tickInterval} seconds. Each strike deals {tickDamage:percent} magic damage and stuns enemies caught in the zone for {tickStun}s."
     icon: ""
     tags:
       - damage
       - aoe
       - stun
       - channel
+      - duration
     target_summary:
       target_team: enemy
       target_type: enemy

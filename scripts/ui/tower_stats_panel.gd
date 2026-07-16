@@ -14,9 +14,11 @@ extends Control
 @onready var _gen_icon: TextureRect = $TraitRow/GenIcon
 @onready var _gen_label: Label = $TraitRow/GenLabel
 @onready var _atk_value: Label = $StatsGrid/AtkValue
+@onready var _type_value: Label = $StatsGrid/TypeValue
 @onready var _as_value: Label = $StatsGrid/AsValue
 @onready var _crit_value: Label = $StatsGrid/CritValue
 @onready var _crit_dmg_value: Label = $StatsGrid/CritDmgValue
+@onready var _range_value: Label = $StatsGrid/RangeValue
 @onready var _energy_row: Control = $EnergyRow
 @onready var _energy_bar: ProgressBar = $EnergyRow/EnergyBar
 @onready var _energy_text: Label = $EnergyRow/EnergyBar/EnergyText
@@ -73,10 +75,11 @@ func _refresh() -> void:
 	_gen_icon.texture = _trait_sprite(gen_display)
 
 	# Stats: live getters, so buffs/debuffs show (player-facing terms per
-	# game_copy.md). Attack type rides the Attack value to keep the grid 2x2.
-	var type_display := "Magic" if data.attackType == Damage.DamageType.MAGIC else "Physical"
-	_set_text(_atk_value, "%d (%s)" % [data.getTotalAttack(), type_display])
+	# game_copy.md). 3x2 grid: attack block left, crit block + range right.
+	_set_text(_atk_value, str(data.getTotalAttack()))
+	_set_text(_type_value, "Magic" if data.attackType == Damage.DamageType.MAGIC else "Physical")
 	_set_text(_as_value, _format_number(data.getAttackSpeed()))
+	_set_text(_range_value, _format_number(data.getAttackRange()))
 	_set_text(_crit_value, _format_number(data.getCritChance()) + "%")
 	# Display-only percent form (1.5 -> "150%"); the damage formula still uses
 	# the raw multiplier.

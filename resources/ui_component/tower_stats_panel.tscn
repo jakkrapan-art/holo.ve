@@ -65,7 +65,7 @@ font_color = Color(0.88, 0.92, 1, 1)
 anchor_top = 1.0
 anchor_bottom = 1.0
 offset_left = 16.0
-offset_top = -306.0
+offset_top = -330.0
 offset_right = 576.0
 offset_bottom = -16.0
 grow_vertical = 0
@@ -154,12 +154,12 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_sep")
 
 [node name="StatsGrid" type="GridContainer" parent="."]
 offset_left = 16.0
-offset_top = 164.0
+offset_top = 162.0
 offset_right = 464.0
-offset_bottom = 250.0
+offset_bottom = 262.0
 mouse_filter = 2
 theme_override_constants/h_separation = 14
-theme_override_constants/v_separation = 14
+theme_override_constants/v_separation = 12
 columns = 4
 
 [node name="AtkName" type="Label" parent="StatsGrid"]
@@ -169,7 +169,7 @@ text = "Attack"
 label_settings = SubResource("LabelSettings_dim")
 
 [node name="AtkValue" type="Label" parent="StatsGrid"]
-custom_minimum_size = Vector2(130, 0)
+custom_minimum_size = Vector2(110, 0)
 layout_mode = 2
 text = "0"
 label_settings = SubResource("LabelSettings_body")
@@ -185,14 +185,14 @@ layout_mode = 2
 text = "0%"
 label_settings = SubResource("LabelSettings_body")
 
-[node name="AsName" type="Label" parent="StatsGrid"]
+[node name="TypeName" type="Label" parent="StatsGrid"]
 layout_mode = 2
-text = "Attack Speed"
+text = "Attack Type"
 label_settings = SubResource("LabelSettings_dim")
 
-[node name="AsValue" type="Label" parent="StatsGrid"]
+[node name="TypeValue" type="Label" parent="StatsGrid"]
 layout_mode = 2
-text = "0"
+text = "Physical"
 label_settings = SubResource("LabelSettings_body")
 
 [node name="CritDmgName" type="Label" parent="StatsGrid"]
@@ -205,11 +205,31 @@ layout_mode = 2
 text = "100%"
 label_settings = SubResource("LabelSettings_body")
 
+[node name="AsName" type="Label" parent="StatsGrid"]
+layout_mode = 2
+text = "Attack Speed"
+label_settings = SubResource("LabelSettings_dim")
+
+[node name="AsValue" type="Label" parent="StatsGrid"]
+layout_mode = 2
+text = "0"
+label_settings = SubResource("LabelSettings_body")
+
+[node name="RangeName" type="Label" parent="StatsGrid"]
+layout_mode = 2
+text = "Range"
+label_settings = SubResource("LabelSettings_dim")
+
+[node name="RangeValue" type="Label" parent="StatsGrid"]
+layout_mode = 2
+text = "0"
+label_settings = SubResource("LabelSettings_body")
+
 [node name="EnergyRow" type="Control" parent="."]
 offset_left = 16.0
-offset_top = 246.0
+offset_top = 270.0
 offset_right = 464.0
-offset_bottom = 272.0
+offset_bottom = 296.0
 mouse_filter = 2
 
 [node name="EnergyLabel" type="Label" parent="EnergyRow"]
@@ -245,6 +265,6 @@ vertical_alignment = 1
 offset_left = 484.0
 offset_top = 16.0
 offset_right = 548.0
-offset_bottom = 274.0
+offset_bottom = 298.0
 mouse_filter = 2
 theme_override_constants/separation = 10

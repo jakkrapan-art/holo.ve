@@ -6,8 +6,8 @@ var evolutionNode: Node;
 var evolutionCostText: Label;
 var towerPortrait: TextureRect;
 
-var towerClassImage: TextureRect;
-var towerGenImage: TextureRect;
+var towerClassImage: SynergyChipIcon;
+var towerGenImage: SynergyChipIcon;
 var synergiesNode: Control;
 
 func _ready():
@@ -35,15 +35,20 @@ func Setup(p_name: String, sprite, towerClass: TowerTrait.TowerClass, towerGen: 
 	synergiesNode.visible = TowerTrait.TOWER_CLASS_NAMES.has(towerClass) or TowerTrait.TOWER_GENERATION_NAMES.has(towerGen)
 	if !synergiesNode.visible:
 		return
-	var tClassName = TowerTrait.TOWER_CLASS_NAMES.get(towerClass, "default").to_lower();
-	var classSprite = ResourceManager.getSprite("synergy", tClassName);
+	# Display names feed both the sprite key (lowered) and the hover fallback,
+	# which must stay player-facing case ("SpellCaster", not "spellcaster").
+	var classDisplayName = TowerTrait.TOWER_CLASS_NAMES.get(towerClass, "default");
+	var genDisplayName = TowerTrait.TOWER_GENERATION_NAMES.get(towerGen, "default");
+	var classSprite = ResourceManager.getSprite("synergy", classDisplayName.to_lower());
 	if(classSprite == null):
 		classSprite = ResourceManager.getSprite("synergy", "default");
-	var genSprite = ResourceManager.getSprite("synergy", TowerTrait.TOWER_GENERATION_NAMES.get(towerGen, "default").to_lower());
+	var genSprite = ResourceManager.getSprite("synergy", genDisplayName.to_lower());
 	if(genSprite == null):
 		genSprite = ResourceManager.getSprite("synergy", "default");
 	if(towerClassImage):
 		towerClassImage.texture = classSprite
+		towerClassImage.set_synergy(towerClass, classDisplayName)
 
 	if(towerGenImage):
 		towerGenImage.texture = genSprite
+		towerGenImage.set_synergy(towerGen, genDisplayName)

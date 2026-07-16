@@ -1,6 +1,7 @@
-[gd_scene load_steps=13 format=3 uid="uid://hrwu7jmu4yv"]
+[gd_scene load_steps=14 format=3 uid="uid://hrwu7jmu4yv"]
 
 [ext_resource type="Script" path="res://scripts/ui/tower_select/tower_select_button.gd" id="1_ydvhw"]
+[ext_resource type="Script" path="res://scripts/ui/tower_select/synergy_chip_icon.gd" id="1_synchip"]
 [ext_resource type="Shader" path="res://resources/ui_component/tower_select/ui_tower_choice.gdshader" id="1_ye0gs"]
 [ext_resource type="FontFile" uid="uid://scv78fddnukv" path="res://resources/ui_component/font/Roboto-Regular.ttf" id="2_oispt"]
 [ext_resource type="Texture2D" uid="uid://tp6ecjda00qg" path="res://resources/currency/evo_token.png" id="3_lbarx"]
@@ -122,9 +123,11 @@ custom_minimum_size = Vector2(45, 45)
 layout_mode = 2
 texture = ExtResource("7_681fe")
 expand_mode = 1
+script = ExtResource("1_synchip")
 
 [node name="Gen" type="TextureRect" parent="Synergies"]
 material = SubResource("ShaderMaterial_eo7vq")
 custom_minimum_size = Vector2(45, 45)
 layout_mode = 2
 texture = ExtResource("7_681fe")
+script = ExtResource("1_synchip")

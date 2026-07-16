@@ -102,29 +102,35 @@ func _make_custom_tooltip(_for_text: String) -> Object:
 	return panel
 
 func _build_hover_bbcode() -> String:
-	if _data == null:
-		return _name
+	return build_hover_bbcode(_data, _name, _tier, _quest_progress)
+
+# Shared with the tower-select card chips (synergy_chip_icon.gd) so both hovers
+# render identical text from one builder; hover colors stay single-source here.
+# tier -1 = definitional view (no active row); quest_progress -1 = no progress line.
+static func build_hover_bbcode(data: SynergyData, fallback_name: String, tier: int, quest_progress: int) -> String:
+	if data == null:
+		return fallback_name
 
 	var lines: PackedStringArray = []
-	lines.append("[b]" + _data.display_name + "[/b]")
+	lines.append("[b]" + data.display_name + "[/b]")
 
 	# Flavour preview the lowest tier's value when not yet proc'd (maxi(tier,0)).
-	var flavor := _data.flavor(maxi(_tier, 0), SCALING_COLOR)
+	var flavor := data.flavor(maxi(tier, 0), SCALING_COLOR)
 	if flavor != "":
 		lines.append(flavor)
 
 	# Per-tier table (only when the synergy defines effect lines).
-	if not _data.tier_effects.is_empty():
+	if not data.tier_effects.is_empty():
 		lines.append("")
-		for i in _data.tier_count():
-			var row := "(" + str(_data.threshold_at(i)) + ")  " + _data.tier_effect(i)
-			if i == _tier:
+		for i in data.tier_count():
+			var row := "(" + str(data.threshold_at(i)) + ")  " + data.tier_effect(i)
+			if i == tier:
 				row = "[color=" + ACTIVE_HIGHLIGHT + "]> " + row + "[/color]"   # active tier (single gold)
 			else:
 				row = "[color=" + DIM_COLOR + "]" + row + "[/color]"
 			lines.append(row)
 
-	if _quest_progress >= 0:
+	if quest_progress >= 0:
 		lines.append("")
-		lines.append("[b]Current Progress: " + str(_quest_progress) + "[/b]")
+		lines.append("[b]Current Progress: " + str(quest_progress) + "[/b]")
 	return "\n".join(lines)

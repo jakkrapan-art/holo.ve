@@ -148,7 +148,7 @@ func spawnEnemyTask(groupIndex: int):
 	# delayed group keeps remain > 0 and _allGroupsSpawned() can't end the wave early.
 	if groupData.startAt > 0:
 		var gen := currWave
-		await get_tree().create_timer(groupData.startAt).timeout
+		await get_tree().create_timer(groupData.startAt, false).timeout
 		# Wave may have ended / advanced during the delay - bail if so (await guard).
 		if not is_instance_valid(self) or currWave != gen or endWaveCalled:
 			return
@@ -178,7 +178,7 @@ func spawnEnemyTask(groupIndex: int):
 		if remain == 0:
 			isSpawnAllEnemy = _allGroupsSpawned()
 		else:
-			await get_tree().create_timer(interval).timeout
+			await get_tree().create_timer(interval, false).timeout
 
 func spawnEnemy(groupIndex: int):
 	if(groupIndex >= waveData.groupList.size()):
@@ -318,7 +318,7 @@ func summon(enemyId: String, count: int, interval: float, pathProgress: float):
 			connectSignalToEnemy(enemy)
 
 		if i < count - 1:
-			await get_tree().create_timer(interval).timeout
+			await get_tree().create_timer(interval, false).timeout
 			# Wave advanced during the trickle: its counters were already reset by
 			# startNextWave, so the remaining reservations are void - do NOT
 			# decrement (that would corrupt the new wave's count). Just stop.

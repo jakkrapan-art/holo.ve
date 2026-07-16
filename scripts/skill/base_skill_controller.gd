@@ -39,7 +39,7 @@ func execute_skill_actions(skill: Skill, context: SkillContext):
 	skill.using = true;
 
 	if skill.castTime > 0:
-		await user.get_tree().create_timer(skill.castTime).timeout
+		await user.get_tree().create_timer(skill.castTime, false).timeout
 		if not is_instance_valid(user):
 			return
 		if context.cancel || cancelled:
@@ -69,7 +69,7 @@ func execute_skill_actions(skill: Skill, context: SkillContext):
 	if skill.recoveryTime > 0:
 		if not is_instance_valid(user):
 			return
-		await user.get_tree().create_timer(skill.recoveryTime).timeout
+		await user.get_tree().create_timer(skill.recoveryTime, false).timeout
 		if not is_instance_valid(user):
 			return
 		if(cancelled):

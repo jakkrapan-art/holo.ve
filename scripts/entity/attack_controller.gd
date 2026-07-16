@@ -107,7 +107,7 @@ func _spawnBullet(target: Enemy, cfg: TowerAttackConfig, dmg: Damage, saved_gen:
 
 func _spawnBurstRemainder(target: Enemy, cfg: TowerAttackConfig, saved_gen: int) -> void:
 	for i in range(1, cfg.burst):
-		await tower.get_tree().create_timer(0.07).timeout
+		await tower.get_tree().create_timer(0.07, false).timeout
 		if not is_instance_valid(tower) or tower.skill_lock_generation != saved_gen:
 			return   # wave reset mid-burst (tower survives waves; only gen bumps)
 		if not is_instance_valid(target):

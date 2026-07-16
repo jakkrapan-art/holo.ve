@@ -45,6 +45,13 @@ static func create(width: float, height: float, callback: Callable, spawn_pos: V
 	# Force redraw and physics frame update
 	hitbox.queue_redraw()
 	await hitbox.get_tree().process_frame
+	# process_frame keeps emitting while the tree is paused (same trap the dash
+	# action guards) - hold the strike until unpause so a pause landing on this
+	# exact frame can't let damage through mid-pause.
+	while is_instance_valid(hitbox) and hitbox.get_tree().paused:
+		await hitbox.get_tree().process_frame
+	if not is_instance_valid(hitbox):
+		return null
 	hitbox._detect()
 
 	return hitbox
@@ -103,7 +110,7 @@ func _detect():
 
 	# Wait so player can see the hitbox
 	if hide_delay > 0:
-		await get_tree().create_timer(hide_delay).timeout
+		await get_tree().create_timer(hide_delay, false).timeout
 
 	# Cleanup
 	queue_free()

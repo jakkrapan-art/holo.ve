@@ -23,6 +23,10 @@ func execute(context: SkillContext):
 		if context.target.is_empty():
 			attempt += 1
 			await context.user.get_tree().process_frame
+			# process_frame keeps emitting while paused (dash-guard pattern) -
+			# don't let the empty-find cancel / skill chain advance mid-pause.
+			while is_instance_valid(context.user) and context.user.get_tree().paused:
+				await context.user.get_tree().process_frame
 
 	if attempt >= max_attempt && context.target.is_empty() && cancel_when_empty:
 		context.cancel = true

@@ -7,7 +7,7 @@ func execute(context: SkillContext):
 	if(context.user == null):
 		return;
 
-	await context.user.get_tree().create_timer(delay).timeout
+	await context.user.get_tree().create_timer(delay, false).timeout
 	if not is_instance_valid(context.user):
 		context.cancel = true
 		return

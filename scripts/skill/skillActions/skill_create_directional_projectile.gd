@@ -93,6 +93,6 @@ func execute(context: SkillContext):
 # effective travel time. Skipped if a wave-end resetForWave has bumped the
 # skill_lock_generation since this cast started (stale callback guard).
 func _unlock_mana_after_delay(tower: Tower, saved_gen: int, delay: float) -> void:
-	await tower.get_tree().create_timer(delay).timeout
+	await tower.get_tree().create_timer(delay, false).timeout
 	if is_instance_valid(tower) and tower.skill_lock_generation == saved_gen:
 		tower.enableRegenMana = true

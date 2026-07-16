@@ -174,18 +174,8 @@ layout_mode = 2
 text = "0"
 label_settings = SubResource("LabelSettings_body")
 
-[node name="CritName" type="Label" parent="StatsGrid"]
-custom_minimum_size = Vector2(90, 0)
-layout_mode = 2
-text = "Crit Rate"
-label_settings = SubResource("LabelSettings_dim")
-
-[node name="CritValue" type="Label" parent="StatsGrid"]
-layout_mode = 2
-text = "0%"
-label_settings = SubResource("LabelSettings_body")
-
 [node name="TypeName" type="Label" parent="StatsGrid"]
+custom_minimum_size = Vector2(90, 0)
 layout_mode = 2
 text = "Attack Type"
 label_settings = SubResource("LabelSettings_dim")
@@ -195,14 +185,14 @@ layout_mode = 2
 text = "Physical"
 label_settings = SubResource("LabelSettings_body")
 
-[node name="CritDmgName" type="Label" parent="StatsGrid"]
+[node name="RangeName" type="Label" parent="StatsGrid"]
 layout_mode = 2
-text = "Crit DMG"
+text = "Range"
 label_settings = SubResource("LabelSettings_dim")
 
-[node name="CritDmgValue" type="Label" parent="StatsGrid"]
+[node name="RangeValue" type="Label" parent="StatsGrid"]
 layout_mode = 2
-text = "100%"
+text = "0"
 label_settings = SubResource("LabelSettings_body")
 
 [node name="AsName" type="Label" parent="StatsGrid"]
@@ -215,14 +205,24 @@ layout_mode = 2
 text = "0"
 label_settings = SubResource("LabelSettings_body")
 
-[node name="RangeName" type="Label" parent="StatsGrid"]
+[node name="CritName" type="Label" parent="StatsGrid"]
 layout_mode = 2
-text = "Range"
+text = "Crit Rate"
 label_settings = SubResource("LabelSettings_dim")
 
-[node name="RangeValue" type="Label" parent="StatsGrid"]
+[node name="CritValue" type="Label" parent="StatsGrid"]
 layout_mode = 2
-text = "0"
+text = "0%"
+label_settings = SubResource("LabelSettings_body")
+
+[node name="CritDmgName" type="Label" parent="StatsGrid"]
+layout_mode = 2
+text = "Crit DMG"
+label_settings = SubResource("LabelSettings_dim")
+
+[node name="CritDmgValue" type="Label" parent="StatsGrid"]
+layout_mode = 2
+text = "100%"
 label_settings = SubResource("LabelSettings_body")
 
 [node name="EnergyRow" type="Control" parent="."]

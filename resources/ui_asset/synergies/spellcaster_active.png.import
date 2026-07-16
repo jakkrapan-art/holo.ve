@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://6dvpc0jga6dg"
-path="res://.godot/imported/spell_caster.png-e734698c9cab55fb2d27dde405308731.ctex"
+uid="uid://c0mvb25gh28gr"
+path="res://.godot/imported/spellcaster_active.png-231af1a31d6fd68b2dd6665bf5909067.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/ui_asset/synergies/spell_caster.png"
-dest_files=["res://.godot/imported/spell_caster.png-e734698c9cab55fb2d27dde405308731.ctex"]
+source_file="res://resources/ui_asset/synergies/spellcaster_active.png"
+dest_files=["res://.godot/imported/spellcaster_active.png-231af1a31d6fd68b2dd6665bf5909067.ctex"]
 
 [params]
 

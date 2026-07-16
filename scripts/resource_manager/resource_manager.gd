@@ -33,6 +33,9 @@ static func getTower(key: String):
 
 static func loadImage(group, key, path):
 	var fullPath = "%s%s" % [resourcePrefix, path]
+	if not ResourceLoader.exists(fullPath):
+		push_warning("Missing texture: " + fullPath)
+		return null
 	var texture: Texture2D = load(fullPath)
 	if(texture):
 		if(_sprites.has(group) == false):
@@ -43,13 +46,14 @@ static func loadImage(group, key, path):
 
 static func preloadSynergy():
 	var synergyList = TowerTrait.TOWER_CLASS_NAMES.values() + TowerTrait.TOWER_GENERATION_NAMES.values();
-	synergyList.append("default");
 	var statuses = ["", "_active"];
 	for synergy in synergyList:
 		for status in statuses:
 			var key = synergy.to_lower() + status;
 			var path = "ui_asset/synergies/" + key + ".png"
 			loadImage("synergy", key, path)
+	# Fallback icon has no active state; load it once outside the status loop.
+	loadImage("synergy", "default", "ui_asset/synergies/default.png")
 
 # Synergy definitions (resources/database/synergy/) keyed by TowerTrait enum id.
 # Loaded next to preloadSynergy() at each addDeck; rebuilt (not accumulated).

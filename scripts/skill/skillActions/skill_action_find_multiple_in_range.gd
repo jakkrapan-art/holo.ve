@@ -79,6 +79,10 @@ func find_targets_in_rotated_range(context: SkillContext):
 	# Offset: tower mode extends forward from anchor; player-aim mode centers on click.
 	var local_offset = Vector2(0, 0) if center_on_anchor else Vector2(0, actual_height * 0.5)
 
+	# Publish the world center of the queried box for actions that re-strike the
+	# same zone later (channel). Correct in all three anchor modes.
+	context.extra["area_center"] = user_position + local_offset.rotated(user_rotation)
+
 	# Place the hitbox at the resolved anchor
 	var hitbox_position = user_position
 

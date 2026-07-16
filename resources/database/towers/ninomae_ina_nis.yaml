@@ -4,14 +4,13 @@ generation: myth
 attackType: magic
 evolutionCost: 1
 
-# skill: "res://resources/database/skill/gawr_gura_skill.tres"
 attack_sound: "hit_ina"
 open_sound: "debut_ina"
 evolve_sound: "evo_ina"
 
 stats:
   - damage: 140
-    attackRange: 4.0
+    attackRange: 3.0
     attackSpeed: 60
     mana: 100
     initialMana: 60
@@ -19,7 +18,7 @@ stats:
     critMultiplier: 1.5
 
   - damage: 160
-    attackRange: 4.0
+    attackRange: 3.0
     attackSpeed: 60
     mana: 100
     initialMana: 60
@@ -27,35 +26,126 @@ stats:
     critMultiplier: 1.5
 
   - damage: 200
-    attackRange: 4.0
+    attackRange: 3.0
     attackSpeed: 60
     mana: 100
     initialMana: 60
     critChance: 0
     critMultiplier: 1.5
 
-skill:
-  name: "Skill"
-  desc: "Just a skill"
-  recovery: 0.2 # post-cast hold (s) before resuming attack — see default_tower.yaml
-  actions:
-    - type: "create_circle_projectile"
-      data:
-        circle_radius: 1.0
-        angular_speed: 180.0
-        initial_angle: 0.0
-        angle_offset: 90.0
-        lifetime: 5.0
-        count: 4
-        damage_multiplier: 1.0
-        damage_type: "magic"
-        damage_multiplier_param_name: "damageMultiplier"
+# Active Skill - "Tentacle": aimed 1x3 tentacle lash with a stun.
+skills:
+  active:
+    name: "Tentacle"
+    names: ["Tentacle I", "Tentacle II", "Tentacle III"]
+    desc: "Ina'nis commands a tentacle of the Ancient One to lash the 1x3 line in front of her, dealing heavy magic damage and stunning every enemy hit for 1.5 seconds."
+    desc_template: "Ina'nis commands a tentacle of the Ancient One to lash the 1x3 line in front of her, dealing {skillDamage:percent} magic damage and stunning every enemy hit for {stunDuration}s."
+    icon: ""
+    tags:
+      - damage
+      - aoe
+      - stun
+      - duration
+    target_summary:
+      target_team: enemy
+      target_type: enemy
+      target_shape: area
+    effects:
+      - name: "Tentacle Lash"
+        target:
+          target_team: enemy
+          target_type: enemy
+          target_shape: area
+    recovery: 0.2 # post-cast hold (s) before resuming attack - see default_tower.yaml
+    parameters:
+      skillDamage:
+        - 2.0
+        - 2.4
+        - 3.0
+      stunDuration: 1.5
+    actions:
+      - type: find_multi_enemy
+        data:
+          width: 1
+          height: 3
+      - type: play_animation
+        data:
+          animation: "skill"
+          duration: 0.5
+      - type: attack
+        data:
+          damage_multiplier_param_name: "skillDamage"
+          damage_type: magic
+          effects:
+            - effect: "stun"
+              duration_param: "stunDuration"
+      - type: play_animation
+        data:
+          animation: "idle"
+  passive: null
 
 evolutionStat:
   damage: 500
   attackRange: 4.0
-  attackSpeed: 80
+  attackSpeed: 60
   mana: 100
   initialMana: 60
   critChance: 50.0
   critMultiplier: 1.5
+
+# Evolved Active Skill - the game's first "channel" pattern skill: Ina'nis
+# locks the 3x3 zone in front of her and strikes it 12 times over 3 seconds
+# (every 0.25s), stunning enemies caught inside on every strike. She is busy
+# for the whole channel (no auto-attack). The ticks NEVER crit by design;
+# the evolved BASE stat keeps critChance 50 for her normal attacks
+# (stat-consistency verdict, Director 2026-07-14).
+evolution_skills:
+  active:
+    name: "Book of Ancient Ones"
+    desc: "Ina'nis opens the Book of Ancient Ones and channels its power for 3 seconds, striking the 3x3 area in front of her every 0.25 seconds. Each strike deals magic damage and stuns enemies caught in the zone for 1 second."
+    desc_template: "Ina'nis opens the Book of Ancient Ones and channels its power for {channelDuration} seconds, striking the 3x3 area in front of her every {tickInterval} seconds. Each strike deals {tickDamage:percent} magic damage and stuns enemies caught in the zone for {tickStun}s."
+    icon: ""
+    tags:
+      - damage
+      - aoe
+      - stun
+      - channel
+      - duration
+    target_summary:
+      target_team: enemy
+      target_type: enemy
+      target_shape: area
+    effects:
+      - name: "Ancient Onslaught"
+        target:
+          target_team: enemy
+          target_type: enemy
+          target_shape: area
+    recovery: 0.2 # post-cast hold (s) before resuming attack - see default_tower.yaml
+    parameters:
+      tickDamage: 1.5
+      tickStun: 1.0
+      channelDuration: 3.0
+      tickInterval: 0.25
+    actions:
+      - type: find_multi_enemy       # cast-start aim: cancels (Energy kept) if empty; publishes area_center
+        data:
+          width: 3
+          height: 3
+      - type: channel                # BLOCKS for channelDuration; re-strikes the locked zone every tick
+        data:
+          width: 3
+          height: 3
+          duration_param_name: "channelDuration"
+          tick_interval_param_name: "tickInterval"
+          animation: "skill"
+          damage_multiplier_param_name: "tickDamage"
+          damage_type: magic
+          can_crit: false            # channel ticks never crit (base-stat crit stays for normal attacks)
+          effects:
+            - effect: "stun"
+              duration_param: "tickStun"
+      - type: play_animation
+        data:
+          animation: "idle"
+  passive: null

@@ -35,7 +35,10 @@ func get_display_name(level: int) -> String:
 		return names[index]
 	return name
 
-func get_display_desc(level: int) -> String:
+# highlight_color (BBCode hex, e.g. "#5AC8FA"): wraps values coming from a
+# per-level (array) parameter so the player sees which number scales -
+# mirrors SynergyData._render. "" returns plain text.
+func get_display_desc(level: int, highlight_color: String = "") -> String:
 	if desc == "":
 		return ""
 
@@ -48,7 +51,10 @@ func get_display_desc(level: int) -> String:
 		var param_name := match_result.get_string(1)
 		var format := match_result.get_string(2)
 		var value = _get_display_parameter(param_name, level)
-		result = result.substr(0, match_result.get_start()) + _format_display_parameter(value, format) + result.substr(match_result.get_end())
+		var text := _format_display_parameter(value, format)
+		if highlight_color != "" and parameters.get(param_name) is Array:
+			text = "[color=" + highlight_color + "]" + text + "[/color]"
+		result = result.substr(0, match_result.get_start()) + text + result.substr(match_result.get_end())
 	return result
 
 func _get_display_parameter(param_name: String, level: int):

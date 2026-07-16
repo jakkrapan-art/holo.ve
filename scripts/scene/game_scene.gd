@@ -73,14 +73,41 @@ func _input(event):
 			_cancel_staff_skill_cast()
 
 func _unhandled_input(event):
-	# Runs after GUI consumed UI clicks but BEFORE physics picking: a left-click
-	# reaching here hit no UI -> deselect; if it lands on a tower, Tower._input_event
-	# re-selects in the same frame (deliberate ordering).
+	# Tower select via a direct pick-box lookup, NOT physics picking: GUI-consumed
+	# clicks never reach here, the placement/staff commit branches mark their
+	# clicks handled, and (unlike Area2D input_event, which missed clicks while a
+	# tower was mid-cast) this path has no physics dependency at all.
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		if state == "tower_placement" or state == "staff_skill_casting":
+		if state == "tower_placement" or state == "staff_skill_casting" or _popup_open or state == "game_over":
 			return
-		if _tower_stats_panel != null:
+		if _tower_stats_panel == null:
+			return
+		var tower := _pick_tower_at(get_global_mouse_position())
+		if tower != null:
+			_tower_stats_panel.show_tower(tower)
+		else:
 			_tower_stats_panel.clear()
+
+# Pick box in tower-local px (tower.position = cell center): full sprite incl.
+# head, wide enough to survive skill-pose shifts, narrower/shorter than the
+# 512px cell pitch so vertical neighbors' boxes don't overlap.
+const TOWER_PICK_HALF_WIDTH := 160.0
+const TOWER_PICK_TOP := -440.0
+const TOWER_PICK_BOTTOM := 70.0
+
+func _pick_tower_at(world_pos: Vector2) -> Tower:
+	var best: Tower = null
+	for node in get_tree().get_nodes_in_group("tower"):
+		var tower := node as Tower
+		if tower == null or tower.inPlaceMode:
+			continue
+		var local := world_pos - tower.position
+		if absf(local.x) <= TOWER_PICK_HALF_WIDTH and local.y >= TOWER_PICK_TOP and local.y <= TOWER_PICK_BOTTOM:
+			# Boundary tie: prefer the lower tower - the clicked pixel is nearer
+			# its body than the upper one's feet.
+			if best == null or tower.position.y > best.position.y:
+				best = tower
+	return best
 
 func _process(_delta):
 	if state == "staff_skill_casting" and _skill_cast_indicator != null:
@@ -386,9 +413,6 @@ func _on_option_selected(selection):
 			if(map != null):
 				map.toggle_grid(true);
 			add_child(result.tower);
-			# Every placed tower enters the scene exactly here; upgrades/evolves reuse
-			# the already-connected instance.
-			Utility.ConnectSignal(result.tower, "tower_clicked", Callable(self, "_on_tower_clicked"))
 			t = result.tower
 			state = "tower_placement"
 
@@ -421,13 +445,3 @@ func startWave():
 	state = "wave"
 	if(waveController):
 		waveController.start()
-
-# === Tower selection (stats panel) ===
-
-func _on_tower_clicked(tower: Tower):
-	# Selection is display-only; never react during placement / staff aiming /
-	# popups / game over (belt over the _input consume guards above).
-	if state == "tower_placement" or state == "staff_skill_casting" or _popup_open or state == "game_over":
-		return
-	if _tower_stats_panel != null:
-		_tower_stats_panel.show_tower(tower)

@@ -1,10 +1,14 @@
 class_name TowerSkillIcon
 extends TextureRect
 
-# Skill-icon hover for the tower stats panel: rich tooltip built from Skill
-# display metadata (get_display_name / get_display_desc) at the tower's current
-# level - the template desc path, never raw legacy desc. Mirrors the
-# StaffSkillTooltip pattern (staff_skill_tooltip.gd).
+# Skill-icon hover for the tower stats panel: Dota2-style rich tooltip built
+# from Skill display metadata at the tower's current level - name, kind line,
+# affects/tags lines, then the desc with per-level scaling values highlighted.
+# Palette + layout mirror the synergy hover (ui_synergy_content.gd).
+
+const SCALING_COLOR := "#5AC8FA"   # per-level scaling value (synergy hover palette)
+const DIM_COLOR := "#7A7A7A"       # metadata lines (affects / tags)
+const KIND_COLOR := "#FFD15A"      # kind line (single gold)
 
 var skill: Skill = null
 var kind_label: String = ""
@@ -33,12 +37,41 @@ func _build_hover_bbcode() -> String:
 	if skill == null:
 		return ""
 	var lines: PackedStringArray = []
-	var title := "[b]" + skill.get_display_name(level) + "[/b]"
+	lines.append("[b]" + skill.get_display_name(level) + "[/b]")
+
 	if kind_label != "":
-		title += " (" + kind_label + ")"
-	lines.append(title)
-	var desc := skill.get_display_desc(level)
+		var kind_line := kind_label.to_upper()
+		if kind_label == "Active":
+			kind_line += " - CASTS AT FULL ENERGY"
+		lines.append("[color=" + KIND_COLOR + "]" + kind_line + "[/color]")
+
+	var affects := _affects_line()
+	if affects != "":
+		lines.append("[color=" + DIM_COLOR + "]" + affects + "[/color]")
+
+	if not skill.tags.is_empty():
+		var tag_names: PackedStringArray = []
+		for tag in skill.tags:
+			tag_names.append(str(tag).capitalize().to_upper())
+		lines.append("[color=" + DIM_COLOR + "]TAGS: " + ", ".join(tag_names) + "[/color]")
+
+	var desc := skill.get_display_desc(level, SCALING_COLOR)
 	if desc != "":
 		lines.append("")
 		lines.append(desc)
 	return "\n".join(lines)
+
+# "AFFECTS: ENEMY - AREA" from the skill's target_summary (team + shape).
+func _affects_line() -> String:
+	if skill.target_summary.is_empty():
+		return ""
+	var parts: PackedStringArray = []
+	var team := str(skill.target_summary.get("target_team", ""))
+	var shape := str(skill.target_summary.get("target_shape", ""))
+	if team != "":
+		parts.append(team.to_upper())
+	if shape != "":
+		parts.append(shape.to_upper())
+	if parts.is_empty():
+		return ""
+	return "AFFECTS: " + " - ".join(parts)

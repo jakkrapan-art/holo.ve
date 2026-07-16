@@ -141,8 +141,8 @@ func _apply_cards_to_buttons(cards: Array) -> void:
 		if index < cards.size():
 			var cardSelectData: TowerSelectData = cards[index] as TowerSelectData;
 			# Deck popup callsite passes deck keys (e.g. "myth") as card name, which
-			# are not registered tower names — fall through with default trait icons
-			# so the synergy chips render the "default" sprite instead of crashing.
+			# are not registered tower names - tClass/tGen stay 0 (no real trait)
+			# and Setup() hides the synergy chip bar for those cards.
 			var entry = TowerCenter.getTowerDataByName(cardSelectData.name);
 			var tClass: int = 0;
 			var tGen: int = 0;

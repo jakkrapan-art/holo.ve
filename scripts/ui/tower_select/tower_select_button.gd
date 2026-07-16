@@ -8,6 +8,7 @@ var towerPortrait: TextureRect;
 
 var towerClassImage: TextureRect;
 var towerGenImage: TextureRect;
+var synergiesNode: Control;
 
 func _ready():
 	add_to_group("tower_buttons")  # Ensures buttons register correctly
@@ -19,6 +20,7 @@ func Setup(p_name: String, sprite, towerClass: TowerTrait.TowerClass, towerGen: 
 	towerPortrait = $TowerPortrait
 	towerClassImage = $Synergies/Class
 	towerGenImage = $Synergies/Gen
+	synergiesNode = $Synergies
 
 	towerNameText.text = p_name + ("\nLevel " + str(level) if level > 0 else "")
 	evolutionNode.visible = evolutionCost > 0
@@ -29,6 +31,10 @@ func Setup(p_name: String, sprite, towerClass: TowerTrait.TowerClass, towerGen: 
 		var portrait = TowerCenter.getTowerPortraitByName(p_name.to_lower());
 		if(portrait):
 			towerPortrait.texture = portrait
+	# No real trait on either slot (deck-add popup cards) -> no synergy chip bar.
+	synergiesNode.visible = TowerTrait.TOWER_CLASS_NAMES.has(towerClass) or TowerTrait.TOWER_GENERATION_NAMES.has(towerGen)
+	if !synergiesNode.visible:
+		return
 	var tClassName = TowerTrait.TOWER_CLASS_NAMES.get(towerClass, "default").to_lower();
 	var classSprite = ResourceManager.getSprite("synergy", tClassName);
 	if(classSprite == null):

@@ -36,7 +36,7 @@ stats:
 
 skill:
   name: "Skill"
-  desc: "Just a skill"
+  desc: "Gavis Bettel springs a phantom trick across the 3x1 line in front of him, dealing physical damage to every enemy caught in the act."
   recovery: 0.2 # post-cast hold (s) before resuming attack — see default_tower.yaml
   actions:
     - type: find_multi_enemy

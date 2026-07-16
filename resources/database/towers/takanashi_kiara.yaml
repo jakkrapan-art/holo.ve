@@ -37,8 +37,7 @@ skills:
   active:
     name: "Flame Slash"
     names: ["Flame Slash I", "Flame Slash II", "Flame Slash III"]
-    desc: "Kiara swings her immortal phoenix flame sword forward through a 3×1 tile area, dealing physical damage. All enemies hit are scorched by Phoenix Flame, taking magic damage every second for 5 seconds."
-    desc_template: "Kiara swings her immortal phoenix flame sword forward through a 3×1 tile area, dealing {damageMultiplier:percent} physical damage. All enemies hit are scorched by Phoenix Flame, taking ({phoenixAtk:percent} attack + {phoenixHp:percent} max HP) magic damage every 1 second for {phoenixDuration} seconds."
+    desc: "Kiara swings her immortal phoenix flame sword forward through a 3×1 tile area, dealing {damageMultiplier:percent} physical damage. All enemies hit are scorched by Phoenix Flame, taking ({phoenixAtk:percent} attack + {phoenixHp:percent} max HP) magic damage every 1 second for {phoenixDuration} seconds."
     icon: ""
     tags:
       - damage
@@ -64,7 +63,7 @@ skills:
     #                  # cast_time = idle hold BEFORE the cast (no skill anim); kept for team ref / possible future use.
     recovery: 0.2 # post-cast hold (s) before resuming attack — see default_tower.yaml
     # Single source for balance + desc: skill actions read these via
-    # damage_multiplier_param_name / *_param, and desc_template tokens render the
+    # damage_multiplier_param_name / *_param, and desc tokens render the
     # same values — edit here to retune both at once.
     parameters:
       # Per-tier direct hit scaling — Skill Multiplier (% of Kiara attack).
@@ -116,8 +115,7 @@ evolutionStat:
 evolution_skills:
   active:
     name: "Hinotori"
-    desc: "Kiara empowers her sword with sacred phoenix fire and unleashes a devastating slash forward through a 3×5 tile corridor, dealing massive physical damage. All enemies hit are scorched by Phoenix Flame, taking magic damage every second for 5 seconds."
-    desc_template: "Kiara empowers her sword with sacred phoenix fire and unleashes a devastating slash forward through a 3×5 tile corridor, dealing {damageMultiplier:percent} physical damage. All enemies hit are scorched by Phoenix Flame, taking ({phoenixAtk:percent} attack + {phoenixHp:percent} max HP) magic damage every 1 second for {phoenixDuration} seconds."
+    desc: "Kiara empowers her sword with sacred phoenix fire and unleashes a devastating slash forward through a 3×5 tile corridor, dealing {damageMultiplier:percent} physical damage. All enemies hit are scorched by Phoenix Flame, taking ({phoenixAtk:percent} attack + {phoenixHp:percent} max HP) magic damage every 1 second for {phoenixDuration} seconds."
     icon: ""
     tags:
       - damage
@@ -144,7 +142,7 @@ evolution_skills:
     #                  # cast_time = idle hold BEFORE the cast (no skill anim); kept for team ref / possible future use.
     recovery: 0.2 # post-cast hold (s) before resuming attack — see default_tower.yaml
     # Single source for balance + desc: actions read these (projectile damage via
-    # damage_multiplier_param_name default, DOT via *_param); desc_template tokens
+    # damage_multiplier_param_name default, DOT via *_param); desc tokens
     # render the same values. Projectile knobs (speed/lifetime/max_range) live in
     # the action data below.
     parameters:

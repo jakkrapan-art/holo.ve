@@ -41,8 +41,7 @@ skills:
   active:
     name: "Skill"
     names: ["Skill I", "Skill II", "Skill III"] # optional UI display names per tower level
-    desc: "Just a skill" # legacy/fallback text
-    desc_template: "Just a skill with {damageBonus:percent} bonus" # UI display template
+    desc: "Just a skill with {damageBonus:percent} bonus" # tokenized display text: {param} / {param:percent} resolve from parameters; token-free text renders as-is
     icon: "" # optional — ว่างได้ ถ้ายังไม่มี icon
     # tags = ป้ายสรุปสกิลแบบผู้เล่นอ่าน (controlled registry ดู tower_skill.md §Tags)
     tags:
@@ -221,8 +220,7 @@ evolutionStat:
 evolution_skills:
   active:
     name: "Evolved Skill"
-    desc: "Just a stronger skill"
-    desc_template: "Just a stronger skill with {damageBonus:percent} bonus"
+    desc: "Just a stronger skill with {damageBonus:percent} bonus"
     icon: ""
     tags:
       - damage

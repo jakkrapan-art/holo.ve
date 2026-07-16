@@ -180,13 +180,15 @@ func _refresh_staff_card():
 		var icon_path = "res://resources/" + data.hud_skill_icon
 		if ResourceLoader.exists(icon_path):
 			_manager_skill_icon.texture = load(icon_path)
-	# Phase 2: skill is now a Skill resource (data.skill). Read .name / .desc when present;
-	# fall back to scene placeholder text when staff has no skill defined or fields are empty.
+	# Skill text goes through the display metadata path (tokens resolve; a plain
+	# desc renders as-is). Fall back to scene placeholder text when staff has no
+	# skill defined or fields are empty.
 	if data.skill != null:
-		if data.skill.name != "":
-			_manager_skill_name.text = data.skill.name
-		if data.skill.desc != "":
-			_manager_skill_desc.text = data.skill.desc
+		if data.skill.get_display_name(1) != "":
+			_manager_skill_name.text = data.skill.get_display_name(1)
+		var skill_desc: String = data.skill.get_display_desc(1)
+		if skill_desc != "":
+			_manager_skill_desc.text = skill_desc
 
 func _on_exit():
 	get_tree().change_scene_to_file("res://scenes/main_menu.tscn")

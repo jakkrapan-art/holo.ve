@@ -4,9 +4,10 @@ class_name Skill
 enum TARGET_TYPE {ENEMY, FRIENDLY}
 
 @export var name:String = "Skill"
-@export var desc:String = "Just a skill"
+# Single tokenized desc source: {param} / {param:percent} resolve from
+# `parameters` at display time; a token-free desc renders as-is.
+@export var desc:String = ""
 @export var names: Array[String] = []
-@export var desc_template: String = ""
 @export var oneTimeUse: bool = false
 @export var castTime: float = 0.0
 @export var recoveryTime: float = 0.0
@@ -20,7 +21,7 @@ enum TARGET_TYPE {ENEMY, FRIENDLY}
 var using = false;
 var disable = false;
 
-func _init(p_name:String="Skill", p_desc:String="Just a skill", p_actions:Array[SkillAction]=[], p_parameters:Dictionary={}, p_oneTimeUse: bool = false, p_castTime: float = 0.0):
+func _init(p_name:String="Skill", p_desc:String="", p_actions:Array[SkillAction]=[], p_parameters:Dictionary={}, p_oneTimeUse: bool = false, p_castTime: float = 0.0):
 	self.name = p_name;
 	self.desc = p_desc;
 	self.actions = p_actions;
@@ -34,20 +35,26 @@ func get_display_name(level: int) -> String:
 		return names[index]
 	return name
 
-func get_display_desc(level: int) -> String:
-	if desc_template == "":
-		return desc
+# highlight_color (BBCode hex, e.g. "#5AC8FA"): wraps values coming from a
+# per-level (array) parameter so the player sees which number scales -
+# mirrors SynergyData._render. "" returns plain text.
+func get_display_desc(level: int, highlight_color: String = "") -> String:
+	if desc == "":
+		return ""
 
-	var result := desc_template
+	var result := desc
 	var regex := RegEx.new()
 	regex.compile("\\{([^}:]+)(?::([^}]+))?\\}")
-	var matches := regex.search_all(desc_template)
+	var matches := regex.search_all(desc)
 	for i in range(matches.size() - 1, -1, -1):
 		var match_result := matches[i]
 		var param_name := match_result.get_string(1)
 		var format := match_result.get_string(2)
 		var value = _get_display_parameter(param_name, level)
-		result = result.substr(0, match_result.get_start()) + _format_display_parameter(value, format) + result.substr(match_result.get_end())
+		var text := _format_display_parameter(value, format)
+		if highlight_color != "" and parameters.get(param_name) is Array:
+			text = "[color=" + highlight_color + "]" + text + "[/color]"
+		result = result.substr(0, match_result.get_start()) + text + result.substr(match_result.get_end())
 	return result
 
 func _get_display_parameter(param_name: String, level: int):

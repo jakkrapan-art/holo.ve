@@ -62,7 +62,7 @@ static func parse_effect_list(list: Array, parameters: Dictionary, source_id: St
 	return result
 
 # Resolve a numeric field: prefer parameters[<param_key>] (scalar; single
-# source with desc_template tokens), else the literal field.
+# source with the tokenized skill desc), else the literal field.
 static func _resolve_field(data: Dictionary, parameters: Dictionary, literal_key: String, param_key: String, default_value):
 	if data.has(param_key):
 		var pname = data[param_key]

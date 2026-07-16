@@ -36,7 +36,7 @@ stats:
 
 skill:
   name: "Skill"
-  desc: "Just a skill"
+  desc: "Machina X Flayon drives a mecha strike through the 3x1 line in front of him, dealing physical damage to every enemy caught in it."
   recovery: 0.2 # post-cast hold (s) before resuming attack — see default_tower.yaml
   actions:
     - type: find_multi_enemy

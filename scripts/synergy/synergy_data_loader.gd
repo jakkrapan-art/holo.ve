@@ -33,10 +33,13 @@ static func _build(raw: Dictionary, path: String) -> SynergyData:
 	d.kind = str(raw.get("kind", ""))
 	d.type = str(raw.get("type", "normal"))
 	d.effect = str(raw.get("effect", ""))
-	d.desc = str(raw.get("desc", ""))
 	# YamlParser does not process escapes; translate \n loader-side, only for the
 	# text fields that want it (data_pipeline.md Problem #1).
-	d.desc_template = str(raw.get("desc_template", "")).replace("\\n", "\n")
+	# Single tokenized desc key; a stale desc_template key warns and wins.
+	d.desc = str(raw.get("desc", "")).replace("\\n", "\n")
+	if raw.has("desc_template"):
+		push_warning("Synergy '" + d.id + "': 'desc_template' was merged into 'desc' - rename the key (its tokenized text is used).")
+		d.desc = str(raw.get("desc_template", "")).replace("\\n", "\n")
 	for line in raw.get("tier_effects", []):
 		d.tier_effects.append(str(line).replace("\\n", "\n"))
 

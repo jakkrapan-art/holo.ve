@@ -21,6 +21,9 @@ func _ready() -> void:
 	var rect := ColorRect.new()
 	rect.size     = Vector2(draw_size, draw_size)
 	rect.position = Vector2(-draw_size / 2.0, -draw_size / 2.0)
+	# VFX must never eat mouse input: a Control's default filter blocked every
+	# world click under the effect for its whole lifetime (SkillVfx rule).
+	rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 	var mat := ShaderMaterial.new()
 	mat.shader = load(SHADER_PATH)

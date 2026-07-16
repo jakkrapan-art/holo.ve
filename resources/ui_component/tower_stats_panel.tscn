@@ -58,14 +58,14 @@ font_color = Color(0.62, 0.62, 0.7, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_small"]
 font = ExtResource("2_font")
-font_size = 14
+font_size = 13
 font_color = Color(0.88, 0.92, 1, 1)
 
 [node name="TowerStatsPanel" type="Control"]
 anchor_top = 1.0
 anchor_bottom = 1.0
 offset_left = 16.0
-offset_top = -356.0
+offset_top = -306.0
 offset_right = 576.0
 offset_bottom = -16.0
 grow_vertical = 0
@@ -207,23 +207,23 @@ label_settings = SubResource("LabelSettings_body")
 
 [node name="EnergyRow" type="Control" parent="."]
 offset_left = 16.0
-offset_top = 286.0
+offset_top = 246.0
 offset_right = 464.0
-offset_bottom = 316.0
+offset_bottom = 272.0
 mouse_filter = 2
 
 [node name="EnergyLabel" type="Label" parent="EnergyRow"]
-offset_top = 2.0
+offset_top = 1.0
 offset_right = 80.0
-offset_bottom = 28.0
+offset_bottom = 25.0
 text = "Energy"
 label_settings = SubResource("LabelSettings_dim")
 
 [node name="EnergyBar" type="ProgressBar" parent="EnergyRow"]
 offset_left = 88.0
-offset_top = 3.0
+offset_top = 4.0
 offset_right = 448.0
-offset_bottom = 27.0
+offset_bottom = 22.0
 mouse_filter = 2
 theme_override_styles/background = SubResource("StyleBoxFlat_barbg")
 theme_override_styles/fill = SubResource("StyleBoxFlat_barfill")
@@ -245,6 +245,6 @@ vertical_alignment = 1
 offset_left = 484.0
 offset_top = 16.0
 offset_right = 548.0
-offset_bottom = 324.0
+offset_bottom = 274.0
 mouse_filter = 2
 theme_override_constants/separation = 10

@@ -88,26 +88,19 @@ func _unhandled_input(event):
 		else:
 			_tower_stats_panel.clear()
 
-# Pick box in tower-local px (tower.position = cell center): full sprite incl.
-# head, wide enough to survive skill-pose shifts, narrower/shorter than the
-# 512px cell pitch so vertical neighbors' boxes don't overlap.
-const TOWER_PICK_HALF_WIDTH := 160.0
-const TOWER_PICK_TOP := -440.0
-const TOWER_PICK_BOTTOM := 70.0
-
+# Square pick box = the tower's own visible grid square (tower.position is the
+# square's center), so neighbor squares tile exactly with no overlap (Director
+# feedback 2026-07-16).
 func _pick_tower_at(world_pos: Vector2) -> Tower:
-	var best: Tower = null
+	var half := GridHelper.CELL_SIZE / 2.0
 	for node in get_tree().get_nodes_in_group("tower"):
 		var tower := node as Tower
 		if tower == null or tower.inPlaceMode:
 			continue
 		var local := world_pos - tower.position
-		if absf(local.x) <= TOWER_PICK_HALF_WIDTH and local.y >= TOWER_PICK_TOP and local.y <= TOWER_PICK_BOTTOM:
-			# Boundary tie: prefer the lower tower - the clicked pixel is nearer
-			# its body than the upper one's feet.
-			if best == null or tower.position.y > best.position.y:
-				best = tower
-	return best
+		if absf(local.x) <= half and absf(local.y) <= half:
+			return tower
+	return null
 
 func _process(_delta):
 	if state == "staff_skill_casting" and _skill_cast_indicator != null:

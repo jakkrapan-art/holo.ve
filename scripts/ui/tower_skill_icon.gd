@@ -25,10 +25,22 @@ func setup(p_skill: Skill, p_kind: String, p_level: int) -> void:
 
 func _make_custom_tooltip(_for_text: String) -> Object:
 	var panel := PanelContainer.new()
+	# Opaque dark card (stats-panel palette): the default tooltip theme let the
+	# panel text underneath bleed through and the two texts collided.
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.07, 0.05, 0.12, 0.97)
+	style.border_color = Color(0.85, 0.7, 0.45, 0.9)
+	style.set_border_width_all(2)
+	style.set_corner_radius_all(10)
+	style.content_margin_left = 12
+	style.content_margin_right = 12
+	style.content_margin_top = 10
+	style.content_margin_bottom = 10
+	panel.add_theme_stylebox_override("panel", style)
 	var rich := RichTextLabel.new()
 	rich.bbcode_enabled = true
 	rich.fit_content = true
-	rich.custom_minimum_size = Vector2(320, 0)
+	rich.custom_minimum_size = Vector2(340, 0)
 	rich.text = _build_hover_bbcode()
 	panel.add_child(rich)
 	return panel
@@ -40,20 +52,18 @@ func _build_hover_bbcode() -> String:
 	lines.append("[b]" + skill.get_display_name(level) + "[/b]")
 
 	if kind_label != "":
-		var kind_line := kind_label.to_upper()
-		if kind_label == "Active":
-			kind_line += " - CASTS AT FULL ENERGY"
-		lines.append("[color=" + KIND_COLOR + "]" + kind_line + "[/color]")
+		lines.append("[color=" + KIND_COLOR + "]" + kind_label.to_upper() + "[/color]")
 
 	var affects := _affects_line()
 	if affects != "":
 		lines.append("[color=" + DIM_COLOR + "]" + affects + "[/color]")
 
+	# Bare tag list, no "TAGS:" prefix (long lists eat the line - Director).
 	if not skill.tags.is_empty():
 		var tag_names: PackedStringArray = []
 		for tag in skill.tags:
 			tag_names.append(str(tag).capitalize().to_upper())
-		lines.append("[color=" + DIM_COLOR + "]TAGS: " + ", ".join(tag_names) + "[/color]")
+		lines.append("[color=" + DIM_COLOR + "]" + ", ".join(tag_names) + "[/color]")
 
 	var desc := skill.get_display_desc(level, SCALING_COLOR)
 	if desc != "":

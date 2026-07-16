@@ -3,8 +3,8 @@ extends Control
 
 # Placeholder tower stats panel (bottom-left HUD). Artist design pass pending.
 # The skeleton (portrait / name+level header / trait row / stat grid / energy
-# bar / skill icon row) is the shared layout convention for the future enemy
-# stats panel (ui.md).
+# bar / right-edge skill icon column) is the shared layout convention for the
+# future enemy stats panel (ui.md).
 
 @onready var _portrait: TextureRect = $Portrait
 @onready var _name_label: Label = $NameLabel
@@ -14,14 +14,15 @@ extends Control
 @onready var _gen_icon: TextureRect = $TraitRow/GenIcon
 @onready var _gen_label: Label = $TraitRow/GenLabel
 @onready var _atk_value: Label = $StatsGrid/AtkValue
-@onready var _type_value: Label = $StatsGrid/TypeValue
 @onready var _as_value: Label = $StatsGrid/AsValue
 @onready var _crit_value: Label = $StatsGrid/CritValue
 @onready var _crit_dmg_value: Label = $StatsGrid/CritDmgValue
 @onready var _energy_row: Control = $EnergyRow
 @onready var _energy_bar: ProgressBar = $EnergyRow/EnergyBar
 @onready var _energy_text: Label = $EnergyRow/EnergyBar/EnergyText
-@onready var _skill_row: HBoxContainer = $SkillRow
+# Right-edge column: the hover popup opens toward the open playfield instead of
+# over the panel's own stat text (Director feedback 2026-07-16).
+@onready var _skill_column: VBoxContainer = $SkillColumn
 
 var _tower: Tower = null
 # Rebuild key for the skill-icon row ("level_isEvolved"): icons/tooltips only
@@ -71,9 +72,10 @@ func _refresh() -> void:
 	_class_icon.texture = _trait_sprite(class_display)
 	_gen_icon.texture = _trait_sprite(gen_display)
 
-	# Stats: live getters, so buffs/debuffs show (player-facing terms per game_copy.md).
-	_set_text(_atk_value, str(data.getTotalAttack()))
-	_set_text(_type_value, "Magic" if data.attackType == Damage.DamageType.MAGIC else "Physical")
+	# Stats: live getters, so buffs/debuffs show (player-facing terms per
+	# game_copy.md). Attack type rides the Attack value to keep the grid 2x2.
+	var type_display := "Magic" if data.attackType == Damage.DamageType.MAGIC else "Physical"
+	_set_text(_atk_value, "%d (%s)" % [data.getTotalAttack(), type_display])
 	_set_text(_as_value, _format_number(data.getAttackSpeed()))
 	_set_text(_crit_value, _format_number(data.getCritChance()) + "%")
 	# Display-only percent form (1.5 -> "150%"); the damage formula still uses
@@ -95,22 +97,22 @@ func _refresh() -> void:
 		_rebuild_skill_row(data)
 
 func _rebuild_skill_row(data: TowerData) -> void:
-	for child in _skill_row.get_children():
+	for child in _skill_column.get_children():
 		child.queue_free()
 
 	var level: int = data.level
 	var active: Skill = data.evolutionSkill if data.isEvolved and data.evolutionSkill != null else data.skill
 	if active != null and not active.actions.is_empty():
-		_skill_row.add_child(_make_skill_icon(active, "Active", level))
+		_skill_column.add_child(_make_skill_icon(active, "Active", level))
 
 	var passive_params: Dictionary = data.evolutionPassive if data.isEvolved and not data.evolutionPassive.is_empty() else data.passive
 	var passive_skill: Skill = TowerDataLoader.build_passive_display_skill(passive_params)
 	if passive_skill != null:
-		_skill_row.add_child(_make_skill_icon(passive_skill, "Passive", level))
+		_skill_column.add_child(_make_skill_icon(passive_skill, "Passive", level))
 
 func _make_skill_icon(skill: Skill, kind: String, level: int) -> TowerSkillIcon:
 	var icon := TowerSkillIcon.new()
-	icon.custom_minimum_size = Vector2(48, 48)
+	icon.custom_minimum_size = Vector2(56, 56)
 	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	icon.setup(skill, kind, level)

@@ -1,58 +1,72 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=12 format=3]
 
 [ext_resource type="Script" path="res://scripts/ui/tower_stats_panel.gd" id="1_twstats"]
 [ext_resource type="FontFile" uid="uid://scv78fddnukv" path="res://resources/ui_component/font/Roboto-Regular.ttf" id="2_font"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panelbg"]
-bg_color = Color(0.09, 0.06, 0.14, 0.92)
+bg_color = Color(0.07, 0.05, 0.12, 0.94)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0.85, 0.7, 0.45, 0.9)
-corner_radius_top_left = 14
-corner_radius_top_right = 14
-corner_radius_bottom_right = 14
-corner_radius_bottom_left = 14
+border_color = Color(0.85, 0.7, 0.45, 0.85)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sep"]
+bg_color = Color(0.85, 0.7, 0.45, 0.25)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_barbg"]
 bg_color = Color(0.12, 0.11, 0.2, 1)
-corner_radius_top_left = 6
-corner_radius_top_right = 6
-corner_radius_bottom_right = 6
-corner_radius_bottom_left = 6
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.85, 0.7, 0.45, 0.4)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_barfill"]
 bg_color = Color(0.3, 0.65, 1, 1)
-corner_radius_top_left = 6
-corner_radius_top_right = 6
-corner_radius_bottom_right = 6
-corner_radius_bottom_left = 6
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
 
 [sub_resource type="LabelSettings" id="LabelSettings_title"]
 font = ExtResource("2_font")
 font_size = 26
+font_color = Color(0.96, 0.85, 0.6, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_sub"]
 font = ExtResource("2_font")
-font_size = 19
-font_color = Color(0.95, 0.8, 0.5, 1)
+font_size = 18
+font_color = Color(0.85, 0.85, 0.9, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_body"]
 font = ExtResource("2_font")
 font_size = 18
 
+[sub_resource type="LabelSettings" id="LabelSettings_dim"]
+font = ExtResource("2_font")
+font_size = 17
+font_color = Color(0.62, 0.62, 0.7, 1)
+
 [sub_resource type="LabelSettings" id="LabelSettings_small"]
 font = ExtResource("2_font")
 font_size = 14
-font_color = Color(0.78, 0.78, 0.85, 1)
+font_color = Color(0.88, 0.92, 1, 1)
 
 [node name="TowerStatsPanel" type="Control"]
 anchor_top = 1.0
 anchor_bottom = 1.0
 offset_left = 16.0
-offset_top = -416.0
-offset_right = 536.0
+offset_top = -356.0
+offset_right = 576.0
 offset_bottom = -16.0
 grow_vertical = 0
 mouse_filter = 0
@@ -71,38 +85,38 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_panelbg")
 [node name="Portrait" type="TextureRect" parent="."]
 offset_left = 16.0
 offset_top = 16.0
-offset_right = 144.0
-offset_bottom = 144.0
+offset_right = 136.0
+offset_bottom = 136.0
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 
 [node name="NameLabel" type="Label" parent="."]
-offset_left = 160.0
-offset_top = 14.0
-offset_right = 504.0
+offset_left = 152.0
+offset_top = 16.0
+offset_right = 460.0
 offset_bottom = 46.0
 text = "Tower Name"
 label_settings = SubResource("LabelSettings_title")
 
 [node name="LevelLabel" type="Label" parent="."]
-offset_left = 160.0
+offset_left = 152.0
 offset_top = 50.0
-offset_right = 504.0
-offset_bottom = 76.0
+offset_right = 460.0
+offset_bottom = 74.0
 text = "Level 1"
 label_settings = SubResource("LabelSettings_sub")
 
 [node name="TraitRow" type="HBoxContainer" parent="."]
-offset_left = 160.0
-offset_top = 84.0
-offset_right = 504.0
-offset_bottom = 122.0
+offset_left = 152.0
+offset_top = 82.0
+offset_right = 460.0
+offset_bottom = 116.0
 mouse_filter = 2
-theme_override_constants/separation = 10
+theme_override_constants/separation = 8
 
 [node name="ClassIcon" type="TextureRect" parent="TraitRow"]
-custom_minimum_size = Vector2(32, 32)
+custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 mouse_filter = 2
 expand_mode = 1
@@ -114,12 +128,12 @@ text = "Class"
 label_settings = SubResource("LabelSettings_body")
 
 [node name="TraitSpacer" type="Control" parent="TraitRow"]
-custom_minimum_size = Vector2(12, 0)
+custom_minimum_size = Vector2(14, 0)
 layout_mode = 2
 mouse_filter = 2
 
 [node name="GenIcon" type="TextureRect" parent="TraitRow"]
-custom_minimum_size = Vector2(32, 32)
+custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 mouse_filter = 2
 expand_mode = 1
@@ -130,61 +144,61 @@ layout_mode = 2
 text = "Generation"
 label_settings = SubResource("LabelSettings_body")
 
+[node name="Separator" type="Panel" parent="."]
+offset_left = 16.0
+offset_top = 148.0
+offset_right = 464.0
+offset_bottom = 150.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_sep")
+
 [node name="StatsGrid" type="GridContainer" parent="."]
 offset_left = 16.0
-offset_top = 152.0
-offset_right = 504.0
-offset_bottom = 300.0
+offset_top = 164.0
+offset_right = 464.0
+offset_bottom = 250.0
 mouse_filter = 2
-theme_override_constants/h_separation = 10
-theme_override_constants/v_separation = 6
-columns = 2
+theme_override_constants/h_separation = 14
+theme_override_constants/v_separation = 14
+columns = 4
 
 [node name="AtkName" type="Label" parent="StatsGrid"]
-custom_minimum_size = Vector2(240, 0)
+custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 text = "Attack"
-label_settings = SubResource("LabelSettings_body")
+label_settings = SubResource("LabelSettings_dim")
 
 [node name="AtkValue" type="Label" parent="StatsGrid"]
-layout_mode = 2
-text = "0"
-label_settings = SubResource("LabelSettings_body")
-
-[node name="TypeName" type="Label" parent="StatsGrid"]
-layout_mode = 2
-text = "Attack Type"
-label_settings = SubResource("LabelSettings_body")
-
-[node name="TypeValue" type="Label" parent="StatsGrid"]
-layout_mode = 2
-text = "Physical"
-label_settings = SubResource("LabelSettings_body")
-
-[node name="AsName" type="Label" parent="StatsGrid"]
-layout_mode = 2
-text = "Attack Speed"
-label_settings = SubResource("LabelSettings_body")
-
-[node name="AsValue" type="Label" parent="StatsGrid"]
+custom_minimum_size = Vector2(130, 0)
 layout_mode = 2
 text = "0"
 label_settings = SubResource("LabelSettings_body")
 
 [node name="CritName" type="Label" parent="StatsGrid"]
+custom_minimum_size = Vector2(90, 0)
 layout_mode = 2
 text = "Crit Rate"
-label_settings = SubResource("LabelSettings_body")
+label_settings = SubResource("LabelSettings_dim")
 
 [node name="CritValue" type="Label" parent="StatsGrid"]
 layout_mode = 2
 text = "0%"
 label_settings = SubResource("LabelSettings_body")
 
+[node name="AsName" type="Label" parent="StatsGrid"]
+layout_mode = 2
+text = "Attack Speed"
+label_settings = SubResource("LabelSettings_dim")
+
+[node name="AsValue" type="Label" parent="StatsGrid"]
+layout_mode = 2
+text = "0"
+label_settings = SubResource("LabelSettings_body")
+
 [node name="CritDmgName" type="Label" parent="StatsGrid"]
 layout_mode = 2
 text = "Crit DMG"
-label_settings = SubResource("LabelSettings_body")
+label_settings = SubResource("LabelSettings_dim")
 
 [node name="CritDmgValue" type="Label" parent="StatsGrid"]
 layout_mode = 2
@@ -193,22 +207,22 @@ label_settings = SubResource("LabelSettings_body")
 
 [node name="EnergyRow" type="Control" parent="."]
 offset_left = 16.0
-offset_top = 306.0
-offset_right = 504.0
-offset_bottom = 336.0
+offset_top = 286.0
+offset_right = 464.0
+offset_bottom = 316.0
 mouse_filter = 2
 
 [node name="EnergyLabel" type="Label" parent="EnergyRow"]
 offset_top = 2.0
-offset_right = 86.0
+offset_right = 80.0
 offset_bottom = 28.0
 text = "Energy"
-label_settings = SubResource("LabelSettings_body")
+label_settings = SubResource("LabelSettings_dim")
 
 [node name="EnergyBar" type="ProgressBar" parent="EnergyRow"]
-offset_left = 92.0
+offset_left = 88.0
 offset_top = 3.0
-offset_right = 488.0
+offset_right = 448.0
 offset_bottom = 27.0
 mouse_filter = 2
 theme_override_styles/background = SubResource("StyleBoxFlat_barbg")
@@ -227,10 +241,10 @@ label_settings = SubResource("LabelSettings_small")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="SkillRow" type="HBoxContainer" parent="."]
-offset_left = 16.0
-offset_top = 344.0
-offset_right = 504.0
-offset_bottom = 394.0
+[node name="SkillColumn" type="VBoxContainer" parent="."]
+offset_left = 484.0
+offset_top = 16.0
+offset_right = 548.0
+offset_bottom = 324.0
 mouse_filter = 2
 theme_override_constants/separation = 10

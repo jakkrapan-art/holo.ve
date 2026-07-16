@@ -39,8 +39,7 @@ skills:
   active:
     name: "Gun and Blade"
     names: ["Gun and Blade I", "Gun and Blade II", "Gun and Blade III"]
-    desc: "Altare strikes twice with his Gun Blade. A forward slash across a 3x1 tile area deals physical damage and reduces armor by 5% for 2s, then a gun volley down a 1x3 lane deals physical damage with a guaranteed critical."
-    desc_template: "Altare strikes twice with his Gun Blade. A forward slash across a 3x1 tile area deals {beat1Damage:percent} physical damage and reduces armor by {armorShred:percent} for {shredDuration}s, then a gun volley down a 1x3 lane deals {beat2Damage:percent} physical damage with a guaranteed critical."
+    desc: "Altare strikes twice with his Gun Blade. A forward slash across a 3x1 tile area deals {beat1Damage:percent} physical damage and reduces armor by {armorShred:percent} for {shredDuration}s, then a gun volley down a 1x3 lane deals {beat2Damage:percent} physical damage with a guaranteed critical."
     icon: ""
     tags:
       - damage
@@ -130,8 +129,7 @@ evolutionStat:
 evolution_skills:
   active:
     name: "Heroic Requiem"
-    desc: "Altare's finisher strikes twice with his Gun Blade. A forward slash across a 3x1 tile area deals physical damage and reduces armor by 5% for 2s, then a long gun volley down a 1x6 lane deals physical damage with a guaranteed critical."
-    desc_template: "Altare's finisher strikes twice with his Gun Blade. A forward slash across a 3x1 tile area deals {beat1Damage:percent} physical damage and reduces armor by {armorShred:percent} for {shredDuration}s, then a long gun volley down a 1x6 lane deals {beat2Damage:percent} physical damage with a guaranteed critical."
+    desc: "Altare's finisher strikes twice with his Gun Blade. A forward slash across a 3x1 tile area deals {beat1Damage:percent} physical damage and reduces armor by {armorShred:percent} for {shredDuration}s, then a long gun volley down a 1x6 lane deals {beat2Damage:percent} physical damage with a guaranteed critical."
     icon: ""
     tags:
       - damage

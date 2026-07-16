@@ -19,7 +19,7 @@ parameters:
   # energy_interval seconds.
   energy_percent: 0.1
   energy_interval: 5
-desc_template: "The Tempus guild fights as one - clear each Guild Mission and they grow stronger together."
+desc: "The Tempus guild fights as one - clear each Guild Mission and they grow stronger together."
 # One line per tier (qualitative). {mission_kills} is the per-tier scaling value
 # (highlighted); reward magnitudes read scalar params so the text cannot drift
 # from the applied effect. :percent renders a decimal-scale value as N%.

@@ -4,9 +4,10 @@ class_name Skill
 enum TARGET_TYPE {ENEMY, FRIENDLY}
 
 @export var name:String = "Skill"
-@export var desc:String = "Just a skill"
+# Single tokenized desc source: {param} / {param:percent} resolve from
+# `parameters` at display time; a token-free desc renders as-is.
+@export var desc:String = ""
 @export var names: Array[String] = []
-@export var desc_template: String = ""
 @export var oneTimeUse: bool = false
 @export var castTime: float = 0.0
 @export var recoveryTime: float = 0.0
@@ -20,7 +21,7 @@ enum TARGET_TYPE {ENEMY, FRIENDLY}
 var using = false;
 var disable = false;
 
-func _init(p_name:String="Skill", p_desc:String="Just a skill", p_actions:Array[SkillAction]=[], p_parameters:Dictionary={}, p_oneTimeUse: bool = false, p_castTime: float = 0.0):
+func _init(p_name:String="Skill", p_desc:String="", p_actions:Array[SkillAction]=[], p_parameters:Dictionary={}, p_oneTimeUse: bool = false, p_castTime: float = 0.0):
 	self.name = p_name;
 	self.desc = p_desc;
 	self.actions = p_actions;
@@ -35,13 +36,13 @@ func get_display_name(level: int) -> String:
 	return name
 
 func get_display_desc(level: int) -> String:
-	if desc_template == "":
-		return desc
+	if desc == "":
+		return ""
 
-	var result := desc_template
+	var result := desc
 	var regex := RegEx.new()
 	regex.compile("\\{([^}:]+)(?::([^}]+))?\\}")
-	var matches := regex.search_all(desc_template)
+	var matches := regex.search_all(desc)
 	for i in range(matches.size() - 1, -1, -1):
 		var match_result := matches[i]
 		var param_name := match_result.get_string(1)

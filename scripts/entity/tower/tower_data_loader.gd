@@ -118,6 +118,17 @@ static func _resolve_skill_block(data: Dictionary, slot_root_key: String, legacy
 		return legacy_skill_data
 	return default_block
 
+# Display-only Skill built from a passive params block (no runtime actions):
+# passives are stored as raw Dictionaries, so this gives UI consumers (stats
+# panel tooltip) the same metadata surface as an active skill. Runtime passive
+# behavior is untouched.
+static func build_passive_display_skill(passive_data: Dictionary) -> Skill:
+	if passive_data == null or passive_data.is_empty():
+		return null
+	var skill := Skill.new()
+	_apply_skill_data(skill, passive_data, "Passive")
+	return skill
+
 static func _resolve_passive_block(data: Dictionary, slot_root_key: String) -> Dictionary:
 	if not data.has(slot_root_key):
 		return {}
@@ -157,8 +168,12 @@ static func _apply_skill_data(skill: Skill, skill_data: Dictionary, default_name
 		skill.name = skill.names[0]
 	# Custom YAML parser preserves backslash escapes literally; translate "\n" tokens
 	# from skill copy into real newlines so designers can split notes onto their own line.
+	# Single tokenized desc key; a stale file still carrying the removed
+	# desc_template key warns and its tokenized text wins.
 	skill.desc = str(skill_data.get("desc", "")).replace("\\n", "\n")
-	skill.desc_template = str(skill_data.get("desc_template", "")).replace("\\n", "\n")
+	if skill_data.has("desc_template"):
+		push_warning("Skill '" + skill.name + "': 'desc_template' was merged into 'desc' - rename the key (its tokenized text is used).")
+		skill.desc = str(skill_data.get("desc_template", "")).replace("\\n", "\n")
 	skill.parameters = skill_data.get("parameters", {})
 	skill.castTime = skill_data.get("cast_time", 0.0)
 	skill.recoveryTime = skill_data.get("recovery", 0.2)

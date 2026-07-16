@@ -40,6 +40,9 @@ var _state_before_skill_cast: String = ""
 # Ref to the Staff HUD widget so _input can ask whether a click landed on the skill button.
 var _staff_widget: StaffWidget = null
 
+# Bottom-left tower stats panel (display-only selection surface).
+var _tower_stats_panel: TowerStatsPanel = null
+
 func _input(event):
 	if state == "tower_placement" and event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		if(t != null && !t.isOnValidCell):
@@ -50,6 +53,9 @@ func _input(event):
 		if(map != null):
 			map.toggle_grid(false);
 		startWave();
+		# Consume the commit click: state is already back to "wave" here, and physics
+		# picking runs last - without this, the same click would select the placed tower.
+		get_viewport().set_input_as_handled();
 	elif state == "staff_skill_casting":
 		if event is InputEventMouseButton and event.pressed:
 			if event.button_index == MOUSE_BUTTON_LEFT:
@@ -58,10 +64,23 @@ func _input(event):
 				if _staff_widget != null and _staff_widget.is_skill_button_hovered():
 					return
 				_commit_staff_skill_cast()
+				# Same race as the placement commit: consume so the cast click cannot
+				# also pick whatever tower sits under the cursor.
+				get_viewport().set_input_as_handled()
 			elif event.button_index == MOUSE_BUTTON_RIGHT:
 				_cancel_staff_skill_cast()
 		elif event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE:
 			_cancel_staff_skill_cast()
+
+func _unhandled_input(event):
+	# Runs after GUI consumed UI clicks but BEFORE physics picking: a left-click
+	# reaching here hit no UI -> deselect; if it lands on a tower, Tower._input_event
+	# re-selects in the same frame (deliberate ordering).
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		if state == "tower_placement" or state == "staff_skill_casting":
+			return
+		if _tower_stats_panel != null:
+			_tower_stats_panel.clear()
 
 func _process(_delta):
 	if state == "staff_skill_casting" and _skill_cast_indicator != null:
@@ -83,6 +102,7 @@ func _ready():
 
 	# Staff system: load data → instantiate entity → wire widget → spawn endpoint sprite.
 	setup_staff()
+	_tower_stats_panel = get_node_or_null("GameUI/TowerStatsPanel") as TowerStatsPanel
 	var camera = get_node("Camera2D")
 	camera.make_current()
 	if(map != null):
@@ -366,6 +386,9 @@ func _on_option_selected(selection):
 			if(map != null):
 				map.toggle_grid(true);
 			add_child(result.tower);
+			# Every placed tower enters the scene exactly here; upgrades/evolves reuse
+			# the already-connected instance.
+			Utility.ConnectSignal(result.tower, "tower_clicked", Callable(self, "_on_tower_clicked"))
 			t = result.tower
 			state = "tower_placement"
 
@@ -398,3 +421,13 @@ func startWave():
 	state = "wave"
 	if(waveController):
 		waveController.start()
+
+# === Tower selection (stats panel) ===
+
+func _on_tower_clicked(tower: Tower):
+	# Selection is display-only; never react during placement / staff aiming /
+	# popups / game over (belt over the _input consume guards above).
+	if state == "tower_placement" or state == "staff_skill_casting" or _popup_open or state == "game_over":
+		return
+	if _tower_stats_panel != null:
+		_tower_stats_panel.show_tower(tower)

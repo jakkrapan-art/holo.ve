@@ -1,0 +1,143 @@
+class_name TowerStatsPanel
+extends Control
+
+# Placeholder tower stats panel (bottom-left HUD). Artist design pass pending.
+# The skeleton (portrait / name+level header / trait row / stat grid / energy
+# bar / skill icon row) is the shared layout convention for the future enemy
+# stats panel (ui.md).
+
+@onready var _portrait: TextureRect = $Portrait
+@onready var _name_label: Label = $NameLabel
+@onready var _level_label: Label = $LevelLabel
+@onready var _class_icon: TextureRect = $TraitRow/ClassIcon
+@onready var _class_label: Label = $TraitRow/ClassLabel
+@onready var _gen_icon: TextureRect = $TraitRow/GenIcon
+@onready var _gen_label: Label = $TraitRow/GenLabel
+@onready var _atk_value: Label = $StatsGrid/AtkValue
+@onready var _type_value: Label = $StatsGrid/TypeValue
+@onready var _as_value: Label = $StatsGrid/AsValue
+@onready var _crit_value: Label = $StatsGrid/CritValue
+@onready var _crit_dmg_value: Label = $StatsGrid/CritDmgValue
+@onready var _energy_row: Control = $EnergyRow
+@onready var _energy_bar: ProgressBar = $EnergyRow/EnergyBar
+@onready var _energy_text: Label = $EnergyRow/EnergyBar/EnergyText
+@onready var _start_label: Label = $EnergyRow/StartLabel
+@onready var _skill_row: HBoxContainer = $SkillRow
+
+var _tower: Tower = null
+# Rebuild key for the skill-icon row ("level_isEvolved"): icons/tooltips only
+# change on level-up or evolve, so the per-frame poll skips the rebuild.
+var _skills_key: String = ""
+
+func _ready():
+	visible = false
+
+func show_tower(tower: Tower) -> void:
+	_tower = tower
+	_skills_key = ""
+	visible = true
+	_refresh()
+
+func clear() -> void:
+	_tower = null
+	visible = false
+
+func _process(_delta):
+	if not visible:
+		return
+	if _tower == null or not is_instance_valid(_tower):
+		clear()
+		return
+	_refresh()
+
+func _refresh() -> void:
+	var data: TowerData = _tower.data
+	if data == null:
+		clear()
+		return
+
+	# Identity: tower.id is the data key; display name + portrait come from the
+	# TowerCenter registry (same access pattern as Tower.setup).
+	var entry = TowerCenter._towers_data.get(_tower.id.to_lower(), null)
+	_set_text(_name_label, entry.name if entry != null else _tower.id)
+	_portrait.texture = TowerCenter._tower_portrait.get(entry.data_name, null) if entry != null else null
+
+	_set_text(_level_label, "Evolved" if data.isEvolved else "Level %d" % data.level)
+
+	# Traits: display names + synergy icons (default.png fallback, PR #95 pattern).
+	var class_display: String = TowerTrait.TOWER_CLASS_NAMES.get(data.towerClass, "default")
+	var gen_display: String = TowerTrait.TOWER_GENERATION_NAMES.get(data.generation, "default")
+	_set_text(_class_label, class_display)
+	_set_text(_gen_label, gen_display)
+	_class_icon.texture = _trait_sprite(class_display)
+	_gen_icon.texture = _trait_sprite(gen_display)
+
+	# Stats: live getters, so buffs/debuffs show (player-facing terms per game_copy.md).
+	_set_text(_atk_value, str(data.getTotalAttack()))
+	_set_text(_type_value, "Magic" if data.attackType == Damage.DamageType.MAGIC else "Physical")
+	_set_text(_as_value, _format_number(data.getAttackSpeed()))
+	_set_text(_crit_value, _format_number(data.getCritChance()) + "%")
+	_set_text(_crit_dmg_value, "x" + _format_number(data.getCritDamage()))
+
+	# Energy: evolve swaps the SkillController (tower.gd evolve) - re-read every
+	# frame, never cache. Passive-only towers have none -> hide the row.
+	var sc = _tower.skillController
+	_energy_row.visible = sc != null
+	if sc != null:
+		_energy_bar.max_value = sc.maxMana
+		_energy_bar.value = sc.currentMana
+		_set_text(_energy_text, "%d / %d" % [int(sc.currentMana), int(sc.maxMana)])
+		_set_text(_start_label, "Start %d" % int(data.getStat().initialMana))
+
+	var skills_key := "%d_%s" % [data.level, data.isEvolved]
+	if skills_key != _skills_key:
+		_skills_key = skills_key
+		_rebuild_skill_row(data)
+
+func _rebuild_skill_row(data: TowerData) -> void:
+	for child in _skill_row.get_children():
+		child.queue_free()
+
+	var level: int = data.level
+	var active: Skill = data.evolutionSkill if data.isEvolved and data.evolutionSkill != null else data.skill
+	if active != null and not active.actions.is_empty():
+		_skill_row.add_child(_make_skill_icon(active, "Active", level))
+
+	var passive_params: Dictionary = data.evolutionPassive if data.isEvolved and not data.evolutionPassive.is_empty() else data.passive
+	var passive_skill: Skill = TowerDataLoader.build_passive_display_skill(passive_params)
+	if passive_skill != null:
+		_skill_row.add_child(_make_skill_icon(passive_skill, "Passive", level))
+
+func _make_skill_icon(skill: Skill, kind: String, level: int) -> TowerSkillIcon:
+	var icon := TowerSkillIcon.new()
+	icon.custom_minimum_size = Vector2(48, 48)
+	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	icon.setup(skill, kind, level)
+
+	# No tower skill icon art exists yet; the shared synergy default placeholder
+	# stands in (a dedicated skills/default asset needs a Godot-generated .import,
+	# so reuse beats hand-adding a binary - see tower_skill.md icon note).
+	var texture: Texture2D = null
+	if skill.icon != "":
+		texture = ResourceManager.loadImage("skill_icon", skill.icon, skill.icon)
+	if texture == null:
+		texture = ResourceManager.getSprite("synergy", "default")
+	icon.texture = texture
+	return icon
+
+func _trait_sprite(trait_display: String) -> Texture2D:
+	var sprite = ResourceManager.getSprite("synergy", trait_display.to_lower())
+	if sprite == null:
+		sprite = ResourceManager.getSprite("synergy", "default")
+	return sprite
+
+# Skip no-op text writes so per-frame polling doesn't churn label layout (PR #20 rule).
+func _set_text(label: Label, value: String) -> void:
+	if label.text != value:
+		label.text = value
+
+func _format_number(value: float) -> String:
+	if is_equal_approx(value, round(value)):
+		return str(int(round(value)))
+	return "%.1f" % value

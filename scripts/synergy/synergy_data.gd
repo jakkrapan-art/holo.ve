@@ -3,7 +3,7 @@ class_name SynergyData
 # One synergy definition loaded from resources/database/synergy/<id>.yaml.
 # Values live in YAML (designer-tunable); behaviour lives in SynergyEffect.
 # Numbers are read through get_parameter so the displayed text and the applied
-# effect share one source (mirrors Skill.parameters / desc_template).
+# effect share one source (mirrors Skill.parameters / tokenized desc).
 
 var id: String = ""                # file/data key, e.g. "myth"
 var synergy_id: int = 0            # TowerTrait enum int (resolved at load)
@@ -13,8 +13,7 @@ var type: String = "normal"       # UI category: normal | quest | special
 var effect: String = ""           # SynergyEffect handler key ("" = placeholder)
 var thresholds: Array = []        # proc count per tier (untyped: YamlParser yields untyped Array)
 var parameters: Dictionary = {}   # name -> per-tier array (or scalar)
-var desc_template: String = ""    # flavour line (hover header), may hold {param} tokens
-var desc: String = ""             # plain fallback when desc_template is empty
+var desc: String = ""             # flavour line (hover header), may hold {param} tokens
 # Per-tier effect lines for the hover table. size 1 -> the one template is used
 # for every tier (pure scaling, e.g. Myth); size == tier_count -> one line per
 # tier (qualitative tiers, e.g. a Tempus-style "unlock" at a higher tier).
@@ -53,8 +52,7 @@ func get_parameter(param_name: String, tier: int):
 # that come from a per-tier (array) parameter, so the player sees which number
 # scales; "" returns plain text.
 func flavor(tier: int, highlight_color: String = "") -> String:
-	var template := desc_template if desc_template != "" else desc
-	return _render(template, tier, highlight_color)
+	return _render(desc, tier, highlight_color)
 
 # One hover-table line for a tier (see tier_effects).
 func tier_effect(tier: int, highlight_color: String = "") -> String:

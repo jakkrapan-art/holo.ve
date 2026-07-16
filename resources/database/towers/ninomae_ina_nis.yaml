@@ -38,8 +38,7 @@ skills:
   active:
     name: "Tentacle"
     names: ["Tentacle I", "Tentacle II", "Tentacle III"]
-    desc: "Ina'nis commands a tentacle of the Ancient One to lash the 1x3 line in front of her, dealing heavy magic damage and stunning every enemy hit for 1.5 seconds."
-    desc_template: "Ina'nis commands a tentacle of the Ancient One to lash the 1x3 line in front of her, dealing {skillDamage:percent} magic damage and stunning every enemy hit for {stunDuration}s."
+    desc: "Ina'nis commands a tentacle of the Ancient One to lash the 1x3 line in front of her, dealing {skillDamage:percent} magic damage and stunning every enemy hit for {stunDuration}s."
     icon: ""
     tags:
       - damage
@@ -102,8 +101,7 @@ evolutionStat:
 evolution_skills:
   active:
     name: "Book of Ancient Ones"
-    desc: "Ina'nis opens the Book of Ancient Ones and channels its power for 3 seconds, striking the 3x3 area in front of her every 0.25 seconds. Each strike deals magic damage and stuns enemies caught in the zone for 1 second."
-    desc_template: "Ina'nis opens the Book of Ancient Ones and channels its power for {channelDuration} seconds, striking the 3x3 area in front of her every {tickInterval} seconds. Each strike deals {tickDamage:percent} magic damage and stuns enemies caught in the zone for {tickStun}s."
+    desc: "Ina'nis opens the Book of Ancient Ones and channels its power for {channelDuration} seconds, striking the 3x3 area in front of her every {tickInterval} seconds. Each strike deals {tickDamage:percent} magic damage and stuns enemies caught in the zone for {tickStun}s."
     icon: ""
     tags:
       - damage

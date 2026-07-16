@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://bcyr1l11fwy7"]
+[gd_scene load_steps=25 format=3 uid="uid://bcyr1l11fwy7"]
 
 [ext_resource type="PackedScene" uid="uid://dsshuu1axf1t8" path="res://resources/ui_component/synergy/ui_synergy.tscn" id="1_hk82f"]
 [ext_resource type="Script" path="res://scripts/ui/currency.gd" id="2_rqmfg"]
@@ -10,6 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://bkxk2vx0idyr3" path="res://resources/ui_component/btn_pause.png" id="7_8wafk"]
 [ext_resource type="PackedScene" path="res://resources/ui_component/staff_widget.tscn" id="9_staff"]
 [ext_resource type="PackedScene" path="res://resources/ui_component/boss_health_bar.tscn" id="10_bosshp"]
+[ext_resource type="PackedScene" path="res://resources/ui_component/tower_stats_panel.tscn" id="11_twstats"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uyb7r"]
 bg_color = Color(0.6, 0.254902, 0.6, 1)
@@ -262,6 +263,8 @@ offset_top = 20.0
 offset_right = 300.0
 offset_bottom = 96.0
 grow_horizontal = 2
+
+[node name="TowerStatsPanel" parent="." instance=ExtResource("11_twstats")]
 
 [node name="PauseButton" type="Button" parent="."]
 visible = false

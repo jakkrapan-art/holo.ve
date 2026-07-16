@@ -148,6 +148,14 @@ func _process(delta):
 	if enableAttack && !attacking && !usingSkill && !skillReady:
 		attackEnemy();
 
+# Area2D pick (uses the Hitbox shape). Fires only for events no Control/GUI or
+# game_scene._input consumed; place-mode clicks are suppressed at the source.
+func _input_event(_viewport, event, _shape_idx):
+	if inPlaceMode:
+		return;
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		tower_clicked.emit(self);
+
 func setup(p_id: String, p_onPlace: Callable, p_onRemove: Callable):
 	self.id = p_id;
 	self.name = p_id;
@@ -428,3 +436,5 @@ func _exit_tree():
 signal on_animation_finished(name: String);
 # Emitted after this tower completes a skill cast (drives synergy effects).
 signal skill_cast_succeeded(tower);
+# Emitted when the player left-clicks this placed tower (drives the stats panel).
+signal tower_clicked(tower);

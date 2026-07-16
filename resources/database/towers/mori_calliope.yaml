@@ -40,8 +40,7 @@ skills:
   active:
     name: "Ricky"
     names: ["Ricky I", "Ricky II", "Ricky III"]
-    desc: "Calliope sweeps her scythe Ricky through the 3x3 area around her, dealing heavy physical damage that grows with every Soul she holds. Each enemy killed by this skill grants her 1 Soul, kept for the whole run."
-    desc_template: "Calliope sweeps her scythe Ricky through the 3x3 area around her, dealing {skillDamage:percent} physical damage plus {soulBonus:percent} more per Soul she holds. Each enemy killed by this skill grants her 1 Soul, kept for the whole run."
+    desc: "Calliope sweeps her scythe Ricky through the 3x3 area around her, dealing {skillDamage:percent} physical damage plus {soulBonus:percent} more per Soul she holds. Each enemy killed by this skill grants her 1 Soul, kept for the whole run."
     icon: ""
     tags:
       - damage
@@ -91,8 +90,7 @@ skills:
   # Souls survive wave end AND evolve (Director 2026-07-12).
   passive:
     name: "Soul Harvest"
-    desc: "Enemies killed by Calliope's skills each grant her a Soul. Souls last the whole run and strengthen her scythe skills."
-    desc_template: "Enemies killed by Calliope's skills each grant her {soulsPerKill} Soul. Souls last the whole run and strengthen her scythe skills."
+    desc: "Enemies killed by Calliope's skills each grant her {soulsPerKill} Soul. Souls last the whole run and strengthen her scythe skills."
     icon: ""
     tags:
       - buff
@@ -127,8 +125,7 @@ evolutionStat:
 evolution_skills:
   active:
     name: "Excuse My Rudeness, But Could You Please RIP?"
-    desc: "Calliope reaps the 3x3 area around her with massive physical damage, and moments later the same ground erupts again. Both hits grow with her Souls, and each enemy killed grants her 1 Soul."
-    desc_template: "Calliope reaps the 3x3 area around her for {skillDamage:percent} physical damage plus {soulBonus:percent} per Soul. {aftershockDelay}s later the same ground erupts for {aftershockDamage:percent} physical damage plus {aftershockSoulBonus:percent} per Soul she holds at that moment. Each enemy killed grants her 1 Soul."
+    desc: "Calliope reaps the 3x3 area around her for {skillDamage:percent} physical damage plus {soulBonus:percent} per Soul. {aftershockDelay}s later the same ground erupts for {aftershockDamage:percent} physical damage plus {aftershockSoulBonus:percent} per Soul she holds at that moment. Each enemy killed grants her 1 Soul."
     icon: ""
     tags:
       - damage

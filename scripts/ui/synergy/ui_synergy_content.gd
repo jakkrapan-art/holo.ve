@@ -90,41 +90,65 @@ func _breakpoints_text(tier: int) -> String:
 # Rich hover: flavour (scaling value highlighted) + a per-tier table with the
 # active tier marked + tier-coloured and the rest dimmed.
 func _make_custom_tooltip(_for_text: String) -> Object:
+	var panel := make_tooltip_card(_build_hover_bbcode())
+	# Keep a ref so live kills can refresh the open tooltip (see setQuestProgress).
+	_tooltip_label = panel.get_child(0) as RichTextLabel
+	return panel
+
+# Opaque tooltip card shared by the panel hover and the card chips
+# (synergy_chip_icon.gd); style matches the stats-panel skill hover
+# (tower_skill_icon.gd) so every rich tooltip reads as one family.
+# Child 0 is the RichTextLabel (callers may keep it for live refresh).
+static func make_tooltip_card(bbcode: String) -> PanelContainer:
 	var panel := PanelContainer.new()
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.07, 0.05, 0.12, 0.97)
+	style.border_color = Color(0.85, 0.7, 0.45, 0.9)
+	style.set_border_width_all(2)
+	style.set_corner_radius_all(10)
+	style.content_margin_left = 12
+	style.content_margin_right = 12
+	style.content_margin_top = 10
+	style.content_margin_bottom = 10
+	panel.add_theme_stylebox_override("panel", style)
 	var rich := RichTextLabel.new()
 	rich.bbcode_enabled = true
 	rich.fit_content = true
 	rich.custom_minimum_size = Vector2(320, 0)
-	rich.text = _build_hover_bbcode()
+	rich.text = bbcode
 	panel.add_child(rich)
-	# Keep a ref so live kills can refresh the open tooltip (see setQuestProgress).
-	_tooltip_label = rich
 	return panel
 
 func _build_hover_bbcode() -> String:
-	if _data == null:
-		return _name
+	return build_hover_bbcode(_data, _name, _tier, _quest_progress)
+
+# Shared with the tower-select card chips (synergy_chip_icon.gd) so both hovers
+# render identical text from one builder; hover colors stay single-source here.
+# tier -1 = definitional view (no active row); quest_progress -1 = no progress line.
+static func build_hover_bbcode(data: SynergyData, fallback_name: String, tier: int, quest_progress: int) -> String:
+	if data == null:
+		return fallback_name
 
 	var lines: PackedStringArray = []
-	lines.append("[b]" + _data.display_name + "[/b]")
+	lines.append("[b]" + data.display_name + "[/b]")
 
 	# Flavour preview the lowest tier's value when not yet proc'd (maxi(tier,0)).
-	var flavor := _data.flavor(maxi(_tier, 0), SCALING_COLOR)
+	var flavor := data.flavor(maxi(tier, 0), SCALING_COLOR)
 	if flavor != "":
 		lines.append(flavor)
 
 	# Per-tier table (only when the synergy defines effect lines).
-	if not _data.tier_effects.is_empty():
+	if not data.tier_effects.is_empty():
 		lines.append("")
-		for i in _data.tier_count():
-			var row := "(" + str(_data.threshold_at(i)) + ")  " + _data.tier_effect(i)
-			if i == _tier:
+		for i in data.tier_count():
+			var row := "(" + str(data.threshold_at(i)) + ")  " + data.tier_effect(i)
+			if i == tier:
 				row = "[color=" + ACTIVE_HIGHLIGHT + "]> " + row + "[/color]"   # active tier (single gold)
 			else:
 				row = "[color=" + DIM_COLOR + "]" + row + "[/color]"
 			lines.append(row)
 
-	if _quest_progress >= 0:
+	if quest_progress >= 0:
 		lines.append("")
-		lines.append("[b]Current Progress: " + str(_quest_progress) + "[/b]")
+		lines.append("[b]Current Progress: " + str(quest_progress) + "[/b]")
 	return "\n".join(lines)

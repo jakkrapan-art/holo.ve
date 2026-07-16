@@ -24,26 +24,9 @@ func setup(p_skill: Skill, p_kind: String, p_level: int) -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
 
 func _make_custom_tooltip(_for_text: String) -> Object:
-	var panel := PanelContainer.new()
-	# Opaque dark card (stats-panel palette): the default tooltip theme let the
-	# panel text underneath bleed through and the two texts collided.
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.07, 0.05, 0.12, 0.97)
-	style.border_color = Color(0.85, 0.7, 0.45, 0.9)
-	style.set_border_width_all(2)
-	style.set_corner_radius_all(10)
-	style.content_margin_left = 12
-	style.content_margin_right = 12
-	style.content_margin_top = 10
-	style.content_margin_bottom = 10
-	panel.add_theme_stylebox_override("panel", style)
-	var rich := RichTextLabel.new()
-	rich.bbcode_enabled = true
-	rich.fit_content = true
-	rich.custom_minimum_size = Vector2(340, 0)
-	rich.text = _build_hover_bbcode()
-	panel.add_child(rich)
-	return panel
+	# Shared opaque card; 340 (not the 320 default) is the tested fit for the
+	# longer skill descs.
+	return UISynergyContent.make_tooltip_card(_build_hover_bbcode(), 340.0, self)
 
 func _build_hover_bbcode() -> String:
 	if skill == null:

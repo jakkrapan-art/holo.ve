@@ -7,7 +7,8 @@ const INACTIVE_COLOR := "#4D4D4D"
 const TIER_COLORS := ["#CD7F32", "#C0C0C0", "#FFD15A"]   # bronze / silver / gold = tier 1 / 2 / 3
 const SCALING_COLOR := "#5AC8FA"                          # the per-tier value that scales
 const DIM_COLOR := "#7A7A7A"                              # not-yet-reached tier rows in the hover
-const ACTIVE_HIGHLIGHT := "#FFD15A"                       # active tier row in the hover (single gold)
+const ACTIVE_HIGHLIGHT := "#FFD15A"                       # reward-running tier rows in the hover (gold)
+const QUEST_PENDING_HIGHLIGHT := "#8C7431"                # ACTIVE_HIGHLIGHT darkened ~45%: mission open, reward not yet earned
 
 @onready var bg = $"."
 @onready var synergyName = $HBoxContainer/VBoxContainer/SynergyName
@@ -90,16 +91,31 @@ func _breakpoints_text(tier: int) -> String:
 # Rich hover: flavour (scaling value highlighted) + a per-tier table with the
 # active tier marked + tier-coloured and the rest dimmed.
 func _make_custom_tooltip(_for_text: String) -> Object:
-	var panel := make_tooltip_card(_build_hover_bbcode())
+	var panel := make_tooltip_card(_build_hover_bbcode(), 320.0, self)
 	# Keep a ref so live kills can refresh the open tooltip (see setQuestProgress).
 	_tooltip_label = panel.get_child(0) as RichTextLabel
 	return panel
 
-# Opaque tooltip card shared by the panel hover and the card chips
-# (synergy_chip_icon.gd); style matches the stats-panel skill hover
-# (tower_skill_icon.gd) so every rich tooltip reads as one family.
+# Shared Theme that blanks the engine's native TooltipPanel stylebox; assigned
+# to tooltip owners in make_tooltip_card (see the owner param there).
+static var _tooltip_owner_theme: Theme = null
+
+# Opaque tooltip card shared by every rich hover: the panel rows, the card
+# chips (synergy_chip_icon.gd), the stats-panel skill hover
+# (tower_skill_icon.gd), and the staff hover (staff_skill_tooltip.gd), so
+# every rich tooltip reads as one family.
 # Child 0 is the RichTextLabel (callers may keep it for live refresh).
-static func make_tooltip_card(bbcode: String) -> PanelContainer:
+# owner != null: strip the engine's native tooltip panel on that owner so only
+# our card renders (kills the ghost rect behind custom tooltips). Godot wraps
+# a custom tooltip in a popup styled by the TooltipPanel theme item and adds
+# it as a child of the owner, so an owner Theme reaches it (a per-control
+# stylebox override would not propagate to the child Window).
+static func make_tooltip_card(bbcode: String, width: float = 320.0, owner: Control = null) -> PanelContainer:
+	if owner != null:
+		if _tooltip_owner_theme == null:
+			_tooltip_owner_theme = Theme.new()
+			_tooltip_owner_theme.set_stylebox("panel", "TooltipPanel", StyleBoxEmpty.new())
+		owner.theme = _tooltip_owner_theme
 	var panel := PanelContainer.new()
 	var style := StyleBoxFlat.new()
 	style.bg_color = Color(0.07, 0.05, 0.12, 0.97)
@@ -114,7 +130,7 @@ static func make_tooltip_card(bbcode: String) -> PanelContainer:
 	var rich := RichTextLabel.new()
 	rich.bbcode_enabled = true
 	rich.fit_content = true
-	rich.custom_minimum_size = Vector2(320, 0)
+	rich.custom_minimum_size = Vector2(width, 0)
 	rich.text = bbcode
 	panel.add_child(rich)
 	return panel
@@ -142,13 +158,39 @@ static func build_hover_bbcode(data: SynergyData, fallback_name: String, tier: i
 		lines.append("")
 		for i in data.tier_count():
 			var row := "(" + str(data.threshold_at(i)) + ")  " + data.tier_effect(i)
-			if i == tier:
-				row = "[color=" + ACTIVE_HIGHLIGHT + "]> " + row + "[/color]"   # active tier (single gold)
-			else:
-				row = "[color=" + DIM_COLOR + "]" + row + "[/color]"
+			match _tier_row_state(data, i, tier, quest_progress):
+				TierRowState.EARNED:
+					# Reward running (normal lane: the single active tier; quest
+					# lane: every earned mission, so 2+ gold arrow rows can show).
+					row = "[color=" + ACTIVE_HIGHLIGHT + "]> " + row + "[/color]"
+				TierRowState.PENDING:
+					row = "[color=" + QUEST_PENDING_HIGHLIGHT + "]" + row + "[/color]"   # mission open, unfinished
+				TierRowState.LOCKED:
+					row = "[color=" + DIM_COLOR + "]" + row + "[/color]"
 			lines.append(row)
 
 	if quest_progress >= 0:
 		lines.append("")
 		lines.append("[b]Current Progress: " + str(quest_progress) + "[/b]")
 	return "\n".join(lines)
+
+enum TierRowState { LOCKED, PENDING, EARNED }
+
+# Truthful per-tier row state for the hover table.
+# Normal synergies keep today's single-active-row read (highest tier REPLACES).
+# Quest synergies (data.type == "quest") stack: unit gate uses the row's tier,
+# kill gate uses quest_progress vs mission_kills[i] - mirroring
+# SynergyEffectQuestTempus._check_rewards (same get_parameter clamp, so display
+# and effect cannot diverge). Assumes tier is monotonic within a run - holds
+# permanently: no tower-removal path exists by Director decision
+# (tower_synergy.md Notes). If a tower-destroying mechanic ever ships, the
+# effect's _rewarded[] is sticky while this recomputes live - re-derive then.
+static func _tier_row_state(data: SynergyData, i: int, tier: int, quest_progress: int) -> TierRowState:
+	if i > tier:
+		return TierRowState.LOCKED
+	if data.type != "quest":
+		return TierRowState.EARNED if i == tier else TierRowState.LOCKED
+	var goal = data.get_parameter("mission_kills", i)
+	if goal != null and quest_progress >= int(goal):
+		return TierRowState.EARNED
+	return TierRowState.PENDING   # incl. null goal: reward can never fire, matches effect

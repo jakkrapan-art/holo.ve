@@ -22,4 +22,4 @@ func set_synergy(p_id: int, p_display_name: String) -> void:
 func _make_custom_tooltip(_for_text: String) -> Object:
 	var data = ResourceManager.getSynergyData(synergy_id)
 	return UISynergyContent.make_tooltip_card(
-		UISynergyContent.build_hover_bbcode(data, display_name, -1, -1))
+		UISynergyContent.build_hover_bbcode(data, display_name, -1, -1), 320.0, self)

@@ -51,7 +51,14 @@ func get_display_desc(level: int, highlight_color: String = "") -> String:
 		var param_name := match_result.get_string(1)
 		var format := match_result.get_string(2)
 		var value = _get_display_parameter(param_name, level)
-		var text := _format_display_parameter(value, format)
+		var text: String
+		if value == null:
+			# Missing parameter: keep the raw {token} visible instead of an
+			# empty hole ("reduces damage by  for  seconds") so designers see
+			# the breakage in-game; _get_display_parameter already warned.
+			text = match_result.get_string()
+		else:
+			text = _format_display_parameter(value, format)
 		if highlight_color != "" and parameters.get(param_name) is Array:
 			text = "[color=" + highlight_color + "]" + text + "[/color]"
 		result = result.substr(0, match_result.get_start()) + text + result.substr(match_result.get_end())

@@ -1,3 +1,7 @@
+# Elite: Flying Flower. Value-scale fix 2026-07-17 (Director): armor_mult is a
+# FRACTION at consumption ((1 + agg) in EnemyStat), so the old `value: 5`
+# meant +500%, not the +5% the desc claimed - corrected to 0.05 to match the
+# authored design. Duration 10000 = up for the enemy's whole life.
 stats:
   hp: 3000
   def: 0
@@ -5,13 +9,18 @@ stats:
   moveSpeed: 40
 skill:
   - name: Sweat Spore
-    type: passive # aura up from spawn - a buff that must exist at engagement cannot be an Active under the cast gate
-    desc: เพิ่ม def ให้ตนเอง 5%
+    type: passive # buff up from spawn - a buff that must exist at engagement cannot be an Active under the cast gate
+    tags:
+      - defense
+      - self
+    parameters:
+      armor_up: 0.05
+    desc: "Sweat spores bloom across the Flying Flower, hardening their armor by {armor_up:percent}."
     action:
       - type: target_self
       - type: apply_effect
         data:
           effect: armor_mult_up
           target: targets
-          value: 5
+          value_param: armor_up
           duration: 10000

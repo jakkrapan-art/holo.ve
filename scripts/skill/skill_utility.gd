@@ -14,16 +14,19 @@ static func ParseSkill(skillDataList: Array) -> Array[Skill]:
 		# Same key + meaning as the tower skill-level cast_time (idle pre-cast
 		# hold); enemies additionally stand still during it (Enemy.castLocked).
 		var castTime = float(skill.get("cast_time", 0.0));
+		# Single source for balance numbers: actions bind via *_param keys and
+		# the desc renders the same values via {token} (enemy_skill.md Copy).
+		var parameters: Dictionary = skill.get("parameters", {});
 		var actions: Array[SkillAction] = [];
 		var actionList = skill.get("action", []);
 		for actionData in actionList:
-			var action = ParseAction(actionData);
+			var action = ParseAction(actionData, parameters);
 			if action != null:
 				actions.append(action);
 			else:
 				push_warning("Failed to parse action in skill ", skillName);
 
-		var s = EnemySkill.new(skillName, desc, actions, {}, oneTime, cooldown, castTime);
+		var s = EnemySkill.new(skillName, desc, actions, parameters, oneTime, cooldown, castTime);
 		# Post-cast hold (seconds); enemy default 0.0 - a 0.2 default would
 		# permanently freeze cooldown-0 every-frame recast skills (aura elites).
 		s.recoveryTime = float(skill.get("recovery", 0.0));
@@ -33,7 +36,15 @@ static func ParseSkill(skillDataList: Array) -> Array[Skill]:
 		s.passive = typeStr == "passive";
 		s.triggered = typeStr == "triggered";
 		var trigger = skill.get("trigger", {});
-		s.trigger_hp_below = float(trigger.get("hp_below", 0.0));
+		# `hp_below_param` binds the threshold to `parameters` (desc token sync);
+		# literal `hp_below` stays the fallback.
+		var hpBelowParam := str(trigger.get("hp_below_param", ""));
+		if hpBelowParam != "" and parameters.has(hpBelowParam):
+			s.trigger_hp_below = float(parameters[hpBelowParam]);
+		else:
+			if hpBelowParam != "":
+				push_warning("Triggered skill '", skillName, "': hp_below_param '", hpBelowParam, "' not in parameters - using literal hp_below.");
+			s.trigger_hp_below = float(trigger.get("hp_below", 0.0));
 		if s.triggered and s.trigger_hp_below <= 0.0:
 			push_warning("Triggered skill '", skillName, "' has no trigger condition - it will never fire.");
 		# Player-facing summary tags (same controlled registry as tower skills).
@@ -45,6 +56,21 @@ static func ParseSkill(skillDataList: Array) -> Array[Skill]:
 		else:
 			push_warning("Skill ", s, " not found");
 	return result
+
+# Parse-time scalar binding for single-level (enemy) skill numbers: `param_key`
+# (e.g. "count_param") names an entry in the skill's `parameters`. Missing name
+# warns and falls back to the literal/default - loud but not fatal (the desc
+# side shows the raw {token} for the same breakage). Convention note: these new
+# keys use the short `*_param` suffix (matching apply_effect's runtime keys);
+# the older `*_param_name` sites stay as-is (enemy_skill.md).
+static func _resolve_param(skillData: Dictionary, parameters: Dictionary, param_key: String, fallback: float) -> float:
+	var pname := str(skillData.get(param_key, ""));
+	if pname == "":
+		return fallback;
+	if parameters.has(pname):
+		return float(parameters[pname]);
+	push_warning("Skill action: ", param_key, " '", pname, "' not in skill parameters - using fallback ", fallback);
+	return fallback;
 
 static func ParseAction(data: Dictionary, parameters: Dictionary = {}) -> SkillAction:
 	var skillType = data.get("type", "");
@@ -72,8 +98,8 @@ static func ParseAction(data: Dictionary, parameters: Dictionary = {}) -> SkillA
 			skill = SkillActionEffectArea.new();
 			var skillData = data.get("data", {});
 			skill.effectId = skillData.get("effect", "");
-			skill.value = float(skillData.get("value", 0.0));
-			skill.duration = float(skillData.get("duration", 3.0));
+			skill.value = _resolve_param(skillData, parameters, "value_param", float(skillData.get("value", 0.0)));
+			skill.duration = _resolve_param(skillData, parameters, "duration_param", float(skillData.get("duration", 3.0)));
 			skill.radius = float(skillData.get("radius", 1.0));
 			skill.affects = skillData.get("affects", "enemies");
 			skill.authoredTitle = skillData.get("title", "");
@@ -82,13 +108,12 @@ static func ParseAction(data: Dictionary, parameters: Dictionary = {}) -> SkillA
 			skill = SkillActionSummonEnemy.new();
 			var skillData = data.get("data", {});
 			skill.enemyId = str(skillData.get("enemy", ""));
-			skill.count = int(skillData.get("count", 1));
+			skill.count = int(_resolve_param(skillData, parameters, "count_param", float(skillData.get("count", 1))));
 			skill.interval = float(skillData.get("interval", 0.2));
 		"delay":
 			skill = SkillActionDelay.new();
 			var skillData = data.get("data", {});
-			var delay = skillData.get("delay", 1.0);
-			skill.delay = delay;
+			skill.delay = _resolve_param(skillData, parameters, "delay_param", float(skillData.get("delay", 1.0)));
 		"set_speed":
 			skill = SkillActionSetSpeed.new();
 			var skillData = data.get("data", {});
@@ -231,7 +256,7 @@ static func ParseAction(data: Dictionary, parameters: Dictionary = {}) -> SkillA
 			# Path dash: slide the casting enemy forward along its path.
 			skill = SkillActionDash.new();
 			var skillData = data.get("data", {});
-			skill.cells = float(skillData.get("cells", 1.0));
+			skill.cells = _resolve_param(skillData, parameters, "cells_param", float(skillData.get("cells", 1.0)));
 			skill.duration = float(skillData.get("duration", 0.3));
 		"heal_percent_maxhp":
 			# Instant heal = target.maxHp x percent (enemy self heals).

@@ -47,4 +47,5 @@ static func _load_enemy(mapName: String, tier: String, id: String) -> EnemyDBDat
 	if skillRaw is Array and skillRaw.size() > 0:
 		skills = SkillUtility.ParseSkill(skillRaw)
 
-	return EnemyDBData.new(id, tier, stats, skills)
+	# Optional player-facing `name:`; EnemyDBData falls back to the prettified id.
+	return EnemyDBData.new(id, tier, stats, skills, str(parsed.get("name", "")))

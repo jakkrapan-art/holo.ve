@@ -9,6 +9,9 @@ class_name Enemy
 var originalModulate: Color
 
 var enemyType: EnemyType = EnemyType.Normal;
+# Player-facing name for the stats panel; set by WaveController right after
+# spawn (roster display_name, or the boss's authored name).
+var display_name: String = "";
 
 # Unified buff/debuff store (created in setup; icon row binds there too -
 # _ready runs a frame BEFORE setup in the factory flow, so never bind at

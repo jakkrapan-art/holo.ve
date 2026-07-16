@@ -14,8 +14,9 @@ func setup(p_skill: Skill, p_kind: String, p_level: int) -> void:
 	skill = p_skill
 	kind_label = p_kind
 	level = p_level
-	# Non-empty tooltip_text is required for _make_custom_tooltip to trigger.
-	tooltip_text = " "
+	# tooltip_text must carry REAL text: the viewport strips whitespace and
+	# shows nothing for a blank tooltip, custom tooltip included.
+	tooltip_text = p_skill.get_display_name(p_level) if p_skill != null else ""
 	mouse_filter = Control.MOUSE_FILTER_STOP
 
 func _make_custom_tooltip(_for_text: String) -> Object:

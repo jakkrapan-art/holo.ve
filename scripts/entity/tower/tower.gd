@@ -90,6 +90,8 @@ func _ready():
 	if iconRow != null and data != null:
 		iconRow.setup(data.effects)
 
+	_create_click_area();
+
 	isReady = true;
 
 func _hasActiveSkill() -> bool:
@@ -148,9 +150,33 @@ func _process(delta):
 	if enableAttack && !attacking && !usingSkill && !skillReady:
 		attackEnemy();
 
-# Area2D pick (uses the Hitbox shape). Fires only for events no Control/GUI or
-# game_scene._input consumed; place-mode clicks are suppressed at the source.
-func _input_event(_viewport, event, _shape_idx):
+# Click-pick area: the gameplay Hitbox circle only covers the base, so head
+# clicks missed (Director feedback 2026-07-16). A dedicated Area2D keeps the
+# pick surface tall without touching gameplay hit shapes. Width matches the
+# Hitbox (240); the box is raised to cover the sprite head.
+const PICK_SIZE := Vector2(240, 360)
+const PICK_OFFSET := Vector2(0, -120)
+
+func _create_click_area() -> void:
+	var area := Area2D.new()
+	area.name = "ClickArea"
+	area.monitoring = false
+	# Own layer bit (10) + empty mask: gameplay area/enemy queries never see it,
+	# while viewport picking (mask-agnostic) still does.
+	area.collision_layer = 1 << 9
+	area.collision_mask = 0
+	var shape := CollisionShape2D.new()
+	var rect := RectangleShape2D.new()
+	rect.size = PICK_SIZE
+	shape.shape = rect
+	shape.position = PICK_OFFSET
+	area.add_child(shape)
+	area.input_event.connect(_on_pick_input)
+	add_child(area)
+
+# Fires only for events no Control/GUI or game_scene._input consumed;
+# place-mode clicks are suppressed at the source.
+func _on_pick_input(_viewport, event, _shape_idx):
 	if inPlaceMode:
 		return;
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:

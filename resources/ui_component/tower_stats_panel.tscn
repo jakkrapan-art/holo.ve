@@ -188,7 +188,7 @@ label_settings = SubResource("LabelSettings_body")
 
 [node name="CritDmgValue" type="Label" parent="StatsGrid"]
 layout_mode = 2
-text = "x1"
+text = "100%"
 label_settings = SubResource("LabelSettings_body")
 
 [node name="EnergyRow" type="Control" parent="."]
@@ -208,7 +208,7 @@ label_settings = SubResource("LabelSettings_body")
 [node name="EnergyBar" type="ProgressBar" parent="EnergyRow"]
 offset_left = 92.0
 offset_top = 3.0
-offset_right = 382.0
+offset_right = 488.0
 offset_bottom = 27.0
 mouse_filter = 2
 theme_override_styles/background = SubResource("StyleBoxFlat_barbg")
@@ -226,14 +226,6 @@ text = "0 / 0"
 label_settings = SubResource("LabelSettings_small")
 horizontal_alignment = 1
 vertical_alignment = 1
-
-[node name="StartLabel" type="Label" parent="EnergyRow"]
-offset_left = 390.0
-offset_top = 4.0
-offset_right = 488.0
-offset_bottom = 28.0
-text = "Start 0"
-label_settings = SubResource("LabelSettings_small")
 
 [node name="SkillRow" type="HBoxContainer" parent="."]
 offset_left = 16.0

@@ -21,7 +21,6 @@ extends Control
 @onready var _energy_row: Control = $EnergyRow
 @onready var _energy_bar: ProgressBar = $EnergyRow/EnergyBar
 @onready var _energy_text: Label = $EnergyRow/EnergyBar/EnergyText
-@onready var _start_label: Label = $EnergyRow/StartLabel
 @onready var _skill_row: HBoxContainer = $SkillRow
 
 var _tower: Tower = null
@@ -77,7 +76,9 @@ func _refresh() -> void:
 	_set_text(_type_value, "Magic" if data.attackType == Damage.DamageType.MAGIC else "Physical")
 	_set_text(_as_value, _format_number(data.getAttackSpeed()))
 	_set_text(_crit_value, _format_number(data.getCritChance()) + "%")
-	_set_text(_crit_dmg_value, "x" + _format_number(data.getCritDamage()))
+	# Display-only percent form (1.5 -> "150%"); the damage formula still uses
+	# the raw multiplier.
+	_set_text(_crit_dmg_value, _format_number(data.getCritDamage() * 100.0) + "%")
 
 	# Energy: evolve swaps the SkillController (tower.gd evolve) - re-read every
 	# frame, never cache. Passive-only towers have none -> hide the row.
@@ -87,7 +88,6 @@ func _refresh() -> void:
 		_energy_bar.max_value = sc.maxMana
 		_energy_bar.value = sc.currentMana
 		_set_text(_energy_text, "%d / %d" % [int(sc.currentMana), int(sc.maxMana)])
-		_set_text(_start_label, "Start %d" % int(data.getStat().initialMana))
 
 	var skills_key := "%d_%s" % [data.level, data.isEvolved]
 	if skills_key != _skills_key:

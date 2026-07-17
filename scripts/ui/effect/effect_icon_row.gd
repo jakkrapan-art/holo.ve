@@ -1,8 +1,12 @@
 class_name EffectIconRow
 extends HBoxContainer
 
-# Overhead status-icon row (towers: above the Energy bar; enemies: above the
-# HP bar). Purely signal-driven off one EffectContainer - no per-frame work.
+# Buff/debuff status-icon row, two surfaces (Director 2026-07-17):
+# - Overhead (towers: above the Energy bar; enemies: above the HP bar):
+#   display-only, hover disabled - the desc surface moved to the stats panels.
+# - Stats-panel strip (rich_hover = true): floats above the panel, icons open
+#   the shared opaque tooltip card on hover.
+# Purely signal-driven off one EffectContainer - no per-frame work.
 # Icons are built in code from the registry texture (green/red/purple
 # placeholders today; artists swap art via the icon path in effects.yaml).
 # Stack count shows bottom-right when stacks > 1. Left-aligned, oldest first;
@@ -17,6 +21,9 @@ const FALLBACK_COLORS := {
 
 @export var icon_size: int = 44
 @export var max_visible: int = 5
+# Stats-panel strips set true: icons STOP the mouse and open the rich tooltip
+# card. Default false = overhead row, display-only (icons IGNORE the mouse).
+@export var rich_hover: bool = false
 
 var _container: EffectContainer = null
 var _icons: Dictionary = {}    # EffectInstance.key() -> TextureRect
@@ -76,19 +83,15 @@ func _on_effect_updated(inst: EffectInstance) -> void:
 	if icon != null:
 		_update_stack_label(icon, inst)
 
-func _make_icon(inst: EffectInstance) -> TextureRect:
-	var icon := TextureRect.new()
+func _make_icon(inst: EffectInstance) -> EffectHoverIcon:
+	var icon := EffectHoverIcon.new()
+	icon.inst = inst
 	icon.custom_minimum_size = Vector2(icon_size, icon_size)
 	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	# PASS (not STOP): hover tooltip works without consuming world clicks.
-	# Interim desc surface for functional checks - the durable home is the
-	# future tower/enemy stats UI (see buff_debuff.md Plan and Status).
-	icon.mouse_filter = Control.MOUSE_FILTER_PASS
-	if EnemySkillController.DEBUG_LOG:
-		# Hover diagnosis (2026-07-07): logs whether the mouse ever reaches the
-		# icon - separates "tooltip broken" from "icon never hovered".
-		icon.mouse_entered.connect(func(): print("[EffectIcon] hover enter: ", inst.def.id))
+	# Panel strip: STOP so the icon is a hover source for the tooltip card.
+	# Overhead: IGNORE - display-only, transparent to world clicks and hover.
+	icon.mouse_filter = Control.MOUSE_FILTER_STOP if rich_hover else Control.MOUSE_FILTER_IGNORE
 	icon.texture = ResourceManager.getSprite(EffectRegistry.ICON_GROUP, inst.def.id)
 	if icon.texture == null:
 		# Registry icon missing/unloaded: flat category-colored square so the
@@ -112,11 +115,11 @@ func _make_icon(inst: EffectInstance) -> TextureRect:
 	return icon
 
 func _update_stack_label(icon: TextureRect, inst: EffectInstance) -> void:
-	var tooltip := inst.display_title()
-	var desc := inst.display_desc()
-	if desc != "":
-		tooltip += "\n" + desc
-	icon.tooltip_text = tooltip
+	if rich_hover:
+		# tooltip_text must carry REAL text or the viewport strips it and never
+		# calls _make_custom_tooltip (same trap as TowerSkillIcon).
+		var title := inst.display_title()
+		icon.tooltip_text = title if title != "" else inst.def.id
 	var label: Label = icon.get_node_or_null("StackLabel")
 	if label == null:
 		return

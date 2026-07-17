@@ -1,7 +1,8 @@
-[gd_scene load_steps=12 format=3]
+[gd_scene load_steps=13 format=3]
 
 [ext_resource type="Script" path="res://scripts/ui/enemy_stats_panel.gd" id="1_enstats"]
 [ext_resource type="FontFile" uid="uid://scv78fddnukv" path="res://resources/ui_component/font/Roboto-Regular.ttf" id="2_font"]
+[ext_resource type="Script" path="res://scripts/ui/effect/effect_icon_row.gd" id="3_effrow"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panelbg"]
 bg_color = Color(0.07, 0.05, 0.12, 0.94)
@@ -201,3 +202,15 @@ offset_right = 548.0
 offset_bottom = 298.0
 mouse_filter = 2
 theme_override_constants/separation = 10
+
+[node name="EffectRow" type="HBoxContainer" parent="."]
+offset_left = 8.0
+offset_top = -64.0
+offset_right = 560.0
+offset_bottom = -16.0
+mouse_filter = 2
+theme_override_constants/separation = 8
+script = ExtResource("3_effrow")
+icon_size = 48
+max_visible = 9
+rich_hover = true

@@ -25,6 +25,8 @@ extends Control
 # Right-edge column: the hover popup opens toward the open playfield instead of
 # over the panel's own stat text (Director feedback 2026-07-16).
 @onready var _skill_column: VBoxContainer = $SkillColumn
+# Buff/debuff strip floating above the panel's top border (rich hover).
+@onready var _effect_row: EffectIconRow = $EffectRow
 
 var _tower: Tower = null
 # Rebuild key for the skill-icon row ("level_isEvolved"): icons/tooltips only
@@ -38,11 +40,15 @@ func show_tower(tower: Tower) -> void:
 	_tower = tower
 	_skills_key = ""
 	visible = true
+	# Container lives on TowerData, which evolve() mutates in place and which
+	# outlives the node - bind once per selection is safe.
+	_effect_row.setup(tower.data.effects if tower.data != null else null)
 	_refresh()
 
 func clear() -> void:
 	_tower = null
 	visible = false
+	_effect_row.setup(null)
 
 func _process(_delta):
 	if not visible:

@@ -1,85 +1,168 @@
 maxLevel: 3
 towerClass: warrior
 generation: tempus
-attackType: physic
+attackType: magic
 evolutionCost: 1
 
-# skill: "res://resources/database/skill/takanashi_kiara_skill.tres"
 attack_sound: "hit_hakka"
 open_sound: "debut_hakka"
 evolve_sound: "evo_hakka"
 
 stats:
   - damage: 130
-    attackRange: 2.0
-    attackSpeed: 120.0
-    mana: 80
-    initialMana: 20
+    attackRange: 1.0
+    attackSpeed: 80.0
+    mana: 120
+    initialMana: 80
     critChance: 0
     critMultiplier: 1.5
 
   - damage: 150
-    attackRange: 2.0
-    attackSpeed: 120.0
-    mana: 80
-    initialMana: 20
+    attackRange: 1.0
+    attackSpeed: 80.0
+    mana: 120
+    initialMana: 80
     critChance: 0
     critMultiplier: 1.5
 
-  - damage: 190
-    attackRange: 2.0
-    attackSpeed: 120.0
-    mana: 80
-    initialMana: 20
+  - damage: 200
+    attackRange: 1.0
+    attackSpeed: 80.0
+    mana: 120
+    initialMana: 80
     critChance: 0
     critMultiplier: 1.5
 
-skill:
-  name: "Skill"
-  desc: "Banzoin Hakka lashes out across the 3x1 line in front of him, dealing physical damage to every enemy caught in the strike."
-  target_summary:
-    target_team: enemy
-    target_type: enemy
-    target_shape: area
-  effects:
-    - name: "Line Strike Damage"
-      target:
-        target_team: enemy
-        target_type: enemy
-        target_shape: area
-  recovery: 0.2 # post-cast hold (s) before resuming attack — see default_tower.yaml
-  actions:
-    - type: find_multi_enemy
-      data:
-        width: 3
-        height: 1
-    - type: play_animation
-      data:
-        animation: "skill"
-    - type: attack
-      data:
-        damage: 100
-        damage_type: physic
-    - type: play_animation
-      data:
-        animation: "idle"
+# Active Skill - "Exocirst Field": a persistent purifying zone centered on
+# Hakka. It is the first "field" execution pattern (tower_skill.md) - planted
+# non-blocking (Hakka keeps auto-attacking) and ticks magic damage + slow to
+# enemies inside every tickInterval for skillDuration seconds. VFX is a
+# follow-up; the find action's red Hitbox rect is the interim tick visual.
+skills:
+  active:
+    name: "Exocirst Field"
+    names: ["Exocirst Field I", "Exocirst Field II", "Exocirst Field III"]
+    desc: "Banzoin Hakka conjures a purifying field in a 3x3 area around him for {skillDuration} seconds; enemies within take {skillDamage:percent} magic damage and are slowed by {slowEffect:percent} every second they remain inside."
+    icon: ""
+    tags:
+      - damage
+      - magic
+      - aoe
+      - persistent
+      - debuff
+      - duration
+    target_summary:
+      target_team: enemy
+      target_type: enemy
+      target_shape: area
+    effects:
+      - name: "Purifying Field"
+        target:
+          target_team: enemy
+          target_type: enemy
+          target_shape: area
+    recovery: 0.2 # post-cast hold (s) before resuming attack - see default_tower.yaml
+    parameters:
+      skillDamage:
+        - 0.4
+        - 0.6
+        - 1.0
+      skillDuration: 10.0
+      slowEffect: 0.15
+      tickInterval: 1.0
+    actions:
+      - type: find_multi_enemy
+        data:
+          width: 3
+          height: 3
+          center_on_self: true        # cast gate: box centered on Hakka
+      - type: play_animation
+        data:
+          animation: "skill"
+          cast_time: 0.5
+      - type: field                    # plant the zone and return - Hakka keeps attacking
+        data:
+          width: 3
+          height: 3
+          duration_param_name: "skillDuration"
+          tick_interval_param_name: "tickInterval"
+          damage_multiplier_param_name: "skillDamage"
+          damage_type: magic
+          can_crit: false
+          effects:
+            - effect: move_speed_down       # per-tick slow (refresh; ~1 tick lag on leave)
+              value_param: "slowEffect"
+              duration: 1.5
+      - type: play_animation
+        data:
+          animation: "idle"
+  passive: null
 
 evolutionStat:
   damage: 280
-  attackRange: 2.0
-  attackSpeed: 120
-  mana: 80
-  initialMana: 20
+  attackRange: 1.0
+  attackSpeed: 80.0
+  mana: 120
+  initialMana: 80
   critChance: 50.0
   critMultiplier: 1.5
 
-
-# Optional (only if tower has evolution stats)
-# evolutionStat:
-#   damage: 250
-#   attackRange: 1.2
-#   attackSpeed: 110.0
-#   critChance: 25.0
-#   critMultiplier: 2.0
-#   mana: 80
-#   initialMana: 20
+# Evolved Active Skill - larger 5x5 field, stronger tick, and on natural expiry
+# Hakka recovers energyRefund of his max Energy (evolve-only refund).
+evolution_skills:
+  active:
+    name: "Obey my omen, in hymns allure"
+    desc: "Banzoin Hakka unleashes a greater purifying field across a 5x5 area for {skillDuration} seconds; enemies within take {skillDamage:percent} magic damage and are slowed by {slowEffect:percent} every second they remain, and when the field fades he recovers {energyRefund:percent} of his maximum Energy."
+    icon: ""
+    tags:
+      - damage
+      - magic
+      - aoe
+      - persistent
+      - debuff
+      - duration
+    target_summary:
+      target_team: enemy
+      target_type: enemy
+      target_shape: area
+    effects:
+      - name: "Purifying Field"
+        target:
+          target_team: enemy
+          target_type: enemy
+          target_shape: area
+    recovery: 0.2 # post-cast hold (s) before resuming attack - see default_tower.yaml
+    parameters:
+      skillDamage: 1.5
+      skillDuration: 10.0
+      slowEffect: 0.15
+      tickInterval: 1.0
+      energyRefund: 0.2
+    actions:
+      - type: find_multi_enemy
+        data:
+          width: 5
+          height: 5
+          center_on_self: true
+      - type: play_animation
+        data:
+          animation: "skill"
+          cast_time: 0.5
+      - type: field
+        data:
+          width: 5
+          height: 5
+          duration_param_name: "skillDuration"
+          tick_interval_param_name: "tickInterval"
+          damage_multiplier_param_name: "skillDamage"
+          damage_type: magic
+          can_crit: false
+          energy_refund_percent_param_name: "energyRefund"
+          effects:
+            - effect: move_speed_down
+              value_param: "slowEffect"
+              duration: 1.5
+      - type: play_animation
+        data:
+          animation: "idle"
+  passive: null

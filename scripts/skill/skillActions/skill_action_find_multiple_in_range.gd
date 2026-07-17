@@ -8,6 +8,9 @@ var cancel_when_empty: bool = true
 # the caster, no aim rotation or forward extend. A target_position override
 # in context.extra still wins (it re-centers the same box elsewhere).
 var center_on_self: bool = false
+# YAML `show_area` (default true): false suppresses the red debug rect for
+# this find only (e.g. Hakka's field, whose zone VFX already shows the area).
+var show_area: bool = true
 
 var target_group: String = "enemy" # Group name for potential targets
 var max_attempt := 1
@@ -94,7 +97,9 @@ func find_targets_in_rotated_range(context: SkillContext):
 	var parent_node = context.user.get_parent() if context.user.get_parent() else context.user.get_tree().current_scene
 
 	var callback = Callable(self, "_on_hitbox_detected").bind(context, user_position)
-	await Hitbox.create(actual_width, actual_height, callback, hitbox_position, parent_node, user_rotation, local_offset)
+	# show_area false -> fully transparent visual (Hitbox._draw skips alpha 0).
+	var vis_color := Color(1, 0, 0, 0.25) if show_area else Color(0, 0, 0, 0)
+	await Hitbox.create(actual_width, actual_height, callback, hitbox_position, parent_node, user_rotation, local_offset, vis_color)
 
 func _on_hitbox_detected(enemies: Array, context: SkillContext, user_position: Vector2):
 	if not context:

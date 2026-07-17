@@ -285,11 +285,15 @@ static func ParseAction(data: Dictionary, parameters: Dictionary = {}) -> SkillA
 			fieldFind.width = skill.width;
 			fieldFind.height = skill.height;
 			fieldFind.cancel_when_empty = false;
+			# The zone VFX already shows the area, so the per-tick debug box can
+			# be authored off (this inner find redraws it EVERY tick otherwise).
+			fieldFind.show_area = skillData.get("show_area", true);
 			skill.find_action = fieldFind;
 			skill.attack_action = ParseAction({"type": "attack", "data": skillData}, parameters) as SkillActionAttack;
-			# Optional per-tick VFX hook (unset today - VFX is a follow-up task).
-			if skillData.has("effect_script"):
-				skill.effect_action = ParseAction({"type": "play_effect", "data": {"effect_script": skillData["effect_script"]}}, parameters) as SkillActionPlayEffect;
+			# Persistent-lifetime zone VFX: ONE controller spawned at plant by
+			# SkillActionField (NOT the channel/aftershock per-tick effect_action
+			# path - a field zone must not respawn on the damage cadence).
+			skill.effectScriptPath = str(skillData.get("effect_script", ""));
 		"clear_enemy":
 			skill = SkillActionClearEnemy.new();
 		"find_multi_enemy":
@@ -300,6 +304,8 @@ static func ParseAction(data: Dictionary, parameters: Dictionary = {}) -> SkillA
 			skill.cancel_when_empty = skillData.get("cancel_when_empty", true);
 			# Self-centered axis-aligned box (no aim rotation/forward extend).
 			skill.center_on_self = skillData.get("center_on_self", false);
+			# Debug-area visibility (same key as apply_effect's show_area).
+			skill.show_area = skillData.get("show_area", true);
 		"dash":
 			# Path dash: slide the casting enemy forward along its path.
 			skill = SkillActionDash.new();

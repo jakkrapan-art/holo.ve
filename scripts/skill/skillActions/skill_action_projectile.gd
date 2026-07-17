@@ -27,7 +27,7 @@ func execute(context: SkillContext):
 			tower.skillController.currentMana = 0;
 			gen = tower.skill_lock_generation
 
-		await context.user.get_tree().create_timer(lifetime).timeout
+		await context.user.get_tree().create_timer(lifetime, false).timeout
 		# Only re-enable regen if this cast is still the live one. resetForWave() bumps
 		# skill_lock_generation so a stale timer can't unblock energy during a fresh
 		# skill cast on the next wave.

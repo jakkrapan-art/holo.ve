@@ -329,7 +329,7 @@ func on_wave_ended():
 	# Pacing beat before the popup so wave-clear effects land first. Boss waves hold
 	# longer (token-drop visual); regular waves get the short feel beat.
 	var popup_delay: float = BOSS_WAVE_END_POPUP_DELAY if (waveController != null and waveController.isBossWave) else wave_end_popup_delay
-	await get_tree().create_timer(popup_delay).timeout
+	await get_tree().create_timer(popup_delay, false).timeout
 	# Re-entry guard: scene may have been freed mid-wait (e.g. game-over) OR the staff
 	# may have died during the await window leaving the scene alive but the game over.
 	if !is_instance_valid(self):

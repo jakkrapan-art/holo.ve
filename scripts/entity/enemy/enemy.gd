@@ -157,7 +157,7 @@ func recvDamage(damage: Damage) -> int:
 	sprite.modulate = Color.RED
 
 	# Create a one-shot timer to reset the color
-	var timer := get_tree().create_timer(0.3)
+	var timer := get_tree().create_timer(0.3, false)
 	timer.timeout.connect(_on_damage_flash_timeout)
 
 	# TRUE damage bypasses armor/MR + ΣAmp + ΣRed — raw value applied straight to HP.

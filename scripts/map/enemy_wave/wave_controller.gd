@@ -228,6 +228,7 @@ func spawnEnemy(groupIndex: int):
 		enemyAliveCount -= 1;
 		return;
 
+	enemy.display_name = db.display_name;
 	connectSignalToEnemy(enemy);
 
 func _tierToEnemyType(tier: String) -> Enemy.EnemyType:
@@ -278,6 +279,7 @@ func spawnBoss():
 		enemyAliveCount -= 1;
 		return;
 
+	boss.display_name = bossData.name;
 	connectSignalToEnemy(boss);
 	if bossHpBar != null:
 		bossHpBar.track(boss, bossData.name);
@@ -315,6 +317,7 @@ func summon(enemyId: String, count: int, interval: float, pathProgress: float):
 			# Summons render above everything on the path - the (scaled) boss
 			# sprite must not hide them (Director 2026-07-07).
 			enemy.z_index = 1
+			enemy.display_name = db.display_name
 			connectSignalToEnemy(enemy)
 
 		if i < count - 1:
@@ -375,6 +378,7 @@ func testSpawnBoss(index: int = -1):
 	if enemy == null:
 		enemyAliveCount -= 1;
 		return;
+	enemy.display_name = boss.name;
 	connectSignalToEnemy(enemy);
 	if bossHpBar != null:
 		bossHpBar.track(enemy, boss.name);

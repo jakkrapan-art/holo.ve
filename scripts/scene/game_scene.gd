@@ -40,8 +40,10 @@ var _state_before_skill_cast: String = ""
 # Ref to the Staff HUD widget so _input can ask whether a click landed on the skill button.
 var _staff_widget: StaffWidget = null
 
-# Bottom-left tower stats panel (display-only selection surface).
+# Bottom-left stats panels (display-only selection surfaces). They share the
+# slot: one selection at a time - showing one always clears the other.
 var _tower_stats_panel: TowerStatsPanel = null
+var _enemy_stats_panel: EnemyStatsPanel = null
 
 func _input(event):
 	if state == "tower_placement" and event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
@@ -82,11 +84,24 @@ func _unhandled_input(event):
 			return
 		if _tower_stats_panel == null:
 			return
-		var tower := _pick_tower_at(get_global_mouse_position())
+		# Tower first: its pick box is the exact grid square; the enemy pick is
+		# a radius. A scaled boss overhanging a tower's cell selects the tower
+		# (accepted - Director 2026-07-17).
+		var world_pos := get_global_mouse_position()
+		var tower := _pick_tower_at(world_pos)
 		if tower != null:
 			_tower_stats_panel.show_tower(tower)
-		else:
+			if _enemy_stats_panel != null:
+				_enemy_stats_panel.clear()
+			return
+		var enemy := _pick_enemy_at(world_pos)
+		if enemy != null and _enemy_stats_panel != null:
+			_enemy_stats_panel.show_enemy(enemy)
 			_tower_stats_panel.clear()
+			return
+		_tower_stats_panel.clear()
+		if _enemy_stats_panel != null:
+			_enemy_stats_panel.clear()
 
 # Square pick box = the tower's own visible grid square (tower.position is the
 # square's center), so neighbor squares tile exactly with no overlap (Director
@@ -101,6 +116,33 @@ func _pick_tower_at(world_pos: Vector2) -> Tower:
 		if absf(local.x) <= half and absf(local.y) <= half:
 			return tower
 	return null
+
+# Enemies move along paths and overlap, so the pick is a radius, not a cell box:
+# nearest enemy within half a cell (scaled up for big bosses) wins; a near-tie
+# (overlapping column) prefers the one closest to the path end - matches the
+# targeting convention and reads as "the front one".
+const ENEMY_PICK_TIE_EPSILON := 32.0
+
+func _pick_enemy_at(world_pos: Vector2) -> Enemy:
+	var best: Enemy = null
+	var best_dist := INF
+	# Both the enemy root and its Area2D child sit in this group; the `as Enemy`
+	# cast nulls the Area2D so each enemy is considered once (PR #21 lesson).
+	for node in get_tree().get_nodes_in_group("enemy"):
+		var enemy := node as Enemy
+		if enemy == null or not enemy.initialized:
+			continue
+		var radius := GridHelper.CELL_SIZE / 2.0 * enemy.scale.x
+		var dist := world_pos.distance_to(enemy.global_position)
+		if dist > radius:
+			continue
+		if best == null or dist < best_dist - ENEMY_PICK_TIE_EPSILON:
+			best = enemy
+			best_dist = dist
+		elif absf(dist - best_dist) <= ENEMY_PICK_TIE_EPSILON and enemy.progress_ratio > best.progress_ratio:
+			best = enemy
+			best_dist = dist
+	return best
 
 func _process(_delta):
 	if state == "staff_skill_casting" and _skill_cast_indicator != null:
@@ -123,6 +165,7 @@ func _ready():
 	# Staff system: load data → instantiate entity → wire widget → spawn endpoint sprite.
 	setup_staff()
 	_tower_stats_panel = get_node_or_null("GameUI/TowerStatsPanel") as TowerStatsPanel
+	_enemy_stats_panel = get_node_or_null("GameUI/EnemyStatsPanel") as EnemyStatsPanel
 	var camera = get_node("Camera2D")
 	camera.make_current()
 	if(map != null):

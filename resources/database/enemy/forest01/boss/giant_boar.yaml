@@ -1,9 +1,11 @@
 # Boss. `name` is the display name; the sprite + id come from the file path
 # (resources/enemy/forest01/boss/giant_boar/giant_boar.png). `wave` lists the
 # waves this boss is eligible to spawn on; `scale` is the visual/hitbox size
-# multiplier applied at spawn. Skills are inline (3 max by design); enemy
-# skills are single-level, so desc uses concrete numbers (see enemy_skill.md).
-# Design source: Director xlsx 2026-07-09 (boss.md Giant Boar).
+# multiplier applied at spawn. Skills are inline (3 max by design); balance
+# numbers live once in each skill's `parameters` - actions bind via *_param
+# keys and the desc renders the same values via {token} (enemy_skill.md).
+# Area sizes ("5x5") stay literal in desc until the structural parameterize
+# task (post-demo). Design source: Director xlsx 2026-07-09 (boss.md Giant Boar).
 name: Giant Boar
 scale: 2
 wave:
@@ -20,53 +22,64 @@ skill:
     recovery: 0.2
     tags:
       - movement
-    desc: "The Giant Boar braces, then charges 2 tiles forward along the path."
+    parameters:
+      charge_cells: 2
+    desc: "The Giant Boar braces, then charges {charge_cells} tiles forward along the path."
     action:
       - type: dash
         data:
-          cells: 2
+          cells_param: charge_cells
           duration: 0.3
   - name: Thick Skin
     type: triggered
     trigger:
-      hp_below: 0.4
+      hp_below_param: trigger_hp
     oneTime: true
     cast_time: 0.5
     recovery: 0.2
     tags:
       - defense
       - heal
-    desc: "When its health falls below 40%, the Giant Boar lies down to rest for 5 seconds - taking 50% less damage and recovering 5% of its max health every second. On waking it gains 50% movement speed for 5 seconds."
+    parameters:
+      trigger_hp: 0.4
+      rest_duration: 5
+      damage_reduction: 0.5
+      haste: 0.5
+      haste_duration: 5
+    # The "5% of max health every second" magnitude lives in the effect
+    # registry (rest_recovery params.max_hp_percent) - a different single-source
+    # layer, so that one desc number stays literal.
+    desc: "When its health falls below {trigger_hp:percent}, the Giant Boar lies down to rest for {rest_duration} seconds - taking {damage_reduction:percent} less damage and recovering 5% of its max health every second. On waking it gains {haste:percent} movement speed for {haste_duration} seconds."
     action:
       - type: target_self
       - type: apply_effect
         data:
           effect: rest
           target: targets
-          duration: 5
+          duration_param: rest_duration
           title: "Thick Skin - Resting"
       - type: apply_effect
         data:
           effect: damage_reduction_up
           target: targets
-          value: 0.5
-          duration: 5
+          value_param: damage_reduction
+          duration_param: rest_duration
           title: "Thick Skin - Hardened"
       - type: apply_effect
         data:
           effect: rest_recovery
           target: targets
-          duration: 5
+          duration_param: rest_duration
           title: "Thick Skin - Recovering"
       - type: delay
         data:
-          delay: 5
+          delay_param: rest_duration
       - type: apply_effect
         data:
           effect: move_speed_up
           target: targets
-          value: 0.5
-          duration: 5
+          value_param: haste
+          duration_param: haste_duration
           title: "Thick Skin - Haste"
   - name: Bulldoze
     cooldown: 20
@@ -75,22 +88,28 @@ skill:
     tags:
       - debuff
       - aoe
-    desc: "The Giant Boar stomps the ground, shaking a 5x5 area - units caught inside deal 20% less damage for 8 seconds."
+    parameters:
+      damage_down: 20
+      debuff_duration: 8
+    # damage_down uses the whole-percent scale (attack_mult/magic_mult kinds
+    # divide by 100 at consumption), so the desc token is {damage_down}% with a
+    # literal % sign - NOT {damage_down:percent}, which would render "2000%".
+    desc: "The Giant Boar stomps the ground, shaking a 5x5 area - units caught inside deal {damage_down}% less damage for {debuff_duration} seconds."
     action:
       - type: apply_effect
         data:
           effect: attack_mult_down
           target: towers_in_range
           range: 2
-          value: 20
-          duration: 8
+          value_param: damage_down
+          duration_param: debuff_duration
           title: "Bulldoze - Damage Down"
       - type: apply_effect
         data:
           effect: magic_mult_down
           target: towers_in_range
           range: 2
-          value: 20
-          duration: 8
+          value_param: damage_down
+          duration_param: debuff_duration
           show_area: false
           title: "Bulldoze - Magic Down"

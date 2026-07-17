@@ -1,3 +1,7 @@
+# Elite: Armored Boar. Value-scale fix 2026-07-17 (Director): armor_mult is a
+# FRACTION at consumption ((1 + agg) in EnemyStat), so the old `value: 2.5`
+# meant +250%, not the +2.5% the desc claimed - corrected to 0.025 to match
+# the authored design. Aura duration 10000 = up for the enemy's whole life.
 stats:
   hp: 5000
   def: 2
@@ -6,13 +10,18 @@ stats:
 skill:
   - name: Protector Aura
     type: passive # aura up from spawn - a buff that must exist at engagement cannot be an Active under the cast gate
-    desc: สร้างออร่าเพิ่ม Defense 2.5% ให้กับฝ่ายเดียวกันในระยะ 1*1 ช่อง
+    tags:
+      - defense
+      - aoe
+    parameters:
+      armor_up: 0.025
+    desc: "A protective aura surrounds the Armored Boar, hardening the armor of nearby monsters by {armor_up:percent}."
     action:
       - type: target_self
       - type: effect_area
         data:
           effect: armor_mult_up
-          value: 2.5
+          value_param: armor_up
           duration: 10000
           radius: 1
           affects: enemies

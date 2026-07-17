@@ -175,6 +175,10 @@ static func warmSkillEffectShaders(host: Node) -> void:
 		if data.attack_config != null and data.attack_config.vfx_shader != "":
 			shaderPaths[data.attack_config.vfx_shader] = true
 
+	# Inspect-highlight outline (tower/enemy click-select, ui.md): assigned to a
+	# character sprite on first selection, so warm it here with the rest.
+	shaderPaths["res://resources/ui_component/inspect_outline.gdshader"] = true
+
 	# Skip shaders already warmed this process; only compile genuinely-new ones.
 	var toWarm: Array = []
 	for sp in shaderPaths.keys():

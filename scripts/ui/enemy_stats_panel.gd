@@ -25,10 +25,20 @@ const TIER_NAMES := {
 	Enemy.EnemyType.Boss: "Boss",
 }
 
+const OUTLINE_SHADER := preload("res://resources/ui_component/inspect_outline.gdshader")
+
 var _enemy: Enemy = null
+# Inspect-highlight outline on the selected enemy's sprite (ui.md). Enemies are
+# single full textures, so no frame-region feed is needed (unlike the tower
+# panel): the shader reads texture dimensions itself and region stays the
+# default whole-texture rect.
+var _outline_mat: ShaderMaterial
+var _hl_sprite: Sprite2D = null
 
 func _ready():
 	visible = false
+	_outline_mat = ShaderMaterial.new()
+	_outline_mat.shader = OUTLINE_SHADER
 
 func show_enemy(enemy: Enemy) -> void:
 	_enemy = enemy
@@ -37,12 +47,29 @@ func show_enemy(enemy: Enemy) -> void:
 	# Enemy skills never change on a live enemy - build the column once per
 	# selection (unlike the tower panel's level/evolve rebuild key).
 	_rebuild_skill_column(enemy)
+	_apply_highlight(enemy.sprite)
 	_refresh()
 
 func clear() -> void:
 	_enemy = null
 	visible = false
 	_effect_row.setup(null)
+	_remove_highlight()
+
+func _apply_highlight(spr: Sprite2D) -> void:
+	_remove_highlight()
+	if spr == null:
+		return
+	_hl_sprite = spr
+	# Quad center in local vertex space = the sprite's offset (flip-proof grow
+	# direction; see the shader header).
+	_outline_mat.set_shader_parameter("quad_center_px", spr.offset)
+	spr.material = _outline_mat
+
+func _remove_highlight() -> void:
+	if _hl_sprite != null and is_instance_valid(_hl_sprite):
+		_hl_sprite.material = null
+	_hl_sprite = null
 
 func _process(_delta):
 	if not visible:

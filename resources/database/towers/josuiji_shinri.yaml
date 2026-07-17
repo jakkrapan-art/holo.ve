@@ -58,9 +58,9 @@ skills:
       - aoe
       - damage
     target_summary:
-      target_team: enemy
-      target_type: enemy
-      target_shape: area
+      target_team: self
+      target_type: tower
+      target_shape: single
     effects:
       - name: "Bull Eyes Crit Stacking"
         target:
@@ -103,9 +103,9 @@ evolution_skills:
       - aoe
       - damage
     target_summary:
-      target_team: enemy
-      target_type: enemy
-      target_shape: area
+      target_team: self
+      target_type: tower
+      target_shape: single
     effects:
       - name: "Bull Eyes Crit Stacking"
         target:

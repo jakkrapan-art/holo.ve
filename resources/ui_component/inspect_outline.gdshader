@@ -20,8 +20,8 @@ shader_type canvas_item;
 // quad_center_px = the sprite's `offset` (a centered sprite's quad center).
 
 uniform vec4 line_color : source_color = vec4(0.85, 0.95, 1.0, 1.0);
-uniform float thickness_px : hint_range(1.0, 12.0) = 4.0;
-uniform float grow_px = 6.0; // keep >= thickness_px + 2 so the line never clips
+uniform float thickness_px : hint_range(1.0, 16.0) = 8.0;
+uniform float grow_px = 12.0; // keep >= thickness_px + 2 so the line never clips
 uniform vec4 region_uv = vec4(0.0, 0.0, 1.0, 1.0);
 uniform vec2 quad_center_px = vec2(0.0, 0.0);
 uniform float pulse_speed = 5.2; // rad/s (~1.2s cycle); 0.0 = static line
@@ -33,7 +33,14 @@ const vec2 DIRS[8] = {
 	vec2(-0.7071, 0.7071), vec2(-0.7071, -0.7071)
 };
 
+// Vertex color carries the node's modulate/self_modulate (per-tower placeholder
+// tint, enemy damage flash). A custom fragment must re-apply it to the art
+// itself or those tints silently vanish; the LINE deliberately skips it so the
+// highlight keeps its CI white-blue under any tint.
+varying vec4 v_modulate;
+
 void vertex() {
+	v_modulate = COLOR;
 	VERTEX += sign(VERTEX - quad_center_px) * grow_px;
 }
 
@@ -53,7 +60,7 @@ void fragment() {
 	vec2 cell_px = region_uv.zw / TEXTURE_PIXEL_SIZE;
 	vec2 sample_uv = cell_center + (UV - cell_center) * (cell_px + 2.0 * grow_px) / cell_px;
 
-	vec4 base = texture(TEXTURE, sample_uv);
+	vec4 base = texture(TEXTURE, sample_uv) * v_modulate;
 	// Outside the frame rect the sprite contributes nothing.
 	vec2 rmin = region_uv.xy;
 	vec2 rmax = region_uv.xy + region_uv.zw;
@@ -61,10 +68,13 @@ void fragment() {
 		base = vec4(0.0);
 	}
 
+	// Two rings (full + 0.55x radius) so a thick band stays solid instead of
+	// scalloping between the 8 directions.
 	float neighbor = 0.0;
 	vec2 t = thickness_px * TEXTURE_PIXEL_SIZE;
 	for (int i = 0; i < 8; i++) {
 		neighbor = max(neighbor, frame_alpha(TEXTURE, sample_uv + DIRS[i] * t));
+		neighbor = max(neighbor, frame_alpha(TEXTURE, sample_uv + DIRS[i] * t * 0.55));
 	}
 
 	float pulse = 1.0;

@@ -87,7 +87,7 @@ skills:
       - type: play_animation
         data:
           animation: "skill_1"
-          duration: 0.5
+          cast_time: 0.5
       - type: attack
         data:
           damage_multiplier_param_name: "beat1Damage"
@@ -105,7 +105,7 @@ skills:
       - type: play_animation
         data:
           animation: "skill_2"
-          duration: 1.0
+          cast_time: 1.0
       - type: attack
         data:
           damage_multiplier_param_name: "beat2Damage"
@@ -171,7 +171,7 @@ evolution_skills:
       - type: play_animation
         data:
           animation: "skill_1"
-          duration: 0.5
+          cast_time: 0.5
       - type: attack
         data:
           damage_multiplier_param_name: "beat1Damage"
@@ -189,7 +189,7 @@ evolution_skills:
       - type: play_animation
         data:
           animation: "skill_2"
-          duration: 1.0
+          cast_time: 1.0
       - type: attack
         data:
           damage_multiplier_param_name: "beat2Damage"

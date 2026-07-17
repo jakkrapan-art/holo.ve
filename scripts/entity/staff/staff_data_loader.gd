@@ -33,7 +33,8 @@ static func load_data(prefix: String, name: String) -> StaffData:
 		var skill := Skill.new()
 		skill.name = skill_dict.get("name", "")
 		skill.desc = skill_dict.get("desc", "")
-		skill.castTime = float(skill_dict.get("cast_time", 0.0))
+		if skill_dict.has("cast_time"):
+			push_warning("Staff skill '" + skill.name + "': skill-level 'cast_time' (idle pre-cast hold) was removed - use per-beat play_animation 'cast_time' instead.")
 		skill.parameters = skill_dict.get("parameters", {})
 
 		var actions: Array[SkillAction] = []

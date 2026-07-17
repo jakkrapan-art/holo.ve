@@ -11,8 +11,9 @@ static func ParseSkill(skillDataList: Array) -> Array[Skill]:
 		var skillName = skill.get("name", "Unnamed Skill");
 		var desc = skill.get("desc", "");
 		var oneTime = skill.get("oneTime", false);
-		# Same key + meaning as the tower skill-level cast_time (idle pre-cast
-		# hold); enemies additionally stand still during it (Enemy.castLocked).
+		# Enemy-only telegraph window: the caster stands still (castLocked) before
+		# actions; plays a cast clip once enemy animation lands. Towers/staff
+		# author per-beat play_animation cast_time instead (idle-hold key removed).
 		var castTime = float(skill.get("cast_time", 0.0));
 		# Single source for balance numbers: actions bind via *_param keys and
 		# the desc renders the same values via {token} (enemy_skill.md Copy).
@@ -131,7 +132,10 @@ static func ParseAction(data: Dictionary, parameters: Dictionary = {}) -> SkillA
 			skill = SkillActionPlayAnimation.new();
 			var skillData = data.get("data", {});
 			skill.animationName = skillData.get("animation", "");
-			skill.duration = float(skillData.get("duration", 0.0));
+			skill.castTime = float(skillData.get("cast_time", 0.0));
+			if skillData.has("duration"):
+				push_warning("play_animation: 'duration' was renamed to 'cast_time' - rename the key (its value is used).");
+				skill.castTime = float(skillData.get("duration", 0.0));
 		"attack":
 			skill = SkillActionAttack.new();
 			var skillData = data.get("data", {});
@@ -219,11 +223,18 @@ static func ParseAction(data: Dictionary, parameters: Dictionary = {}) -> SkillA
 			var skillData = data.get("data", {});
 			skill.width = int(skillData.get("width", 3));
 			skill.height = int(skillData.get("height", 3));
-			var durationParam = skillData.get("duration_param_name", "");
-			if durationParam != "" and parameters.has(durationParam):
-				skill.duration = float(parameters[durationParam]);
+			var castTimeParam = skillData.get("cast_time_param_name", "");
+			if castTimeParam != "" and parameters.has(castTimeParam):
+				skill.castTime = float(parameters[castTimeParam]);
 			else:
-				skill.duration = float(skillData.get("duration", 3.0));
+				skill.castTime = float(skillData.get("cast_time", 3.0));
+			if skillData.has("duration_param_name") or skillData.has("duration"):
+				push_warning("channel: 'duration'/'duration_param_name' was renamed to 'cast_time'/'cast_time_param_name' - rename the key (its value is used).");
+				var durationParam = skillData.get("duration_param_name", "");
+				if durationParam != "" and parameters.has(durationParam):
+					skill.castTime = float(parameters[durationParam]);
+				elif skillData.has("duration"):
+					skill.castTime = float(skillData.get("duration", 3.0));
 			var intervalParam = skillData.get("tick_interval_param_name", "");
 			if intervalParam != "" and parameters.has(intervalParam):
 				skill.tick_interval = float(parameters[intervalParam]);

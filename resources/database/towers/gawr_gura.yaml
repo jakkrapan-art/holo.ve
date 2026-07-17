@@ -56,8 +56,6 @@ skills:
           target_team: enemy
           target_type: tower
           target_shape: area
-    # cast_time: 0.0   # DISABLED — skill timing now lives in play_animation `duration`.
-    #                  # cast_time = idle hold BEFORE the cast (no skill anim); kept for team ref / possible future use.
     recovery: 0.2 # post-cast hold (s) before resuming attack — see default_tower.yaml
     parameters:
       damageMultiplier:
@@ -68,7 +66,7 @@ skills:
       - type: "play_animation"
         data:
           animation: "skill"
-          duration: 0.5   # cast pose only (generic clip; verify in-engine)
+          cast_time: 0.5   # cast pose only (generic clip; verify in-engine)
       - type: "play_animation"
         data:
           animation: "idle"   # return to idle BEFORE the 10s persistent storm so the cast pose doesn't hold during it
@@ -123,8 +121,6 @@ evolution_skills:
           target_team: enemy
           target_type: tower
           target_shape: area
-    # cast_time: 0.0   # DISABLED — skill timing now lives in play_animation `duration`.
-    #                  # cast_time = idle hold BEFORE the cast (no skill anim); kept for team ref / possible future use.
     recovery: 0.2 # post-cast hold (s) before resuming attack — see default_tower.yaml
     parameters:
       damageMultiplier:
@@ -133,7 +129,7 @@ evolution_skills:
       - type: "play_animation"
         data:
           animation: "skill"
-          duration: 0.5   # cast pose only (generic clip; verify in-engine)
+          cast_time: 0.5   # cast pose only (generic clip; verify in-engine)
       - type: "play_animation"
         data:
           animation: "idle"   # return to idle BEFORE the 10s persistent storm so the cast pose doesn't hold during it

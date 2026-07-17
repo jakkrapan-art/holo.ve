@@ -59,8 +59,6 @@ skills:
           target_team: enemy
           target_type: enemy
           target_shape: area
-    # cast_time: 0.0   # DISABLED — skill timing now lives in play_animation `duration`.
-    #                  # cast_time = idle hold BEFORE the cast (no skill anim); kept for team ref / possible future use.
     recovery: 0.2 # post-cast hold (s) before resuming attack — see default_tower.yaml
     # Single source for balance + desc: skill actions read these via
     # damage_multiplier_param_name / *_param, and desc tokens render the
@@ -81,7 +79,7 @@ skills:
       - type: "play_animation"
         data:
           animation: "skill"
-          duration: 0.2   # skill clip scaled to 0.2s; effect lands ~0.16s (tune in-engine)
+          cast_time: 0.2   # skill clip scaled to 0.2s; effect lands ~0.16s (tune in-engine)
       - type: "play_effect"
         data:
           # Flame Slash crescent VFX — orients toward tower.enemy and lands
@@ -138,8 +136,6 @@ evolution_skills:
           target_team: enemy
           target_type: enemy
           target_shape: area
-    # cast_time: 0.0   # DISABLED — skill timing now lives in play_animation `duration`.
-    #                  # cast_time = idle hold BEFORE the cast (no skill anim); kept for team ref / possible future use.
     recovery: 0.2 # post-cast hold (s) before resuming attack — see default_tower.yaml
     # Single source for balance + desc: actions read these (projectile damage via
     # damage_multiplier_param_name default, DOT via *_param); desc tokens
@@ -161,7 +157,7 @@ evolution_skills:
       - type: "play_animation"
         data:
           animation: "skill"
-          duration: 0.2   # skill clip scaled to 0.2s; effect lands ~0.16s (tune in-engine)
+          cast_time: 0.2   # skill clip scaled to 0.2s; effect lands ~0.16s (tune in-engine)
       - type: "play_effect"
         data:
           # Hinotori phoenix VFX (Wingsweep, magma-violet) — orients onto the

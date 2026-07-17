@@ -70,7 +70,7 @@ skills:
       - type: play_animation
         data:
           animation: "skill"
-          duration: 0.5
+          cast_time: 0.5
       - type: attack
         data:
           damage_multiplier_param_name: "skillDamage"
@@ -134,7 +134,7 @@ evolution_skills:
         data:
           width: 3
           height: 3
-          duration_param_name: "channelDuration"
+          cast_time_param_name: "channelDuration"
           tick_interval_param_name: "tickInterval"
           animation: "skill"
           damage_multiplier_param_name: "tickDamage"

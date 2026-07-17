@@ -38,6 +38,10 @@ func execute_skill_actions(skill: Skill, context: SkillContext):
 
 	skill.using = true;
 
+	# Enemy-only telegraph window (skill-level cast_time): the caster stands
+	# still before actions. Tower/staff loaders no longer set castTime (per-beat
+	# play_animation cast_time replaced the idle hold), so this waits only for
+	# enemy casts.
 	if skill.castTime > 0:
 		await user.get_tree().create_timer(skill.castTime, false).timeout
 		if not is_instance_valid(user):

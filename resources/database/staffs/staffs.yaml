@@ -55,7 +55,6 @@
 # skill:
 #   name: "<display name>"
 #   desc: "<player-facing description (English; appears on selection card + tooltip)>"
-#   cast_time: 0.0          # seconds; instant = 0
 #   use_charges: 1          # MOBA-style charge cap. 1 = once/game, 2 = twice, ... ;
 #                           # omit or -1 = unlimited. Per-charge cooldown not yet supported.
 #   aoe:                    # cast-range indicator footprint (cells)

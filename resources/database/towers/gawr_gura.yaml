@@ -42,6 +42,7 @@ skills:
     icon: ""
     tags:
       - damage
+      - magic
       - projectile
       - aoe
       - stun
@@ -107,6 +108,7 @@ evolution_skills:
     icon: ""
     tags:
       - damage
+      - magic
       - projectile
       - aoe
       - stun

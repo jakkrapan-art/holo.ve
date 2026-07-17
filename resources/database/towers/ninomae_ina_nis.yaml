@@ -42,6 +42,7 @@ skills:
     icon: ""
     tags:
       - damage
+      - magic
       - aoe
       - stun
       - duration
@@ -105,6 +106,7 @@ evolution_skills:
     icon: ""
     tags:
       - damage
+      - magic
       - aoe
       - stun
       - channel

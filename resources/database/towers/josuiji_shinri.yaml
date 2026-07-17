@@ -53,10 +53,11 @@ skills:
     desc: "Josuiji Shinri steadies his aim with every shot: each non-critical hit adds a Bull Eyes stack, each granting +{critChancePerStack}% critical chance. On a critical hit, his shot becomes a piercing arrow that hits all enemies in a 1×4 tile line for critical damage +{bonusCritDamage:percent}, then loses all Bull Eyes stacks."
     icon: ""
     tags:
+      - damage
+      - attack
       - crit_rate
       - projectile
       - aoe
-      - damage
     target_summary:
       target_team: self
       target_type: tower
@@ -98,10 +99,11 @@ evolution_skills:
     desc: "Josuiji Shinri's aim turns lethal: each non-critical hit adds a Bull Eyes stack, each granting +{critChancePerStack}% critical chance. On a critical hit, his shot becomes a piercing arrow that hits all enemies in a 1×4 tile line for critical damage +{bonusCritDamage:percent} — and critical hits no longer consume his Bull Eyes stacks."
     icon: ""
     tags:
+      - damage
+      - attack
       - crit_rate
       - projectile
       - aoe
-      - damage
     target_summary:
       target_team: self
       target_type: tower

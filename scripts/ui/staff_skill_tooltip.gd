@@ -13,14 +13,7 @@ var skill: Skill = null
 var max_charges: int = -1  # StaffData.skill_max_charges: -1 = unlimited, N = N uses per game
 
 func _make_custom_tooltip(_for_text: String) -> Object:
-	var panel := PanelContainer.new()
-	var rich := RichTextLabel.new()
-	rich.bbcode_enabled = true
-	rich.fit_content = true
-	rich.custom_minimum_size = Vector2(320, 0)
-	rich.text = _build_hover_bbcode()
-	panel.add_child(rich)
-	return panel
+	return UISynergyContent.make_tooltip_card(_build_hover_bbcode(), 320.0, self)
 
 func _build_hover_bbcode() -> String:
 	if skill == null:

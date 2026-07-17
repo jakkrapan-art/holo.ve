@@ -175,7 +175,8 @@ static func _apply_skill_data(skill: Skill, skill_data: Dictionary, default_name
 		push_warning("Skill '" + skill.name + "': 'desc_template' was merged into 'desc' - rename the key (its tokenized text is used).")
 		skill.desc = str(skill_data.get("desc_template", "")).replace("\\n", "\n")
 	skill.parameters = skill_data.get("parameters", {})
-	skill.castTime = skill_data.get("cast_time", 0.0)
+	if skill_data.has("cast_time"):
+		push_warning("Skill '" + skill.name + "': skill-level 'cast_time' (idle pre-cast hold) was removed - draw the windup into the clip; per-beat timing is play_animation 'cast_time'.")
 	skill.recoveryTime = skill_data.get("recovery", 0.2)
 	skill.tags = _parse_string_array(skill_data.get("tags", []))
 	skill.target_summary = _parse_dictionary(skill_data.get("target_summary", {}))

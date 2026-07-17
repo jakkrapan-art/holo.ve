@@ -72,7 +72,7 @@ skills:
       - type: play_animation
         data:
           animation: "skill"
-          duration: 0.5
+          cast_time: 0.5
       - type: play_effect
         data:
           # Reaper's dark-energy crescent — self-centered 3x3 sweep (calliope_skill_effect.gd)
@@ -162,7 +162,7 @@ evolution_skills:
       - type: play_animation
         data:
           animation: "skill"
-          duration: 0.5
+          cast_time: 0.5
       - type: play_effect
         data:
           # Beat 1 "reap" VFX - elevated reaper crescent (phase 0). Its DURATION (0.45s)

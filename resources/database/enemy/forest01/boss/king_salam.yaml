@@ -57,32 +57,36 @@ skill:
           duration_param: duration
   - name: King's Command
     cooldown: 30
-    cast_time: 0.5
     recovery: 0.2
     tags:
+      - channel
       - invincible
       - summon
     parameters:
-      stand_duration: 2
+      channel_time: 4
       summon_count: 10
-    desc: "King Salam stands his ground, invincible and untargetable for {stand_duration} seconds, then commands {summon_count} Armored Salam to join the battle at his side."
+    desc: "King Salam channels his royal authority for {channel_time} seconds - invincible and untargetable while {summon_count} Armored Salam march out to join the battle at his side."
     action:
+      # Channel shape: everything runs INSIDE the delay window. summon_enemy is
+      # fire-and-forget (WaveController trickles the batch), so the minions walk
+      # out while the delay holds him castLocked and invincible covers the
+      # whole window (10 x 0.4s = last summon ~3.6s, inside 4s).
       - type: target_self
       - type: apply_effect
         data:
           effect: invincible
           target: targets
-          duration_param: stand_duration
+          duration_param: channel_time
       - type: apply_effect
         data:
           effect: royal_command
           target: targets
-          duration_param: stand_duration
-      - type: delay
-        data:
-          delay_param: stand_duration
+          duration_param: channel_time
       - type: summon_enemy
         data:
           enemy: armored_salam
           count_param: summon_count
-          interval: 0.2
+          interval: 0.4
+      - type: delay
+        data:
+          delay_param: channel_time

@@ -2,14 +2,14 @@ class_name SkillActionChannel
 extends SkillAction
 
 # "channel" execution pattern (tower_skill.md): the cast locks the aimed zone
-# and holds the tower busy for `duration` seconds while re-striking that zone
+# and holds the tower busy for `cast_time` seconds while re-striking that zone
 # every `tick_interval`. BLOCKING - execute() awaits until the channel ends, so
 # the controller keeps usingSkill true and Energy drains only at onSuccess
 # (a wave-end cancel keeps Energy). Each tick resolves fresh: live target
 # query at the locked center, live Total Attack, effects re-applied (REFRESH).
 # First user: Ninomae Ina'nis evolved skill.
 
-@export var duration: float = 3.0
+@export var castTime: float = 3.0
 @export var tick_interval: float = 0.25
 @export var width: int = 3
 @export var height: int = 3
@@ -80,7 +80,7 @@ class ChannelTicker:
 		center = p_center
 		params = p_params
 		skill_name = p_skill_name
-		total_ticks = int(round(action.duration / action.tick_interval))
+		total_ticks = int(round(action.castTime / action.tick_interval))
 
 	func _process(delta: float) -> void:
 		if done:

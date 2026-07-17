@@ -18,7 +18,6 @@ end_sprite_scene: staffs/a_chan/sprite/staff_a_chan_sprite.tscn
 skill:
   name: "Hard Worker Ghost Release!!!"
   desc: "A-Chan releases the spirits of hard workers, instantly killing all enemies in a 5x5 area. Boss enemies take 25% of their max HP as True Damage. Once per game."
-  cast_time: 0.0
   # MOBA-style charges: 1 = once/game, 2 = twice/game, … ; omit or -1 = unlimited.
   use_charges: 1
   aoe:

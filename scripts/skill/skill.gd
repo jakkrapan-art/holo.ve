@@ -9,6 +9,9 @@ enum TARGET_TYPE {ENEMY, FRIENDLY}
 @export var desc:String = ""
 @export var names: Array[String] = []
 @export var oneTimeUse: bool = false
+# Enemy-only telegraph window: the caster stands still before actions (plays a
+# cast clip once enemy animation lands). Towers/staff author per-beat
+# play_animation cast_time instead; their loaders no longer set this.
 @export var castTime: float = 0.0
 @export var recoveryTime: float = 0.0
 @export var actions: Array[SkillAction] = []

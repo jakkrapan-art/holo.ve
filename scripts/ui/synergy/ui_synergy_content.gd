@@ -97,7 +97,7 @@ func _make_custom_tooltip(_for_text: String) -> Object:
 	return panel
 
 # Shared Theme that blanks the engine's native TooltipPanel stylebox; assigned
-# to tooltip owners in make_tooltip_card (see the owner param there).
+# to tooltip owners in make_tooltip_card (see the p_owner param there).
 static var _tooltip_owner_theme: Theme = null
 
 # Opaque tooltip card shared by every rich hover: the panel rows, the card
@@ -105,17 +105,17 @@ static var _tooltip_owner_theme: Theme = null
 # (tower_skill_icon.gd), and the staff hover (staff_skill_tooltip.gd), so
 # every rich tooltip reads as one family.
 # Child 0 is the RichTextLabel (callers may keep it for live refresh).
-# owner != null: strip the engine's native tooltip panel on that owner so only
+# p_owner != null: strip the engine's native tooltip panel on that owner so only
 # our card renders (kills the ghost rect behind custom tooltips). Godot wraps
 # a custom tooltip in a popup styled by the TooltipPanel theme item and adds
 # it as a child of the owner, so an owner Theme reaches it (a per-control
 # stylebox override would not propagate to the child Window).
-static func make_tooltip_card(bbcode: String, width: float = 320.0, owner: Control = null) -> PanelContainer:
-	if owner != null:
+static func make_tooltip_card(bbcode: String, width: float = 320.0, p_owner: Control = null) -> PanelContainer:
+	if p_owner != null:
 		if _tooltip_owner_theme == null:
 			_tooltip_owner_theme = Theme.new()
 			_tooltip_owner_theme.set_stylebox("panel", "TooltipPanel", StyleBoxEmpty.new())
-		owner.theme = _tooltip_owner_theme
+		p_owner.theme = _tooltip_owner_theme
 	var panel := PanelContainer.new()
 	var style := StyleBoxFlat.new()
 	style.bg_color = Color(0.07, 0.05, 0.12, 0.97)

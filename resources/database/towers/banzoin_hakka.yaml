@@ -46,7 +46,6 @@ skills:
     icon: ""
     tags:
       - damage
-      - attack
       - magic
       - aoe
       - persistent
@@ -69,7 +68,7 @@ skills:
         - 0.6
         - 1.0
       skillDuration: 10.0
-      slowEffect: 0.1
+      slowEffect: 0.15
       tickInterval: 1.0
     actions:
       - type: find_multi_enemy
@@ -117,7 +116,6 @@ evolution_skills:
     icon: ""
     tags:
       - damage
-      - attack
       - magic
       - aoe
       - persistent
@@ -137,9 +135,9 @@ evolution_skills:
     parameters:
       skillDamage: 1.5
       skillDuration: 10.0
-      slowEffect: 0.1
+      slowEffect: 0.15
       tickInterval: 1.0
-      energyRefund: 0.5
+      energyRefund: 0.2
     actions:
       - type: find_multi_enemy
         data:

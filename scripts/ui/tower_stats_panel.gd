@@ -28,13 +28,21 @@ extends Control
 # Buff/debuff strip floating above the panel's top border (rich hover).
 @onready var _effect_row: EffectIconRow = $EffectRow
 
+const OUTLINE_SHADER := preload("res://resources/ui_component/inspect_outline.gdshader")
+
 var _tower: Tower = null
 # Rebuild key for the skill-icon row ("level_isEvolved"): icons/tooltips only
 # change on level-up or evolve, so the per-frame poll skips the rebuild.
 var _skills_key: String = ""
+# Inspect-highlight outline on the selected tower's sprite (ui.md). One material
+# is enough: only one unit is ever selected (panels mutually clear).
+var _outline_mat: ShaderMaterial
+var _hl_sprite: AnimatedSprite2D = null
 
 func _ready():
 	visible = false
+	_outline_mat = ShaderMaterial.new()
+	_outline_mat.shader = OUTLINE_SHADER
 
 func show_tower(tower: Tower) -> void:
 	_tower = tower
@@ -43,12 +51,55 @@ func show_tower(tower: Tower) -> void:
 	# Container lives on TowerData, which evolve() mutates in place and which
 	# outlives the node - bind once per selection is safe.
 	_effect_row.setup(tower.data.effects if tower.data != null else null)
+	_apply_highlight(tower.spr)
 	_refresh()
 
 func clear() -> void:
 	_tower = null
 	visible = false
 	_effect_row.setup(null)
+	_remove_highlight()
+
+# The shader needs the CURRENT frame's rect inside the sheet (its cell clamp +
+# grow contraction). Feeding it live from the sprite - instead of hardcoding any
+# frame/sheet size - keeps the highlight correct through future asset resizes
+# or repacks (Director requirement 2026-07-17).
+func _apply_highlight(spr: AnimatedSprite2D) -> void:
+	_remove_highlight()
+	if spr == null:
+		return
+	_hl_sprite = spr
+	# A centered sprite's quad center in local vertex space is its offset; the
+	# shader grows vertices away from it (flip-proof, unlike UV-derived growth).
+	_outline_mat.set_shader_parameter("quad_center_px", spr.offset)
+	_update_highlight_region()
+	spr.material = _outline_mat
+	spr.frame_changed.connect(_update_highlight_region)
+	spr.animation_changed.connect(_update_highlight_region)
+
+func _remove_highlight() -> void:
+	if _hl_sprite != null and is_instance_valid(_hl_sprite):
+		_hl_sprite.material = null
+		if _hl_sprite.frame_changed.is_connected(_update_highlight_region):
+			_hl_sprite.frame_changed.disconnect(_update_highlight_region)
+		if _hl_sprite.animation_changed.is_connected(_update_highlight_region):
+			_hl_sprite.animation_changed.disconnect(_update_highlight_region)
+	_hl_sprite = null
+
+func _update_highlight_region() -> void:
+	if _hl_sprite == null or not is_instance_valid(_hl_sprite):
+		return
+	# Default = whole texture (non-atlas frames need no cell clamp).
+	var region := Vector4(0.0, 0.0, 1.0, 1.0)
+	var frames := _hl_sprite.sprite_frames
+	if frames != null and frames.has_animation(_hl_sprite.animation) \
+			and _hl_sprite.frame < frames.get_frame_count(_hl_sprite.animation):
+		var atlas := frames.get_frame_texture(_hl_sprite.animation, _hl_sprite.frame) as AtlasTexture
+		if atlas != null and atlas.atlas != null:
+			var sheet: Vector2 = atlas.atlas.get_size()
+			region = Vector4(atlas.region.position.x / sheet.x, atlas.region.position.y / sheet.y,
+					atlas.region.size.x / sheet.x, atlas.region.size.y / sheet.y)
+	_outline_mat.set_shader_parameter("region_uv", region)
 
 func _process(_delta):
 	if not visible:

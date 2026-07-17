@@ -253,6 +253,43 @@ static func ParseAction(data: Dictionary, parameters: Dictionary = {}) -> SkillA
 			# Optional per-tick VFX, spawned each tick alongside the find.
 			if skillData.has("effect_script"):
 				skill.effect_action = ParseAction({"type": "play_effect", "data": {"effect_script": skillData["effect_script"]}}, parameters) as SkillActionPlayEffect;
+		"field":
+			# Non-blocking persistent damage+debuff zone ("field" pattern -
+			# tower_skill.md). Reuses channel's inner find/attack build and its
+			# ChannelTicker; castTime holds the field LIFETIME (not a cast hold).
+			# First user: Banzoin Hakka "Exocirst Field".
+			skill = SkillActionField.new();
+			var skillData = data.get("data", {});
+			skill.width = int(skillData.get("width", 3));
+			skill.height = int(skillData.get("height", 3));
+			# Field lifetime -> castTime (duration / duration_param_name).
+			var durationParam = skillData.get("duration_param_name", "");
+			if durationParam != "" and parameters.has(durationParam):
+				skill.castTime = float(parameters[durationParam]);
+			else:
+				skill.castTime = float(skillData.get("duration", 10.0));
+			var intervalParam = skillData.get("tick_interval_param_name", "");
+			if intervalParam != "" and parameters.has(intervalParam):
+				skill.tick_interval = float(parameters[intervalParam]);
+			else:
+				skill.tick_interval = float(skillData.get("tick_interval", 1.0));
+			if skill.tick_interval <= 0.0:
+				push_warning("field: tick_interval must be > 0; falling back to 1.0.");
+				skill.tick_interval = 1.0;
+			var refundParam = skillData.get("energy_refund_percent_param_name", "");
+			if refundParam != "" and parameters.has(refundParam):
+				skill.energyRefundPercent = float(parameters[refundParam]);
+			else:
+				skill.energyRefundPercent = float(skillData.get("energy_refund_percent", 0.0));
+			var fieldFind := SkillActionFindMultipleInRange.new();
+			fieldFind.width = skill.width;
+			fieldFind.height = skill.height;
+			fieldFind.cancel_when_empty = false;
+			skill.find_action = fieldFind;
+			skill.attack_action = ParseAction({"type": "attack", "data": skillData}, parameters) as SkillActionAttack;
+			# Optional per-tick VFX hook (unset today - VFX is a follow-up task).
+			if skillData.has("effect_script"):
+				skill.effect_action = ParseAction({"type": "play_effect", "data": {"effect_script": skillData["effect_script"]}}, parameters) as SkillActionPlayEffect;
 		"clear_enemy":
 			skill = SkillActionClearEnemy.new();
 		"find_multi_enemy":

@@ -206,6 +206,30 @@ skills:
       #         - effect: "stun"
       #           duration_param: "tickStun"
       # ─────────────────────────────────────────────────────────────────
+      # ─────────────────────────────────────────────────────────────────
+      # FIELD (โซนค้างรอบตัว ไม่บล็อกการตี) — ของจริงดู banzoin_hakka.yaml
+      #
+      #   วางต่อจาก find_multi_enemy แรก: โซนวางกลางตัว tower แล้วจบ cast
+      #   ทันที (ไม่บล็อก เหมือน aftershock) tower กลับไปตีปกติต่อได้ระหว่าง
+      #   โซนทำงานเอง นาน duration วินาที แต่ละ tick หาเป้าใหม่สดในกล่องรอบตัว
+      #   ตี + ลง effect (เช่น slow) — คีย์ damage/crit/effects ชุดเดียวกับ
+      #   attack ใช้ได้หมด; energy_refund_percent = คืน Energy % ตอนโซนหมดเวลา
+      #   (จบธรรมชาติเท่านั้น); ยกเลิกกลางคัน (จบเวฟ) = หยุดทันที ไม่คืน
+      #
+      #   - type: field
+      #     data:
+      #       width: 3
+      #       height: 3
+      #       duration_param_name: "skillDuration"      # หรือ duration: 10.0 ตรง ๆ
+      #       tick_interval_param_name: "tickInterval"  # หรือ tick_interval: 1.0 ตรง ๆ
+      #       damage_multiplier_param_name: "skillDamage"
+      #       damage_type: magic
+      #       can_crit: false
+      #       energy_refund_percent_param_name: "energyRefund"   # optional (ใช้ตอน evolve)
+      #       effects:
+      #         - effect: "move_speed_down"
+      #           value_param: "slowEffect"
+      #           duration: 1.5
   passive: null
 
 # evolutionStat = stat ตอน evolve (block เดียว ไม่ใช่ array)

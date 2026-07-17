@@ -46,6 +46,7 @@ skills:
       - damage
       - attack
       - aoe
+      - stack
     target_summary:
       target_team: enemy
       target_type: enemy
@@ -95,6 +96,7 @@ skills:
     tags:
       - buff
       - self
+      - stack
     target_summary:
       target_team: self
       target_type: tower
@@ -131,6 +133,7 @@ evolution_skills:
       - damage
       - attack
       - aoe
+      - stack
     target_summary:
       target_team: enemy
       target_type: enemy

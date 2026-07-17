@@ -49,12 +49,16 @@ skills:
       - attack
       - aoe
       - enemy
-    # target_summary = สรุป target ระดับสกิลไว้โชว์ UI (ความแม่นจริงอยู่ที่ effect/action)
+    # target_summary = สรุป target ระดับสกิลไว้โชว์ UI (บรรทัด AFFECTS ใน tooltip อ่าน team+shape)
+    # เป็น display-only ทั้งชั้น — พฤติกรรมจริงมาจาก actions เท่านั้น
+    # กติกาสรุป: ใช้ target ของเอฟเฟกต์เด่นที่ desc ขึ้นต้น = ตัวแรกใน effects (Director 2026-07-18)
+    # target_team = ใครโดน ไม่ใช่ร่ายจากไหน — สกิลร่ายรอบตัวที่ตีศัตรู = enemy (เคส IO Spirits)
     # ใช้ block map เท่านั้น อย่าใช้ inline {...} (custom YAML parser support flow จำกัด)
     target_summary:
       target_team: enemy # self | enemy | ally | both
-      target_type: enemy # tower | enemy | any
+      target_type: enemy # tower | enemy | any (ยังไม่ถูกแสดงผล — field สำรอง)
       target_shape: area # single | area | global
+    # effects = พิมพ์เขียวรายเอฟเฟกต์แนว Dota (เรียงเอฟเฟกต์เด่นก่อน) — ยังไม่มีโค้ดอ่าน ไว้รอ tooltip ละเอียดในอนาคต
     effects:
       - name: "Area Damage"
         target:

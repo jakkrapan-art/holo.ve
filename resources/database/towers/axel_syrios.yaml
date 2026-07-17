@@ -37,6 +37,16 @@ stats:
 skill:
   name: "Skill"
   desc: "Axel Syrios strikes the 3x1 line in front of him with a fierce blow, dealing physical damage to every enemy caught in it."
+  target_summary:
+    target_team: enemy
+    target_type: enemy
+    target_shape: area
+  effects:
+    - name: "Line Strike Damage"
+      target:
+        target_team: enemy
+        target_type: enemy
+        target_shape: area
   recovery: 0.2 # post-cast hold (s) before resuming attack — see default_tower.yaml
   actions:
     - type: find_multi_enemy

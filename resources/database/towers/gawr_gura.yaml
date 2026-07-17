@@ -42,19 +42,20 @@ skills:
     icon: ""
     tags:
       - damage
+      - magic
       - projectile
       - aoe
       - stun
       - persistent
     target_summary:
       target_team: enemy
-      target_type: tower
+      target_type: enemy
       target_shape: area
     effects:
       - name: "Storm Wave Damage"
         target:
           target_team: enemy
-          target_type: tower
+          target_type: enemy
           target_shape: area
     recovery: 0.2 # post-cast hold (s) before resuming attack — see default_tower.yaml
     parameters:
@@ -107,19 +108,20 @@ evolution_skills:
     icon: ""
     tags:
       - damage
+      - magic
       - projectile
       - aoe
       - stun
       - persistent
     target_summary:
       target_team: enemy
-      target_type: tower
+      target_type: enemy
       target_shape: area
     effects:
       - name: "Storm Wave Damage"
         target:
           target_team: enemy
-          target_type: tower
+          target_type: enemy
           target_shape: area
     recovery: 0.2 # post-cast hold (s) before resuming attack — see default_tower.yaml
     parameters:

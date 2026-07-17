@@ -79,9 +79,11 @@ func _refresh_overflow() -> void:
 			icon.visible = i < max_visible
 
 func _on_effect_updated(inst: EffectInstance) -> void:
-	var icon: TextureRect = _icons.get(inst.key(), null)
+	var icon: EffectHoverIcon = _icons.get(inst.key(), null)
 	if icon != null:
 		_update_stack_label(icon, inst)
+		if rich_hover:
+			icon.refresh_tooltip()
 
 func _make_icon(inst: EffectInstance) -> EffectHoverIcon:
 	var icon := EffectHoverIcon.new()

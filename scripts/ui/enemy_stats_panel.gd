@@ -16,6 +16,8 @@ extends Control
 @onready var _hp_text: Label = $HpRow/HpBar/HpText
 # Right-edge column: hover popups open toward the open playfield (ui.md rule).
 @onready var _skill_column: VBoxContainer = $SkillColumn
+# Buff/debuff strip floating above the panel's top border (rich hover).
+@onready var _effect_row: EffectIconRow = $EffectRow
 
 const TIER_NAMES := {
 	Enemy.EnemyType.Normal: "Normal",
@@ -31,6 +33,7 @@ func _ready():
 func show_enemy(enemy: Enemy) -> void:
 	_enemy = enemy
 	visible = true
+	_effect_row.setup(enemy.effects)
 	# Enemy skills never change on a live enemy - build the column once per
 	# selection (unlike the tower panel's level/evolve rebuild key).
 	_rebuild_skill_column(enemy)
@@ -39,6 +42,7 @@ func show_enemy(enemy: Enemy) -> void:
 func clear() -> void:
 	_enemy = null
 	visible = false
+	_effect_row.setup(null)
 
 func _process(_delta):
 	if not visible:

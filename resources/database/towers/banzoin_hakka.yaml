@@ -147,7 +147,8 @@ evolution_skills:
         data:
           width: 5
           height: 5
-          center_on_self: true
+          center_on_self: true        # cast gate: box centered on Hakka
+          show_area: false            # zone VFX shows the area - no red debug box
       - type: play_animation
         data:
           animation: "skill"
@@ -162,8 +163,10 @@ evolution_skills:
           damage_type: magic
           can_crit: false
           energy_refund_percent_param_name: "energyRefund"
+          show_area: false            # per-tick red debug box off (VFX replaces it)
+          effect_script: "res://resources/tower/holostars/en_branch/tempus_gen/hakka/skill_effect/hakka_field_evo_effect.gd"
           effects:
-            - effect: move_speed_down
+            - effect: move_speed_down       # per-tick slow (refresh; ~1 tick lag on leave)
               value_param: "slowEffect"
               duration: 1.5
       - type: play_animation

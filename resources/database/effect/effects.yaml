@@ -93,6 +93,22 @@ crit_chance_up:
   kind: crit_chance
   duration: 4.0
 
+# SpellCaster synergy gate: unlocks the crit roll on the holder's SKILLS. It
+# grants no critical chance - a holder with 0 chance still never crits. mark =
+# pure flag, no stat aggregation; SkillActionAttack reads it live via
+# EffectContainer.stacks_of (NOT has_mark, which filters category == mark, and
+# NOT has_kind(MARK_ONLY), which `soul` would also satisfy).
+spellcaster_crit:
+  name: "Arcane Focus"
+  desc: "Skills can land critical hits."
+  icon: "ui_asset/effects/buff_generic.png"
+  category: buff
+  host: tower
+  kind: mark
+  stack: refresh
+  duration: 0
+  lifetime: board
+
 crit_damage_up:
   name: "Critical Damage Up"
   desc: "Critical damage increased by {value}."

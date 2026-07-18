@@ -1,8 +1,0 @@
-id: diva
-name: "Diva"
-kind: class
-type: normal
-# Placeholder: thresholds carried for UI counting; effect not wired yet.
-effect: none
-thresholds: [2, 3]
-desc: "Diva synergy effect not yet defined."

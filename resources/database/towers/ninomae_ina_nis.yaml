@@ -96,9 +96,11 @@ evolutionStat:
 # Evolved Active Skill - the game's first "channel" pattern skill: Ina'nis
 # locks the 3x3 zone in front of her and strikes it 12 times over 3 seconds
 # (every 0.25s), stunning enemies caught inside on every strike. She is busy
-# for the whole channel (no auto-attack). The ticks NEVER crit by design;
-# the evolved BASE stat keeps critChance 50 for her normal attacks
-# (stat-consistency verdict, Director 2026-07-14).
+# for the whole channel (no auto-attack). The ticks do not crit on their own
+# (can_crit: false below); the evolved BASE stat keeps critChance 50 for her
+# normal attacks (stat-consistency verdict, Director 2026-07-14). Superseded in
+# part 2026-07-19: the SpellCaster synergy opens this gate for its holders, so
+# the ticks DO crit while that trait is active - intended, do not re-block it.
 evolution_skills:
   active:
     name: "Book of Ancient Ones"
@@ -141,7 +143,7 @@ evolution_skills:
           animation: "skill"
           damage_multiplier_param_name: "tickDamage"
           damage_type: magic
-          can_crit: false            # channel ticks never crit (base-stat crit stays for normal attacks)
+          can_crit: false            # ticks do not crit on their own; the SpellCaster synergy overrides this gate for holders
           effects:
             - effect: "stun"
               duration_param: "tickStun"

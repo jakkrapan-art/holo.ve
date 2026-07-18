@@ -49,6 +49,8 @@ static func create(effect_key: String) -> SynergyEffect:
 			return SynergyEffectQuestTempus.new()
 		"attack_per_active_trait":
 			return SynergyEffectAttackPerTrait.new()
+		"magic_up_skill_crit":
+			return SynergyEffectSpellcaster.new()
 		"", "none":
 			return null   # placeholder synergy: declared but no effect handler yet
 		_:

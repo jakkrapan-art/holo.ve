@@ -2,7 +2,14 @@ id: hero
 name: "Hero"
 kind: class
 type: normal
-# Placeholder: thresholds carried for UI counting; effect not wired yet.
-effect: none
-thresholds: [3]
-desc: "Hero synergy effect not yet defined."
+effect: attack_per_active_trait
+# Single tier by design: one Hero unit activates the trait, and the bonus scales
+# with the rest of the board instead of with the Hero count.
+thresholds: [1]
+parameters:
+  # Percent scale (5 = +5%), per active Trait on the field. Scalar, not an array:
+  # the value does not scale by tier, so it must not render as a tier-scaling number.
+  atk_per_trait: 5
+desc: "Hero units carry a champion's resolve, growing stronger with every Trait awakened on the field - each active Trait grants them +{atk_per_trait}% Physical Attack."
+tier_effects:
+  - "+{atk_per_trait}% Physical Attack per active Trait"

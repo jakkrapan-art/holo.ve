@@ -74,6 +74,16 @@ func tick(delta: float) -> void:
 func active_tier(synergy_id: int) -> int:
 	return _active_tier.get(synergy_id, -1)
 
+# How many synergies are currently active (any tier). Placeholder synergies count:
+# _active_tier is written before the no-handler return in on_synergy_updated, so a
+# declared-but-unwired trait the player sees light up in the panel is included.
+func active_synergy_count() -> int:
+	var total := 0
+	for tier in _active_tier.values():
+		if tier >= 0:
+			total += 1
+	return total
+
 # Towers currently holding a given synergy trait (factory's keyed list).
 func towers_with(synergy_id: int) -> Array:
 	if _factory == null:

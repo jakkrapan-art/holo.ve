@@ -59,6 +59,10 @@ static func create(width: float, height: float, callback: Callable, spawn_pos: V
 func _draw():
 	if _size == Vector2.ZERO:
 		return
+	# Alpha 0 = caller asked for no debug visual (the border below would
+	# otherwise still draw at forced alpha 1).
+	if _visual_color.a <= 0.0:
+		return
 
 	var rect = Rect2(-_size * 0.5 + _local_offset, _size)
 	draw_rect(rect, _visual_color, true)

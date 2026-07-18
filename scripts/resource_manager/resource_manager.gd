@@ -154,7 +154,11 @@ static func warmSkillEffectShaders(host: Node) -> void:
 			if skill == null:
 				continue
 			for action in skill.actions:
-				if action is SkillActionPlayEffect and action.effectScriptPath != "":
+				# SkillActionField carries its persistent-zone controller in its own
+				# effectScriptPath export (spawned at plant, not a play_effect action),
+				# so it must be matched here too or its shader never warms.
+				if (action is SkillActionPlayEffect or action is SkillActionField) \
+						and action.effectScriptPath != "":
 					var sp := _shaderPathFromEffectScript(action.effectScriptPath)
 					if sp != "":
 						shaderPaths[sp] = true

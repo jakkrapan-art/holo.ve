@@ -73,10 +73,21 @@ func setQuestProgress(current: int) -> void:
 	if _tooltip_label != null and is_instance_valid(_tooltip_label):
 		_tooltip_label.text = _build_hover_bbcode()
 
+# Colour by tier RANK, not absolute index: a synergy's highest tier always reads
+# gold, whatever its tier count. Hero defines a single tier, so an absolute index
+# left it permanently bronze - the lowest rank while fully maxed.
+# 3 tiers -> bronze/silver/gold (unchanged); 2 -> bronze/gold; 1 -> gold.
 func _tier_color(tier: int) -> String:
 	if tier < 0:
 		return INACTIVE_COLOR
-	return TIER_COLORS[clampi(tier, 0, TIER_COLORS.size() - 1)]
+	var last := TIER_COLORS.size() - 1
+	var top_tier := 0
+	if _data != null:
+		top_tier = _data.tier_count() - 1
+	if top_tier <= 0:
+		return TIER_COLORS[last]
+	var idx := int(round(float(clampi(tier, 0, top_tier)) / float(top_tier) * float(last)))
+	return TIER_COLORS[clampi(idx, 0, last)]
 
 # "3 4 5" with the active tier's threshold bracketed.
 func _breakpoints_text(tier: int) -> String:

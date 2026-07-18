@@ -47,6 +47,8 @@ static func create(effect_key: String) -> SynergyEffect:
 			return SynergyEffectEnergyOnCast.new()
 		"quest_kill_tempus":
 			return SynergyEffectQuestTempus.new()
+		"attack_per_active_trait":
+			return SynergyEffectAttackPerTrait.new()
 		"", "none":
 			return null   # placeholder synergy: declared but no effect handler yet
 		_:

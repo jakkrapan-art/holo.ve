@@ -35,7 +35,9 @@ func _recompute() -> void:
 	var per_trait = data.get_parameter("atk_per_trait", 0)
 	if per_trait == null:
 		return
-	var total := float(per_trait) * controller.active_synergy_count()
+	# Explicit type: `controller` is untyped in the base class, so the product has
+	# no inferable type and `:=` is a parser error.
+	var total: float = float(per_trait) * float(controller.active_synergy_count())
 	if total <= 0.0:
 		return
 	for tower in controller.towers_with(data.synergy_id):

@@ -22,6 +22,10 @@ extends SkillActionChannel
 #   tick. Reference: resources/database/towers/banzoin_hakka.yaml.
 
 @export var energyRefundPercent: float = 0.0
+# Persistent-lifetime zone VFX controller (YAML `effect_script`): spawned ONCE
+# at plant and living until the ticker ends — deliberately NOT the inherited
+# per-tick `effect_action` path (a field zone must not respawn per tick).
+@export var effectScriptPath: String = ""
 
 func execute(context: SkillContext):
 	var tower: Tower = context.user as Tower
@@ -37,7 +41,28 @@ func execute(context: SkillContext):
 	tower.add_child(ticker)
 	Utility.ConnectSignal(ticker, "finished",
 			Callable(self, "_on_field_finished").bind(ticker, tower, gen))
+	_spawn_field_effect(tower, ticker)
 	# No await: the cast finishes normally while the field ticks (aftershock model).
+
+# Same spawn shape as SkillActionPlayEffect (bare Node2D + script at the tower,
+# parent = tower's parent), plus the field-specific setup_field(tower, action,
+# ticker) so the controller can size itself and fade on the ticker's `finished`.
+func _spawn_field_effect(tower: Tower, ticker: Node) -> void:
+	if effectScriptPath == "":
+		return
+	var script = load(effectScriptPath)
+	if script == null:
+		push_error("SkillActionField: effect script not found at ", effectScriptPath)
+		return
+	var parent := tower.get_parent()
+	if parent == null:
+		return
+	var effect := Node2D.new()
+	effect.set_script(script)
+	effect.global_position = tower.global_position
+	parent.add_child(effect)
+	if effect.has_method("setup_field"):
+		effect.setup_field(tower, self, ticker)
 
 # The ticker emits "finished" exactly once (channel's `done` once-guard) on
 # EVERY exit path - natural end, wave-end generation bump, and external free.

@@ -2,10 +2,11 @@ class_name PassiveSoulHarvest
 extends RefCounted
 
 # Soul-harvest passive (Mori Calliope): +soulsPerKill Soul per enemy KILLED BY
-# HER SKILLS. Attribution: skill attacks (including the aftershock's inner
-# attack) stamp Damage.source = the casting tower, while normal hitscan
-# attacks stamp null (tower_data.calculateFinalDamage), so
-# cause.source == tower is exact skill-kill attribution for this kit.
+# HER SKILLS. Attribution needs BOTH gates: cause.source == tower (this tower
+# landed it) AND cause.isSkillDamage (a skill authored it, including the
+# aftershock's inner attack). Do not drop the isSkillDamage half - normal attacks
+# used to be excluded only because they failed to stamp a source at all, which
+# was a bug; once that was fixed they would otherwise start granting Souls.
 #
 # Souls are run-permanent by design (Director 2026-07-12): board lifetime, no
 # cap, kept across wave end AND evolve - reset() is deliberately a no-op (do
@@ -30,6 +31,8 @@ func _init(owner: Tower, params: Dictionary) -> void:
 
 func _on_enemy_dead(_enemy, cause: Damage, _reward) -> void:
 	if cause == null or not is_instance_valid(tower) or cause.source != tower:
+		return
+	if not cause.isSkillDamage:
 		return
 	for i in souls_per_kill:
 		var inst := EffectUtility.make_instance(SOUL_EFFECT, SOUL_SOURCE, 1.0, 0.0)

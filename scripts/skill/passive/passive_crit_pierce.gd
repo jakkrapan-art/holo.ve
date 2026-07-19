@@ -85,6 +85,10 @@ func _fire_arrow(target: Enemy) -> void:
 	var crit_damage: float = tower.data.getCritDamage() + _bonus_for_level()
 	var value: int = int(tower.data.getTotalAttack() * crit_damage)
 	var dmg := Damage.new(tower, value, tower.data.attackType, true)
+	# One Damage is shared by every enemy the arrow pierces, so the distance amp is
+	# taken once from the locked target - all victims take the same number by design.
+	# isSkillDamage stays false: this replaces a normal attack, it is not a skill.
+	dmg.sourceAmp = tower.data.getDistanceAmp(tower, target)
 
 	var direction: Vector2 = (target.global_position - tower.global_position).normalized()
 	var lifetime: float = arrow_range / arrow_speed if arrow_speed > 0.0 else 1.0

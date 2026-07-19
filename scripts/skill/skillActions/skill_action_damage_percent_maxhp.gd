@@ -35,4 +35,6 @@ func execute(context: SkillContext):
 		if damage_amount <= 0:
 			continue
 
-		enemy.recvDamage(Damage.new(damage_source, damage_amount, Damage.DamageType.TRUE))
+		var dmg := Damage.new(damage_source, damage_amount, Damage.DamageType.TRUE)
+		dmg.isSkillDamage = true
+		enemy.recvDamage(dmg)

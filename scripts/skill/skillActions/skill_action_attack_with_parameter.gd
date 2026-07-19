@@ -11,5 +11,6 @@ func execute(context: SkillContext):
 	for target in context.target:
 		if is_instance_valid(target) && target.has_method("recvDamage"):
 			var finalDamage = tower.data.getDamage(target, context.user);
+			finalDamage.isSkillDamage = true;
 			finalDamage.damage *= damageMultiplier;
 			target.recvDamage(finalDamage);

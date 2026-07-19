@@ -174,11 +174,14 @@ func recvDamage(damage: Damage) -> int:
 				defense_factor = stats.getArmorFactor()
 
 		# Master Formula §2 final pipeline: × armor_factor × (1 + ΣAmp) × (1 − ΣRed)
-		var sigmaAmp: float = 0.0
+		# Two additive sources: the attacker's flat DAMAGE_AMPLIFIER stat, plus any
+		# per-attack amp the source snapshotted at fire time (e.g. Marksman's
+		# distance bonus, which cannot be a stored stat because it differs per target).
+		var sigmaAmp: float = damage.sourceAmp
 		if damage.source != null and damage.source is Tower:
 			var towerData: TowerData = (damage.source as Tower).data
 			if towerData != null:
-				sigmaAmp = towerData.effects.aggregate(EffectTypes.Kind.DAMAGE_AMPLIFIER)
+				sigmaAmp += towerData.effects.aggregate(EffectTypes.Kind.DAMAGE_AMPLIFIER)
 
 		var sigmaRed: float = stats.getDamageReduction()  # already clamped; blocks consumed above
 		damageVal = int(damage.damage * defense_factor * (1.0 + sigmaAmp) * (1.0 - sigmaRed))

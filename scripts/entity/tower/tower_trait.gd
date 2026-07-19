@@ -1,15 +1,13 @@
 class_name TowerTrait
 
 # Enums with offset to avoid collision
-enum TowerClass { Assassin = 100, Diva, Hero, King, Marksman, Robotic, SpellCaster, Warrior }
-enum TowerGeneration { Myth = 200, Tempus, Gen0, Gen1, Indo1 }
+enum TowerClass { Assassin = 100, Hero, Marksman, Robotic, SpellCaster, Warrior }
+enum TowerGeneration { Myth = 200, Tempus }
 
 # Display Names
 const TOWER_CLASS_NAMES := {
 	TowerClass.Assassin: "Assassin",
-	TowerClass.Diva: "Diva",
 	TowerClass.Hero: "Hero",
-	TowerClass.King: "King",
 	TowerClass.Marksman: "Marksman",
 	TowerClass.Robotic: "Robotic",
 	TowerClass.SpellCaster: "Spell Caster",
@@ -19,9 +17,6 @@ const TOWER_CLASS_NAMES := {
 const TOWER_GENERATION_NAMES := {
 	TowerGeneration.Myth: "Myth",
 	TowerGeneration.Tempus: "Tempus",
-	TowerGeneration.Gen0: "Gen0",
-	TowerGeneration.Gen1: "Gen1",
-	TowerGeneration.Indo1: "Indo1",
 }
 
 # Match key for a trait display name. Display names are player-facing and may

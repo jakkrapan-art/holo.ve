@@ -80,7 +80,11 @@ func execute(context: SkillContext):
 
 	# Cache crit context (avoid recomputing per-target)
 	var stat = tower.data.getStat()
-	var critChance: float = tower.data.getCritChance() if canCrit else 0.0
+	# The authored canCrit gate can be opened from outside by the SpellCaster
+	# synergy marker (tower_synergy.md). It unlocks the roll only - the synergy
+	# grants no crit chance, so a 0-chance holder still never crits.
+	var critAllowed: bool = canCrit or tower.data.effects.stacks_of("spellcaster_crit") > 0
+	var critChance: float = tower.data.getCritChance() if critAllowed else 0.0
 	var sigmaCD: float = stat.critMultiplier + tower.data.effects.aggregate(EffectTypes.Kind.CRIT_DAMAGE_BONUS)
 
 	# Apply damage: per (hit, target) — each crit roll independent
@@ -91,7 +95,7 @@ func execute(context: SkillContext):
 				continue
 			# randi_range(1, 100) → 100 values for exact critChance/100 probability (§6.2 #1 fix)
 			# forcedCrit overrides the roll (guaranteed crit, e.g. Altare beat 2).
-			var isCrit: bool = forcedCrit or (canCrit and critChance > 0 and randi_range(1, 100) <= critChance)
+			var isCrit: bool = forcedCrit or (critAllowed and critChance > 0 and randi_range(1, 100) <= critChance)
 			var hitDamage: float = hitBase
 			if isCrit:
 				# §5: Critical Damage = 1 + (1 × (ΣCD − 1)) = ΣCD

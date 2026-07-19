@@ -44,12 +44,22 @@ static func loadImage(group, key, path):
 
 	return texture
 
+# Icon for a synergy display name, already falling back to the grey placeholder.
+# The cache key comes from TowerTrait.name_key (the one identity rule), so the
+# asset filename stays spellcaster.png no matter how the display name is worded.
+# Preload and lookup MUST both go through it or a rename silently drops the icon.
+static func getSynergySprite(display_name: String):
+	var sprite = getSprite("synergy", TowerTrait.name_key(display_name))
+	if sprite == null:
+		sprite = getSprite("synergy", "default")
+	return sprite
+
 static func preloadSynergy():
 	var synergyList = TowerTrait.TOWER_CLASS_NAMES.values() + TowerTrait.TOWER_GENERATION_NAMES.values();
 	var statuses = ["", "_active"];
 	for synergy in synergyList:
 		for status in statuses:
-			var key = synergy.to_lower() + status;
+			var key = TowerTrait.name_key(synergy) + status;
 			var path = "ui_asset/synergies/" + key + ".png"
 			loadImage("synergy", key, path)
 	# Fallback icon has no active state; load it once outside the status loop.

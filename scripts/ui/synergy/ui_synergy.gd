@@ -30,9 +30,7 @@ func updateSynergy(synergyName: String, count: int, tier: int, synergy_id: int) 
 		add_child(content)
 		content.setOrder(_nextOrder)   # frozen once at creation; never rewritten
 		_nextOrder += 1
-	var icon = ResourceManager.getSprite("synergy", synergyName.to_lower());
-	if(icon == null):
-		icon = ResourceManager.getSprite("synergy", "default");
+	var icon = ResourceManager.getSynergySprite(synergyName);
 	content.setup(synergyName, count, tier, icon, ResourceManager.getSynergyData(synergy_id))
 	_reflow()
 

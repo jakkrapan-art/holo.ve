@@ -35,16 +35,12 @@ func Setup(p_name: String, sprite, towerClass: TowerTrait.TowerClass, towerGen: 
 	synergiesNode.visible = TowerTrait.TOWER_CLASS_NAMES.has(towerClass) or TowerTrait.TOWER_GENERATION_NAMES.has(towerGen)
 	if !synergiesNode.visible:
 		return
-	# Display names feed both the sprite key (lowered) and the hover fallback,
-	# which must stay player-facing case ("SpellCaster", not "spellcaster").
+	# Display names stay player-facing and may contain spaces ("Spell Caster");
+	# the sprite key is normalised by ResourceManager, never by the caller.
 	var classDisplayName = TowerTrait.TOWER_CLASS_NAMES.get(towerClass, "default");
 	var genDisplayName = TowerTrait.TOWER_GENERATION_NAMES.get(towerGen, "default");
-	var classSprite = ResourceManager.getSprite("synergy", classDisplayName.to_lower());
-	if(classSprite == null):
-		classSprite = ResourceManager.getSprite("synergy", "default");
-	var genSprite = ResourceManager.getSprite("synergy", genDisplayName.to_lower());
-	if(genSprite == null):
-		genSprite = ResourceManager.getSprite("synergy", "default");
+	var classSprite = ResourceManager.getSynergySprite(classDisplayName);
+	var genSprite = ResourceManager.getSynergySprite(genDisplayName);
 	if(towerClassImage):
 		towerClassImage.texture = classSprite
 		towerClassImage.set_synergy(towerClass, classDisplayName)

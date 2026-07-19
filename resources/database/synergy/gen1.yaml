@@ -1,8 +1,0 @@
-id: gen1
-name: "Gen1"
-kind: generation
-type: normal
-# Placeholder: thresholds carried for UI counting; effect not wired yet.
-effect: none
-thresholds: [2, 4]
-desc: "Gen1 synergy effect not yet defined."

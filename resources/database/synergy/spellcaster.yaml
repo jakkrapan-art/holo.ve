@@ -4,6 +4,7 @@ id: spellcaster
 name: "Spell Caster"
 kind: class
 type: normal
+rarity: common
 effect: magic_up_skill_crit
 # Single tier by design: 2 of the 3 demo Spell Casters (Gura / Ina'nis / Bettel)
 # is already a real deck commitment, and the bonus does not scale past it.

@@ -34,8 +34,9 @@ func updateSynergy(synergyName: String, count: int, tier: int, synergy_id: int) 
 	content.setup(synergyName, count, tier, icon, ResourceManager.getSynergyData(synergy_id))
 	_reflow()
 
-# Re-order rows on every update: tier RANK desc, then count desc, then creation
-# order. Rank - how far a synergy climbed toward its OWN top tier - is the same
+# Re-order rows on every update: active first, then unique, then tier RANK desc,
+# then count desc, then creation order.
+# Rank - how far a synergy climbed toward its OWN top tier - is the same
 # number the row colour reads (SynergyData.tier_rank), so order and colour cannot
 # contradict each other. The raw tier index used to drive this and did contradict
 # it: a 3-tier synergy on its first step tied with maxed single-tier ones, which
@@ -50,6 +51,14 @@ func _reflow() -> void:
 		rows[i].position.y = i * ROW_HEIGHT
 
 func _compare_rows(a: UISynergyContent, b: UISynergyContent) -> bool:
+	# Active before inactive is checked on its own so the unique key below can be
+	# limited to active rows: a grey unique row must not outrank a lit one.
+	var a_active := a.getTierRank() >= 0.0
+	var b_active := b.getTierRank() >= 0.0
+	if a_active != b_active:
+		return a_active
+	if a_active and a.isUnique() != b.isUnique():
+		return a.isUnique()
 	if not is_equal_approx(a.getTierRank(), b.getTierRank()):
 		return a.getTierRank() > b.getTierRank()
 	if a.getCount() != b.getCount():

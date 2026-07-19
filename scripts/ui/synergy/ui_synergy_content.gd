@@ -5,6 +5,10 @@ class_name UISynergyContent
 # player reads tier order at a glance; the scaling value gets its own accent.
 const INACTIVE_COLOR := "#4D4D4D"
 const TIER_COLORS := ["#CD7F32", "#C0C0C0", "#FFD15A"]   # bronze / silver / gold = tier 1 / 2 / 3
+# Unique synergies skip the tier ladder entirely - one holder in the whole game
+# means they are maxed the moment they activate, so a rank colour says nothing.
+# Vivid red-orange, deliberately far from the muted bronze above.
+const UNIQUE_COLOR := "#FF5A36"
 const SCALING_COLOR := "#5AC8FA"                          # the per-tier value that scales
 const DIM_COLOR := "#7A7A7A"                              # not-yet-reached tier rows in the hover
 const ACTIVE_HIGHLIGHT := "#FFD15A"                       # reward-running tier rows in the hover (gold)
@@ -62,6 +66,7 @@ func setup(p_name: String, current: int, tier: int, icon: Texture2D, data) -> vo
 # single source of truth (mirrors how _tier is already threaded via setup).
 func getTier() -> int: return _tier
 func getTierRank() -> float: return _rank_for(_tier)
+func isUnique() -> bool: return _data != null and _data.is_unique()
 func getCount() -> int: return _count
 func getOrder() -> int: return _order
 func setOrder(value: int) -> void: _order = value
@@ -84,6 +89,8 @@ func _tier_color(tier: int) -> String:
 	var rank := _rank_for(tier)
 	if rank < 0.0:
 		return INACTIVE_COLOR
+	if isUnique():
+		return UNIQUE_COLOR
 	var last := TIER_COLORS.size() - 1
 	return TIER_COLORS[clampi(int(round(rank * float(last))), 0, last)]
 

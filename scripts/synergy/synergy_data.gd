@@ -5,11 +5,22 @@ class_name SynergyData
 # Numbers are read through get_parameter so the displayed text and the applied
 # effect share one source (mirrors Skill.parameters / tokenized desc).
 
+# Legal `rarity` values - shared with the loader so an unknown string is caught
+# at load instead of silently reading as common.
+const RARITY_COMMON := "common"
+const RARITY_UNIQUE := "unique"
+const RARITIES := [RARITY_COMMON, RARITY_UNIQUE]
+
 var id: String = ""                # file/data key, e.g. "myth"
 var synergy_id: int = 0            # TowerTrait enum int (resolved at load)
 var display_name: String = ""
 var kind: String = ""             # "class" | "generation"
-var type: String = "normal"       # UI category: normal | quest | special
+var type: String = "normal"       # how the effect unlocks: normal (on threshold) | quest (on a mission)
+# Who may hold the trait - a separate axis from `type`, so a synergy can be both
+# unique and quest-unlocked. unique = exactly one tower in the whole game carries
+# it (Hero/Regis Altare today), which is why every threshold of a unique synergy
+# must be 1; the panel gives those rows their own colour and floats them on top.
+var rarity: String = RARITY_COMMON
 var effect: String = ""           # SynergyEffect handler key ("" = placeholder)
 var thresholds: Array = []        # proc count per tier (untyped: YamlParser yields untyped Array)
 var parameters: Dictionary = {}   # name -> per-tier array (or scalar)
@@ -18,6 +29,9 @@ var desc: String = ""             # flavour line (hover header), may hold {param
 # for every tier (pure scaling, e.g. Myth); size == tier_count -> one line per
 # tier (qualitative tiers, e.g. a Tempus-style "unlock" at a higher tier).
 var tier_effects: Array = []
+
+func is_unique() -> bool:
+	return rarity == RARITY_UNIQUE
 
 func max_count() -> int:
 	return int(thresholds[-1]) if not thresholds.is_empty() else 0

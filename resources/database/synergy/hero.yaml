@@ -1,7 +1,7 @@
 id: hero
 name: "Hero"
 kind: class
-type: normal
+type: standard
 # Only Regis Altare carries the Hero class, so the trait is unique: the panel
 # gives it its own colour and floats it above every common synergy.
 rarity: unique

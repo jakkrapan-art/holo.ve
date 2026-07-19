@@ -1,7 +1,7 @@
 id: assassin
 name: "Assassin"
 kind: class
-type: normal
+type: standard
 rarity: common
 # Placeholder: thresholds carried from the old hardcoded table for UI counting.
 # Effect not wired yet - Director defines it when Assassin enters scope.

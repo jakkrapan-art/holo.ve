@@ -173,6 +173,10 @@ static func build_hover_bbcode(data: SynergyData, fallback_name: String, tier: i
 
 	var lines: PackedStringArray = []
 	lines.append("[b]" + data.display_name + "[/b]")
+	# Category subtitle under the name, dimmed so it never competes with the name
+	# or the desc, then a blank line to set the desc apart as its own block.
+	lines.append("[i][color=" + DIM_COLOR + "]" + data.type_label() + "[/color][/i]")
+	lines.append("")
 
 	# Flavour preview the lowest tier's value when not yet proc'd (maxi(tier,0)).
 	var flavor := data.flavor(maxi(tier, 0), SCALING_COLOR)
@@ -203,8 +207,8 @@ static func build_hover_bbcode(data: SynergyData, fallback_name: String, tier: i
 enum TierRowState { LOCKED, PENDING, EARNED }
 
 # Truthful per-tier row state for the hover table.
-# Normal synergies keep today's single-active-row read (highest tier REPLACES).
-# Quest synergies (data.type == "quest") stack: unit gate uses the row's tier,
+# Standard synergies keep today's single-active-row read (highest tier REPLACES).
+# Mission synergies stack: unit gate uses the row's tier,
 # kill gate uses quest_progress vs mission_kills[i] - mirroring
 # SynergyEffectQuestTempus._check_rewards (same get_parameter clamp, so display
 # and effect cannot diverge). Assumes tier is monotonic within a run - holds
@@ -214,7 +218,7 @@ enum TierRowState { LOCKED, PENDING, EARNED }
 static func _tier_row_state(data: SynergyData, i: int, tier: int, quest_progress: int) -> TierRowState:
 	if i > tier:
 		return TierRowState.LOCKED
-	if data.type != "quest":
+	if data.type != SynergyData.TYPE_MISSION:
 		return TierRowState.EARNED if i == tier else TierRowState.LOCKED
 	var goal = data.get_parameter("mission_kills", i)
 	if goal != null and quest_progress >= int(goal):

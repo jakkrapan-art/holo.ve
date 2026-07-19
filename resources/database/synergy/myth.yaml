@@ -1,7 +1,7 @@
 id: myth
 name: "Myth"
 kind: generation
-type: normal
+type: standard
 rarity: common
 effect: energy_on_skill_cast
 # Proc count required for tier 1 / 2 / 3.

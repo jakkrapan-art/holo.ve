@@ -3,7 +3,7 @@ id: spellcaster
 # both key off TowerTrait.name_key, which strips spaces and underscores.
 name: "Spell Caster"
 kind: class
-type: normal
+type: standard
 rarity: common
 effect: magic_up_skill_crit
 # Single tier by design: 2 of the 3 demo Spell Casters (Gura / Ina'nis / Bettel)

@@ -5,6 +5,13 @@ class_name SynergyData
 # Numbers are read through get_parameter so the displayed text and the applied
 # effect share one source (mirrors Skill.parameters / tokenized desc).
 
+# Legal `type` values. The authored key IS the player-facing word (rendered by
+# type_label), so a new value must be a word a player can read - no code-only
+# jargon, and no separate display mapping to drift from.
+const TYPE_STANDARD := "standard"
+const TYPE_MISSION := "mission"
+const TYPES := [TYPE_STANDARD, TYPE_MISSION]
+
 # Legal `rarity` values - shared with the loader so an unknown string is caught
 # at load instead of silently reading as common.
 const RARITY_COMMON := "common"
@@ -15,7 +22,7 @@ var id: String = ""                # file/data key, e.g. "myth"
 var synergy_id: int = 0            # TowerTrait enum int (resolved at load)
 var display_name: String = ""
 var kind: String = ""             # "class" | "generation"
-var type: String = "normal"       # how the effect unlocks: normal (on threshold) | quest (on a mission)
+var type: String = TYPE_STANDARD   # how the effect unlocks: standard (on threshold) | mission (on a kill goal)
 # Who may hold the trait - a separate axis from `type`, so a synergy can be both
 # unique and quest-unlocked. unique = exactly one tower in the whole game carries
 # it (Hero/Regis Altare today), which is why every threshold of a unique synergy
@@ -32,6 +39,12 @@ var tier_effects: Array = []
 
 func is_unique() -> bool:
 	return rarity == RARITY_UNIQUE
+
+# Hover subtitle. The authored key doubles as the copy, so there is no mapping
+# table to fall out of sync; "Trait" is appended because the Tempus hover also
+# carries a mission progress line, and a bare "Mission" would read as its header.
+func type_label() -> String:
+	return type.capitalize() + " Trait"
 
 func max_count() -> int:
 	return int(thresholds[-1]) if not thresholds.is_empty() else 0

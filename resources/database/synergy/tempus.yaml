@@ -1,9 +1,9 @@
 id: tempus
 name: "Tempus"
 kind: generation
-type: quest
+type: mission
 rarity: common
-# First quest-type synergy: reaching a unit threshold opens a Guild Mission
+# First mission-type synergy: reaching a unit threshold opens a Guild Mission
 # (cumulative kill goal); completing it unlocks a reward that STACKS with the
 # lower tiers. Kill count starts when Tempus first activates (2 units) and
 # persists across waves. Behaviour: SynergyEffectQuestTempus.

@@ -6,7 +6,7 @@
 [ext_resource type="FontFile" uid="uid://scv78fddnukv" path="res://resources/ui_component/font/Roboto-Regular.ttf" id="2_oispt"]
 [ext_resource type="Texture2D" uid="uid://tp6ecjda00qg" path="res://resources/currency/evo_token.png" id="3_lbarx"]
 [ext_resource type="Shader" path="res://resources/ui_component/tower_select/ui_tower_choice_trait.gdshader" id="5_kba5i"]
-[ext_resource type="Texture2D" uid="uid://6gly0rw52dyf" path="res://resources/ui_asset/synergies/assassin.png" id="7_681fe"]
+[ext_resource type="Texture2D" uid="uid://c0jbigvnx7ja4" path="res://resources/ui_asset/synergies/assassin.png" id="7_681fe"]
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_wd61a"]
 resource_name = "tower_buttons"

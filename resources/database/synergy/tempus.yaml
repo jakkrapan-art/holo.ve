@@ -6,8 +6,8 @@ rarity: common
 # First mission-type synergy: reaching a unit threshold opens a Guild Mission
 # (cumulative kill goal); completing it unlocks a reward that STACKS with the
 # lower tiers. Kill count starts when Tempus first activates (2 units) and
-# persists across waves. Behaviour: SynergyEffectQuestTempus.
-effect: quest_kill_tempus
+# persists across waves. Behaviour: SynergyEffectMissionTempus.
+effect: mission_kill_tempus
 thresholds: [2, 4, 6]
 parameters:
   # Cumulative kills required for each tier's Guild Mission (per-tier, scaling).

@@ -8,15 +8,15 @@ const ROW_HEIGHT := 100
 var contentList: Dictionary = {};   # synergy name -> UISynergyContent
 var _nextOrder := 0;                 # creation order, frozen per row (stable-sort tie-break)
 
-# A quest-type synergy (e.g. Tempus) pushes its cumulative progress here; it is
+# A mission-type synergy (e.g. Tempus) pushes its cumulative progress here; it is
 # stored on that synergy's row and shown at the bottom of the row's hover.
-func setQuestProgress(synergy_id: int, current: int) -> void:
+func setMissionProgress(synergy_id: int, current: int) -> void:
 	var data: SynergyData = ResourceManager.getSynergyData(synergy_id)
 	if data == null:
 		return
 	var content: UISynergyContent = contentList.get(data.display_name, null)
 	if content != null:
-		content.setQuestProgress(current)
+		content.setMissionProgress(current)
 
 # Create or update a synergy row from the single TowerTrait.synergy_updated signal:
 # count + tier drive the row (count, proc breakpoints, tier colour); synergy_id
@@ -35,7 +35,7 @@ func updateSynergy(synergyName: String, count: int, tier: int, synergy_id: int) 
 	_reflow()
 
 # Re-order rows on every update: active first, then unique, then tier RANK desc,
-# then count desc, then creation order.
+# then count desc, then Generation before Class, then creation order.
 # Rank - how far a synergy climbed toward its OWN top tier - is the same
 # number the row colour reads (SynergyData.tier_rank), so order and colour cannot
 # contradict each other. The raw tier index used to drive this and did contradict
@@ -63,4 +63,9 @@ func _compare_rows(a: UISynergyContent, b: UISynergyContent) -> bool:
 		return a.getTierRank() > b.getTierRank()
 	if a.getCount() != b.getCount():
 		return a.getCount() > b.getCount()
+	# Generation above Class on a genuine tie - the same Gen-first trait order the
+	# tower-select cards use. Without it the first placement decides, so a fresh
+	# board showed the new unit's two still-inactive traits in placement order.
+	if a.isGeneration() != b.isGeneration():
+		return a.isGeneration()
 	return a.getOrder() < b.getOrder()

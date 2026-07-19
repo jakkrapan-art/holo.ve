@@ -57,8 +57,8 @@ static func _build(raw: Dictionary, path: String) -> SynergyData:
 	if not SynergyData.RARITIES.has(d.rarity):
 		push_warning("Synergy '" + d.id + "': unknown rarity '" + d.rarity + "' - expected one of " + str(SynergyData.RARITIES) + "; treated as common.")
 	# A unique trait is carried by exactly one tower in the game, so no unit gate
-	# can ever exceed 1. Several tiers stay legal ([1, 1, 1]) for a unique quest
-	# whose tiers gate on the mission instead of the count.
+	# can ever exceed 1. Several tiers stay legal ([1, 1, 1]) for a unique mission
+	# synergy whose tiers gate on the kill goal instead of the count.
 	if d.is_unique():
 		for t in d.thresholds:
 			if int(t) != 1:

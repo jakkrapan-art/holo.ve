@@ -45,8 +45,8 @@ static func create(effect_key: String) -> SynergyEffect:
 	match effect_key:
 		"energy_on_skill_cast":
 			return SynergyEffectEnergyOnCast.new()
-		"quest_kill_tempus":
-			return SynergyEffectQuestTempus.new()
+		"mission_kill_tempus":
+			return SynergyEffectMissionTempus.new()
 		"attack_per_active_trait":
 			return SynergyEffectAttackPerTrait.new()
 		"magic_up_skill_crit":

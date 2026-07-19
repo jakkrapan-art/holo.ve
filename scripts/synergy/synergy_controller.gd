@@ -10,16 +10,16 @@ var _factory                       # TowerFactory (tower lists)
 var _active_tier: Dictionary = {}  # synergy_id -> int (highest tier, -1 none)
 var _effects: Dictionary = {}      # synergy_id -> SynergyEffect
 
-# Emitted when a quest-type synergy's cumulative progress changes (drives that
+# Emitted when a mission-type synergy's cumulative progress changes (drives that
 # synergy's hover progress line). Carries synergy_id so the UI routes it to the
 # right panel row.
-signal quest_progress_changed(synergy_id: int, current: int)
+signal mission_progress_changed(synergy_id: int, current: int)
 
-# Quest effects report progress through this method so the emit lives in the
+# Mission effects report progress through this method so the emit lives in the
 # declaring script (the UNUSED_SIGNAL check is per-script; cross-script emits
 # do not count - see agent_lessons.md).
-func report_quest_progress(synergy_id: int, current: int) -> void:
-	quest_progress_changed.emit(synergy_id, current)
+func report_mission_progress(synergy_id: int, current: int) -> void:
+	mission_progress_changed.emit(synergy_id, current)
 
 func setup(factory) -> void:
 	_factory = factory

@@ -30,7 +30,7 @@ func on_tower_added(_tower) -> void:
 
 # Apply the current total to every Hero unit. Lifetime and duration are set
 # explicitly: the registry def is WAVE with a non-zero duration, both wrong for a
-# permanent synergy buff (same trap as synergy_effect_quest_tempus.gd).
+# permanent synergy buff (same trap as synergy_effect_mission_tempus.gd).
 func _recompute() -> void:
 	var per_trait = data.get_parameter("atk_per_trait", 0)
 	if per_trait == null:

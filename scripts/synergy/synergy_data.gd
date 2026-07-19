@@ -24,7 +24,7 @@ var display_name: String = ""
 var kind: String = ""             # "class" | "generation"
 var type: String = TYPE_STANDARD   # how the effect unlocks: standard (on threshold) | mission (on a kill goal)
 # Who may hold the trait - a separate axis from `type`, so a synergy can be both
-# unique and quest-unlocked. unique = exactly one tower in the whole game carries
+# unique and mission-unlocked. unique = exactly one tower in the whole game carries
 # it (Hero/Regis Altare today), which is why every threshold of a unique synergy
 # must be 1; the panel gives those rows their own colour and floats them on top.
 var rarity: String = RARITY_COMMON
@@ -39,6 +39,9 @@ var tier_effects: Array = []
 
 func is_unique() -> bool:
 	return rarity == RARITY_UNIQUE
+
+func is_generation() -> bool:
+	return kind == "generation"
 
 # Hover subtitle. The authored key doubles as the copy, so there is no mapping
 # table to fall out of sync; "Trait" is appended because the Tempus hover also

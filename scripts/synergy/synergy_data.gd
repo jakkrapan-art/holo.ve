@@ -28,6 +28,20 @@ func min_requirement() -> int:
 func tier_count() -> int:
 	return thresholds.size()
 
+# How far this synergy has climbed toward its OWN top tier: 0.0 = lowest active
+# tier, 1.0 = maxed, -1.0 = not active. A single-tier synergy is maxed the moment
+# it activates, so it reads 1.0 at tier 0 while a 3-tier synergy at tier 0 reads
+# 0.0. The panel's row COLOUR and row ORDER both read this one number - they used
+# to disagree (colour by rank, sort by the raw tier index), which sorted a bronze
+# 3-tier row level with maxed gold rows.
+func tier_rank(tier: int) -> float:
+	if tier < 0:
+		return -1.0
+	var top := tier_count() - 1
+	if top <= 0:
+		return 1.0
+	return float(clampi(tier, 0, top)) / float(top)
+
 func threshold_at(tier: int) -> int:
 	if thresholds.is_empty():
 		return 0

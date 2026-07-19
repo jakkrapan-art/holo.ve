@@ -34,10 +34,15 @@ func updateSynergy(synergyName: String, count: int, tier: int, synergy_id: int) 
 	content.setup(synergyName, count, tier, icon, ResourceManager.getSynergyData(synergy_id))
 	_reflow()
 
-# Re-order rows on every update: tier desc, then count desc, then creation order.
-# Active rows (tier >= 0) float above inactive (tier -1) because -1 sorts lowest.
+# Re-order rows on every update: tier RANK desc, then count desc, then creation
+# order. Rank - how far a synergy climbed toward its OWN top tier - is the same
+# number the row colour reads (SynergyData.tier_rank), so order and colour cannot
+# contradict each other. The raw tier index used to drive this and did contradict
+# it: a 3-tier synergy on its first step tied with maxed single-tier ones, which
+# dropped a bronze row into the middle of the gold block.
+# Active rows float above inactive: an inactive row ranks -1.0, the lowest value.
 # sort_custom is NOT stable, so creation order is the final key to keep rows with
-# equal tier+count from swapping (and flickering) each reflow.
+# equal rank+count from swapping (and flickering) each reflow.
 func _reflow() -> void:
 	var rows: Array = contentList.values()
 	rows.sort_custom(_compare_rows)
@@ -45,8 +50,8 @@ func _reflow() -> void:
 		rows[i].position.y = i * ROW_HEIGHT
 
 func _compare_rows(a: UISynergyContent, b: UISynergyContent) -> bool:
-	if a.getTier() != b.getTier():
-		return a.getTier() > b.getTier()
+	if not is_equal_approx(a.getTierRank(), b.getTierRank()):
+		return a.getTierRank() > b.getTierRank()
 	if a.getCount() != b.getCount():
 		return a.getCount() > b.getCount()
 	return a.getOrder() < b.getOrder()

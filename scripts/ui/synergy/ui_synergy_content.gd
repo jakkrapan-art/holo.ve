@@ -61,6 +61,7 @@ func setup(p_name: String, current: int, tier: int, icon: Texture2D, data) -> vo
 # Sort keys read by UISynergy._reflow - kept on the row so its sort state has a
 # single source of truth (mirrors how _tier is already threaded via setup).
 func getTier() -> int: return _tier
+func getTierRank() -> float: return _rank_for(_tier)
 func getCount() -> int: return _count
 func getOrder() -> int: return _order
 func setOrder(value: int) -> void: _order = value
@@ -77,17 +78,24 @@ func setQuestProgress(current: int) -> void:
 # gold, whatever its tier count. Hero defines a single tier, so an absolute index
 # left it permanently bronze - the lowest rank while fully maxed.
 # 3 tiers -> bronze/silver/gold (unchanged); 2 -> bronze/gold; 1 -> gold.
+# The colour is only a 3-step quantization of the rank UISynergy sorts on, so
+# order and colour cannot contradict each other. Do not re-derive it here.
 func _tier_color(tier: int) -> String:
-	if tier < 0:
+	var rank := _rank_for(tier)
+	if rank < 0.0:
 		return INACTIVE_COLOR
 	var last := TIER_COLORS.size() - 1
-	var top_tier := 0
-	if _data != null:
-		top_tier = _data.tier_count() - 1
-	if top_tier <= 0:
-		return TIER_COLORS[last]
-	var idx := int(round(float(clampi(tier, 0, top_tier)) / float(top_tier) * float(last)))
-	return TIER_COLORS[clampi(idx, 0, last)]
+	return TIER_COLORS[clampi(int(round(rank * float(last))), 0, last)]
+
+# SynergyData.tier_rank for this row, tolerating a row whose data failed to
+# resolve: treat it as maxed, which is what the colour already did before rank
+# became shared - so a broken row still colours and sorts one consistent way.
+func _rank_for(tier: int) -> float:
+	if tier < 0:
+		return -1.0
+	if _data == null:
+		return 1.0
+	return _data.tier_rank(tier)
 
 # "3 4 5" with the active tier's threshold bracketed.
 func _breakpoints_text(tier: int) -> String:

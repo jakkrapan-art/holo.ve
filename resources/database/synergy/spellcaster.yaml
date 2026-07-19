@@ -9,12 +9,17 @@ effect: magic_up_skill_crit
 # is already a real deck commitment, and the bonus does not scale past it.
 thresholds: [2]
 parameters:
-  # Percent scale (25 = +25%), matching MAGIC_MULT. Scalar, not an array: the
-  # value does not scale by tier, so it must not render as a tier-scaling number.
-  magic_bonus: 25
+  # Percent scale (25 = +25%), matching MAGIC_MULT. Authored as a per-tier array
+  # even though there is one tier: only an array renders as a highlighted
+  # scaling value in the hover (SynergyData._render), and a second tier must not
+  # require rewriting the desc (Director 2026-07-19).
+  magic_bonus: [25]
 # Literal % after the token: the :percent format multiplies by 100 (SynergyData),
 # which would render 2500%. The crit half grants the ABILITY only - it adds no
 # critical chance, and copy must not imply one (Director 2026-07-19).
 desc: "SpellCaster units draw deeper from the arcane, gaining +{magic_bonus}% Magic Attack, and their skills can now land critical hits."
+# Per-tier table line: the scaling stat only, matching Myth. The crit ability is
+# a one-off unlock, not a per-tier value, so it lives in desc and stays out of
+# this line (Director 2026-07-19).
 tier_effects:
-  - "+{magic_bonus}% Magic Attack, skills can critically strike"
+  - "+{magic_bonus}% Magic Attack"

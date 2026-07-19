@@ -1,11 +1,11 @@
 id: spellcaster
-# Load-bearing: UISynergy resolves the panel icon as display_name.to_lower(),
-# so "Spell Caster" would miss spellcaster.png and fall back to the grey default.
-name: "SpellCaster"
+# Player-facing wording, free to reword: id resolution and the icon filename
+# both key off TowerTrait.name_key, which strips spaces and underscores.
+name: "Spell Caster"
 kind: class
 type: normal
 effect: magic_up_skill_crit
-# Single tier by design: 2 of the 3 demo SpellCasters (Gura / Ina'nis / Bettel)
+# Single tier by design: 2 of the 3 demo Spell Casters (Gura / Ina'nis / Bettel)
 # is already a real deck commitment, and the bonus does not scale past it.
 thresholds: [2]
 parameters:
@@ -17,7 +17,7 @@ parameters:
 # Literal % after the token: the :percent format multiplies by 100 (SynergyData),
 # which would render 2500%. The crit half grants the ABILITY only - it adds no
 # critical chance, and copy must not imply one (Director 2026-07-19).
-desc: "SpellCaster units draw deeper from the arcane, gaining +{magic_bonus}% Magic Attack, and their skills can now land critical hits."
+desc: "Spell Caster units draw deeper from the arcane, gaining +{magic_bonus}% Magic Attack, and their skills can now land critical hits."
 # Per-tier table line: the scaling stat only, matching Myth. The crit ability is
 # a one-off unlock, not a per-tier value, so it lives in desc and stays out of
 # this line (Director 2026-07-19).

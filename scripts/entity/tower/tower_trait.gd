@@ -12,7 +12,7 @@ const TOWER_CLASS_NAMES := {
 	TowerClass.King: "King",
 	TowerClass.Marksman: "Marksman",
 	TowerClass.Robotic: "Robotic",
-	TowerClass.SpellCaster: "SpellCaster",
+	TowerClass.SpellCaster: "Spell Caster",
 	TowerClass.Warrior: "Warrior",
 }
 
@@ -23,6 +23,13 @@ const TOWER_GENERATION_NAMES := {
 	TowerGeneration.Gen1: "Gen1",
 	TowerGeneration.Indo1: "Indo1",
 }
+
+# Match key for a trait display name. Display names are player-facing and may
+# carry spaces or underscores ("Spell Caster"); every identity comparison - YAML
+# id resolution, icon filenames - runs through here so a copy rename never
+# breaks a lookup. Renaming a display name must NOT change this key.
+static func name_key(display_name: String) -> String:
+	return display_name.to_lower().replace(" ", "").replace("_", "")
 
 # Trait counts on the field, keyed by synergy id (TowerClass / TowerGeneration int).
 var current_counts: Dictionary = {}

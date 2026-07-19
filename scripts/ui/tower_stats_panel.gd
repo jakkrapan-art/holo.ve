@@ -189,10 +189,7 @@ func _make_skill_icon(skill: Skill, kind: String, level: int) -> TowerSkillIcon:
 	return icon
 
 func _trait_sprite(trait_display: String) -> Texture2D:
-	var sprite = ResourceManager.getSprite("synergy", trait_display.to_lower())
-	if sprite == null:
-		sprite = ResourceManager.getSprite("synergy", "default")
-	return sprite
+	return ResourceManager.getSynergySprite(trait_display)
 
 # Skip no-op text writes so per-frame polling doesn't churn label layout (PR #20 rule).
 func _set_text(label: Label, value: String) -> void:

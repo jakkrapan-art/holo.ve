@@ -68,8 +68,10 @@ static func _resolve_synergy_id(kind: String, id: String) -> int:
 			push_error("SynergyDataLoader: unknown kind '" + kind + "' for id '" + id + "'")
 			return 0
 
-	var target := id.to_lower()
+	# Compare through TowerTrait.name_key so a display-name rename ("SpellCaster"
+	# -> "Spell Caster") cannot break id resolution.
+	var target := TowerTrait.name_key(id)
 	for key in table.keys():
-		if str(table[key]).to_lower() == target:
+		if TowerTrait.name_key(str(table[key])) == target:
 			return key
 	return 0

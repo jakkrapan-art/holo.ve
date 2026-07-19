@@ -10,6 +10,7 @@ class_name EffectTypes
 #   ARMOR_MULT / MARMOR_MULT            decimal (0.05 = +5%)
 #   CRIT_CHANCE                         percent points
 #   DAMAGE_AMPLIFIER / DAMAGE_REDUCTION decimal
+#   DAMAGE_AMP_PER_CELL                 percent per cell of attacker-to-target distance
 #   *_FLAT / RANGE / MANA_REGEN / MOVE_SPEED_FLAT  flat additive
 enum Kind {
 	ATTACK_SPEED,
@@ -34,6 +35,10 @@ enum Kind {
 	MARK_ONLY,
 	INVINCIBLE,
 	HOT,
+	# Per-attack, per-target amplifier: aggregate() yields the percent granted per
+	# cell of distance; the attack site turns it into a real amp via
+	# TowerData.getDistanceAmp (Marksman synergy - tower_synergy.md).
+	DAMAGE_AMP_PER_CELL,
 }
 
 enum Category { BUFF, DEBUFF, MARK }
@@ -72,6 +77,7 @@ const KIND_FROM_STRING := {
 	"mark": Kind.MARK_ONLY,
 	"invincible": Kind.INVINCIBLE,
 	"hot": Kind.HOT,
+	"damage_amp_per_cell": Kind.DAMAGE_AMP_PER_CELL,
 }
 
 const CATEGORY_FROM_STRING := {
@@ -91,7 +97,10 @@ const LIFETIME_FROM_STRING := {
 }
 
 static func is_stat_kind(kind: int) -> bool:
-	return kind < Kind.STUN
+	# The `< STUN` range test only works for kinds declared before the behavior
+	# block; kinds appended after HOT must be listed explicitly (the enum is
+	# append-only, so the block cannot be re-sorted).
+	return kind < Kind.STUN or kind == Kind.DAMAGE_AMP_PER_CELL
 
 # Decimal-scale kinds display as percent (0.5 -> "50%"); percent-scale kinds
 # append % directly; flats show the plain number. Used by the {value} desc

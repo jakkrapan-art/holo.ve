@@ -100,7 +100,12 @@ func execute(context: SkillContext):
 			if isCrit:
 				# §5: Critical Damage = 1 + (1 × (ΣCD − 1)) = ΣCD
 				hitDamage *= sigmaCD
-			target.recvDamage(Damage.new(tower, int(hitDamage), dmgType, isCrit))
+			var dmg := Damage.new(tower, int(hitDamage), dmgType, isCrit)
+			dmg.isSkillDamage = true
+			# Each target is damaged through its own Damage, so each gets the amp
+			# for its own distance (the shared-value rule is a projectile concern).
+			dmg.sourceAmp = tower.data.getDistanceAmp(tower, target as Enemy)
+			target.recvDamage(dmg)
 
 	# Apply registry effects once per target after all hits land. instantiate()
 	# builds a fresh isolated instance and snapshots caster-side stats (e.g.

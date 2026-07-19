@@ -79,10 +79,10 @@ func getDamage(enemy: Enemy, source: Node2D) -> Damage:
 	if(enemy == null):
 		return Damage.new(source, getTotalAttack(), attackType);
 
-	var finalDamage = calculateFinalDamage(getTotalAttack(), enemy);
+	var finalDamage = calculateFinalDamage(getTotalAttack(), enemy, source);
 	return finalDamage;
 
-func calculateFinalDamage(baseDamage: float, enemy: Enemy) -> Damage:
+func calculateFinalDamage(baseDamage: float, enemy: Enemy, source: Node2D = null) -> Damage:
 	var finalDamage = baseDamage
 
 	# Apply each modifier in the array
@@ -96,7 +96,33 @@ func calculateFinalDamage(baseDamage: float, enemy: Enemy) -> Damage:
 	var critCheck: float = 1.0 if isCrit else 0.0
 	finalDamage *= 1.0 + (critCheck * (sigmaCD - 1.0))
 
-	return Damage.new(null, int(finalDamage), attackType, isCrit)
+	# `source` used to be dropped here, which left ΣAmp unreachable for normal
+	# attacks (Enemy.recvDamage resolves the attacker through it). Keep it stamped.
+	var dmg := Damage.new(source, int(finalDamage), attackType, isCrit)
+	dmg.sourceAmp = getDistanceAmp(source, enemy)
+	return dmg
+
+# Per-attack amplifier that scales with how far the target is (Marksman synergy).
+# Distance is measured at FIRE time against the enemy being aimed at (Director
+# 2026-07-20) - a projectile then carries the result unchanged through its
+# flight, and a piercing shot gives every enemy it passes through the value
+# derived from the original target.
+#
+# Rounded to the nearest whole cell: round() maps a centre-to-centre distance
+# onto the ring the enemy is standing in almost exactly, which is what makes
+# "per tile" honest. Returns a decimal amp (0.25 = +25%) that Enemy.recvDamage
+# sums into ΣAmp, so TRUE damage stays exempt.
+func getDistanceAmp(attacker: Node2D, enemy: Enemy) -> float:
+	var perCell: float = effects.aggregate(EffectTypes.Kind.DAMAGE_AMP_PER_CELL)
+	if perCell <= 0.0:
+		return 0.0
+	if attacker == null or enemy == null:
+		return 0.0
+	if not is_instance_valid(attacker) or not is_instance_valid(enemy):
+		return 0.0
+	var px: float = attacker.global_position.distance_to(enemy.global_position)
+	var cells: float = round(px / float(GridHelper.CELL_SIZE))
+	return cells * perCell / 100.0
 
 func getAttackRange():
 	return getStat().attackRange + effects.aggregate(EffectTypes.Kind.RANGE)

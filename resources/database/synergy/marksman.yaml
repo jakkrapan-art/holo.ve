@@ -1,0 +1,20 @@
+id: marksman
+name: "Marksman"
+kind: class
+type: normal
+effect: damage_per_range
+# Single tier: both demo Marksmen (Watson Amelia / Josuiji Shinri) are needed to
+# reach it, so there is no second breakpoint to define yet.
+thresholds: [2]
+parameters:
+  # Percent granted per CELL of distance to the target, not a flat amplifier.
+  # Authored as a per-tier array even with one tier: only an array renders as a
+  # highlighted scaling value in the hover (SynergyData._render), and a second
+  # tier must not require rewriting the desc.
+  amp_per_cell: [5]
+# Literal % after the token: the :percent format multiplies by 100. Say "of
+# distance to", never "between them and" - at one cell apart there are zero
+# tiles "between" but the bonus is already +5%.
+desc: "Marksman units steady their aim across the field, dealing {amp_per_cell}% more damage for every tile of distance to their target."
+tier_effects:
+  - "+{amp_per_cell}% damage per tile of distance"

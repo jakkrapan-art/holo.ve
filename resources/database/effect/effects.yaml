@@ -109,6 +109,22 @@ spellcaster_crit:
   duration: 0
   lifetime: board
 
+# Marksman synergy rate. The value is NOT an amplifier - it is the percent
+# granted PER CELL of distance to the target. TowerData.getDistanceAmp reads the
+# aggregate at each attack and turns it into a real amp; a per-target term cannot
+# be stored as a flat stat. Kept out of damage_amp on purpose: that kind is the
+# flat amplifier and would apply at full value regardless of range.
+marksman_range:
+  name: "Long Shot"
+  desc: "Deals more damage the farther the target."
+  icon: "ui_asset/effects/buff_generic.png"
+  category: buff
+  host: tower
+  kind: damage_amp_per_cell
+  stack: refresh
+  duration: 0
+  lifetime: board
+
 crit_damage_up:
   name: "Critical Damage Up"
   desc: "Critical damage increased by {value}."

@@ -1,7 +1,7 @@
 maxLevel: 3
 towerClass: warrior
 generation: tempus
-attackType: magic
+attackType: physic
 evolutionCost: 1
 
 attack_sound: "hit_hakka"
@@ -35,7 +35,7 @@ stats:
 
 # Active Skill - "Exocirst Field": a persistent purifying zone centered on
 # Hakka. It is the first "field" execution pattern (tower_skill.md) - planted
-# non-blocking (Hakka keeps auto-attacking) and ticks magic damage + slow to
+# non-blocking (Hakka keeps auto-attacking) and ticks physical damage + slow to
 # enemies inside every tickInterval for skillDuration seconds. Zone VFX =
 # effect_script on the field action (ofuda orbit + spirit vortex, persistent
 # for the whole duration); the red debug rects are authored off (show_area).
@@ -43,11 +43,11 @@ skills:
   active:
     name: "Exocirst Field"
     names: ["Exocirst Field I", "Exocirst Field II", "Exocirst Field III"]
-    desc: "Banzoin Hakka conjures a purifying field in a 3x3 area around him for {skillDuration} seconds; enemies within take {skillDamage:percent} magic damage and are slowed by {slowEffect:percent} every second they remain inside."
+    desc: "Banzoin Hakka conjures a purifying field in a 3x3 area around him for {skillDuration} seconds; enemies within take {skillDamage:percent} physical damage and are slowed by {slowEffect:percent} every second they remain inside."
     icon: ""
     tags:
       - damage
-      - magic
+      - attack
       - aoe
       - persistent
       - debuff
@@ -89,7 +89,7 @@ skills:
           duration_param_name: "skillDuration"
           tick_interval_param_name: "tickInterval"
           damage_multiplier_param_name: "skillDamage"
-          damage_type: magic
+          damage_type: physic
           can_crit: false
           show_area: false            # per-tick red debug box off (VFX replaces it)
           effect_script: "res://resources/tower/holostars/en_branch/tempus_gen/hakka/skill_effect/hakka_field_effect.gd"
@@ -116,11 +116,11 @@ evolutionStat:
 evolution_skills:
   active:
     name: "Obey my omen, in hymns allure"
-    desc: "Banzoin Hakka unleashes a greater purifying field across a 5x5 area for {skillDuration} seconds; enemies within take {skillDamage:percent} magic damage and are slowed by {slowEffect:percent} every second they remain, and when the field fades he recovers {energyRefund:percent} of his maximum Energy."
+    desc: "Banzoin Hakka unleashes a greater purifying field across a 5x5 area for {skillDuration} seconds; enemies within take {skillDamage:percent} physical damage and are slowed by {slowEffect:percent} every second they remain, and when the field fades he recovers {energyRefund:percent} of his maximum Energy."
     icon: ""
     tags:
       - damage
-      - magic
+      - attack
       - aoe
       - persistent
       - debuff
@@ -160,7 +160,7 @@ evolution_skills:
           duration_param_name: "skillDuration"
           tick_interval_param_name: "tickInterval"
           damage_multiplier_param_name: "skillDamage"
-          damage_type: magic
+          damage_type: physic
           can_crit: false
           energy_refund_percent_param_name: "energyRefund"
           show_area: false            # per-tick red debug box off (VFX replaces it)

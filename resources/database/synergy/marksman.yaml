@@ -1,7 +1,8 @@
 id: marksman
 name: "Marksman"
 kind: class
-type: normal
+type: standard
+rarity: common
 effect: damage_per_range
 # Single tier: both demo Marksmen (Watson Amelia / Josuiji Shinri) are needed to
 # reach it, so there is no second breakpoint to define yet.

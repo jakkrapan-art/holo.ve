@@ -31,7 +31,8 @@ static func _build(raw: Dictionary, path: String) -> SynergyData:
 	d.id = str(raw.get("id", ""))
 	d.display_name = str(raw.get("name", d.id))
 	d.kind = str(raw.get("kind", ""))
-	d.type = str(raw.get("type", "normal"))
+	d.type = str(raw.get("type", SynergyData.TYPE_STANDARD))
+	d.rarity = str(raw.get("rarity", SynergyData.RARITY_COMMON))
 	d.effect = str(raw.get("effect", ""))
 	# YamlParser does not process escapes; translate \n loader-side, only for the
 	# text fields that want it (data_pipeline.md Problem #1).
@@ -45,6 +46,24 @@ static func _build(raw: Dictionary, path: String) -> SynergyData:
 
 	for t in raw.get("thresholds", []):
 		d.thresholds.append(int(t))
+
+	# Fail loud on category authoring. `type` is doubly load-bearing: a typo would
+	# both drop the mission hover behaviour and print the typo into the player's
+	# tooltip, since the key is the copy.
+	if not SynergyData.TYPES.has(d.type):
+		push_warning("Synergy '" + d.id + "': unknown type '" + d.type + "' - expected one of " + str(SynergyData.TYPES) + ".")
+	# A rarity typo would otherwise read as common and the synergy would silently
+	# lose its colour and its top slot in the panel.
+	if not SynergyData.RARITIES.has(d.rarity):
+		push_warning("Synergy '" + d.id + "': unknown rarity '" + d.rarity + "' - expected one of " + str(SynergyData.RARITIES) + "; treated as common.")
+	# A unique trait is carried by exactly one tower in the game, so no unit gate
+	# can ever exceed 1. Several tiers stay legal ([1, 1, 1]) for a unique mission
+	# synergy whose tiers gate on the kill goal instead of the count.
+	if d.is_unique():
+		for t in d.thresholds:
+			if int(t) != 1:
+				push_warning("Synergy '" + d.id + "': rarity is unique but a threshold is " + str(t) + " - a unique trait has at most one holder, so every threshold must be 1.")
+				break
 
 	var params = raw.get("parameters", {})
 	if params is Dictionary:

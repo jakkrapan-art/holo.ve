@@ -1,7 +1,7 @@
-class_name SynergyEffectQuestTempus
+class_name SynergyEffectMissionTempus
 extends SynergyEffect
 
-# Tempus - the first quest-type synergy. Reaching a unit threshold (2/4/6) opens a
+# Tempus - the first mission-type synergy. Reaching a unit threshold (2/4/6) opens a
 # Guild Mission (cumulative kill goal 100/200/400); completing it unlocks a reward
 # that STACKS on the lower tiers (each tier = its own effect source_id, so they
 # SUM rather than replace). Kill count starts when Tempus first activates (2 units)
@@ -22,11 +22,11 @@ var _energy_timer: float = 0.0
 
 func activate() -> void:
 	# Guild formed (2 Tempus units): start the tracker at 0.
-	controller.report_quest_progress(data.synergy_id, _kills)
+	controller.report_mission_progress(data.synergy_id, _kills)
 
 func on_enemy_killed(_enemy, _cause, _reward) -> void:
 	_kills += 1
-	controller.report_quest_progress(data.synergy_id, _kills)
+	controller.report_mission_progress(data.synergy_id, _kills)
 	_check_rewards()
 
 func on_tier_changed(_new_tier: int) -> void:

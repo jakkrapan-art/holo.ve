@@ -26,7 +26,7 @@ func setup(p_onPlace: Callable, p_onRemove: Callable):
 	synergyController.setup(self)
 	Utility.ConnectSignal(towerTrait, "synergy_updated", Callable(self, "_on_synergy_updated"));
 	if uiSynergy != null:
-		Utility.ConnectSignal(synergyController, "quest_progress_changed", Callable(uiSynergy, "setQuestProgress"));
+		Utility.ConnectSignal(synergyController, "mission_progress_changed", Callable(uiSynergy, "setMissionProgress"));
 
 func getTower(p_name: String, evoToken: int = 0) -> GetTowerResult:
 	var resource = ResourceManager.getTower(p_name);
@@ -135,7 +135,7 @@ func evolutionTower(p_name: String):
 
 func _on_synergy_updated(synergy_id: int, count: int, tier: int):
 	# Draw/refresh the panel row BEFORE the controller updates the effect, so a
-	# quest effect's activate() (which emits quest_progress_changed) lands on a
+	# mission effect's activate() (which emits mission_progress_changed) lands on a
 	# row that already exists. Only show synergies defined in YAML; an undefined
 	# trait (no data) can never activate, so it is not a meaningful panel row.
 	if uiSynergy != null:
@@ -160,7 +160,7 @@ func _process(delta: float) -> void:
 	if _wave_active and synergyController != null:
 		synergyController.tick(delta)
 
-# Wired to WaveController.onEnemyDead (real kills only) -> quest synergies.
+# Wired to WaveController.onEnemyDead (real kills only) -> mission synergies.
 func onEnemyKilled(enemy, cause, reward) -> void:
 	if synergyController != null:
 		synergyController.on_enemy_killed(enemy, cause, reward)

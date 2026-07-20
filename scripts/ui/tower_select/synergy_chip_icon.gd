@@ -3,7 +3,7 @@ extends TextureRect
 
 # Synergy-trait hover for tower-select cards: same text and opaque card as the
 # synergy panel hover via the shared helpers (ui_synergy_content.gd), rendered
-# definitionally (tier -1: no active-tier highlight or quest progress - live
+# definitionally (tier -1: no active-tier highlight or mission progress - live
 # state stays on the panel).
 
 var synergy_id: int = 0

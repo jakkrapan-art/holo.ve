@@ -1,7 +1,10 @@
 id: hero
 name: "Hero"
 kind: class
-type: normal
+type: standard
+# Only Regis Altare carries the Hero class, so the trait is unique: the panel
+# gives it its own colour and floats it above every common synergy.
+rarity: unique
 effect: attack_per_active_trait
 # Single tier by design: one Hero unit activates the trait, and the bonus scales
 # with the rest of the board instead of with the Hero count.

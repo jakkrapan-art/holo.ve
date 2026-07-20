@@ -5,10 +5,14 @@ class_name UISynergyContent
 # player reads tier order at a glance; the scaling value gets its own accent.
 const INACTIVE_COLOR := "#4D4D4D"
 const TIER_COLORS := ["#CD7F32", "#C0C0C0", "#FFD15A"]   # bronze / silver / gold = tier 1 / 2 / 3
+# Unique synergies skip the tier ladder entirely - one holder in the whole game
+# means they are maxed the moment they activate, so a rank colour says nothing.
+# Vivid red-orange, deliberately far from the muted bronze above.
+const UNIQUE_COLOR := "#FF5A36"
 const SCALING_COLOR := "#5AC8FA"                          # the per-tier value that scales
 const DIM_COLOR := "#7A7A7A"                              # not-yet-reached tier rows in the hover
 const ACTIVE_HIGHLIGHT := "#FFD15A"                       # reward-running tier rows in the hover (gold)
-const QUEST_PENDING_HIGHLIGHT := "#8C7431"                # ACTIVE_HIGHLIGHT darkened ~45%: mission open, reward not yet earned
+const MISSION_PENDING_HIGHLIGHT := "#8C7431"              # ACTIVE_HIGHLIGHT darkened ~45%: mission open, reward not yet earned
 
 @onready var bg = $"."
 @onready var synergyName = $HBoxContainer/VBoxContainer/SynergyName
@@ -19,10 +23,10 @@ var _name: String = ""
 var _data: SynergyData = null
 var _tier: int = -1
 var _count: int = 0                   # live unit count (sort key; drops when units removed)
-var _quest_progress: int = -1         # quest cumulative progress (-1 = not a quest / unset)
+var _mission_progress: int = -1       # mission cumulative progress (-1 = not a mission / unset)
 var _order: int = -1                  # creation order, frozen by UISynergy (stable-sort tie-break)
 var _stylebox: StyleBoxFlat = null   # this row's own panel StyleBox (see setup)
-var _tooltip_label: RichTextLabel = null  # open hover's rich label, for live quest-progress refresh
+var _tooltip_label: RichTextLabel = null  # open hover's rich label, for live mission-progress refresh
 
 # tier: current active tier (-1 = not yet proc'd). data: SynergyData or null.
 func setup(p_name: String, current: int, tier: int, icon: Texture2D, data) -> void:
@@ -61,15 +65,18 @@ func setup(p_name: String, current: int, tier: int, icon: Texture2D, data) -> vo
 # Sort keys read by UISynergy._reflow - kept on the row so its sort state has a
 # single source of truth (mirrors how _tier is already threaded via setup).
 func getTier() -> int: return _tier
+func getTierRank() -> float: return _rank_for(_tier)
+func isUnique() -> bool: return _data != null and _data.is_unique()
+func isGeneration() -> bool: return _data != null and _data.is_generation()
 func getCount() -> int: return _count
 func getOrder() -> int: return _order
 func setOrder(value: int) -> void: _order = value
 
-# A quest synergy's cumulative progress; shown at the bottom of this row's hover.
+# A mission synergy's cumulative progress; shown at the bottom of this row's hover.
 # Refreshes the open tooltip live (TFT-style); Godot builds it once per hover, so
 # without this the number would freeze until the player re-hovers.
-func setQuestProgress(current: int) -> void:
-	_quest_progress = current
+func setMissionProgress(current: int) -> void:
+	_mission_progress = current
 	if _tooltip_label != null and is_instance_valid(_tooltip_label):
 		_tooltip_label.text = _build_hover_bbcode()
 
@@ -77,17 +84,26 @@ func setQuestProgress(current: int) -> void:
 # gold, whatever its tier count. Hero defines a single tier, so an absolute index
 # left it permanently bronze - the lowest rank while fully maxed.
 # 3 tiers -> bronze/silver/gold (unchanged); 2 -> bronze/gold; 1 -> gold.
+# The colour is only a 3-step quantization of the rank UISynergy sorts on, so
+# order and colour cannot contradict each other. Do not re-derive it here.
 func _tier_color(tier: int) -> String:
-	if tier < 0:
+	var rank := _rank_for(tier)
+	if rank < 0.0:
 		return INACTIVE_COLOR
+	if isUnique():
+		return UNIQUE_COLOR
 	var last := TIER_COLORS.size() - 1
-	var top_tier := 0
-	if _data != null:
-		top_tier = _data.tier_count() - 1
-	if top_tier <= 0:
-		return TIER_COLORS[last]
-	var idx := int(round(float(clampi(tier, 0, top_tier)) / float(top_tier) * float(last)))
-	return TIER_COLORS[clampi(idx, 0, last)]
+	return TIER_COLORS[clampi(int(round(rank * float(last))), 0, last)]
+
+# SynergyData.tier_rank for this row, tolerating a row whose data failed to
+# resolve: treat it as maxed, which is what the colour already did before rank
+# became shared - so a broken row still colours and sorts one consistent way.
+func _rank_for(tier: int) -> float:
+	if tier < 0:
+		return -1.0
+	if _data == null:
+		return 1.0
+	return _data.tier_rank(tier)
 
 # "3 4 5" with the active tier's threshold bracketed.
 func _breakpoints_text(tier: int) -> String:
@@ -103,7 +119,7 @@ func _breakpoints_text(tier: int) -> String:
 # active tier marked + tier-coloured and the rest dimmed.
 func _make_custom_tooltip(_for_text: String) -> Object:
 	var panel := make_tooltip_card(_build_hover_bbcode(), 320.0, self)
-	# Keep a ref so live kills can refresh the open tooltip (see setQuestProgress).
+	# Keep a ref so live kills can refresh the open tooltip (see setMissionProgress).
 	_tooltip_label = panel.get_child(0) as RichTextLabel
 	return panel
 
@@ -147,17 +163,21 @@ static func make_tooltip_card(bbcode: String, width: float = 320.0, p_owner: Con
 	return panel
 
 func _build_hover_bbcode() -> String:
-	return build_hover_bbcode(_data, _name, _tier, _quest_progress)
+	return build_hover_bbcode(_data, _name, _tier, _mission_progress)
 
 # Shared with the tower-select card chips (synergy_chip_icon.gd) so both hovers
 # render identical text from one builder; hover colors stay single-source here.
-# tier -1 = definitional view (no active row); quest_progress -1 = no progress line.
-static func build_hover_bbcode(data: SynergyData, fallback_name: String, tier: int, quest_progress: int) -> String:
+# tier -1 = definitional view (no active row); mission_progress -1 = no progress line.
+static func build_hover_bbcode(data: SynergyData, fallback_name: String, tier: int, mission_progress: int) -> String:
 	if data == null:
 		return fallback_name
 
 	var lines: PackedStringArray = []
 	lines.append("[b]" + data.display_name + "[/b]")
+	# Category subtitle under the name, dimmed so it never competes with the name
+	# or the desc, then a blank line to set the desc apart as its own block.
+	lines.append("[i][color=" + DIM_COLOR + "]" + data.type_label() + "[/color][/i]")
+	lines.append("")
 
 	# Flavour preview the lowest tier's value when not yet proc'd (maxi(tier,0)).
 	var flavor := data.flavor(maxi(tier, 0), SCALING_COLOR)
@@ -169,39 +189,39 @@ static func build_hover_bbcode(data: SynergyData, fallback_name: String, tier: i
 		lines.append("")
 		for i in data.tier_count():
 			var row := "(" + str(data.threshold_at(i)) + ")  " + data.tier_effect(i)
-			match _tier_row_state(data, i, tier, quest_progress):
+			match _tier_row_state(data, i, tier, mission_progress):
 				TierRowState.EARNED:
-					# Reward running (normal lane: the single active tier; quest
+					# Reward running (normal lane: the single active tier; mission
 					# lane: every earned mission, so 2+ gold arrow rows can show).
 					row = "[color=" + ACTIVE_HIGHLIGHT + "]> " + row + "[/color]"
 				TierRowState.PENDING:
-					row = "[color=" + QUEST_PENDING_HIGHLIGHT + "]" + row + "[/color]"   # mission open, unfinished
+					row = "[color=" + MISSION_PENDING_HIGHLIGHT + "]" + row + "[/color]"   # mission open, unfinished
 				TierRowState.LOCKED:
 					row = "[color=" + DIM_COLOR + "]" + row + "[/color]"
 			lines.append(row)
 
-	if quest_progress >= 0:
+	if mission_progress >= 0:
 		lines.append("")
-		lines.append("[b]Current Progress: " + str(quest_progress) + "[/b]")
+		lines.append("[b]Current Progress: " + str(mission_progress) + "[/b]")
 	return "\n".join(lines)
 
 enum TierRowState { LOCKED, PENDING, EARNED }
 
 # Truthful per-tier row state for the hover table.
-# Normal synergies keep today's single-active-row read (highest tier REPLACES).
-# Quest synergies (data.type == "quest") stack: unit gate uses the row's tier,
-# kill gate uses quest_progress vs mission_kills[i] - mirroring
-# SynergyEffectQuestTempus._check_rewards (same get_parameter clamp, so display
+# Standard synergies keep today's single-active-row read (highest tier REPLACES).
+# Mission synergies stack: unit gate uses the row's tier,
+# kill gate uses mission_progress vs mission_kills[i] - mirroring
+# SynergyEffectMissionTempus._check_rewards (same get_parameter clamp, so display
 # and effect cannot diverge). Assumes tier is monotonic within a run - holds
 # permanently: no tower-removal path exists by Director decision
 # (tower_synergy.md Notes). If a tower-destroying mechanic ever ships, the
 # effect's _rewarded[] is sticky while this recomputes live - re-derive then.
-static func _tier_row_state(data: SynergyData, i: int, tier: int, quest_progress: int) -> TierRowState:
+static func _tier_row_state(data: SynergyData, i: int, tier: int, mission_progress: int) -> TierRowState:
 	if i > tier:
 		return TierRowState.LOCKED
-	if data.type != "quest":
+	if data.type != SynergyData.TYPE_MISSION:
 		return TierRowState.EARNED if i == tier else TierRowState.LOCKED
 	var goal = data.get_parameter("mission_kills", i)
-	if goal != null and quest_progress >= int(goal):
+	if goal != null and mission_progress >= int(goal):
 		return TierRowState.EARNED
 	return TierRowState.PENDING   # incl. null goal: reward can never fire, matches effect

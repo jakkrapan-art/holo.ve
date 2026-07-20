@@ -5,11 +5,29 @@ class_name SynergyData
 # Numbers are read through get_parameter so the displayed text and the applied
 # effect share one source (mirrors Skill.parameters / tokenized desc).
 
+# Legal `type` values. The authored key IS the player-facing word (rendered by
+# type_label), so a new value must be a word a player can read - no code-only
+# jargon, and no separate display mapping to drift from.
+const TYPE_STANDARD := "standard"
+const TYPE_MISSION := "mission"
+const TYPES := [TYPE_STANDARD, TYPE_MISSION]
+
+# Legal `rarity` values - shared with the loader so an unknown string is caught
+# at load instead of silently reading as common.
+const RARITY_COMMON := "common"
+const RARITY_UNIQUE := "unique"
+const RARITIES := [RARITY_COMMON, RARITY_UNIQUE]
+
 var id: String = ""                # file/data key, e.g. "myth"
 var synergy_id: int = 0            # TowerTrait enum int (resolved at load)
 var display_name: String = ""
 var kind: String = ""             # "class" | "generation"
-var type: String = "normal"       # UI category: normal | quest | special
+var type: String = TYPE_STANDARD   # how the effect unlocks: standard (on threshold) | mission (on a kill goal)
+# Who may hold the trait - a separate axis from `type`, so a synergy can be both
+# unique and mission-unlocked. unique = exactly one tower in the whole game carries
+# it (Hero/Regis Altare today), which is why every threshold of a unique synergy
+# must be 1; the panel gives those rows their own colour and floats them on top.
+var rarity: String = RARITY_COMMON
 var effect: String = ""           # SynergyEffect handler key ("" = placeholder)
 var thresholds: Array = []        # proc count per tier (untyped: YamlParser yields untyped Array)
 var parameters: Dictionary = {}   # name -> per-tier array (or scalar)
@@ -19,6 +37,18 @@ var desc: String = ""             # flavour line (hover header), may hold {param
 # tier (qualitative tiers, e.g. a Tempus-style "unlock" at a higher tier).
 var tier_effects: Array = []
 
+func is_unique() -> bool:
+	return rarity == RARITY_UNIQUE
+
+func is_generation() -> bool:
+	return kind == "generation"
+
+# Hover subtitle. The authored key doubles as the copy, so there is no mapping
+# table to fall out of sync; "Trait" is appended because the Tempus hover also
+# carries a mission progress line, and a bare "Mission" would read as its header.
+func type_label() -> String:
+	return type.capitalize() + " Trait"
+
 func max_count() -> int:
 	return int(thresholds[-1]) if not thresholds.is_empty() else 0
 
@@ -27,6 +57,20 @@ func min_requirement() -> int:
 
 func tier_count() -> int:
 	return thresholds.size()
+
+# How far this synergy has climbed toward its OWN top tier: 0.0 = lowest active
+# tier, 1.0 = maxed, -1.0 = not active. A single-tier synergy is maxed the moment
+# it activates, so it reads 1.0 at tier 0 while a 3-tier synergy at tier 0 reads
+# 0.0. The panel's row COLOUR and row ORDER both read this one number - they used
+# to disagree (colour by rank, sort by the raw tier index), which sorted a bronze
+# 3-tier row level with maxed gold rows.
+func tier_rank(tier: int) -> float:
+	if tier < 0:
+		return -1.0
+	var top := tier_count() - 1
+	if top <= 0:
+		return 1.0
+	return float(clampi(tier, 0, top)) / float(top)
 
 func threshold_at(tier: int) -> int:
 	if thresholds.is_empty():

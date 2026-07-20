@@ -33,7 +33,7 @@ func _apply_all() -> void:
 
 # Lifetime and duration are set explicitly: a registry def is WAVE with a
 # non-zero duration by default, both wrong for a permanent synergy buff (same
-# trap as synergy_effect_attack_per_trait.gd / synergy_effect_quest_tempus.gd).
+# trap as synergy_effect_attack_per_trait.gd / synergy_effect_mission_tempus.gd).
 func _apply(tower, effect_id: String, value: float) -> void:
 	var inst := EffectUtility.make_instance(effect_id, _SOURCE, value, 0.0)
 	if inst == null:

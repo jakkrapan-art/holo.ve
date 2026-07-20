@@ -80,7 +80,7 @@ func _unhandled_input(event):
 	# clicks handled, and (unlike Area2D input_event, which missed clicks while a
 	# tower was mid-cast) this path has no physics dependency at all.
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		if state == "tower_placement" or state == "staff_skill_casting" or _popup_open or state == "game_over":
+		if state == "tower_placement" or state == "staff_skill_casting" or _popup_is_blocking() or state == "game_over":
 			return
 		if _tower_stats_panel == null:
 			return
@@ -283,8 +283,9 @@ func _on_staff_skill_button_pressed():
 	if staff == null:
 		return
 	# Guard against re-entry across the wave-end popup beat (PR #51): never enter aiming
-	# once a popup is open or the run is over.
-	if _popup_open or state == "game_over":
+	# once a popup is open or the run is over. The button stays hoverable so the player
+	# can still READ the skill tooltip while choosing a tower - only the press is refused.
+	if _popup_is_blocking() or state == "game_over":
 		return
 	if state == "staff_skill_casting":
 		_cancel_staff_skill_cast()
@@ -361,6 +362,7 @@ func show_deck_popup():
 	var popup: UITowerSelect = PopupPanelScene.instantiate() as UITowerSelect
 	_popup_open = true
 	_active_popup = popup
+	_clear_inspection()
 	get_tree().root.add_child(popup)
 
 	var cards: Array = []
@@ -404,6 +406,7 @@ func show_popup_panel():
 	var popup: UITowerSelect = PopupPanelScene.instantiate() as UITowerSelect;
 	_popup_open = true
 	_active_popup = popup
+	_clear_inspection()
 	# Ensure it's added to the UI layer, not just as a child of the 2D scene
 	get_tree().root.add_child(popup)
 
@@ -422,6 +425,22 @@ func show_popup_panel():
 func _on_popup_closed():
 	_popup_open = false
 	_active_popup = null
+
+# "A popup is covering the field", split from _popup_open's other meaning ("a popup exists,
+# do not open a second one"). The hide-popup button (coding log) flips only this half.
+func _popup_is_blocking() -> bool:
+	return _popup_open
+
+# Inspection and the card-pick modal are mutually exclusive (Director 2026-07-20): the popup
+# draws above the field, so a stats panel - with its inspect outline, and the planned tower
+# range ring - would sit half-covered under it. Clearing on open keeps the choosing moment
+# clean; re-selecting is already refused while _popup_is_blocking(). When the hide-popup
+# button lands, consider hiding + restoring the selection instead of dropping it.
+func _clear_inspection() -> void:
+	if _tower_stats_panel != null:
+		_tower_stats_panel.clear()
+	if _enemy_stats_panel != null:
+		_enemy_stats_panel.clear()
 
 func _on_tower_select_skipped():
 	push_warning("Tower select skipped - no valid towers available")

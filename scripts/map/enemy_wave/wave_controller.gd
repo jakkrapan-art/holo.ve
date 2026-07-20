@@ -114,7 +114,7 @@ func startNextWave():
 		_startCountdown()
 		setupSpawnTask()
 
-	updateUI();
+	updateUI(currWave);
 
 func endWave():
 	if endWaveCalled:
@@ -129,6 +129,14 @@ func endWave():
 		if(ui):
 			get_tree().current_scene.add_child(ui);
 	else:
+		# The Managing Phase (tower/deck select) reads as "preparing wave N+1", so the
+		# counter switches the moment the field clears - before the popup beat.
+		# DISPLAY ONLY: currWave must NOT be incremented early. Five consumers read it as
+		# "the wave just finished / currently running": the deck-unlock milestone match
+		# (game_scene.on_wave_ended), the end-of-run check above, startNextWave's own
+		# bound check + increment (double-increment overruns waveDatas), the boss lookup,
+		# and the spawn-generation guards.
+		updateUI(currWave + 1);
 		data.onWaveEnd.call();
 
 func setupSpawnTask():
@@ -328,9 +336,11 @@ func summon(enemyId: String, count: int, interval: float, pathProgress: float):
 			if not is_instance_valid(self) or currWave != gen:
 				return
 
-func updateUI():
+# Display-only. The number shown is passed in because the Managing Phase shows the
+# NEXT wave while currWave still holds the finished one - see endWave().
+func updateUI(displayWave: int):
 	if waveCounterText != null:
-		waveCounterText.text = "wave " + str(currWave)
+		waveCounterText.text = "wave " + str(displayWave)
 
 func _startCountdown():
 	_wave_elapsed = 0.0

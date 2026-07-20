@@ -10,10 +10,10 @@ extends SynergyEffect
 # (percent per cell); TowerData.getDistanceAmp turns that rate into a real
 # amplifier at each attack, and Enemy.recvDamage sums it into ΣAmp. That keeps
 # the bonus in the amplifier position of the Master Formula, so TRUE damage
-# still bypasses it (damage_formula.md).
+# still bypasses it.
 #
 # Distance is measured at fire time and rounded to the nearest whole cell
-# (Director 2026-07-20) - detail and rationale in tower_synergy.md Notes.
+# (Director 2026-07-20).
 
 const _SOURCE := "synergy_marksman"
 

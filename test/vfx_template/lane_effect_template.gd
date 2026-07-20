@@ -19,7 +19,7 @@ extends Node2D
 #              (Hinotori - the project quality bar)
 #   this shape kiara_skill_effect.gd + .gdshader (Flame Slash)
 #
-# OTHER FAMILIES (docs/shader.md "Skill-VFX families"):
+# OTHER FAMILIES:
 #   centered/aura  - drop setup()'s aim/rotation and the lane include;
 #                    keep the rect + tweens. See amelia_skill_effect.gd.
 #   lingering tail - a second, longer clock ("life_t") owns queue_free.

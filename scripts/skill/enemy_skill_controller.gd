@@ -67,7 +67,7 @@ func onSuccess(skill: Skill):
 # after the HP write; check_hp_triggers only flags PENDING - the cast fires
 # from useTriggeredSkill() in the Enemy._process hook once the busy flag frees,
 # bypassing the castWait pacing gate (the condition is its own telegraph; the
-# gate paces gate-driven Actives, not condition reactions - enemy_skill.md).
+# gate paces gate-driven Actives, not condition reactions).
 var pendingTriggered: Array[Skill] = []
 
 func check_hp_triggers(hp_ratio: float):

@@ -18,7 +18,7 @@ func activate() -> void:
 	pass
 
 # Active tier increased to new_tier (0-based). Tier never decreases mid-run
-# (no synergy deactivation by design - see tower_synergy.md).
+# (no synergy deactivation by design).
 func on_tier_changed(_new_tier: int) -> void:
 	pass
 

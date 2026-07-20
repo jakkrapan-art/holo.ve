@@ -17,6 +17,6 @@ func setupProjectile(projectile: Projectile, i: int, context: SkillContext):
 	var damage := Damage.new(tower, int(multi * tower.data.getDamage(null, null).damage), damageType)
 	damage.isSkillDamage = true
 	# No sourceAmp: getDamage(null, null) has no target to measure against, so
-	# skill projectiles carry no distance bonus (gap noted in tower_synergy.md).
+	# skill projectiles carry no distance bonus (known gap).
 	projectile.setup_circle(tower, damage, circle_radius, angular_speed, initial_angle + (angle_offset * i), lifetime, ProjectileCallback.new(Callable(self, "onHit"), Callable(), Callable()))
 	super.setupProjectile(projectile, i, context)

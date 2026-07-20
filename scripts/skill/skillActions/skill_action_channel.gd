@@ -1,7 +1,7 @@
 class_name SkillActionChannel
 extends SkillAction
 
-# "channel" execution pattern (tower_skill.md): the cast locks the aimed zone
+# "channel" execution pattern: the cast locks the aimed zone
 # and holds the tower busy for `cast_time` seconds while re-striking that zone
 # every `tick_interval`. BLOCKING - execute() awaits until the channel ends, so
 # the controller keeps usingSkill true and Energy drains only at onSuccess

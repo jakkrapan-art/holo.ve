@@ -31,7 +31,7 @@ var usingSkill: bool = false;
 # inCombatWindow seconds without damage puts the enemy back to sleep, looping.
 # A sleeping boss (out of coverage / towers busy elsewhere) is intended, not a
 # bug. Do NOT restore instant-cast-on-wake: with skills ready at spawn it
-# chain-casts the whole kit on first engagement (enemy_skill.md).
+# chain-casts the whole kit on first engagement.
 @export var inCombatWindow: float = 4.0
 @export var castWait: float = 4.0
 var inCombatRemaining: float = 0.0
@@ -147,8 +147,8 @@ func recvDamage(damage: Damage) -> int:
 
 	# Shield Block: one charge eats the WHOLE hit regardless of damage type
 	# (TRUE included). Unlike invincible the enemy STAYS targetable - that is
-	# the block vs untargetable line (enemy_skill.md). Charges live on
-	# stats.blockCount, outside the effect system (buff_debuff.md).
+	# the block vs untargetable line. Charges live on
+	# stats.blockCount, outside the effect system.
 	if stats.blockCount > 0:
 		stats.blockCount -= 1
 		Utility.show_float_text(global_position, get_parent(), "Block", Color(0.7, 0.85, 1.0))
@@ -161,7 +161,7 @@ func recvDamage(damage: Damage) -> int:
 	timer.timeout.connect(_on_damage_flash_timeout)
 
 	# TRUE damage bypasses armor/MR + ΣAmp + ΣRed — raw value applied straight to HP.
-	# First caller: Staff skill `damage_percent_maxhp` (see damage_formula.md §4).
+	# First caller: Staff skill `damage_percent_maxhp`.
 	var damageVal: int
 	if damage.type == Damage.DamageType.TRUE:
 		damageVal = damage.damage
@@ -195,7 +195,7 @@ func recvDamage(damage: Damage) -> int:
 	elif skillController != null:
 		# HP%-trigger check at the single HP-loss site; a killing blow never
 		# triggers (dead() wins). Only flags pending - the cast fires from the
-		# _process hook (enemy_skill.md Triggered).
+		# _process hook.
 		skillController.check_hp_triggers(float(currentHp) / float(stats.maxHp))
 
 	var dmgColor: Color
@@ -281,7 +281,7 @@ func isInCombat() -> bool:
 	return inCombatRemaining > 0.0
 
 # Pacing gate for EnemySkillController.useSkill: awake AND the castWait timer
-# has elapsed (enemy_skill.md cast rules).
+# has elapsed.
 func canCastNow() -> bool:
 	return isInCombat() and castWaitRemaining <= 0.0
 

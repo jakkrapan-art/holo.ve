@@ -1,6 +1,6 @@
 shader_type canvas_item;
 render_mode blend_premul_alpha;   // dark body must survive the lit map
-                                  // (docs/shader.md Section 3, Hinotori lesson)
+                                  // (Hinotori lesson)
 
 // ================================================================
 // Banzoin Hakka · "Obey my omen, in hymns allure" (EVOLVE) —

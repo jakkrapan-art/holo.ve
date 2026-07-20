@@ -4,7 +4,7 @@ extends Control
 # Placeholder tower stats panel (bottom-left HUD). Artist design pass pending.
 # The skeleton (portrait / name+level header / trait row / stat grid / energy
 # bar / right-edge skill icon column) is the shared layout convention for the
-# future enemy stats panel (ui.md).
+# future enemy stats panel.
 
 @onready var _portrait: TextureRect = $Portrait
 @onready var _name_label: Label = $NameLabel
@@ -34,7 +34,7 @@ var _tower: Tower = null
 # Rebuild key for the skill-icon row ("level_isEvolved"): icons/tooltips only
 # change on level-up or evolve, so the per-frame poll skips the rebuild.
 var _skills_key: String = ""
-# Inspect visuals on the selected tower (ui.md): the sprite outline plus the
+# Inspect visuals on the selected tower: the sprite outline plus the
 # attack-range ring. One material is enough - only one unit is ever selected
 # (panels mutually clear). Both visuals share one apply/remove pair so a future
 # teardown path cannot clear one and leak the other.
@@ -144,8 +144,7 @@ func _refresh() -> void:
 	_class_icon.texture = _trait_sprite(class_display)
 	_gen_icon.texture = _trait_sprite(gen_display)
 
-	# Stats: live getters, so buffs/debuffs show (player-facing terms per
-	# game_copy.md). 3x2 grid: attack block left, crit block + range right.
+	# Stats: live getters, so buffs/debuffs show (player-facing terms). 3x2 grid: attack block left, crit block + range right.
 	_set_text(_atk_value, str(data.getTotalAttack()))
 	_set_text(_type_value, "Magic" if data.attackType == Damage.DamageType.MAGIC else "Physical")
 	_set_text(_as_value, _format_number(data.getAttackSpeed()))
@@ -192,7 +191,7 @@ func _make_skill_icon(skill: Skill, kind: String, level: int) -> TowerSkillIcon:
 
 	# No tower skill icon art exists yet; the shared synergy default placeholder
 	# stands in (a dedicated skills/default asset needs a Godot-generated .import,
-	# so reuse beats hand-adding a binary - see tower_skill.md icon note).
+	# so reuse beats hand-adding a binary).
 	var texture: Texture2D = null
 	if skill.icon != "":
 		texture = ResourceManager.loadImage("skill_icon", skill.icon, skill.icon)

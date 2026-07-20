@@ -1,6 +1,6 @@
 # Elite: Shielded Goblin (renamed from armored_goblin, 2026-07-07).
 # `type: passive` = the skill's actions apply once at spawn - the shield is
-# already up before the first hit (see enemy_skill.md).
+# already up before the first hit.
 stats:
   hp: 500
   def: 0

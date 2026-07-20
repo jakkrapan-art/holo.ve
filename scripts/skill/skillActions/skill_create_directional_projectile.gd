@@ -22,7 +22,7 @@ func setupProjectile(projectile: Projectile, i: int, context: SkillContext):
 	var damage: Damage = Damage.new(tower, int(multi * tower.data.getDamage(null, null).damage), damageType)
 	damage.isSkillDamage = true
 	# No sourceAmp: getDamage(null, null) has no target to measure against, so
-	# skill projectiles carry no distance bonus (gap noted in tower_synergy.md).
+	# skill projectiles carry no distance bonus (known gap).
 
 	# Direction = from tower toward primary target. Prefer the first target
 	# picked by find_multi_enemy (closest-to-path-end after sorting). Fall

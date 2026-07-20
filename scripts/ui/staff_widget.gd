@@ -16,7 +16,7 @@ signal skill_pressed  # forwarded by GameScene → Staff.requestCastSkill (Phase
 @onready var _skill_border: TextureRect = $SkillBorder
 
 # Hover effect — subtle scale tween on the skill area when mouse enters / leaves the button.
-# Reusable pattern for future skill widgets across the project (see ui.md §8 Artist-friendly principles).
+# Reusable pattern for future skill widgets across the project.
 const HOVER_SCALE := Vector2(1.05, 1.05)
 const HOVER_TWEEN_DURATION := 0.12
 var _hover_tween: Tween = null

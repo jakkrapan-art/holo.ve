@@ -37,7 +37,7 @@ enum Kind {
 	HOT,
 	# Per-attack, per-target amplifier: aggregate() yields the percent granted per
 	# cell of distance; the attack site turns it into a real amp via
-	# TowerData.getDistanceAmp (Marksman synergy - tower_synergy.md).
+	# TowerData.getDistanceAmp (Marksman synergy).
 	DAMAGE_AMP_PER_CELL,
 }
 

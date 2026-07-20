@@ -213,8 +213,8 @@ enum TierRowState { LOCKED, PENDING, EARNED }
 # kill gate uses mission_progress vs mission_kills[i] - mirroring
 # SynergyEffectMissionTempus._check_rewards (same get_parameter clamp, so display
 # and effect cannot diverge). Assumes tier is monotonic within a run - holds
-# permanently: no tower-removal path exists by Director decision
-# (tower_synergy.md Notes). If a tower-destroying mechanic ever ships, the
+# permanently: no tower-removal path exists by Director decision.
+# If a tower-destroying mechanic ever ships, the
 # effect's _rewarded[] is sticky while this recomputes live - re-derive then.
 static func _tier_row_state(data: SynergyData, i: int, tier: int, mission_progress: int) -> TierRowState:
 	if i > tier:

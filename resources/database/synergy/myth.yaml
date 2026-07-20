@@ -11,7 +11,7 @@ parameters:
   energy_return: [5, 7, 10]
 # Hover header (flavour). {energy_return} resolves to the current tier's value
 # and is auto-highlighted by the UI as the scaling number. Voice: units are
-# people - use they/them, never it/its (see game_copy.md voice rule).
+# people - use they/them, never it/its.
 desc: "Myth units possess the power of a primordial age, and whenever they cast a skill, all of them restore {energy_return} Energy."
 # Hover per-tier table line. One entry -> used for every tier (pure scaling).
 tier_effects:

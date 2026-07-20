@@ -14,7 +14,7 @@ end_sprite_scene: staffs/a_chan/sprite/staff_a_chan_sprite.tscn
 # Skill — "Hard Worker Ghost Release!!!" (Phase 2)
 # Active player-aimed AOE 4×4 cells; 1 charge per game.
 # Boss enemies → 25% Max HP True Damage; non-boss → 100% Max HP True Damage (= kill).
-# True damage bypasses armor + magic resist + ΣAmp + ΣRed (see damage_formula.md §4 TRUE).
+# True damage bypasses armor + magic resist + ΣAmp + ΣRed.
 skill:
   name: "Hard Worker Ghost Release!!!"
   desc: "A-Chan releases the spirits of hard workers, instantly killing all enemies in a 5x5 area. Boss enemies take 25% of their max HP as True Damage. Once per game."

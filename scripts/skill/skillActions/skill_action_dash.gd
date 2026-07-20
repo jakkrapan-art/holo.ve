@@ -9,7 +9,7 @@ extends SkillAction
 # normally: Enemy._process runs its endpoint check outside the movement gate,
 # and the path curve does not loop, so overshoot clamps (design: a dash into
 # the base IS a leak). A stunned caster still completes the slide - cast rule
-# "a started skill always completes" (enemy_skill.md).
+# "a started skill always completes".
 
 @export var cells: float = 1.0
 @export var duration: float = 0.3

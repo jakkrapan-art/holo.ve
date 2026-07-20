@@ -4,8 +4,8 @@
 # icons by editing the icon path here (assets under resources/ui_asset/effects/).
 #
 # Fields per entry:
-#   name       display name (player-facing, English - see game_copy.md)
-#   desc       player-facing tooltip line (game_copy.md voice). Numbers are
+#   name       display name (player-facing, English)
+#   desc       player-facing tooltip line. Numbers are
 #              NEVER typed in: the {value} token resolves to the real applied
 #              magnitude (stacks included) at display time.
 #   icon       texture path relative to resources/

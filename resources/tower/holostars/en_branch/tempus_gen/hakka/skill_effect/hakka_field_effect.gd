@@ -1,7 +1,7 @@
 extends Node2D
 # ================================================================
 # Banzoin Hakka · "Exocirst Field" (normal) VFX controller — the first
-# FIELD-family effect (persistent ground zone, docs/shader.md).
+# FIELD-family effect (persistent ground zone).
 #
 # Spawned ONCE at field plant by SkillActionField (bare Node2D at
 # tower.global_position, parent = tower.get_parent()), NOT per tick:

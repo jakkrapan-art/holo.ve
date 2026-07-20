@@ -1,7 +1,7 @@
 extends Node2D
 # ════════════════════════════════════════════════════════════════
 # Calliope · "Ricky" (normal) VFX controller — self-centered 3x3 scythe sweep.
-# Self-centered / aura family (docs/shader.md): no lane helpers, one stationary
+# Self-centered / aura family: no lane helpers, one stationary
 # square ColorRect centred on the caster; the shader plays the whole sweep via
 # `progress`. Spawned by SkillActionPlayEffect (bare Node2D at tower.global_position);
 # no setup() needed — the effect is centred, nothing to orient (Amelia precedent).

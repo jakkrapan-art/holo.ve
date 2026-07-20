@@ -2,7 +2,7 @@ shader_type canvas_item;
 // blend_add suits bright/warm palettes. If the palette has DARK bands
 // (violet/crimson/deep magenta), switch to blend_premul_alpha - blend_add
 // only ADDS luminance, so dark bands vanish over the lit map (Kiara
-// Hinotori lesson, docs/shader.md Section 3). Verify over the real map.
+// Hinotori lesson). Verify over the real map.
 render_mode blend_add;
 
 #include "res://resources/tower/shared/lane_fx.gdshaderinc"
@@ -13,7 +13,7 @@ render_mode blend_add;
 // white-hot core, and spark scatter. Replace the LAYER blocks with the
 // real effect; keep the frame/envelope structure.
 //
-// Rules baked in (docs/shader.md Section 2 + lane checklist):
+// Rules baked in:
 //   - progress / scale_p uniforms drive ALL motion - never TIME
 //   - lane_coord / lane_origin_gate / lane_frame_mask come from the
 //     shared include - never hand-roll frame/origin math, never step()
@@ -22,7 +22,7 @@ render_mode blend_add;
 //   - bounded tail: clean cut behind the head, no long faded drag
 // ================================================================
 
-// REQUIRED on every skill effect (docs/shader.md Section 2):
+// REQUIRED on every skill effect:
 uniform float progress : hint_range(0.0, 1.0) = 0.0;   // whole sequence (controller tween)
 uniform float scale_p  : hint_range(0.01, 1.2) = 1.0;  // elastic pop-in
 uniform float aspect   : hint_range(1.0, 6.0)  = 2.8;  // rect width/height (controller passes)

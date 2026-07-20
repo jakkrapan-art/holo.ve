@@ -3,9 +3,9 @@
 # waves this boss is eligible to spawn on; `scale` is the visual/hitbox size
 # multiplier applied at spawn. Skills are inline (3 max by design); balance
 # numbers live once in each skill's `parameters` - actions bind via *_param
-# keys and the desc renders the same values via {token} (enemy_skill.md).
+# keys and the desc renders the same values via {token}.
 # Area sizes ("5x5") stay literal in desc until the structural parameterize
-# task (post-demo). Design source: Director xlsx 2026-07-09 (boss.md Giant Boar).
+# task (post-demo). Design source: Director xlsx 2026-07-09.
 name: Giant Boar
 scale: 2
 wave:

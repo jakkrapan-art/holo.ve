@@ -43,7 +43,7 @@ skills:
     names: ["Skill I", "Skill II", "Skill III"] # optional UI display names per tower level
     desc: "Just a skill with {damageBonus:percent} bonus" # tokenized display text: {param} / {param:percent} resolve from parameters; token-free text renders as-is
     icon: "" # optional — ว่างได้ ถ้ายังไม่มี icon
-    # tags = ป้ายสรุปสกิลแบบผู้เล่นอ่าน (controlled registry ดู tower_skill.md §Tags)
+    # tags = ป้ายสรุปสกิลแบบผู้เล่นอ่าน (controlled registry)
     tags:
       - damage
       - attack

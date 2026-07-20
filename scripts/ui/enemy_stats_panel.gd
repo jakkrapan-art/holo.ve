@@ -4,7 +4,7 @@ extends Control
 # Placeholder enemy stats panel (bottom-left HUD; artist design pass pending).
 # Sibling of TowerStatsPanel - both share the bottom-left slot, one selection
 # at a time (Director 2026-07-17). Skeleton cloned from tower_stats_panel.gd,
-# the shared layout convention (ui.md).
+# the shared layout convention.
 
 @onready var _portrait: TextureRect = $Portrait
 @onready var _name_label: Label = $NameLabel
@@ -14,7 +14,7 @@ extends Control
 @onready var _mr_value: Label = $StatsGrid/MrValue
 @onready var _hp_bar: ProgressBar = $HpRow/HpBar
 @onready var _hp_text: Label = $HpRow/HpBar/HpText
-# Right-edge column: hover popups open toward the open playfield (ui.md rule).
+# Right-edge column: hover popups open toward the open playfield.
 @onready var _skill_column: VBoxContainer = $SkillColumn
 # Buff/debuff strip floating above the panel's top border (rich hover).
 @onready var _effect_row: EffectIconRow = $EffectRow
@@ -28,7 +28,7 @@ const TIER_NAMES := {
 const OUTLINE_SHADER := preload("res://resources/ui_component/inspect_outline.gdshader")
 
 var _enemy: Enemy = null
-# Inspect-highlight outline on the selected enemy's sprite (ui.md). Enemies are
+# Inspect-highlight outline on the selected enemy's sprite. Enemies are
 # single full textures, so no frame-region feed is needed (unlike the tower
 # panel): the shader reads texture dimensions itself and region stays the
 # default whole-texture rect.

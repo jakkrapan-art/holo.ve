@@ -362,6 +362,7 @@ func show_deck_popup():
 	var popup: UITowerSelect = PopupPanelScene.instantiate() as UITowerSelect
 	_popup_open = true
 	_active_popup = popup
+	_clear_inspection()
 	get_tree().root.add_child(popup)
 
 	var cards: Array = []
@@ -405,6 +406,7 @@ func show_popup_panel():
 	var popup: UITowerSelect = PopupPanelScene.instantiate() as UITowerSelect;
 	_popup_open = true
 	_active_popup = popup
+	_clear_inspection()
 	# Ensure it's added to the UI layer, not just as a child of the 2D scene
 	get_tree().root.add_child(popup)
 
@@ -428,6 +430,17 @@ func _on_popup_closed():
 # do not open a second one"). The hide-popup button (coding log) flips only this half.
 func _popup_is_blocking() -> bool:
 	return _popup_open
+
+# Inspection and the card-pick modal are mutually exclusive (Director 2026-07-20): the popup
+# draws above the field, so a stats panel - with its inspect outline, and the planned tower
+# range ring - would sit half-covered under it. Clearing on open keeps the choosing moment
+# clean; re-selecting is already refused while _popup_is_blocking(). When the hide-popup
+# button lands, consider hiding + restoring the selection instead of dropping it.
+func _clear_inspection() -> void:
+	if _tower_stats_panel != null:
+		_tower_stats_panel.clear()
+	if _enemy_stats_panel != null:
+		_enemy_stats_panel.clear()
 
 func _on_tower_select_skipped():
 	push_warning("Tower select skipped - no valid towers available")

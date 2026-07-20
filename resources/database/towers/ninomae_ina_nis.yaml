@@ -8,6 +8,17 @@ attack_sound: "hit_ina"
 open_sound: "debut_ina"
 evolve_sound: "evo_ina"
 
+# Normal attack - "Wet Nib" ink stroke. Homing bullet, damage lands on hit.
+# The shader owns the palette; only geometry/pacing is authored here.
+attack:
+  mode: projectile
+  projectile: "res://resources/combat/bullets/ina_normal_bullet.tscn"
+  vfx_shader: "res://resources/tower/hololive/en_branch/myth_gen/inanis/normal_effect/ina_ink_stroke.gdshader"
+  speed: 6.0          # tiles/sec
+  size: 184           # stroke height px (scales sprite + hitbox); quad is 154x64
+  burst: 1            # one stroke - no cosmetic rounds
+  impact: true        # opt in to the on-hit beat (impact_size/impact_time keep their defaults)
+
 stats:
   - damage: 140
     attackRange: 3.0

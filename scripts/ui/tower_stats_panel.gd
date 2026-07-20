@@ -34,9 +34,12 @@ var _tower: Tower = null
 # Rebuild key for the skill-icon row ("level_isEvolved"): icons/tooltips only
 # change on level-up or evolve, so the per-frame poll skips the rebuild.
 var _skills_key: String = ""
-# Inspect-highlight outline on the selected tower's sprite (ui.md). One material
-# is enough: only one unit is ever selected (panels mutually clear).
+# Inspect visuals on the selected tower (ui.md): the sprite outline plus the
+# attack-range ring. One material is enough - only one unit is ever selected
+# (panels mutually clear). Both visuals share one apply/remove pair so a future
+# teardown path cannot clear one and leak the other.
 var _outline_mat: ShaderMaterial
+var _hl_tower: Tower = null
 var _hl_sprite: AnimatedSprite2D = null
 
 func _ready():
@@ -51,7 +54,7 @@ func show_tower(tower: Tower) -> void:
 	# Container lives on TowerData, which evolve() mutates in place and which
 	# outlives the node - bind once per selection is safe.
 	_effect_row.setup(tower.data.effects if tower.data != null else null)
-	_apply_highlight(tower.spr)
+	_apply_highlight(tower)
 	_refresh()
 
 func clear() -> void:
@@ -64,8 +67,15 @@ func clear() -> void:
 # grow contraction). Feeding it live from the sprite - instead of hardcoding any
 # frame/sheet size - keeps the highlight correct through future asset resizes
 # or repacks (Director requirement 2026-07-17).
-func _apply_highlight(spr: AnimatedSprite2D) -> void:
+func _apply_highlight(tower: Tower) -> void:
 	_remove_highlight()
+	if tower == null:
+		return
+	_hl_tower = tower
+	# The ring is the tower's own placement-preview draw, reused as-is: same
+	# radius source as the real detection shape, so it cannot lie about reach.
+	tower.showAttackRange(true)
+	var spr := tower.spr
 	if spr == null:
 		return
 	_hl_sprite = spr
@@ -78,6 +88,9 @@ func _apply_highlight(spr: AnimatedSprite2D) -> void:
 	spr.animation_changed.connect(_update_highlight_region)
 
 func _remove_highlight() -> void:
+	if _hl_tower != null and is_instance_valid(_hl_tower):
+		_hl_tower.showAttackRange(false)
+	_hl_tower = null
 	if _hl_sprite != null and is_instance_valid(_hl_sprite):
 		_hl_sprite.material = null
 		if _hl_sprite.frame_changed.is_connected(_update_highlight_region):

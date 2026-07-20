@@ -97,7 +97,7 @@ skills:
 
 evolutionStat:
   damage: 500
-  attackRange: 4.0
+  attackRange: 3.0
   attackSpeed: 60
   mana: 100
   initialMana: 60

@@ -76,7 +76,7 @@ func _ready():
 		attackController.setup(self, Callable(stat, "getAttackDelay"));
 
 	if(enemyDetector != null):
-		enemyDetector.setup(stat.attackRange);
+		enemyDetector.setup(data.getAttackRange());
 		Utility.ConnectSignal(enemyDetector, "onRemoveTarget", Callable(self, "clearEnemy"))
 		if inPlaceMode:
 			showAttackRange(true);
@@ -187,6 +187,8 @@ func exitPlaceMode():
 
 func upgrade():
 	var success = data.levelUp()
+	if success:
+		_syncDetectorRange()
 	setTowerStar(data.level);
 	return success
 
@@ -194,6 +196,7 @@ func evolve():
 	var success = data.evolve()
 	if success:
 		_play_evolve_sound()
+		_syncDetectorRange()
 		setTowerStar(4)
 		if data.evolutionSkill != null:
 			if skillController != null:
@@ -294,6 +297,8 @@ func updateTowerState():
 	var cellPos = GridHelper.WorldToCell(position);
 	var valid = Map.isCellAvailable(cellPos);
 	updateSpriteColor(valid);
+	if enemyDetector != null:
+		enemyDetector.setRangeBlocked(!valid);
 	isOnValidCell = valid;
 
 func updateSpriteColor(available: bool):
@@ -399,6 +404,15 @@ func resetForWave():
 func showAttackRange(p_show: bool):
 	if enemyDetector != null:
 		enemyDetector.setEnabledDrawRange(p_show);
+
+# The detector caches its radius, so every path that can change the tower's
+# range must push the new value. Sourced from getAttackRange() (stat + RANGE
+# effects), not the raw stat, so the hitbox matches the stats-panel readout.
+# Known gap: nothing hooks effect apply/expire yet - dormant, no data uses
+# Kind.RANGE today (tower.md).
+func _syncDetectorRange():
+	if enemyDetector != null:
+		enemyDetector.syncRange(data.getAttackRange());
 
 func setTowerStar(tier: int):
 	if(towerStar != null):

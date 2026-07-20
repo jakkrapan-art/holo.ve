@@ -268,6 +268,11 @@ func _on_staff_died():
 	# Mark game over BEFORE any UI work so popup factories early-return if they fire
 	# concurrently from a wave-end timer or deferred callback.
 	state = "game_over"
+	# Drop the inspected tower/enemy. The end screen is a centred panel, not a
+	# full-screen cover, so an outline or range ring left behind it stays visible
+	# - and _unhandled_input early-returns on game_over, so the player could
+	# never clear it.
+	_clear_inspection()
 	# Dismiss any tower-select / deck popup currently open so it can't sit on top of
 	# the end screen or accept clicks after the game is over.
 	if _active_popup != null and is_instance_valid(_active_popup):

@@ -19,6 +19,14 @@ var _title_label: Label = null
 
 
 func _ready() -> void:
+	# PopupPanel is a full-rect Control that draws nothing - its only effect was eating
+	# mouse input across the whole screen, which made every tooltip UNDER the popup
+	# unreachable (synergy rows, Staff skill button, stats-panel icons): Godot's built-in
+	# tooltips only fire on the topmost mouse hit. Modality does not depend on it -
+	# GameScene._popup_is_blocking() already gates field clicks and the Staff skill press.
+	# IGNORE lets hover through; the Panel card below still STOPs clicks on its own rect.
+	# Set here rather than in tower_select.tscn for the same reason as _title_label above.
+	$CanvasLayer/PopupPanel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	setupRefreshText(refreshLeft, maxRefresh);
 
 func setup(evoToken: int = 0, p_maxRefresh: int = 0, title: String = ""):

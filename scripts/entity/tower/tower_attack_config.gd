@@ -20,12 +20,22 @@ const MODE_PROJECTILE := "projectile"
 # Colour uniforms the `attack:` block may override (parsed from "#rrggbb" or [r,g,b(,a)]).
 const COLOR_KEYS = ["core_color", "mid_color", "edge_color"]
 
+# Unauthored impact diameter = bullet size * this.
+const IMPACT_SIZE_FACTOR := 1.8
+
 var mode: String = MODE_HITSCAN
 var projectile_scene: PackedScene = null
 var vfx_shader: String = ""          # shader path, for ResourceManager warm (avoids first-fire hitch)
 var speed: float = 9.0               # tiles/sec (converted to px at spawn via GridHelper.CELL_SIZE)
 var size: float = 84.0               # bullet height/diameter px (drives sprite scale AND collision radius)
 var burst: int = 3                   # rounds fired per attack (visual; damage still lands once)
+
+# On-hit impact beat (opt-in). The bullet SHADER draws it from a `phase` uniform, so a
+# tower opting in needs a shader with a phase-1 branch; towers that omit `impact` behave
+# exactly as before. Defaults reproduce the approved Ina values without authoring them.
+var has_impact: bool = false
+var impact_size: float = -1.0        # px; < 0 => size * IMPACT_SIZE_FACTOR
+var impact_time: float = 0.35        # seconds the impact beat runs
 
 # Shader-uniform overrides explicitly set in YAML (uniform name -> value). ONLY these are
 # pushed onto the bullet material; any uniform not here keeps the shader's own default.
@@ -34,6 +44,12 @@ var visual_overrides: Dictionary = {}
 func is_projectile() -> bool:
 	return mode == MODE_PROJECTILE
 
+# Resolved impact diameter in px (falls back off the bullet size when unauthored).
+func get_impact_size() -> float:
+	if impact_size > 0.0:
+		return impact_size
+	return size * IMPACT_SIZE_FACTOR
+
 static func from_dict(d: Dictionary) -> TowerAttackConfig:
 	var cfg := TowerAttackConfig.new()
 	cfg.mode = str(d.get("mode", MODE_HITSCAN))
@@ -41,6 +57,11 @@ static func from_dict(d: Dictionary) -> TowerAttackConfig:
 	cfg.speed = float(d.get("speed", cfg.speed))
 	cfg.size = float(d.get("size", cfg.size))
 	cfg.burst = max(1, int(d.get("burst", cfg.burst)))   # never 0 bullets
+
+	# Impact beat: opt-in, and its two knobs stay unauthored unless a tower needs them.
+	cfg.has_impact = bool(d.get("impact", false))
+	cfg.impact_size = float(d.get("impact_size", cfg.impact_size))
+	cfg.impact_time = max(0.01, float(d.get("impact_time", cfg.impact_time)))
 
 	# Store ONLY the visual uniforms the YAML actually sets (presence = `d.has(key)`), so
 	# the shader's own defaults stand for anything omitted - a bullet never inherits

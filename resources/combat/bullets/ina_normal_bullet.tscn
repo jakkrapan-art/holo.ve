@@ -1,0 +1,29 @@
+[gd_scene load_steps=7 format=3 uid="uid://cinainkbullet001"]
+
+[ext_resource type="Script" path="res://scripts/combat/projectile.gd" id="1_proj"]
+[ext_resource type="Shader" path="res://resources/tower/hololive/en_branch/myth_gen/inanis/normal_effect/ina_ink_stroke.gdshader" id="2_shdr"]
+
+[sub_resource type="Gradient" id="Gradient_w"]
+offsets = PackedFloat32Array(0, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradTex_w"]
+gradient = SubResource("Gradient_w")
+width = 154
+height = 64
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_b"]
+shader = ExtResource("2_shdr")
+
+[sub_resource type="CircleShape2D" id="Circle_b"]
+radius = 36.0
+
+[node name="InaNormalBullet" type="Area2D"]
+script = ExtResource("1_proj")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_b")
+texture = SubResource("GradTex_w")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("Circle_b")

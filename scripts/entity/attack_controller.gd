@@ -4,6 +4,12 @@ class_name AttackController
 @onready var attackDelayTimer = $AttackDelayTimer
 @export var projectile: PackedScene #for test projectile
 
+## Bullet lifetime in seconds. Also the clock the bullet shader's `life` uniform is
+## derived from (BULLET_LIFETIME - proj.lifetime), so it must stay the value passed to
+## setupTarget below.
+const BULLET_LIFETIME := 5.0
+const IMPACT_QUAD_PX := 64.0   # carrier quad for the impact beat; scaled to cfg.get_impact_size()
+
 var getAttackCooldown: Callable;
 
 var tower: Tower;
@@ -95,15 +101,24 @@ func _spawnBullet(target: Enemy, cfg: TowerAttackConfig, dmg: Damage, saved_gen:
 	var aim_dir := (target.global_position - tower.global_position).normalized()
 	proj.global_position = Utility.muzzle_origin(tower.global_position, aim_dir)
 	proj.speed = cfg.speed * GridHelper.CELL_SIZE
-	_applyBulletVisual(proj, cfg)
+	var mat := _applyBulletVisual(proj, cfg)
+
+	# onMove ticks the bullet shader's `life` every frame (Projectile calls it before
+	# processLifetime, so frame one reads 0.0). Rides the same _process delta as the
+	# bullet, so it is pause-frozen and x2-correct for free. A bullet shader without a
+	# `life` uniform just ignores the push.
+	var move_cb := Callable()
+	if mat != null:
+		move_cb = Callable(self, "_onBulletMove").bind(mat)
 
 	var cb: ProjectileCallback
 	if carries_damage:
-		# bound saved_gen arrives as the 3rd arg of _onProjectileHit(proj, target, gen)
-		cb = ProjectileCallback.new(Callable(self, "_onProjectileHit").bind(saved_gen), Callable(), Callable())
+		# Projectile emits onHit.call(self, target) and bind() appends, so the bound args
+		# land as _onProjectileHit(proj, target, saved_gen, cfg) - order matters.
+		cb = ProjectileCallback.new(Callable(self, "_onProjectileHit").bind(saved_gen, cfg), Callable(), move_cb)
 	else:
-		cb = ProjectileCallback.new()   # empty -> no damage; fizzles on hit / target death
-	proj.setupTarget(tower, target, dmg, 5.0, cb)
+		cb = ProjectileCallback.new(Callable(), Callable(), move_cb)   # no damage; visual only
+	proj.setupTarget(tower, target, dmg, BULLET_LIFETIME, cb)
 
 func _spawnBurstRemainder(target: Enemy, cfg: TowerAttackConfig, saved_gen: int) -> void:
 	for i in range(1, cfg.burst):
@@ -114,18 +129,73 @@ func _spawnBurstRemainder(target: Enemy, cfg: TowerAttackConfig, saved_gen: int)
 			return
 		_spawnBullet(target, cfg, null, saved_gen, false)
 
-func _onProjectileHit(proj: Projectile, target, saved_gen: int) -> void:
+func _onProjectileHit(proj: Projectile, target, saved_gen: int, cfg: TowerAttackConfig) -> void:
 	if not is_instance_valid(tower) or tower.skill_lock_generation != saved_gen:
 		return   # stale: a wave reset happened since fire — don't hit a recycled enemy
 	if target is Enemy and is_instance_valid(target):
+		# Impact BEFORE the damage: a killing blow can run endWave -> resetForWave
+		# synchronously inside recvDamage (see Tower.attackEnemy), and this beat belongs
+		# to the moment of contact. Centred on the ENEMY, not on the bullet: the bullet
+		# stops a collision-radius short of it.
+		_spawnImpact(cfg, (target as Enemy).global_position)
 		(target as Enemy).recvDamage(proj.damage)
 		executeModifier()
+
+# Pushes seconds-in-flight to the bullet shader (see BULLET_LIFETIME).
+func _onBulletMove(proj: Projectile, mat: ShaderMaterial) -> void:
+	if not is_instance_valid(proj) or mat == null:
+		return
+	mat.set_shader_parameter("life", BULLET_LIFETIME - proj.lifetime)
+
+# On-hit beat for bullets whose shader draws a phase-1 impact (opt-in via `impact: true`).
+# Square quad and rotation 0 on purpose: the impact fragment is radial, and its droplet
+# gravity only reads as "down" while the quad is unrotated.
+func _spawnImpact(cfg: TowerAttackConfig, at: Vector2) -> void:
+	if cfg == null or not cfg.has_impact or cfg.vfx_shader == "":
+		return
+	if not is_instance_valid(tower):
+		return
+	var shader = load(cfg.vfx_shader)
+	if shader == null:
+		return
+
+	var spr := Sprite2D.new()
+	spr.texture = _whiteQuad()
+	var mat := ShaderMaterial.new()
+	mat.shader = shader
+	mat.set_shader_parameter("phase", 1.0)
+	mat.set_shader_parameter("progress", 0.0)
+	spr.material = mat
+	spr.scale = Vector2.ONE * (cfg.get_impact_size() / IMPACT_QUAD_PX)
+	tower.get_tree().root.add_child(spr)
+	spr.global_position = at
+
+	# Tween lives on the sprite: it freezes with the tree on pause and dies with the node.
+	var t := spr.create_tween()
+	t.tween_method(
+		func(p: float): mat.set_shader_parameter("progress", p),
+		0.0, 1.0, cfg.impact_time
+	)
+	t.tween_callback(spr.queue_free)
+
+# Plain white carrier quad - the impact shader draws everything from UV, sampling nothing.
+func _whiteQuad() -> GradientTexture2D:
+	var grad := Gradient.new()
+	grad.offsets = PackedFloat32Array([0.0, 1.0])
+	grad.colors = PackedColorArray([Color.WHITE, Color.WHITE])
+	var tex := GradientTexture2D.new()
+	tex.gradient = grad
+	tex.width = int(IMPACT_QUAD_PX)
+	tex.height = int(IMPACT_QUAD_PX)
+	return tex
 
 # Scales sprite + collision to cfg.size and pushes ONLY the shader-uniform overrides the
 # YAML actually set (cfg.visual_overrides); anything omitted keeps the shader's own default.
 # Duplicates the shared ShaderMaterial / CircleShape2D so per-bullet (and per-tower) tuning
-# never mutates the scene's shared resources.
-func _applyBulletVisual(proj: Projectile, cfg: TowerAttackConfig) -> void:
+# never mutates the scene's shared resources. Returns the per-bullet ShaderMaterial (null if
+# the bullet has none) so the caller can drive per-frame uniforms on it.
+func _applyBulletVisual(proj: Projectile, cfg: TowerAttackConfig) -> ShaderMaterial:
+	var bullet_mat: ShaderMaterial = null
 	for child in proj.get_children():
 		if child is Sprite2D:
 			var spr := child as Sprite2D
@@ -134,6 +204,7 @@ func _applyBulletVisual(proj: Projectile, cfg: TowerAttackConfig) -> void:
 			if spr.material is ShaderMaterial:
 				var mat := (spr.material as ShaderMaterial).duplicate() as ShaderMaterial
 				spr.material = mat
+				bullet_mat = mat
 				for uniform_name in cfg.visual_overrides:
 					mat.set_shader_parameter(uniform_name, cfg.visual_overrides[uniform_name])
 		elif child is CollisionShape2D:
@@ -142,3 +213,4 @@ func _applyBulletVisual(proj: Projectile, cfg: TowerAttackConfig) -> void:
 				var shape := (cs.shape as CircleShape2D).duplicate() as CircleShape2D
 				shape.radius = cfg.size * 0.5
 				cs.shape = shape
+	return bullet_mat

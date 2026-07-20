@@ -1,6 +1,6 @@
 shader_type canvas_item;
 render_mode blend_premul_alpha;   // dark pool must survive the lit map
-                                  // (docs/shader.md Section 3, Hinotori lesson)
+                                  // (Hinotori lesson)
 
 // ================================================================
 // Banzoin Hakka · "Exocirst Field" (normal) — persistent purifying zone.
@@ -37,7 +37,7 @@ uniform vec4 soul_color  : source_color = vec4(0.55, 0.95, 0.92, 1.0); // firefl
 // zone in the SQUARE 3x3 hitbox left corner gaps where enemies took damage
 // while looking outside the circle - the ring now overshoots the box's flat
 // edges slightly to shrink the corner gap to an accepted level. Visual frame
-// may exceed the code-side AOE (shader.md house rule).
+// may exceed the code-side AOE (house rule).
 uniform float ring_radius : hint_range(0.2, 0.5) = 0.425;
 uniform float ellipse     : hint_range(1.0, 1.8)  = 1.22; // ground perspective
 uniform float orbit_speed : hint_range(0.0, 2.0)  = 0.55;

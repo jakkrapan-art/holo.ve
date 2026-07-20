@@ -48,7 +48,7 @@
 # ------------------------------------------------------------
 # Skill schema  (reference for <staff_key>.yaml `skill:` block — Phase 2 onwards)
 # ------------------------------------------------------------
-# Reuses the Tower Skill resource + SkillAction primitives (see damage_formula.md §3,
+# Reuses the Tower Skill resource + SkillAction primitives (see
 # skill_utility.gd ParseAction for the full action-type catalog). Player-aimed AOE
 # skills set `context.extra.target_position` automatically via Staff.executeSkillAtPosition.
 #

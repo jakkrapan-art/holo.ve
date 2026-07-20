@@ -81,7 +81,7 @@ func execute(context: SkillContext):
 	# Cache crit context (avoid recomputing per-target)
 	var stat = tower.data.getStat()
 	# The authored canCrit gate can be opened from outside by the SpellCaster
-	# synergy marker (tower_synergy.md). It unlocks the roll only - the synergy
+	# synergy marker. It unlocks the roll only - the synergy
 	# grants no crit chance, so a 0-chance holder still never crits.
 	var critAllowed: bool = canCrit or tower.data.effects.stacks_of("spellcaster_crit") > 0
 	var critChance: float = tower.data.getCritChance() if critAllowed else 0.0

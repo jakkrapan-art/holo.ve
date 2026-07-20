@@ -1,6 +1,6 @@
 shader_type canvas_item;
 
-// Inspect-highlight outline (ui.md): silhouette border drawn on the sprite of
+// Inspect-highlight outline: silhouette border drawn on the sprite of
 // the tower/enemy currently selected into a stats panel. First character-sprite
 // shader in the project - assigned/removed at runtime by the two stats panels.
 //

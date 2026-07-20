@@ -16,7 +16,7 @@ var isCritical: bool = false;
 # Master Formula and TRUE damage still bypasses it. Frozen on purpose: a
 # projectile carries this value through its whole flight, and every enemy a
 # piercing shot passes through takes the value derived from the ORIGINAL target
-# (Marksman synergy - tower_synergy.md).
+# (Marksman synergy).
 var sourceAmp: float = 0.0
 
 # True when a skill authored this damage. Kill attribution reads this instead of

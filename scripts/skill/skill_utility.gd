@@ -16,7 +16,7 @@ static func ParseSkill(skillDataList: Array) -> Array[Skill]:
 		# author per-beat play_animation cast_time instead (idle-hold key removed).
 		var castTime = float(skill.get("cast_time", 0.0));
 		# Single source for balance numbers: actions bind via *_param keys and
-		# the desc renders the same values via {token} (enemy_skill.md Copy).
+		# the desc renders the same values via {token}.
 		var parameters: Dictionary = skill.get("parameters", {});
 		var actions: Array[SkillAction] = [];
 		var actionList = skill.get("action", []);
@@ -63,7 +63,7 @@ static func ParseSkill(skillDataList: Array) -> Array[Skill]:
 # warns and falls back to the literal/default - loud but not fatal (the desc
 # side shows the raw {token} for the same breakage). Convention note: these new
 # keys use the short `*_param` suffix (matching apply_effect's runtime keys);
-# the older `*_param_name` sites stay as-is (enemy_skill.md).
+# the older `*_param_name` sites stay as-is.
 static func _resolve_param(skillData: Dictionary, parameters: Dictionary, param_key: String, fallback: float) -> float:
 	var pname := str(skillData.get(param_key, ""));
 	if pname == "":
@@ -193,7 +193,7 @@ static func ParseAction(data: Dictionary, parameters: Dictionary = {}) -> SkillA
 				skill.statusEffects = EffectUtility.parse_effect_list(attackEffectList, parameters, "action_" + str(skill.get_instance_id()));
 		"aftershock":
 			# Delayed non-blocking re-hit of a snapshotted area ("aftershock"
-			# pattern - tower_skill.md). The inner find/attack are built from
+			# pattern). The inner find/attack are built from
 			# this same data block via this parser, so damage_multiplier_param_name,
 			# damage_type, can_crit, and stack_bonus_* all work in the explosion.
 			skill = SkillActionAftershock.new();
@@ -215,7 +215,7 @@ static func ParseAction(data: Dictionary, parameters: Dictionary = {}) -> SkillA
 			if skillData.has("effect_script"):
 				skill.effect_action = ParseAction({"type": "play_effect", "data": {"effect_script": skillData["effect_script"]}}, parameters) as SkillActionPlayEffect;
 		"channel":
-			# Blocking zone-locked multi-tick ("channel" pattern - tower_skill.md).
+			# Blocking zone-locked multi-tick ("channel" pattern).
 			# The inner find/attack are built from this same data block via this
 			# parser, so damage_multiplier_param_name, damage_type, can_crit, and
 			# effects all work per tick.
@@ -254,8 +254,7 @@ static func ParseAction(data: Dictionary, parameters: Dictionary = {}) -> SkillA
 			if skillData.has("effect_script"):
 				skill.effect_action = ParseAction({"type": "play_effect", "data": {"effect_script": skillData["effect_script"]}}, parameters) as SkillActionPlayEffect;
 		"field":
-			# Non-blocking persistent damage+debuff zone ("field" pattern -
-			# tower_skill.md). Reuses channel's inner find/attack build and its
+			# Non-blocking persistent damage+debuff zone ("field" pattern). Reuses channel's inner find/attack build and its
 			# ChannelTicker; castTime holds the field LIFETIME (not a cast hold).
 			# First user: Banzoin Hakka "Exocirst Field".
 			skill = SkillActionField.new();

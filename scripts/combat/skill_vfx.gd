@@ -2,8 +2,7 @@ class_name SkillVfx
 
 # Shared helpers for lane-static skill-VFX controllers (composition, NOT a base class -
 # each controller keeps its own lifecycle/geometry/tweens). Pairs with the shader-side
-# helpers in resources/tower/shared/lane_fx.gdshaderinc. See docs/shader.md "Skill-VFX
-# families + checklist".
+# helpers in resources/tower/shared/lane_fx.gdshaderinc.
 
 # Resolve the RAW aim vector for a lane effect, caster-agnostic (no `as Tower`, so a future
 # non-Tower caster like a Staff works once SkillActionPlayEffect stops gating on Tower).

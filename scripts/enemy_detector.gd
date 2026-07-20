@@ -4,8 +4,8 @@ class_name EnemyDetector
 var radius: float = 3
 @export var collision: CollisionShape2D;
 
-# Attack-range ring, drawn for both the placement preview and an inspected tower
-# (ui.md). Publisher-CI blue family: bright cyan edge over a faint blue wash.
+# Attack-range ring, drawn for both the placement preview and an inspected tower.
+# Publisher-CI blue family: bright cyan edge over a faint blue wash.
 # Static by design - the inspect outline already owns the pulsing beat, and a
 # second pulse on a shape this large reads as noise (Director 2026-07-20).
 const RING_FILL := Color(0.40, 0.85, 1.00, 0.12)
@@ -16,7 +16,7 @@ const RING_STROKE := Color("#6cecfd", 0.95)
 const RING_FILL_BLOCKED := Color(1.00, 0.35, 0.35, 0.12)
 const RING_STROKE_BLOCKED := Color(0.80, 0.16, 0.20, 0.95)
 # Cell-relative, not a pixel literal: world-space _draw() must survive camera
-# zoom and map-extent changes (ui.md world-drawing rule). CELL_SIZE comes from an
+# zoom and map-extent changes. CELL_SIZE comes from an
 # autoload, so this stays a fraction and is resolved at draw time, not a const.
 const RING_STROKE_CELL_FRAC := 0.046
 
@@ -46,7 +46,7 @@ func setup(p_radius: float):
 # The only place the detection radius is written. Call it whenever the tower's
 # range can have changed (level-up, evolve) - the value is a snapshot, not a
 # live read, so a missed call silently desyncs the real hitbox from the range
-# the stats panel displays (tower.md).
+# the stats panel displays.
 func syncRange(p_range: float) -> void:
 	self.radius = p_range + 0.5
 

@@ -8,7 +8,7 @@ render_mode blend_add;
 // STATIC by design (no internal TIME) - the motion is the projectile's transform. The bullet
 // .tscn quad is authored WIDE (154x64) so the long axis = local +X = travel/forward; the
 // Projectile node (projectile.gd) rotates to face its target. White/blue-white only =>
-// blend_add is safe (shader.md). Do NOT use MODULATE (custom-COLOR fragment won't apply it).
+// blend_add is safe. Do NOT use MODULATE (custom-COLOR fragment won't apply it).
 //
 // attack_controller._applyBulletVisual pushes core_color / mid_color / glow_softness from the
 // tower's attack_config (YAML). arm_hh / notch / tail_hh / intensity are NOT pushed, so their

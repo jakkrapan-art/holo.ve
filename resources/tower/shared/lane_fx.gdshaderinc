@@ -1,7 +1,6 @@
 // Shared lane-effect shader helpers (Holo.Ve) - functions only, NO uniforms (each shader
 // keeps its own uniforms + ranges). #include this into lane-static directional skill-VFX
 // shaders so the bug-prone frame/origin math lives in ONE corner-free place.
-// See docs/shader.md "Skill-VFX families + checklist" for when to use these.
 
 // Soft fade-in at the lane origin. Replaces a hard step(0.0, lane_x) scissor at the caster,
 // which clipped the head/tail into a hard edge. softness = fade band in lane-x units.

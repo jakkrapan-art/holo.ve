@@ -1,7 +1,7 @@
 shader_type canvas_item;
 render_mode blend_premul_alpha;   // premultiplied: the dark void/purple body stays true over the
                                   // bright lit map while the white soul-core still adds
-                                  // (docs/shader.md Section 3, Kiara Hinotori lesson).
+                                  // (Kiara Hinotori lesson).
 
 // ════════════════════════════════════════════════════════════════
 // Calliope · "Ricky" (normal) — Reaper's dark-energy crescent (self-centered 3x3).

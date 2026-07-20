@@ -42,7 +42,7 @@ func set_applier(applier: Node) -> void:
 
 # Overhead status-icon title: the skill-authored title when set, else the
 # registry name. Single-source with the icon tooltip - the UI never hand-builds
-# a title (game_copy.md).
+# a title.
 func display_title() -> String:
 	return authored_title if authored_title != "" else def.display_name
 

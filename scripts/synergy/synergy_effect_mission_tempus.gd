@@ -7,7 +7,7 @@ extends SynergyEffect
 # SUM rather than replace). Kill count starts when Tempus first activates (2 units)
 # and lives here in the effect; SynergyController is run-level, so it persists
 # across waves (never reset per wave). Rewards are BOARD-lifetime (survive wave
-# reset by construction - see buff_debuff.md).
+# reset by construction).
 #
 #   Tier 0 (2 units, 100 kills): Tempus units +atk_bonus% Physical & Magic Attack
 #   Tier 1 (4 units, 200 kills): Tempus units +as_bonus Attack Speed

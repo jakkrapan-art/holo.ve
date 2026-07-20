@@ -35,7 +35,7 @@ static func _build(raw: Dictionary, path: String) -> SynergyData:
 	d.rarity = str(raw.get("rarity", SynergyData.RARITY_COMMON))
 	d.effect = str(raw.get("effect", ""))
 	# YamlParser does not process escapes; translate \n loader-side, only for the
-	# text fields that want it (data_pipeline.md Problem #1).
+	# text fields that want it.
 	# Single tokenized desc key; a stale desc_template key warns and wins.
 	d.desc = str(raw.get("desc", "")).replace("\\n", "\n")
 	if raw.has("desc_template"):

@@ -7,7 +7,7 @@ extends RefCounted
 
 var id: String = ""
 var display_name: String = ""
-# Player-facing tooltip line (game_copy.md voice). Numbers are NEVER typed
+# Player-facing tooltip line. Numbers are NEVER typed
 # in: the "{value}" token resolves to the instance's real applied magnitude
 # (stacks included) at display time - same single-source rule as the
 # tokenized skill desc.

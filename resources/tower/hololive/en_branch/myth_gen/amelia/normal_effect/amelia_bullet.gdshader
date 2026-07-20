@@ -3,7 +3,7 @@ render_mode blend_mix;
 // Watson Amelia — normal-attack bullet (Soft Glow). Clean round shape drawn entirely
 // in-shader (no sprite texture sampled, so no black rim). Warm-gold pistol round.
 // Static look — the bullet's animation is its transform, not the shader (no internal
-// TIME; matches shader.md). Do NOT use MODULATE: a custom-COLOR canvas_item fragment
+// TIME). Do NOT use MODULATE: a custom-COLOR canvas_item fragment
 // won't auto-apply it and an unknown built-in fails compile silently (square fallback).
 // First production bullet in the game to use a custom shader (others use sprite+tint).
 

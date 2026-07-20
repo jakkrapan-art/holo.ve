@@ -409,7 +409,7 @@ func showAttackRange(p_show: bool):
 # range must push the new value. Sourced from getAttackRange() (stat + RANGE
 # effects), not the raw stat, so the hitbox matches the stats-panel readout.
 # Known gap: nothing hooks effect apply/expire yet - dormant, no data uses
-# Kind.RANGE today (tower.md).
+# Kind.RANGE today.
 func _syncDetectorRange():
 	if enemyDetector != null:
 		enemyDetector.syncRange(data.getAttackRange());

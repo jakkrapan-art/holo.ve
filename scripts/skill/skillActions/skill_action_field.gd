@@ -1,7 +1,7 @@
 class_name SkillActionField
 extends SkillActionChannel
 
-# "field" execution pattern (tower_skill.md): a NON-BLOCKING, self-centered,
+# "field" execution pattern: a NON-BLOCKING, self-centered,
 # persistent damaging + debuffing zone. Unlike "channel" (which BLOCKS the
 # caster for the whole duration), the field is planted and execute() returns
 # immediately - the tower resumes auto-attack while the zone ticks on its own,

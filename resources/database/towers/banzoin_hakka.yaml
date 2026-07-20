@@ -34,7 +34,7 @@ stats:
     critMultiplier: 1.5
 
 # Active Skill - "Exocirst Field": a persistent purifying zone centered on
-# Hakka. It is the first "field" execution pattern (tower_skill.md) - planted
+# Hakka. It is the first "field" execution pattern - planted
 # non-blocking (Hakka keeps auto-attacking) and ticks physical damage + slow to
 # enemies inside every tickInterval for skillDuration seconds. Zone VFX =
 # effect_script on the field action (ofuda orbit + spirit vortex, persistent

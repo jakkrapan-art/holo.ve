@@ -13,7 +13,7 @@ extends Node2D
 #
 # This dark background hides blend_add washout: verify additive or
 # dark-band effects over the real lit map before calling a look final
-# (docs/shader.md Section 3, Kiara Hinotori lesson).
+# (Kiara Hinotori lesson).
 # ================================================================
 
 const EFFECT_SCRIPT := "res://test/vfx_template/lane_effect_template.gd"

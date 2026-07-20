@@ -1,7 +1,7 @@
 class_name SkillActionAftershock
 extends SkillAction
 
-# "aftershock" execution pattern (tower_skill.md): the cast plants a delayed
+# "aftershock" execution pattern: the cast plants a delayed
 # re-hit of the SAME area and returns immediately - the tower resumes normal
 # behavior while the bomb waits. Everything resolves at EXPLOSION time: fresh
 # target query at the snapshotted cast-time center, live Total Attack, live

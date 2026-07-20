@@ -15,7 +15,7 @@ render_mode blend_premul_alpha;
 // attack_config.vfx_shader warm (resource_manager.gd) covers the impact too.
 //
 // blend_premul_alpha, NOT blend_add: the palette is ink-dark and blend_add only adds
-// luminance, so the ink bands would vanish over a lit map (shader.md Section 3).
+// luminance, so the ink bands would vanish over a lit map.
 // Do NOT use MODULATE - a custom-COLOR canvas_item fragment does not apply it.
 //
 // NO internal TIME. `life` (seconds in flight) is pushed each frame by

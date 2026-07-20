@@ -128,7 +128,7 @@ func stacks_of(effect_id: String) -> int:
 			total += inst.stacks
 	return total
 
-# ---- Mark API (framework; no consumer tower yet - see buff_debuff.md) ----
+# ---- Mark API (framework; no consumer tower yet) ----
 
 func has_mark(effect_id: String) -> bool:
 	return mark_stacks(effect_id) > 0

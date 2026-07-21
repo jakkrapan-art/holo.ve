@@ -18,6 +18,12 @@ const RARITY_COMMON := "common"
 const RARITY_UNIQUE := "unique"
 const RARITIES := [RARITY_COMMON, RARITY_UNIQUE]
 
+# Legal desc token formats ("" = plain number). `percent` renders a
+# decimal-scale value as N% (x100: 0.5 -> "50%"); `pct` appends % to a
+# percent-scale value as-is (25 -> "25%"). Shared with the loader's
+# token validation.
+const FORMATS := ["", "percent", "pct"]
+
 var id: String = ""                # file/data key, e.g. "myth"
 var synergy_id: int = 0            # TowerTrait enum int (resolved at load)
 var display_name: String = ""
@@ -92,9 +98,9 @@ func get_parameter(param_name: String, tier: int):
 		return value[index]
 	return value
 
-# Flavour line resolved for a tier. highlight_color (BBCode hex) wraps values
-# that come from a per-tier (array) parameter, so the player sees which number
-# scales; "" returns plain text.
+# Flavour line resolved for a tier. highlight_color (BBCode hex) wraps EVERY
+# resolved value - cyan means "the number that matters", independent of whether
+# it scales by tier (Director 2026-07-21); "" returns plain text.
 func flavor(tier: int, highlight_color: String = "") -> String:
 	return _render(desc, tier, highlight_color)
 
@@ -120,10 +126,17 @@ func _render(template: String, tier: int, highlight_color: String) -> String:
 		var m := matches[i]
 		var pname := m.get_string(1)
 		var fmt := m.get_string(2)
-		var is_scaling: bool = parameters.has(pname) and parameters[pname] is Array
-		var text := _format_value(get_parameter(pname, tier), fmt)
-		if highlight_color != "" and is_scaling:
-			text = "[color=" + highlight_color + "]" + text + "[/color]"
+		var value = get_parameter(pname, tier)
+		var text: String
+		if value == null:
+			# Missing parameter: keep the raw {token} visible instead of an empty
+			# hole so the breakage shows in-game (mirrors Skill.get_display_desc);
+			# get_parameter already warned.
+			text = m.get_string()
+		else:
+			text = _format_value(value, fmt)
+			if highlight_color != "":
+				text = "[color=" + highlight_color + "]" + text + "[/color]"
 		result = result.substr(0, m.get_start()) + text + result.substr(m.get_end())
 	return result
 
@@ -134,6 +147,8 @@ func _format_value(value, fmt: String) -> String:
 	match fmt:
 		"percent":
 			return _format_number(float(value) * 100.0) + "%"
+		"pct":
+			return _format_number(value) + "%"
 		"":
 			return _format_number(value)
 		_:

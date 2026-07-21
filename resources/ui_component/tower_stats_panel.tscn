@@ -183,7 +183,7 @@ label_settings = SubResource("LabelSettings_dim")
 
 [node name="TypeValue" type="Label" parent="StatsGrid"]
 layout_mode = 2
-text = "Physical"
+text = "Weapon"
 label_settings = SubResource("LabelSettings_body")
 
 [node name="RangeName" type="Label" parent="StatsGrid"]

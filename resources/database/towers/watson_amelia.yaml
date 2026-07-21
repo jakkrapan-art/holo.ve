@@ -102,7 +102,7 @@ evolutionStat:
 evolution_skills:
   active:
     name: "Elementary my dear"
-    desc: "Watson Amelia invokes the Clock of Time, increasing attack speed by {attackSpeedBuff:percent} for herself and nearby towers within 1 tile, and granting herself {critChanceBuff}% critical chance for 4 seconds."
+    desc: "Watson Amelia invokes the Clock of Time, increasing attack speed by {attackSpeedBuff:percent} for herself and nearby units within 1 tile, and granting herself {critChanceBuff:pct} critical chance for 4 seconds."
     icon: ""
     tags:
       - buff

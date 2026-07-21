@@ -69,11 +69,33 @@ static func _build(raw: Dictionary, path: String) -> SynergyData:
 	if params is Dictionary:
 		d.parameters = params
 
+	# A bad token only shows its breakage when the row is hovered in-game, so
+	# validate desc/tier_effects tokens at load instead.
+	_validate_desc_tokens(d)
+
 	d.synergy_id = _resolve_synergy_id(d.kind, d.id)
 	if d.synergy_id == 0:
 		push_error("SynergyDataLoader: cannot resolve id for '" + d.id + "' (kind=" + d.kind + ") in " + path)
 		return null
 	return d
+
+# Load-time token check for desc + tier_effects: warn on a token naming no
+# parameter (renders as the raw token) and on an unknown format suffix (a
+# ":pcnt" typo would otherwise only warn at render). Scalar refs are legal -
+# shape follows semantics, highlight no longer depends on it.
+static func _validate_desc_tokens(d: SynergyData) -> void:
+	var regex := RegEx.new()
+	regex.compile("\\{([^}:]+)(?::([^}]+))?\\}")
+	var texts: Array = [d.desc]
+	texts.append_array(d.tier_effects)
+	for text in texts:
+		for m in regex.search_all(str(text)):
+			var pname := m.get_string(1)
+			var fmt := m.get_string(2)
+			if not d.parameters.has(pname):
+				push_warning("Synergy '" + d.id + "': desc token {" + pname + "} names no parameter - the raw token will show in the hover.")
+			if not SynergyData.FORMATS.has(fmt):
+				push_warning("Synergy '" + d.id + "': token {" + pname + ":" + fmt + "} uses unknown format '" + fmt + "' - expected one of " + str(SynergyData.FORMATS) + ".")
 
 # Maps the YAML id string to the TowerTrait enum int via the display-name tables.
 static func _resolve_synergy_id(kind: String, id: String) -> int:

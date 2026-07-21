@@ -37,11 +37,11 @@ skills:
   active:
     name: "Flame Slash"
     names: ["Flame Slash I", "Flame Slash II", "Flame Slash III"]
-    desc: "Kiara swings her immortal phoenix flame sword forward through a 3×1 tile area, dealing {damageMultiplier:percent} physical damage. All enemies hit are scorched by Phoenix Flame, taking ({phoenixAtk:percent} attack + {phoenixHp:percent} max HP) magic damage every 1 second for {phoenixDuration} seconds."
+    desc: "Kiara swings her immortal phoenix flame sword forward through a 3×1 tile area, dealing {damageMultiplier:percent} weapon damage. All enemies hit are scorched by Phoenix Flame, taking ({phoenixAtk:percent} Attack + {phoenixHp:percent} max HP) magic damage every 1 second for {phoenixDuration} seconds."
     icon: ""
     tags:
       - damage
-      - attack
+      - weapon
       - aoe
       - dot
     target_summary:
@@ -113,11 +113,11 @@ evolutionStat:
 evolution_skills:
   active:
     name: "Hinotori"
-    desc: "Kiara empowers her sword with sacred phoenix fire and unleashes a devastating slash forward through a 3×5 tile corridor, dealing {damageMultiplier:percent} physical damage. All enemies hit are scorched by Phoenix Flame, taking ({phoenixAtk:percent} attack + {phoenixHp:percent} max HP) magic damage every 1 second for {phoenixDuration} seconds."
+    desc: "Kiara empowers her sword with sacred phoenix fire and unleashes a devastating slash forward through a 3×5 tile corridor, dealing {damageMultiplier:percent} weapon damage. All enemies hit are scorched by Phoenix Flame, taking ({phoenixAtk:percent} Attack + {phoenixHp:percent} max HP) magic damage every 1 second for {phoenixDuration} seconds."
     icon: ""
     tags:
       - damage
-      - attack
+      - weapon
       - aoe
       - dot
       - projectile

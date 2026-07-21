@@ -92,9 +92,9 @@ skill:
       damage_down: 20
       debuff_duration: 8
     # damage_down uses the whole-percent scale (attack_mult/magic_mult kinds
-    # divide by 100 at consumption), so the desc token is {damage_down}% with a
-    # literal % sign - NOT {damage_down:percent}, which would render "2000%".
-    desc: "The Giant Boar stomps the ground, shaking a 5x5 area - units caught inside deal {damage_down}% less damage for {debuff_duration} seconds."
+    # divide by 100 at consumption), so the desc token is {damage_down:pct}
+    # (appends % as-is) - NOT {damage_down:percent}, which would render "2000%".
+    desc: "The Giant Boar stomps the ground, shaking a 5x5 area - units caught inside deal {damage_down:pct} less damage for {debuff_duration} seconds."
     action:
       - type: apply_effect
         data:
@@ -103,7 +103,7 @@ skill:
           range: 2
           value_param: damage_down
           duration_param: debuff_duration
-          title: "Bulldoze - Damage Down"
+          title: "Bulldoze - Weapon Attack Down"
       - type: apply_effect
         data:
           effect: magic_mult_down
@@ -112,4 +112,4 @@ skill:
           value_param: damage_down
           duration_param: debuff_duration
           show_area: false
-          title: "Bulldoze - Magic Down"
+          title: "Bulldoze - Magic Attack Down"

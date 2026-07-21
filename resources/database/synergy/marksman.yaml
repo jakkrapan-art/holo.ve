@@ -9,13 +9,12 @@ effect: damage_per_range
 thresholds: [2]
 parameters:
   # Percent granted per CELL of distance to the target, not a flat amplifier.
-  # Authored as a per-tier array even with one tier: only an array renders as a
-  # highlighted scaling value in the hover (SynergyData._render), and a second
-  # tier must not require rewriting the desc.
-  amp_per_cell: [5]
-# Literal % after the token: the :percent format multiplies by 100. Say "of
+  # Scalar = not a per-tier value (shape follows semantics; every resolved
+  # value highlights).
+  amp_per_cell: 5
+# :pct appends % to a percent-scale value as-is (:percent would x100). Say "of
 # distance to", never "between them and" - at one cell apart there are zero
 # tiles "between" but the bonus is already +5%.
-desc: "Marksman units steady their aim across the field, dealing {amp_per_cell}% more damage for every tile of distance to their target."
+desc: "Marksman units steady their aim across the field, dealing {amp_per_cell:pct} more damage for every tile of distance to their target."
 tier_effects:
-  - "+{amp_per_cell}% damage per tile of distance"
+  - "+{amp_per_cell:pct} damage per tile of distance"

@@ -50,11 +50,11 @@ skills:
   passive:
     name: "Bull Eyes"
     names: ["Bull Eyes I", "Bull Eyes II", "Bull Eyes III"]
-    desc: "Josuiji Shinri steadies his aim with every shot: each non-critical hit adds a Bull Eyes stack, each granting +{critChancePerStack}% critical chance. On a critical hit, his shot becomes a piercing arrow that hits all enemies in a 1×4 tile line for critical damage +{bonusCritDamage:percent}, then loses all Bull Eyes stacks."
+    desc: "Josuiji Shinri steadies his aim with every shot: each non-critical hit adds a Bull Eyes stack, each granting +{critChancePerStack:pct} critical chance. On a critical hit, his shot becomes a piercing arrow that hits all enemies in a 1×4 tile line for critical damage +{bonusCritDamage:percent}, then loses all Bull Eyes stacks."
     icon: ""
     tags:
       - damage
-      - attack
+      - weapon
       - crit_rate
       - projectile
       - aoe
@@ -96,11 +96,11 @@ evolutionStat:
 evolution_skills:
   passive:
     name: "Heartpierce Shot"
-    desc: "Josuiji Shinri's aim turns lethal: each non-critical hit adds a Bull Eyes stack, each granting +{critChancePerStack}% critical chance. On a critical hit, his shot becomes a piercing arrow that hits all enemies in a 1×4 tile line for critical damage +{bonusCritDamage:percent} — and critical hits no longer consume his Bull Eyes stacks."
+    desc: "Josuiji Shinri's aim turns lethal: each non-critical hit adds a Bull Eyes stack, each granting +{critChancePerStack:pct} critical chance. On a critical hit, his shot becomes a piercing arrow that hits all enemies in a 1×4 tile line for critical damage +{bonusCritDamage:percent} — and critical hits no longer consume his Bull Eyes stacks."
     icon: ""
     tags:
       - damage
-      - attack
+      - weapon
       - crit_rate
       - projectile
       - aoe

@@ -39,11 +39,11 @@ skills:
   active:
     name: "Gun and Blade"
     names: ["Gun and Blade I", "Gun and Blade II", "Gun and Blade III"]
-    desc: "Altare strikes twice with his Gun Blade. A forward slash across a 3x1 tile area deals {beat1Damage:percent} physical damage and reduces armor by {armorShred:percent} for {shredDuration}s, then a gun volley down a 1x3 lane deals {beat2Damage:percent} physical damage with a guaranteed critical."
+    desc: "Altare strikes twice with his Gun Blade. A forward slash across a 3x1 tile area deals {beat1Damage:percent} weapon damage and reduces armor by {armorShred:percent} for {shredDuration}s, then a gun volley down a 1x3 lane deals {beat2Damage:percent} weapon damage with a guaranteed critical."
     icon: ""
     tags:
       - damage
-      - attack
+      - weapon
       - aoe
       - combo
       - debuff
@@ -129,11 +129,11 @@ evolutionStat:
 evolution_skills:
   active:
     name: "Heroic Requiem"
-    desc: "Altare's finisher strikes twice with his Gun Blade. A forward slash across a 3x1 tile area deals {beat1Damage:percent} physical damage and reduces armor by {armorShred:percent} for {shredDuration}s, then a long gun volley down a 1x6 lane deals {beat2Damage:percent} physical damage with a guaranteed critical."
+    desc: "Altare's finisher strikes twice with his Gun Blade. A forward slash across a 3x1 tile area deals {beat1Damage:percent} weapon damage and reduces armor by {armorShred:percent} for {shredDuration}s, then a long gun volley down a 1x6 lane deals {beat2Damage:percent} weapon damage with a guaranteed critical."
     icon: ""
     tags:
       - damage
-      - attack
+      - weapon
       - aoe
       - combo
       - debuff

@@ -146,7 +146,7 @@ func _refresh() -> void:
 
 	# Stats: live getters, so buffs/debuffs show (player-facing terms). 3x2 grid: attack block left, crit block + range right.
 	_set_text(_atk_value, str(data.getTotalAttack()))
-	_set_text(_type_value, "Magic" if data.attackType == Damage.DamageType.MAGIC else "Physical")
+	_set_text(_type_value, "Magic" if data.attackType == Damage.DamageType.MAGIC else "Weapon")
 	_set_text(_as_value, _format_number(data.getAttackSpeed()))
 	_set_text(_range_value, _format_number(data.getAttackRange()))
 	_set_text(_crit_value, _format_number(data.getCritChance()) + "%")

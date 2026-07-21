@@ -110,7 +110,7 @@ skills:
         data:
           damage_multiplier_param_name: "beat2Damage"
           damage_type: physic
-          crit_rule: guaranteed_crit             # every hit crits
+          crit_rule: guaranteed_crit   # no_crit / use_crit_chance / guaranteed_crit
       - type: play_animation
         data:
           animation: "idle"
@@ -194,7 +194,7 @@ evolution_skills:
         data:
           damage_multiplier_param_name: "beat2Damage"
           damage_type: physic
-          crit_rule: guaranteed_crit             # every hit crits
+          crit_rule: guaranteed_crit   # no_crit / use_crit_chance / guaranteed_crit
       - type: play_animation
         data:
           animation: "idle"

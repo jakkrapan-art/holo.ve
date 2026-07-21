@@ -155,7 +155,7 @@ evolution_skills:
           animation: "skill"
           damage_multiplier_param_name: "tickDamage"
           damage_type: magic
-          crit_rule: no_crit         # ticks do not crit; only the dormant skill_crit_unlock mark can reopen this
+          crit_rule: no_crit         # no_crit / use_crit_chance / guaranteed_crit
           effects:
             - effect: "stun"
               duration_param: "tickStun"

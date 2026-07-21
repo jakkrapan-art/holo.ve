@@ -90,7 +90,7 @@ skills:
           tick_interval_param_name: "tickInterval"
           damage_multiplier_param_name: "skillDamage"
           damage_type: physic
-          crit_rule: no_crit
+          crit_rule: no_crit   # no_crit / use_crit_chance / guaranteed_crit
           show_area: false            # per-tick red debug box off (VFX replaces it)
           effect_script: "res://resources/tower/holostars/en_branch/tempus_gen/hakka/skill_effect/hakka_field_effect.gd"
           effects:
@@ -161,7 +161,7 @@ evolution_skills:
           tick_interval_param_name: "tickInterval"
           damage_multiplier_param_name: "skillDamage"
           damage_type: physic
-          crit_rule: no_crit
+          crit_rule: no_crit   # no_crit / use_crit_chance / guaranteed_crit
           energy_refund_percent_param_name: "energyRefund"
           show_area: false            # per-tick red debug box off (VFX replaces it)
           effect_script: "res://resources/tower/holostars/en_branch/tempus_gen/hakka/skill_effect/hakka_field_evo_effect.gd"

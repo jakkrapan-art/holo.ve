@@ -39,8 +39,11 @@ func get_display_name(level: int) -> String:
 	return name
 
 # highlight_color (BBCode hex, e.g. "#5AC8FA"): wraps values coming from a
-# per-level (array) parameter so the player sees which number scales -
-# mirrors SynergyData._render. "" returns plain text.
+# per-level (array) parameter so the player sees which number scales. Token
+# grammar mirrors SynergyData._render, but the highlight rule deliberately
+# differs: synergy hovers highlight every value, skill descs carry too many
+# numbers for that and keep the scaling-only rule (Director 2026-07-21).
+# "" returns plain text.
 func get_display_desc(level: int, highlight_color: String = "") -> String:
 	if desc == "":
 		return ""
@@ -87,6 +90,8 @@ func _format_display_parameter(value, format: String) -> String:
 	match format:
 		"percent":
 			return _format_display_number(float(value) * 100.0) + "%"
+		"pct":
+			return _format_display_number(value) + "%"
 		"":
 			return _format_display_number(value)
 		_:

@@ -36,7 +36,7 @@ stats:
 
 skill:
   name: "Skill"
-  desc: "Axel Syrios strikes the 3x1 line in front of him with a fierce blow, dealing physical damage to every enemy caught in it."
+  desc: "Axel Syrios strikes the 3x1 line in front of him with a fierce blow, dealing weapon damage to every enemy caught in it."
   target_summary:
     target_team: enemy
     target_type: enemy

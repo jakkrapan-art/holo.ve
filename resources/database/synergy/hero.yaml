@@ -10,9 +10,12 @@ effect: attack_per_active_trait
 # with the rest of the board instead of with the Hero count.
 thresholds: [1]
 parameters:
-  # Percent scale (5 = +5%), per active Trait on the field. Scalar, not an array:
-  # the value does not scale by tier, so it must not render as a tier-scaling number.
+  # Percent scale (5 = +5%), per active Trait on the field. Scalar = not a
+  # per-tier value (shape follows semantics; every resolved value highlights).
   atk_per_trait: 5
-desc: "Hero units carry a champion's resolve, growing stronger with every Trait awakened on the field - each active Trait grants them +{atk_per_trait}% Physical Attack."
+# Flavour only - the number lives in the tier line (value-in-table copy rule).
+# Lore-sourced: Altare's official bio says his earnest straightforwardness
+# "may well lead to him being called a 'hero' one day" (Director 2026-07-21).
+desc: "An earnest heart destined to be called Hero - he grows stronger with every Trait awakened on the field."
 tier_effects:
-  - "+{atk_per_trait}% Physical Attack per active Trait"
+  - "+{atk_per_trait:pct} Weapon Attack per active Trait"

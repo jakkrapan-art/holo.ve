@@ -43,11 +43,11 @@ skills:
   active:
     name: "Exocirst Field"
     names: ["Exocirst Field I", "Exocirst Field II", "Exocirst Field III"]
-    desc: "Banzoin Hakka conjures a purifying field in a 3x3 area around him for {skillDuration} seconds; enemies within take {skillDamage:percent} physical damage and are slowed by {slowEffect:percent} every second they remain inside."
+    desc: "Banzoin Hakka conjures a purifying field in a 3x3 area around him for {skillDuration} seconds; enemies within take {skillDamage:percent} weapon damage and are slowed by {slowEffect:percent} every second they remain inside."
     icon: ""
     tags:
       - damage
-      - attack
+      - weapon
       - aoe
       - persistent
       - debuff
@@ -116,11 +116,11 @@ evolutionStat:
 evolution_skills:
   active:
     name: "Obey my omen, in hymns allure"
-    desc: "Banzoin Hakka unleashes a greater purifying field across a 5x5 area for {skillDuration} seconds; enemies within take {skillDamage:percent} physical damage and are slowed by {slowEffect:percent} every second they remain, and when the field fades he recovers {energyRefund:percent} of his maximum Energy."
+    desc: "Banzoin Hakka unleashes a greater purifying field across a 5x5 area for {skillDuration} seconds; enemies within take {skillDamage:percent} weapon damage and are slowed by {slowEffect:percent} every second they remain, and when the field fades he recovers {energyRefund:percent} of his maximum Energy."
     icon: ""
     tags:
       - damage
-      - attack
+      - weapon
       - aoe
       - persistent
       - debuff

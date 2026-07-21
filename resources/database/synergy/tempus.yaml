@@ -21,10 +21,12 @@ parameters:
   energy_percent: 0.1
   energy_interval: 5
 desc: "The Tempus guild fights as one - clear each Guild Mission and they grow stronger together."
-# One line per tier (qualitative). {mission_kills} is the per-tier scaling value
-# (highlighted); reward magnitudes read scalar params so the text cannot drift
-# from the applied effect. :percent renders a decimal-scale value as N%.
+# One line per tier (qualitative). All token values highlight; reward
+# magnitudes read scalar params so the text cannot drift from the applied
+# effect. :percent renders a decimal-scale value as N%; :pct appends % to a
+# percent-scale value as-is. T1 says "Attack" - the umbrella term (both the
+# Weapon and Magic halves), matching the applied attack_mult + magic_mult pair.
 tier_effects:
-  - "Guild Mission - defeat {mission_kills} enemies. Reward: Tempus units gain +{atk_bonus}% Physical and Magic Attack."
+  - "Guild Mission - defeat {mission_kills} enemies. Reward: Tempus units gain +{atk_bonus:pct} Attack."
   - "Guild Mission - defeat {mission_kills} enemies. Reward: Tempus units gain +{as_bonus:percent} Attack Speed."
   - "Guild Mission - defeat {mission_kills} enemies. Reward: all units regain {energy_percent:percent} max Energy every {energy_interval}s."

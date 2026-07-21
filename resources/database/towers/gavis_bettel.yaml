@@ -36,7 +36,7 @@ stats:
 
 skill:
   name: "Skill"
-  desc: "Gavis Bettel springs a phantom trick across the 3x1 line in front of him, dealing physical damage to every enemy caught in the act."
+  desc: "Gavis Bettel springs a phantom trick across the 3x1 line in front of him, dealing weapon damage to every enemy caught in the act."
   target_summary:
     target_team: enemy
     target_type: enemy

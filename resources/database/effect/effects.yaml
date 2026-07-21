@@ -36,32 +36,32 @@
 # ---- Tower buffs ----
 
 attack_flat_up:
-  name: "Attack Up"
-  desc: "Attack increased by {value}."
+  name: "Weapon Attack Up"
+  desc: "Weapon Attack increased by {value}."
   icon: "ui_asset/effects/buff_generic.png"
   category: buff
   host: tower
   kind: attack_flat
 
 attack_mult_up:
-  name: "Attack Up"
-  desc: "Attack increased by {value}."
+  name: "Weapon Attack Up"
+  desc: "Weapon Attack increased by {value}."
   icon: "ui_asset/effects/buff_generic.png"
   category: buff
   host: tower
   kind: attack_mult
 
 magic_flat_up:
-  name: "Magic Up"
-  desc: "Magic power increased by {value}."
+  name: "Magic Attack Up"
+  desc: "Magic Attack increased by {value}."
   icon: "ui_asset/effects/buff_generic.png"
   category: buff
   host: tower
   kind: magic_flat
 
 magic_mult_up:
-  name: "Magic Up"
-  desc: "Magic power increased by {value}."
+  name: "Magic Attack Up"
+  desc: "Magic Attack increased by {value}."
   icon: "ui_asset/effects/buff_generic.png"
   category: buff
   host: tower
@@ -135,7 +135,7 @@ crit_damage_up:
 
 mana_regen_up:
   name: "Energy Regen Up"
-  desc: "Energy gained per attack increased by {value}."
+  desc: "Energy gained per basic attack increased by {value}."
   icon: "ui_asset/effects/buff_generic.png"
   category: buff
   host: tower
@@ -191,16 +191,16 @@ attack_speed_down:
   kind: attack_speed
 
 attack_mult_down:
-  name: "Damage Down"
-  desc: "Damage dealt is reduced by {value}."
+  name: "Weapon Attack Down"
+  desc: "Weapon Attack reduced by {value}."
   icon: "ui_asset/effects/debuff_generic.png"
   category: debuff
   host: tower
   kind: attack_mult
 
 magic_mult_down:
-  name: "Magic Down"
-  desc: "Magic power reduced by {value}."
+  name: "Magic Attack Down"
+  desc: "Magic Attack reduced by {value}."
   icon: "ui_asset/effects/debuff_generic.png"
   category: debuff
   host: tower

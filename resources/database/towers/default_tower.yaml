@@ -41,12 +41,12 @@ skills:
   active:
     name: "Skill"
     names: ["Skill I", "Skill II", "Skill III"] # optional UI display names per tower level
-    desc: "Just a skill with {damageBonus:percent} bonus" # tokenized display text: {param} / {param:percent} resolve from parameters; token-free text renders as-is
+    desc: "Just a skill with {damageBonus:percent} bonus" # tokenized display text: {param} / {param:percent} (decimal x100) / {param:pct} (percent-scale as-is) resolve from parameters; token-free text renders as-is
     icon: "" # optional — ว่างได้ ถ้ายังไม่มี icon
     # tags = ป้ายสรุปสกิลแบบผู้เล่นอ่าน (controlled registry)
     tags:
       - damage
-      - attack
+      - weapon
       - aoe
       - enemy
     # target_summary = สรุป target ระดับสกิลไว้โชว์ UI (บรรทัด AFFECTS ใน tooltip อ่าน team+shape)
@@ -102,7 +102,7 @@ skills:
           #
           # hit_distribution: [r1, r2, ...]  ← multi-hit, แบ่ง 100% ของ final damage
           #   ⚠️ caution: ผลรวม ratio ต้อง = 1.0 ไม่งั้น push_warning
-          #   ⚠️ ใช้ได้กับ skill ของ tower เท่านั้น (normal attack ไม่มี multi-hit)
+          #   ⚠️ ใช้ได้กับ skill ของ tower เท่านั้น (basic attack ไม่มี multi-hit)
           #
           # ตัวอย่าง 4-hit skill ความเสียหาย 200% รวม:
           #   - type: attack
@@ -250,7 +250,7 @@ evolution_skills:
     icon: ""
     tags:
       - damage
-      - attack
+      - weapon
       - aoe
       - enemy
     target_summary:

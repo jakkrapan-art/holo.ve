@@ -36,7 +36,7 @@ stats:
 
 skill:
   name: "Skill"
-  desc: "Machina X Flayon drives a mecha strike through the 3x1 line in front of him, dealing physical damage to every enemy caught in it."
+  desc: "Machina X Flayon drives a mecha strike through the 3x1 line in front of him, dealing weapon damage to every enemy caught in it."
   target_summary:
     target_team: enemy
     target_type: enemy

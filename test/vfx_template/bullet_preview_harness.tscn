@@ -1,4 +1,4 @@
-[gd_scene load_steps=2 format=3 uid="uid://cbul1etprevhw"]
+[gd_scene load_steps=2 format=3 uid="uid://35rsy34ftpcq"]
 
 [ext_resource type="Script" path="res://test/vfx_template/bullet_preview_harness.gd" id="1_harness"]
 
@@ -17,5 +17,5 @@ offset_top = 16.0
 offset_right = 1896.0
 offset_bottom = 120.0
 theme_override_font_sizes/font_size = 26
-autowrap_mode = 3
 text = "loading..."
+autowrap_mode = 3

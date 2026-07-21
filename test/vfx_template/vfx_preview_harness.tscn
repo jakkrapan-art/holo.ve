@@ -17,5 +17,5 @@ offset_top = 16.0
 offset_right = 1896.0
 offset_bottom = 120.0
 theme_override_font_sizes/font_size = 26
-autowrap_mode = 3
 text = "loading..."
+autowrap_mode = 3

@@ -49,7 +49,7 @@ static func create(effect_key: String) -> SynergyEffect:
 			return SynergyEffectMissionTempus.new()
 		"attack_per_active_trait":
 			return SynergyEffectAttackPerTrait.new()
-		"magic_up_energy_gain":
+		"magic_up_energy_amp":
 			return SynergyEffectSpellcaster.new()
 		"damage_per_range":
 			return SynergyEffectMarksman.new()

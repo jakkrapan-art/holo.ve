@@ -18,7 +18,7 @@ extends SkillActionChannel
 # YAML: width, height, duration/duration_param_name (-> castTime),
 #   tick_interval/tick_interval_param_name, energy_refund_percent/
 #   energy_refund_percent_param_name, plus the full "attack" key set
-#   (damage_multiplier_param_name, damage_type, can_crit, effects) reused each
+#   (damage_multiplier_param_name, damage_type, crit_rule, effects) reused each
 #   tick. Reference: resources/database/towers/banzoin_hakka.yaml.
 
 @export var energyRefundPercent: float = 0.0

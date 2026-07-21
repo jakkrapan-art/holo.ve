@@ -11,6 +11,7 @@ class_name EffectTypes
 #   CRIT_CHANCE                         percent points
 #   DAMAGE_AMPLIFIER / DAMAGE_REDUCTION decimal
 #   DAMAGE_AMP_PER_CELL                 percent per cell of attacker-to-target distance
+#   ENERGY_GAIN                         percent (10 = +10% Energy from every gain)
 #   *_FLAT / RANGE / MANA_REGEN / MOVE_SPEED_FLAT  flat additive
 enum Kind {
 	ATTACK_SPEED,
@@ -39,6 +40,10 @@ enum Kind {
 	# cell of distance; the attack site turns it into a real amp via
 	# TowerData.getDistanceAmp (Marksman synergy).
 	DAMAGE_AMP_PER_CELL,
+	# Multiplies every positive Energy intake at SkillController.updateMana
+	# (attack regen, synergy grants, refunds); wave-start refill is a direct
+	# reset, not a gain, and is deliberately outside (SpellCaster synergy).
+	ENERGY_GAIN,
 }
 
 enum Category { BUFF, DEBUFF, MARK }
@@ -78,6 +83,7 @@ const KIND_FROM_STRING := {
 	"invincible": Kind.INVINCIBLE,
 	"hot": Kind.HOT,
 	"damage_amp_per_cell": Kind.DAMAGE_AMP_PER_CELL,
+	"energy_gain": Kind.ENERGY_GAIN,
 }
 
 const CATEGORY_FROM_STRING := {
@@ -100,7 +106,7 @@ static func is_stat_kind(kind: int) -> bool:
 	# The `< STUN` range test only works for kinds declared before the behavior
 	# block; kinds appended after HOT must be listed explicitly (the enum is
 	# append-only, so the block cannot be re-sorted).
-	return kind < Kind.STUN or kind == Kind.DAMAGE_AMP_PER_CELL
+	return kind < Kind.STUN or kind == Kind.DAMAGE_AMP_PER_CELL or kind == Kind.ENERGY_GAIN
 
 # Decimal-scale kinds display as percent (0.5 -> "50%"); percent-scale kinds
 # append % directly; flats show the plain number. Used by the {value} desc
@@ -110,7 +116,7 @@ const _DECIMAL_PERCENT_KINDS := [
 	Kind.MARMOR_MULT, Kind.DAMAGE_AMPLIFIER, Kind.DAMAGE_REDUCTION,
 	Kind.CRIT_DAMAGE_BONUS,
 ]
-const _PERCENT_POINT_KINDS := [Kind.ATTACK_MULT, Kind.MAGIC_MULT, Kind.CRIT_CHANCE]
+const _PERCENT_POINT_KINDS := [Kind.ATTACK_MULT, Kind.MAGIC_MULT, Kind.CRIT_CHANCE, Kind.ENERGY_GAIN]
 
 static func format_value(kind: int, value: float) -> String:
 	var v: float = absf(value)

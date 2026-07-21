@@ -96,9 +96,10 @@ skills:
           #
           # damage_type ถ้าไม่ใส่ → ใช้ tower.attackType (default ตาม design 1 tower 1 type)
           #
-          # can_crit:
-          #   - true (default) → skill roll crit ตามเลขของ tower
-          #   - false           → skill ไม่ crit (เช่น skill Kiara ตามดีไซน์)
+          # crit_rule: (skill ไม่ crit เว้นแต่สั่งเปิด — default = no_crit)
+          #   - no_crit (default, ไม่ต้องเขียน) → skill ไม่ crit
+          #   - use_crit_chance → skill roll crit ตามเลขของ tower
+          #   - guaranteed_crit → crit ทุก hit ไม่สน crit chance (เช่น ปืน Altare beat 2)
           #
           # hit_distribution: [r1, r2, ...]  ← multi-hit, แบ่ง 100% ของ final damage
           #   ⚠️ caution: ผลรวม ratio ต้อง = 1.0 ไม่งั้น push_warning
@@ -110,11 +111,11 @@ skills:
           #       damage_multiplier: 2.0
           #       hit_distribution: [0.2, 0.2, 0.1, 0.5]   # รวม = 1.0 ✓
           #
-          # ตัวอย่าง skill non-crit ที่ scale ตาม level:
+          # ตัวอย่าง skill ที่ crit ได้และ scale ตาม level:
           #   - type: attack
           #     data:
           #       damage_multiplier: [1.4, 1.5, 1.7]
-          #       can_crit: false
+          #       crit_rule: use_crit_chance
           #
           # stack_bonus_effect + stack_bonus_per_stack_param_name:
           #   สกิลสเกลตาม stack (เช่น Soul ของ Calliope) — ตัวคูณเพิ่มขึ้น
@@ -201,7 +202,7 @@ skills:
       #       animation: "skill"                          # คลิปร่าย เล่นค้างตลอด channel
       #       damage_multiplier_param_name: "tickDamage"
       #       damage_type: magic
-      #       can_crit: false
+      #       crit_rule: no_crit
       #       effects:
       #         - effect: "stun"
       #           duration_param: "tickStun"
@@ -224,7 +225,7 @@ skills:
       #       tick_interval_param_name: "tickInterval"  # หรือ tick_interval: 1.0 ตรง ๆ
       #       damage_multiplier_param_name: "skillDamage"
       #       damage_type: magic
-      #       can_crit: false
+      #       crit_rule: no_crit
       #       energy_refund_percent_param_name: "energyRefund"   # optional (ใช้ตอน evolve)
       #       effects:
       #         - effect: "move_speed_down"

@@ -89,7 +89,7 @@ skills:
         data:
           # Skill multiplier reads parameters.damageMultiplier (single source w/ desc).
           damage_multiplier_param_name: "damageMultiplier"
-          can_crit: false   # Kiara design: skill cannot crit
+          crit_rule: no_crit   # Kiara design: skill cannot crit
           effects:
             - effect: "phoenix_flame"
               duration_param: "phoenixDuration"   # binds to parameters (single source)
@@ -176,7 +176,7 @@ evolution_skills:
           max_range: 5.0       # Max travel distance in tiles — projectile despawns past this
           damage_multiplier: 3.0   # Fallback; runtime reads parameters.damageMultiplier (default param name)
           damage_type: "physic"
-          can_crit: false
+          crit_rule: no_crit   # Kiara design: skill cannot crit (live gate now that projectiles roll crit)
           effects:
             - effect: "phoenix_flame"
               duration_param: "phoenixDuration"   # binds to parameters (single source)

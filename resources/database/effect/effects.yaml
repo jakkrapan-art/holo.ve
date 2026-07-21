@@ -93,13 +93,16 @@ crit_chance_up:
   kind: crit_chance
   duration: 4.0
 
-# SpellCaster synergy gate: unlocks the crit roll on the holder's SKILLS. It
-# grants no critical chance - a holder with 0 chance still never crits. mark =
-# pure flag, no stat aggregation; SkillActionAttack reads it live via
-# EffectContainer.stacks_of (NOT has_mark, which filters category == mark, and
-# NOT has_kind(MARK_ONLY), which `soul` would also satisfy).
-spellcaster_crit:
-  name: "Arcane Focus"
+# External skill-crit gate: unlocks the crit roll on the holder's SKILLS,
+# overriding an authored crit_rule: no_crit. It grants no critical chance - a
+# holder with 0 chance still never crits. Currently dormant: reserved for the
+# future Assassin synergy (was the SpellCaster gate until its 2026-07-22
+# redesign). mark = pure flag, no stat aggregation; the skill attack/projectile
+# actions read it live via EffectContainer.stacks_of (NOT has_mark, which
+# filters category == mark, and NOT has_kind(MARK_ONLY), which `soul` would
+# also satisfy).
+skill_crit_unlock:
+  name: "Skill Crit Unlock"
   desc: "Skills can land critical hits."
   icon: "ui_asset/effects/buff_generic.png"
   category: buff
@@ -140,6 +143,20 @@ mana_regen_up:
   category: buff
   host: tower
   kind: mana_regen
+
+# Percent multiplier on EVERY positive Energy intake (attack regen, synergy
+# grants, refunds) - applied once at SkillController.updateMana. Differs from
+# mana_regen_up, which adds flat Energy to the per-attack gain only.
+# First user: SpellCaster synergy (board lifetime, icon auto-hidden).
+energy_gain_up:
+  name: "Energy Gain Up"
+  desc: "Energy gained from every source increased by {value}."
+  icon: "ui_asset/effects/buff_generic.png"
+  category: buff
+  host: tower
+  kind: energy_gain
+  stack: refresh
+  duration: 0
 
 range_up:
   name: "Range Up"

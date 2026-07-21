@@ -26,7 +26,8 @@ extends Node2D
 #                    See shinri_evo_skill_effect.gd.
 #   bullet         - visual rides the projectile via the tower YAML
 #                    `attack:` block, not a controller like this one.
-#                    See amelia/normal_effect/amelia_bullet.gdshader.
+#                    Copy bullet_preview_harness.gd + bullet_template
+#                    .gdshader (this folder) - flight + impact beats.
 # ================================================================
 
 const SHADER_PATH := "res://test/vfx_template/lane_effect_template.gdshader"

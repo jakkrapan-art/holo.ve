@@ -4,6 +4,7 @@ extends Node2D
 #
 # Purpose (Director 2026-07-02): watch a VFX at true gameplay scale and
 # compare up to 3 variants. Nothing else - keep it this light.
+# Bullet travel + on-hit impact family: use bullet_preview_harness.gd.
 #
 # Copy to test/<effect>_preview/, point EFFECT_SCRIPT at your controller
 # copy, fill _variants (max 3, each differing on >= 2 macro axes - see

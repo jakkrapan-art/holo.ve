@@ -39,9 +39,9 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -490.0
+offset_left = -550.0
 offset_top = -350.0
-offset_right = 490.0
+offset_right = 550.0
 offset_bottom = 350.0
 grow_horizontal = 2
 grow_vertical = 2
@@ -53,7 +53,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 16
+theme_override_constants/separation = 24
 alignment = 1
 
 [node name="UITowerChoice" parent="CanvasLayer/PopupPanel/Panel/HBoxContainer" instance=ExtResource("2_aglq3")]

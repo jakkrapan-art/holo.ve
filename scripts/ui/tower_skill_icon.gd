@@ -17,12 +17,12 @@ var level: int = 1
 # Shared icon fallback: authored icon path, else the synergy default placeholder
 # (no tower skill icon art exists yet). Used by the tower-select card too.
 static func resolve_icon_texture(p_skill: Skill) -> Texture2D:
-	var texture: Texture2D = null
+	var icon_texture: Texture2D = null
 	if p_skill.icon != "":
-		texture = ResourceManager.loadImage("skill_icon", p_skill.icon, p_skill.icon)
-	if texture == null:
-		texture = ResourceManager.getSprite("synergy", "default")
-	return texture
+		icon_texture = ResourceManager.loadImage("skill_icon", p_skill.icon, p_skill.icon)
+	if icon_texture == null:
+		icon_texture = ResourceManager.getSprite("synergy", "default")
+	return icon_texture
 
 func setup(p_skill: Skill, p_kind: String, p_level: int) -> void:
 	skill = p_skill

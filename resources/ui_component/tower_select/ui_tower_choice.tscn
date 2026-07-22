@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://hrwu7jmu4yv"]
+[gd_scene load_steps=18 format=3 uid="uid://hrwu7jmu4yv"]
 
 [ext_resource type="Script" path="res://scripts/ui/tower_select/tower_select_button.gd" id="1_ydvhw"]
 [ext_resource type="Script" path="res://scripts/ui/tower_select/synergy_chip_icon.gd" id="1_synchip"]
@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://tp6ecjda00qg" path="res://resources/currency/evo_token.png" id="3_lbarx"]
 [ext_resource type="Shader" path="res://resources/ui_component/tower_select/ui_tower_choice_trait.gdshader" id="5_kba5i"]
 [ext_resource type="Texture2D" uid="uid://c0jbigvnx7ja4" path="res://resources/ui_asset/synergies/assassin.png" id="7_681fe"]
+[ext_resource type="Shader" path="res://resources/ui_component/tower_select/card_foil.gdshader" id="8_foil"]
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_wd61a"]
 resource_name = "tower_buttons"
@@ -46,6 +47,9 @@ corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_foil"]
+shader = ExtResource("8_foil")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_statgem"]
 content_margin_left = 2.0
@@ -90,6 +94,17 @@ grow_vertical = 2
 expand_mode = 1
 stretch_mode = 5
 
+[node name="FoilOverlay" type="ColorRect" parent="."]
+visible = false
+material = SubResource("ShaderMaterial_foil")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
 [node name="TowerName" type="Label" parent="."]
 layout_mode = 1
 anchors_preset = 12
@@ -111,10 +126,9 @@ text_overrun_behavior = 3
 [node name="Evolution" type="HBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 10
-anchor_left = 0.22
-anchor_right = 0.72
-offset_top = 4.0
-offset_bottom = 56.0
+anchor_right = 1.0
+offset_top = -55.0
+offset_bottom = -3.0
 grow_horizontal = 2
 alignment = 1
 

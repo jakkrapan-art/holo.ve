@@ -20,6 +20,7 @@ var asValue: Label;
 var skillBox: Control;
 var skillIcon: TextureRect;
 var skillBody: RichTextLabel;
+var foilOverlay: Control;
 
 # Bumped per Setup; the async font-fit loop aborts when it moved (a Refresh
 # re-runs Setup on this same node while a previous fit may still be awaiting).
@@ -83,6 +84,7 @@ func _setup_card_details(p_name: String, level: int, evolutionCost: int) -> void
 	skillBox = $SkillBox
 	skillIcon = $SkillBox/Entry/Icon
 	skillBody = $SkillBox/Entry/Body
+	foilOverlay = $FoilOverlay
 
 	_fit_generation += 1
 	var fit_gen := _fit_generation
@@ -91,6 +93,9 @@ func _setup_card_details(p_name: String, level: int, evolutionCost: int) -> void
 	_set_body_font_size(SKILL_BODY_BASE_FONT_SIZE)
 	statBlock.visible = false
 	skillBox.visible = false
+	# Evolve cards only: rainbow foil overlay (evolutionCost > 0 is the same
+	# evolve discriminator the banner uses).
+	foilOverlay.visible = evolutionCost > 0
 
 	# Deck-add popup cards carry deck keys, not tower names -> lookup misses and
 	# both sections stay hidden (same graceful-hide as the synergy chip bar).

@@ -100,7 +100,8 @@ text_overrun_behavior = 3
 [node name="Evolution" type="HBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 10
-anchor_right = 0.6
+anchor_left = 0.22
+anchor_right = 0.72
 offset_top = 4.0
 offset_bottom = 56.0
 grow_horizontal = 2

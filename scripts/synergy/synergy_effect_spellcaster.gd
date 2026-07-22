@@ -1,11 +1,11 @@
 class_name SynergyEffectSpellcaster
 extends SynergyEffect
 
-# SpellCaster - the first synergy that grants an ABILITY, not only a number:
-# holders get +magic_bonus% Magic Attack AND their skills are allowed to roll
-# critical hits. It deliberately grants NO critical chance (Director 2026-07-19),
-# so a holder sitting at 0 chance still never crits; the gate only stops being
-# the limiting factor. Do not "fix" this by adding crit_chance_up.
+# SpellCaster (redesigned 2026-07-22): holders get +magic_bonus% Magic Attack
+# AND +energy_amp% Energy from every intake (the ENERGY_AMP multiplier at
+# SkillController.updateMana). The old skill-crit gate moved off this synergy -
+# its mark lives on as the dormant `skill_crit_unlock`, reserved for a future
+# synergy (e.g. Assassin).
 #
 # Two effects share one source_id: EffectInstance.key() is source_id + "/" + id,
 # so the keys stay distinct. Both are REFRESH, so the per-placement re-apply
@@ -23,13 +23,14 @@ func on_tower_added(_tower) -> void:
 
 func _apply_all() -> void:
 	var bonus = data.get_parameter("magic_bonus", 0)
-	if bonus == null:
+	var energy_amp = data.get_parameter("energy_amp", 0)
+	if bonus == null or energy_amp == null:
 		return
 	for tower in controller.towers_with(data.synergy_id):
 		if not is_instance_valid(tower):
 			continue
 		_apply(tower, "magic_mult_up", float(bonus))
-		_apply(tower, "spellcaster_crit", 1.0)
+		_apply(tower, "energy_amp_up", float(energy_amp))
 
 # Lifetime and duration are set explicitly: a registry def is WAVE with a
 # non-zero duration by default, both wrong for a permanent synergy buff (same

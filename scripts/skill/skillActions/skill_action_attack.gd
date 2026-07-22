@@ -16,12 +16,13 @@ class_name SkillActionAttack
 # Sum should = 1.0 (warns if not). Each ratio applies to baseDamage before pipeline.
 @export var hitDistribution: Array[float] = []
 
-# Crit toggle — false disables crit roll for this skill (e.g. Kiara fire blade)
-@export var canCrit: bool = true
-
-# Guaranteed crit — true forces every hit to crit regardless of crit chance
-# (e.g. Regis Altare beat-2 gun shot). Still applies the normal crit multiplier.
-@export var forcedCrit: bool = false
+# Crit rule (YAML `crit_rule`) — skills never crit unless authored:
+#   NO_CRIT          default; the skill cannot crit
+#   USE_CRIT_CHANCE  rolls the tower's own crit chance per hit
+#   GUARANTEED_CRIT  every hit crits (normal crit multiplier), ignoring chance
+#                    (e.g. Regis Altare beat-2 gun shot)
+enum CritRule { NO_CRIT, USE_CRIT_CHANCE, GUARANTEED_CRIT }
+@export var critRule: CritRule = CritRule.NO_CRIT
 
 # Damage type — defaults to tower.data.attackType (set damageTypeOverride=true to use this)
 @export var damageType: Damage.DamageType = Damage.DamageType.PHYSIC
@@ -80,10 +81,11 @@ func execute(context: SkillContext):
 
 	# Cache crit context (avoid recomputing per-target)
 	var stat = tower.data.getStat()
-	# The authored canCrit gate can be opened from outside by the SpellCaster
-	# synergy marker. It unlocks the roll only - the synergy
-	# grants no crit chance, so a 0-chance holder still never crits.
-	var critAllowed: bool = canCrit or tower.data.effects.stacks_of("spellcaster_crit") > 0
+	# The skill_crit_unlock mark opens the roll from outside, overriding an
+	# authored no_crit (dormant - reserved for a future synergy, e.g. Assassin).
+	# It unlocks the roll only: no crit chance is granted, so a 0-chance holder
+	# still never crits.
+	var critAllowed: bool = critRule == CritRule.USE_CRIT_CHANCE or tower.data.effects.stacks_of("skill_crit_unlock") > 0
 	var critChance: float = tower.data.getCritChance() if critAllowed else 0.0
 	var sigmaCD: float = stat.critMultiplier + tower.data.effects.aggregate(EffectTypes.Kind.CRIT_DAMAGE_BONUS)
 
@@ -94,8 +96,8 @@ func execute(context: SkillContext):
 			if not is_instance_valid(target) or not target.has_method("recvDamage"):
 				continue
 			# randi_range(1, 100) → 100 values for exact critChance/100 probability (§6.2 #1 fix)
-			# forcedCrit overrides the roll (guaranteed crit, e.g. Altare beat 2).
-			var isCrit: bool = forcedCrit or (critAllowed and critChance > 0 and randi_range(1, 100) <= critChance)
+			# GUARANTEED_CRIT skips the roll (e.g. Altare beat 2).
+			var isCrit: bool = critRule == CritRule.GUARANTEED_CRIT or (critAllowed and critChance > 0 and randi_range(1, 100) <= critChance)
 			var hitDamage: float = hitBase
 			if isCrit:
 				# §5: Critical Damage = 1 + (1 × (ΣCD − 1)) = ΣCD

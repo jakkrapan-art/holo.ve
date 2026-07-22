@@ -73,6 +73,32 @@ static func _resolve_param(skillData: Dictionary, parameters: Dictionary, param_
 	push_warning("Skill action: ", param_key, " '", pname, "' not in skill parameters - using fallback ", fallback);
 	return fallback;
 
+# Crit authoring (`crit_rule`): no_crit (default) / use_crit_chance /
+# guaranteed_crit. Skills never crit unless authored. Legacy `can_crit` /
+# `force_crit` booleans still map (with a deprecation warning) so an
+# unmigrated file keeps its authored behavior; an ABSENT legacy key falls to
+# the new no-crit default on purpose - that flip is the design rule.
+static func _parse_crit_rule(skillData: Dictionary) -> SkillActionAttack.CritRule:
+	if skillData.has("crit_rule"):
+		var rule := str(skillData["crit_rule"]);
+		match rule:
+			"no_crit":
+				return SkillActionAttack.CritRule.NO_CRIT;
+			"use_crit_chance":
+				return SkillActionAttack.CritRule.USE_CRIT_CHANCE;
+			"guaranteed_crit":
+				return SkillActionAttack.CritRule.GUARANTEED_CRIT;
+			_:
+				push_warning("crit_rule '", rule, "' unknown - use no_crit / use_crit_chance / guaranteed_crit; falling back to no_crit.");
+				return SkillActionAttack.CritRule.NO_CRIT;
+	if skillData.has("force_crit") or skillData.has("can_crit"):
+		push_warning("'can_crit'/'force_crit' are deprecated - author crit_rule: no_crit / use_crit_chance / guaranteed_crit (legacy value mapped).");
+		if bool(skillData.get("force_crit", false)):
+			return SkillActionAttack.CritRule.GUARANTEED_CRIT;
+		if bool(skillData.get("can_crit", false)):
+			return SkillActionAttack.CritRule.USE_CRIT_CHANCE;
+	return SkillActionAttack.CritRule.NO_CRIT;
+
 static func ParseAction(data: Dictionary, parameters: Dictionary = {}) -> SkillAction:
 	var skillType = data.get("type", "");
 	var skill: SkillAction;
@@ -173,8 +199,7 @@ static func ParseAction(data: Dictionary, parameters: Dictionary = {}) -> SkillA
 				for v in hd:
 					hdArr.append(float(v))
 				skill.hitDistribution = hdArr
-			skill.canCrit = skillData.get("can_crit", true)
-			skill.forcedCrit = skillData.get("force_crit", false)
+			skill.critRule = _parse_crit_rule(skillData)
 			# Stack-scaling bonus (e.g. Calliope Souls): + stacks x per-stack
 			# value on the multiplier, count read live at execute time.
 			skill.stackBonusEffectId = str(skillData.get("stack_bonus_effect", ""))
@@ -195,7 +220,7 @@ static func ParseAction(data: Dictionary, parameters: Dictionary = {}) -> SkillA
 			# Delayed non-blocking re-hit of a snapshotted area ("aftershock"
 			# pattern). The inner find/attack are built from
 			# this same data block via this parser, so damage_multiplier_param_name,
-			# damage_type, can_crit, and stack_bonus_* all work in the explosion.
+			# damage_type, crit_rule, and stack_bonus_* all work in the explosion.
 			skill = SkillActionAftershock.new();
 			var skillData = data.get("data", {});
 			skill.width = int(skillData.get("width", 3));
@@ -217,7 +242,7 @@ static func ParseAction(data: Dictionary, parameters: Dictionary = {}) -> SkillA
 		"channel":
 			# Blocking zone-locked multi-tick ("channel" pattern).
 			# The inner find/attack are built from this same data block via this
-			# parser, so damage_multiplier_param_name, damage_type, can_crit, and
+			# parser, so damage_multiplier_param_name, damage_type, crit_rule, and
 			# effects all work per tick.
 			skill = SkillActionChannel.new();
 			var skillData = data.get("data", {});
@@ -338,6 +363,7 @@ static func ParseAction(data: Dictionary, parameters: Dictionary = {}) -> SkillA
 			skill.damageMultiplierParamName = skillData.get("damage_multiplier_param_name", "damageMultiplier");
 			skill.projectile_size_w = skillData.get("projectile_size_w", 1.0);
 			skill.projectile_size_h = skillData.get("projectile_size_h", 1.0);
+			skill.critRule = _parse_crit_rule(skillData);
 			var circleEffectList = skillData.get("effects", []);
 			if(circleEffectList.size() > 0):
 				skill.statusEffects = EffectUtility.parse_effect_list(circleEffectList, parameters, "action_" + str(skill.get_instance_id()));
@@ -351,6 +377,7 @@ static func ParseAction(data: Dictionary, parameters: Dictionary = {}) -> SkillA
 			skill.max_range = float(skillData.get("max_range", -1.0));
 			skill.count = skillData.get("count", 1);
 			skill.lifetime = float(skillData.get("lifetime", 1.5));
+			skill.critRule = _parse_crit_rule(skillData);
 			skill.damageMultiplier = float(skillData.get("damage_multiplier", 1.0));
 			skill.damageType = Utility.parse_string_to_enum(Damage.DamageType, skillData.get("damage_type", "physic"));
 			skill.damageMultiplierParamName = skillData.get("damage_multiplier_param_name", "damageMultiplier");

@@ -5,7 +5,7 @@ name: "Spell Caster"
 kind: class
 type: standard
 rarity: common
-effect: magic_up_skill_crit
+effect: magic_up_energy_amp
 # Single tier by design: 2 of the 3 demo Spell Casters (Gura / Ina'nis / Bettel)
 # is already a real deck commitment, and the bonus does not scale past it.
 thresholds: [2]
@@ -13,12 +13,13 @@ parameters:
   # Percent scale (25 = +25%), matching MAGIC_MULT. Scalar = not a per-tier
   # value (shape follows semantics; every resolved value highlights).
   magic_bonus: 25
+  # Percent scale (10 = +10%), matching ENERGY_AMP: multiplies every Energy
+  # intake (attack regen, synergy grants, refunds) at the single choke point.
+  energy_amp: 10
 # :pct appends % to a percent-scale value as-is (:percent would x100 -> 2500%).
-# The crit half grants the ABILITY only - it adds no critical chance, and copy
-# must not imply one (Director 2026-07-19).
-desc: "Spell Caster units draw deeper from the arcane, gaining +{magic_bonus:pct} Magic Attack, and their skills can now land critical hits."
-# Per-tier table line: the stat value only, matching Myth. The crit ability is
-# a one-off unlock, not a per-tier value, so it lives in desc and stays out of
-# this line (Director 2026-07-19).
+# Redesign 2026-07-22: the old skill-crit gate moved off this synergy (mark
+# parked as skill_crit_unlock for a future Assassin synergy).
+desc: "Spell Caster units draw deeper from the arcane, gaining +{magic_bonus:pct} Magic Attack and +{energy_amp:pct} Energy from every source."
+# Per-tier table line: the stat values only, matching Myth.
 tier_effects:
-  - "+{magic_bonus:pct} Magic Attack"
+  - "+{magic_bonus:pct} Magic Attack, +{energy_amp:pct} Energy gain"

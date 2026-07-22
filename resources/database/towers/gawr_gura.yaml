@@ -83,6 +83,7 @@ skills:
           count: 4
           damage_multiplier_param_name: "damageMultiplier"
           damage_type: "magic"
+          crit_rule: no_crit   # how this skill crits: no_crit / use_crit_chance / guaranteed_crit
           # Scale multipliers on the projectile root (visual + collision).
           # 1.0 keeps the .tscn default size; raise both to widen each wave's hitbox.
           projectile_size_w: 1
@@ -145,6 +146,7 @@ evolution_skills:
           count: 8
           damage_multiplier_param_name: "damageMultiplier"
           damage_type: "magic"
+          crit_rule: no_crit   # how this skill crits: no_crit / use_crit_chance / guaranteed_crit
           projectile_size_w: 1
           projectile_size_h: 1
           effects:

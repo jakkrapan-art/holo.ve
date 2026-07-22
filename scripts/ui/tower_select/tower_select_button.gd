@@ -14,9 +14,9 @@ var towerGenImage: SynergyChipIcon;
 var synergiesNode: Control;
 
 var statBlock: Control;
-var atkLine: Label;
-var rngLine: Label;
-var asLine: Label;
+var atkValue: Label;
+var rngValue: Label;
+var asValue: Label;
 var skillBox: Control;
 var skillIcon: TextureRect;
 var skillBody: RichTextLabel;
@@ -77,9 +77,9 @@ func Setup(p_name: String, sprite, towerClass: TowerTrait.TowerClass, towerGen: 
 # TowerCenter template - the card previews the state selecting it GRANTS.
 func _setup_card_details(p_name: String, level: int, evolutionCost: int) -> void:
 	statBlock = $StatBlock
-	atkLine = $StatBlock/Rows/AtkLine
-	rngLine = $StatBlock/Rows/RngLine
-	asLine = $StatBlock/Rows/AsLine
+	atkValue = $StatBlock/AtkChunk/Rows/Value
+	rngValue = $StatBlock/RngChunk/Rows/Value
+	asValue = $StatBlock/AsChunk/Rows/Value
 	skillBox = $SkillBox
 	skillIcon = $SkillBox/Entry/Icon
 	skillBody = $SkillBox/Entry/Body
@@ -107,10 +107,10 @@ func _setup_card_details(p_name: String, level: int, evolutionCost: int) -> void
 	# Read the template stat by index - never levelUp()/evolve()/getStat() on
 	# the shared template (getStat reads its live _level, not the card's state).
 	var stat: TowerStat = data.evolutionStat if evolved and data.evolutionStat != null else data.stats[target_level - 1]
-	atkLine.text = "ATK " + str(stat.damage)
-	rngLine.text = "RNG " + _format_number(stat.attackRange)
-	asLine.text = "AS " + _format_number(stat.attackSpeed)
-	atkLine.add_theme_color_override("font_color", UIPalette.attack_type_color(data.attackType))
+	atkValue.text = str(stat.damage)
+	rngValue.text = _format_number(stat.attackRange)
+	asValue.text = _format_number(stat.attackSpeed)
+	atkValue.add_theme_color_override("font_color", UIPalette.attack_type_color(data.attackType))
 	statBlock.visible = true
 
 	# Main skill only (Director): the active slot, else the passive shown the

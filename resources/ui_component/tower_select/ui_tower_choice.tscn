@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://hrwu7jmu4yv"]
+[gd_scene load_steps=16 format=3 uid="uid://hrwu7jmu4yv"]
 
 [ext_resource type="Script" path="res://scripts/ui/tower_select/tower_select_button.gd" id="1_ydvhw"]
 [ext_resource type="Script" path="res://scripts/ui/tower_select/synergy_chip_icon.gd" id="1_synchip"]
@@ -47,6 +47,17 @@ corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_statgem"]
+content_margin_left = 2.0
+content_margin_top = 2.0
+content_margin_right = 2.0
+content_margin_bottom = 2.0
+bg_color = Color(0, 0, 0, 0.62)
+corner_radius_top_left = 32
+corner_radius_top_right = 32
+corner_radius_bottom_right = 32
+corner_radius_bottom_left = 32
+
 [node name="UITowerChoice" type="Button" groups=["tower_buttons"]]
 self_modulate = Color(1, 1, 1, 0.00392157)
 custom_minimum_size = Vector2(300, 440)
@@ -86,9 +97,9 @@ anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 8.0
-offset_top = -195.0
+offset_top = -200.0
 offset_right = -8.0
-offset_bottom = -155.0
+offset_bottom = -158.0
 grow_horizontal = 2
 grow_vertical = 0
 text = "Tower_A"
@@ -146,43 +157,99 @@ texture = ExtResource("7_681fe")
 expand_mode = 1
 script = ExtResource("1_synchip")
 
-[node name="StatBlock" type="PanelContainer" parent="."]
+[node name="StatBlock" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -112.0
+offset_left = -72.0
 offset_top = 8.0
 offset_right = -8.0
-offset_bottom = 96.0
+offset_bottom = 218.0
 grow_horizontal = 0
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_cardbx")
+theme_override_constants/separation = 6
 
-[node name="Rows" type="VBoxContainer" parent="StatBlock"]
+[node name="AtkChunk" type="PanelContainer" parent="StatBlock"]
+custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_statgem")
 
-[node name="AtkLine" type="Label" parent="StatBlock/Rows"]
+[node name="Rows" type="VBoxContainer" parent="StatBlock/AtkChunk"]
 layout_mode = 2
 mouse_filter = 2
-theme_override_fonts/font = ExtResource("2_oispt")
-theme_override_font_sizes/font_size = 16
-text = "ATK 120"
+alignment = 1
 
-[node name="RngLine" type="Label" parent="StatBlock/Rows"]
-layout_mode = 2
-mouse_filter = 2
-theme_override_fonts/font = ExtResource("2_oispt")
-theme_override_font_sizes/font_size = 16
-text = "RNG 2.5"
-
-[node name="AsLine" type="Label" parent="StatBlock/Rows"]
+[node name="Tag" type="Label" parent="StatBlock/AtkChunk/Rows"]
 layout_mode = 2
 mouse_filter = 2
 theme_override_fonts/font = ExtResource("2_oispt")
-theme_override_font_sizes/font_size = 16
-text = "AS 100"
+theme_override_font_sizes/font_size = 10
+text = "ATK"
+horizontal_alignment = 1
+
+[node name="Value" type="Label" parent="StatBlock/AtkChunk/Rows"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_fonts/font = ExtResource("2_oispt")
+theme_override_font_sizes/font_size = 15
+text = "120"
+horizontal_alignment = 1
+
+[node name="RngChunk" type="PanelContainer" parent="StatBlock"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_statgem")
+
+[node name="Rows" type="VBoxContainer" parent="StatBlock/RngChunk"]
+layout_mode = 2
+mouse_filter = 2
+alignment = 1
+
+[node name="Tag" type="Label" parent="StatBlock/RngChunk/Rows"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_fonts/font = ExtResource("2_oispt")
+theme_override_font_sizes/font_size = 10
+text = "RNG"
+horizontal_alignment = 1
+
+[node name="Value" type="Label" parent="StatBlock/RngChunk/Rows"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_fonts/font = ExtResource("2_oispt")
+theme_override_font_sizes/font_size = 15
+text = "2.5"
+horizontal_alignment = 1
+
+[node name="AsChunk" type="PanelContainer" parent="StatBlock"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_statgem")
+
+[node name="Rows" type="VBoxContainer" parent="StatBlock/AsChunk"]
+layout_mode = 2
+mouse_filter = 2
+alignment = 1
+
+[node name="Tag" type="Label" parent="StatBlock/AsChunk/Rows"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_fonts/font = ExtResource("2_oispt")
+theme_override_font_sizes/font_size = 10
+text = "AS"
+horizontal_alignment = 1
+
+[node name="Value" type="Label" parent="StatBlock/AsChunk/Rows"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_fonts/font = ExtResource("2_oispt")
+theme_override_font_sizes/font_size = 15
+text = "100"
+horizontal_alignment = 1
 
 [node name="SkillBox" type="PanelContainer" parent="."]
 clip_contents = true
@@ -220,5 +287,4 @@ mouse_filter = 2
 theme_override_font_sizes/normal_font_size = 13
 theme_override_font_sizes/bold_font_size = 13
 bbcode_enabled = true
-fit_content = true
 scroll_active = false

@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://hrwu7jmu4yv"]
+[gd_scene load_steps=18 format=3 uid="uid://hrwu7jmu4yv"]
 
 [ext_resource type="Script" path="res://scripts/ui/tower_select/tower_select_button.gd" id="1_ydvhw"]
 [ext_resource type="Script" path="res://scripts/ui/tower_select/synergy_chip_icon.gd" id="1_synchip"]
@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://tp6ecjda00qg" path="res://resources/currency/evo_token.png" id="3_lbarx"]
 [ext_resource type="Shader" path="res://resources/ui_component/tower_select/ui_tower_choice_trait.gdshader" id="5_kba5i"]
 [ext_resource type="Texture2D" uid="uid://c0jbigvnx7ja4" path="res://resources/ui_asset/synergies/assassin.png" id="7_681fe"]
+[ext_resource type="Shader" path="res://resources/ui_component/tower_select/card_foil.gdshader" id="8_foil"]
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_wd61a"]
 resource_name = "tower_buttons"
@@ -19,7 +20,9 @@ shader_parameter/radius = 19.0
 
 [sub_resource type="LabelSettings" id="LabelSettings_aoexc"]
 font = ExtResource("2_oispt")
-font_size = 24
+font_size = 20
+outline_size = 5
+outline_color = Color(0, 0, 0, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_o0rdo"]
 font = ExtResource("2_oispt")
@@ -34,11 +37,36 @@ shader_parameter/border_size = 1.0
 shader_parameter/corner_radius = 3.0
 shader_parameter/padding = 12.0
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cardbx"]
+content_margin_left = 6.0
+content_margin_top = 6.0
+content_margin_right = 6.0
+content_margin_bottom = 6.0
+bg_color = Color(0.04, 0.03, 0.08, 0.92)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_foil"]
+shader = ExtResource("8_foil")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_statgem"]
+content_margin_left = 2.0
+content_margin_top = 2.0
+content_margin_right = 2.0
+content_margin_bottom = 2.0
+bg_color = Color(0, 0, 0, 0.62)
+corner_radius_top_left = 32
+corner_radius_top_right = 32
+corner_radius_bottom_right = 32
+corner_radius_bottom_left = 32
+
 [node name="UITowerChoice" type="Button" groups=["tower_buttons"]]
 self_modulate = Color(1, 1, 1, 0.00392157)
-custom_minimum_size = Vector2(220, 285)
-offset_right = 220.0
-offset_bottom = 285.0
+custom_minimum_size = Vector2(300, 440)
+offset_right = 300.0
+offset_bottom = 440.0
 size_flags_horizontal = 6
 size_flags_vertical = 4
 toggle_mode = true
@@ -66,23 +94,34 @@ grow_vertical = 2
 expand_mode = 1
 stretch_mode = 5
 
+[node name="FoilOverlay" type="ColorRect" parent="."]
+visible = false
+material = SubResource("ShaderMaterial_foil")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
 [node name="TowerName" type="Label" parent="."]
 layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
+anchors_preset = 12
 anchor_top = 1.0
-anchor_right = 0.5
+anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -110.0
-offset_top = 2.0
-offset_right = 110.0
-offset_bottom = 70.0
+offset_left = 8.0
+offset_top = -200.0
+offset_right = -8.0
+offset_bottom = -158.0
 grow_horizontal = 2
 grow_vertical = 0
 text = "Tower_A"
 label_settings = SubResource("LabelSettings_aoexc")
 horizontal_alignment = 1
 vertical_alignment = 1
+text_overrun_behavior = 3
 
 [node name="Evolution" type="HBoxContainer" parent="."]
 layout_mode = 1
@@ -131,3 +170,135 @@ layout_mode = 2
 texture = ExtResource("7_681fe")
 expand_mode = 1
 script = ExtResource("1_synchip")
+
+[node name="StatBlock" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -72.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = 218.0
+grow_horizontal = 0
+mouse_filter = 2
+theme_override_constants/separation = 6
+
+[node name="AtkChunk" type="PanelContainer" parent="StatBlock"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_statgem")
+
+[node name="Rows" type="VBoxContainer" parent="StatBlock/AtkChunk"]
+layout_mode = 2
+mouse_filter = 2
+alignment = 1
+
+[node name="Tag" type="Label" parent="StatBlock/AtkChunk/Rows"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_fonts/font = ExtResource("2_oispt")
+theme_override_font_sizes/font_size = 10
+text = "ATK"
+horizontal_alignment = 1
+
+[node name="Value" type="Label" parent="StatBlock/AtkChunk/Rows"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_fonts/font = ExtResource("2_oispt")
+theme_override_font_sizes/font_size = 15
+text = "120"
+horizontal_alignment = 1
+
+[node name="RngChunk" type="PanelContainer" parent="StatBlock"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_statgem")
+
+[node name="Rows" type="VBoxContainer" parent="StatBlock/RngChunk"]
+layout_mode = 2
+mouse_filter = 2
+alignment = 1
+
+[node name="Tag" type="Label" parent="StatBlock/RngChunk/Rows"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_fonts/font = ExtResource("2_oispt")
+theme_override_font_sizes/font_size = 10
+text = "RNG"
+horizontal_alignment = 1
+
+[node name="Value" type="Label" parent="StatBlock/RngChunk/Rows"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_fonts/font = ExtResource("2_oispt")
+theme_override_font_sizes/font_size = 15
+text = "2.5"
+horizontal_alignment = 1
+
+[node name="AsChunk" type="PanelContainer" parent="StatBlock"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_statgem")
+
+[node name="Rows" type="VBoxContainer" parent="StatBlock/AsChunk"]
+layout_mode = 2
+mouse_filter = 2
+alignment = 1
+
+[node name="Tag" type="Label" parent="StatBlock/AsChunk/Rows"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_fonts/font = ExtResource("2_oispt")
+theme_override_font_sizes/font_size = 10
+text = "AS"
+horizontal_alignment = 1
+
+[node name="Value" type="Label" parent="StatBlock/AsChunk/Rows"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_fonts/font = ExtResource("2_oispt")
+theme_override_font_sizes/font_size = 15
+text = "100"
+horizontal_alignment = 1
+
+[node name="SkillBox" type="PanelContainer" parent="."]
+clip_contents = true
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = -150.0
+offset_right = -8.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_cardbx")
+
+[node name="Entry" type="HBoxContainer" parent="SkillBox"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 6
+
+[node name="Icon" type="TextureRect" parent="SkillBox/Entry"]
+custom_minimum_size = Vector2(26, 26)
+layout_mode = 2
+size_flags_vertical = 0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Body" type="RichTextLabel" parent="SkillBox/Entry"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_font_sizes/normal_font_size = 13
+theme_override_font_sizes/bold_font_size = 13
+bbcode_enabled = true
+scroll_active = false

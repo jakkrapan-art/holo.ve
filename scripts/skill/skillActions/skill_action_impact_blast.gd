@@ -151,6 +151,17 @@ func _on_card_impact(projectile: Projectile, _hit_enemy, params: Dictionary, ski
 	if not is_instance_valid(tower) or tower.skill_lock_generation != gen:
 		return
 
+	# This callback runs synchronously from area_entered, i.e. INSIDE the physics
+	# flush - Hitbox.create() would trip "Can't change this state while flushing
+	# queries". Defer one frame before any physics work; the impact point is
+	# already snapshotted so nothing drifts. The pause hold keeps a paused game
+	# from resolving the blast (process_frame keeps emitting while paused).
+	await tower.get_tree().process_frame
+	while is_instance_valid(tower) and tower.get_tree().paused:
+		await tower.get_tree().process_frame
+	if not is_instance_valid(tower) or tower.skill_lock_generation != gen:
+		return
+
 	var ctx := SkillContext.new()
 	ctx.user = tower
 	ctx.skillName = skill_name

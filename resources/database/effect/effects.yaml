@@ -95,8 +95,8 @@ crit_chance_up:
 
 # External skill-crit gate: unlocks the crit roll on the holder's SKILLS,
 # overriding an authored crit_rule: no_crit. It grants no critical chance - a
-# holder with 0 chance still never crits. Currently dormant: reserved for the
-# future Assassin synergy (was the SpellCaster gate until its 2026-07-22
+# holder with 0 chance still never crits. Granted by the Assassin synergy (was
+# the SpellCaster gate until its 2026-07-22
 # redesign). mark = pure flag, no stat aggregation; the skill attack/projectile
 # actions read it live via EffectContainer.stacks_of (NOT has_mark, which
 # filters category == mark, and NOT has_kind(MARK_ONLY), which `soul` would

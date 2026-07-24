@@ -53,6 +53,8 @@ static func create(effect_key: String) -> SynergyEffect:
 			return SynergyEffectSpellcaster.new()
 		"damage_per_range":
 			return SynergyEffectMarksman.new()
+		"skill_crit_unlock_crit_up":
+			return SynergyEffectAssassin.new()
 		"", "none":
 			return null   # placeholder synergy: declared but no effect handler yet
 		_:

@@ -133,16 +133,25 @@ func processMoveToPosition(delta: float):
 		queue_free()
 		return
 
-	var direction = (target_position - global_position).normalized()
-	global_position += direction * speed * delta
+	var to_target: Vector2 = target_position - global_position
+	var step: float = speed * delta
 
-	if global_position.distance_to(target_position) < 5.0:
+	# Arrive when this frame's step reaches or overshoots the point. A fixed
+	# arrival radius does NOT work here: one frame covers tens of pixels at skill
+	# speeds, so the projectile steps straight over a small radius and then
+	# oscillates around the destination forever - never resolving its payload,
+	# never freeing.
+	if to_target.length() <= step:
+		global_position = target_position
 		# Arrival resolves the terminal payload. Same (projectile, target) shape
 		# every other onHit site uses; `target` is null on the target-lost path,
 		# so a handler must not assume an enemy here.
 		if callback and callback.onHit.is_valid():
 			callback.onHit.call(self, target)
 		queue_free()
+		return
+
+	global_position += to_target.normalized() * step
 
 func processMoveByDirection(delta: float):
 	global_position += move_direction.normalized() * speed * delta

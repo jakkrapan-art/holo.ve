@@ -4,82 +4,161 @@ generation: tempus
 attackType: magic
 evolutionCost: 1
 
-# skill: "res://resources/database/skill/takanashi_kiara_skill.tres"
 attack_sound: "hit_bettel"
 open_sound: "debut_bettel"
 evolve_sound: "evo_bettel"
 
+# Basic Attack is hitscan (no `attack:` block = the default).
+
 stats:
-  - damage: 90
-    attackRange: 3.0
-    attackSpeed: 95
-    mana: 140
-    initialMana: 100
+  - damage: 60
+    attackRange: 2.0
+    attackSpeed: 80.0
+    mana: 80
+    initialMana: 50
     critChance: 0
     critMultiplier: 1.5
 
-  - damage: 120
-    attackRange: 3.0
-    attackSpeed: 95
-    mana: 140
-    initialMana: 100
+  - damage: 80
+    attackRange: 2.0
+    attackSpeed: 80.0
+    mana: 80
+    initialMana: 50
     critChance: 0
     critMultiplier: 1.5
 
-  - damage: 180
-    attackRange: 3.0
-    attackSpeed: 95
-    mana: 140
-    initialMana: 100
+  - damage: 150
+    attackRange: 2.0
+    attackSpeed: 80.0
+    mana: 80
+    initialMana: 50
     critChance: 0
     critMultiplier: 1.5
 
-skill:
-  name: "Skill"
-  desc: "Gavis Bettel springs a phantom trick across the 3x1 line in front of him, dealing weapon damage to every enemy caught in the act."
-  target_summary:
-    target_team: enemy
-    target_type: enemy
-    target_shape: area
-  effects:
-    - name: "Line Strike Damage"
-      target:
-        target_team: enemy
-        target_type: enemy
-        target_shape: area
-  recovery: 0.2 # post-cast hold (s) before resuming attack — see default_tower.yaml
-  actions:
-    - type: find_multi_enemy
-      data:
-        width: 3
-        height: 1
-    - type: play_animation
-      data:
-        animation: "skill"
-    - type: attack
-      data:
-        damage: 100
-        damage_type: physic
-    - type: play_animation
-      data:
-        animation: "idle"
+# Active Skill - "Surprise": Bettel throws a card at the enemy he has locked;
+# the card is a carrier only, and its payload is a 1x1 blast at the impact
+# point. First user of the "impact blast" delivery. If the target dies in
+# flight the card still bursts where it last stood - a kill must not waste the
+# cast. No skill VFX yet: the placeholder bullet plus the red debug rect at the
+# blast are the interim readout (show_area).
+# Flavour anchors on the official bio: "The jester of Adventurer's Guild
+# TEMPUS. Visited Xenokuni in the past to learn its traditional performing
+# arts." (holostars.hololivepro.com/en/talent/bettel/)
+skills:
+  active:
+    name: "Surprise"
+    names: ["Surprise I", "Surprise II", "Surprise III"]
+    desc: "Gavis Bettel flicks a trick card at his mark, and it bursts on impact for {skillDamage:percent} magic damage to every enemy caught in a 1x1 area."
+    icon: ""
+    tags:
+      - damage
+      - magic
+      - aoe
+      - projectile
+    target_summary:
+      target_team: enemy
+      target_type: enemy
+      target_shape: area
+    effects:
+      - name: "Card Burst"
+        target:
+          target_team: enemy
+          target_type: enemy
+          target_shape: area
+    recovery: 0.2 # post-cast hold (s) before resuming attack - see default_tower.yaml
+    parameters:
+      skillDamage:
+        - 1.2
+        - 1.5
+        - 2.0
+    actions:
+      - type: impact_blast
+        data:
+          width: 1                    # blast box at the impact point
+          height: 1
+          speed: 4.0                  # card travel, cells/sec
+          lifetime: 5.0               # self-free safety net; expiry fires no blast
+          search_time: 1.0            # seconds spent looking for a target before the cast ends
+          animation: "skill"
+          cast_time: 0.25
+          projectile: "res://resources/combat/bullets/gawr_gura_skill_projectile.tscn"  # placeholder art until the card VFX lands
+          damage_multiplier_param_name: "skillDamage"
+          damage_type: magic
+          crit_rule: no_crit   # how this skill crits: no_crit / use_crit_chance / guaranteed_crit
+          show_area: true             # red debug rect stands in until the blast VFX lands
+      - type: play_animation
+        data:
+          animation: "idle"
+  passive: null
 
 evolutionStat:
-  damage: 280
-  attackRange: 3.0
-  attackSpeed: 95
-  mana: 140
-  initialMana: 100
+  damage: 250
+  attackRange: 2.0
+  attackSpeed: 80.0
+  mana: 80
+  initialMana: 50
   critChance: 50.0
   critMultiplier: 1.5
 
-
-# Optional (only if tower has evolution stats)
-# evolutionStat:
-#   damage: 250
-#   attackRange: 1.2
-#   attackSpeed: 110.0
-#   critChance: 25.0
-#   critMultiplier: 2.0
-#   mana: 80
-#   initialMana: 20
+# Evolved Active Skill - the same card throw, plus multicast: ONE roll against
+# one cumulative table, walked highest-first, so the outcomes are mutually
+# exclusive and the authored chances are exactly the odds the desc shows
+# (Director 2026-07-24, modelled on Dota 2 Ogre Magi). Every repeat replays the
+# clip and re-reads the locked target; if none turns up within search_time the
+# whole cast ends. The evolved 50% crit is for Basic Attacks - the skill itself
+# still cannot crit.
+evolution_skills:
+  active:
+    name: "Unlucky, like I have been cursed"
+    desc: "Gavis Bettel hurls a cursed card at his mark, and it bursts on impact for {skillDamage:percent} magic damage to every enemy caught in a 1x1 area.\nHis luck decides the encore: a {multicastChance1:percent} chance the trick repeats once, {multicastChance2:percent} twice, {multicastChance3:percent} three times, and {multicastChance5:percent} five times."
+    icon: ""
+    tags:
+      - damage
+      - magic
+      - aoe
+      - projectile
+    target_summary:
+      target_team: enemy
+      target_type: enemy
+      target_shape: area
+    effects:
+      - name: "Card Burst"
+        target:
+          target_team: enemy
+          target_type: enemy
+          target_shape: area
+    recovery: 0.2 # post-cast hold (s) before resuming attack - see default_tower.yaml
+    parameters:
+      skillDamage: 3.0
+      multicastChance1: 0.5
+      multicastChance2: 0.25
+      multicastChance3: 0.1
+      multicastChance5: 0.01
+    actions:
+      - type: impact_blast
+        data:
+          width: 1
+          height: 1
+          speed: 4.0
+          lifetime: 5.0
+          search_time: 1.0
+          animation: "skill"
+          cast_time: 0.25
+          projectile: "res://resources/combat/bullets/gawr_gura_skill_projectile.tscn"  # placeholder art until the card VFX lands
+          damage_multiplier_param_name: "skillDamage"
+          damage_type: magic
+          crit_rule: no_crit
+          show_area: true
+          extra_casts:              # highest extra first - the roll walks down this order
+            - extra: 5
+              chance_param: "multicastChance5"
+            - extra: 3
+              chance_param: "multicastChance3"
+            - extra: 2
+              chance_param: "multicastChance2"
+            - extra: 1
+              chance_param: "multicastChance1"
+      - type: play_animation
+        data:
+          animation: "idle"
+  passive: null

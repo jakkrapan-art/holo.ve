@@ -318,6 +318,52 @@ static func ParseAction(data: Dictionary, parameters: Dictionary = {}) -> SkillA
 			# SkillActionField (NOT the channel/aftershock per-tick effect_action
 			# path - a field zone must not respawn on the damage cadence).
 			skill.effectScriptPath = str(skillData.get("effect_script", ""));
+		"impact_blast":
+			# "impact blast" delivery + optional multicast repeat. The inner
+			# find/attack/animation are built from this same data block via this
+			# parser, so damage_multiplier_param_name, damage_type, crit_rule,
+			# effects and the per-beat cast_time all work inside the blast.
+			# First user: Gavis Bettel.
+			skill = SkillActionImpactBlast.new();
+			var skillData = data.get("data", {});
+			skill.width = int(skillData.get("width", 1));
+			skill.height = int(skillData.get("height", 1));
+			skill.speed = float(skillData.get("speed", 4.0));
+			skill.lifetime = float(skillData.get("lifetime", 5.0));
+			skill.searchTime = float(skillData.get("search_time", 1.0));
+			skill.animation = str(skillData.get("animation", "skill"));
+			skill.castTime = float(skillData.get("cast_time", 0.0));
+			skill.projectileTemplate = load(skillData.get("projectile", "res://resources/combat/bullets/gawr_gura_skill_projectile.tscn"));
+			# Multicast table: authored highest-extra first, rolled ONCE against
+			# the cumulative sum, so entries past 1.0 could never fire.
+			var extraCastList = skillData.get("extra_casts", []);
+			var chanceSum: float = 0.0;
+			if extraCastList is Array:
+				for entry in extraCastList:
+					if not (entry is Dictionary):
+						continue;
+					var chance: float = 0.0;
+					var chanceParam := str(entry.get("chance_param", ""));
+					if chanceParam != "":
+						if not parameters.has(chanceParam):
+							push_warning("impact_blast: chance_param '", chanceParam, "' not in skill parameters - entry dropped.");
+							continue;
+						chance = float(parameters[chanceParam]);
+					else:
+						chance = float(entry.get("chance", 0.0));
+					chanceSum += chance;
+					skill.extra_casts.append({"extra": int(entry.get("extra", 0)), "chance": chance});
+			if chanceSum > 1.0:
+				push_warning("impact_blast: extra_casts chances sum to ", chanceSum, " (> 1.0); the table is rolled once, so the tail entries can never fire.");
+			var blastFind := SkillActionFindMultipleInRange.new();
+			blastFind.width = skill.width;
+			blastFind.height = skill.height;
+			# Whiff, never cancel: the card is already committed once thrown.
+			blastFind.cancel_when_empty = false;
+			blastFind.show_area = skillData.get("show_area", true);
+			skill.find_action = blastFind;
+			skill.attack_action = ParseAction({"type": "attack", "data": skillData}, parameters) as SkillActionAttack;
+			skill.anim_action = ParseAction({"type": "play_animation", "data": {"animation": skill.animation, "cast_time": skill.castTime}}, parameters) as SkillActionPlayAnimation;
 		"clear_enemy":
 			skill = SkillActionClearEnemy.new();
 		"find_multi_enemy":

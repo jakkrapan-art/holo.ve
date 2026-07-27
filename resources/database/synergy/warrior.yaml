@@ -1,0 +1,19 @@
+id: warrior
+name: "Warrior"
+kind: class
+type: standard
+rarity: common
+effect: attack_up_melee_amp
+# Single tier at 2; three demo Warriors exist (Axel Syrios / Banzoin Hakka /
+# Takanashi Kiara), so the threshold is reachable.
+thresholds: [2]
+parameters:
+  # Percent Weapon Attack (attack_mult bucket, 20 = +20%).
+  atk_bonus: 20
+  # Percent damage amp on Basic Attacks against ADJACENT targets only - the 8
+  # surrounding cells (Marksman round-nearest measure, so diagonals count).
+  # NOT a flat amplifier; skills never receive it.
+  melee_amp: 50
+desc: "Warrior units hold the front line with {atk_bonus:pct} greater Weapon Attack, and their Basic Attacks strike adjacent enemies for {melee_amp:pct} more damage."
+tier_effects:
+  - "+{atk_bonus:pct} Weapon Attack; Basic Attacks deal +{melee_amp:pct} damage to adjacent enemies"

@@ -14,6 +14,9 @@ parameters:
   # surrounding cells (Marksman round-nearest measure, so diagonals count).
   # NOT a flat amplifier; skills never receive it.
   melee_amp: 50
-desc: "Warrior units hold the front line with {atk_bonus:pct} greater Weapon Attack, and their Basic Attacks strike adjacent enemies for {melee_amp:pct} more damage."
+# "1 tile" is a structural constant (code-owned ring size, not a tuned value),
+# so it is written literally; distance copy counts in tiles, never vague words
+# like "adjacent" (game_copy.md).
+desc: "Warrior units hold the front line with {atk_bonus:pct} greater Weapon Attack, and their Basic Attacks deal {melee_amp:pct} more damage to enemies within 1 tile."
 tier_effects:
-  - "+{atk_bonus:pct} Weapon Attack; Basic Attacks deal +{melee_amp:pct} damage to adjacent enemies"
+  - "+{atk_bonus:pct} Weapon Attack; +{melee_amp:pct} Basic Attack damage within 1 tile"

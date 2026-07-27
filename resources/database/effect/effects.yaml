@@ -135,7 +135,7 @@ marksman_range:
 # keeps it Basic-Attack-only.
 warrior_melee_amp:
   name: "Close Combat"
-  desc: "Basic Attacks deal more damage to adjacent enemies."
+  desc: "Basic Attacks deal more damage to enemies within 1 tile."
   icon: "ui_asset/effects/buff_generic.png"
   category: buff
   host: tower

@@ -4,8 +4,7 @@ extends SynergyEffect
 # SpellCaster (redesigned 2026-07-22): holders get +magic_bonus% Magic Attack
 # AND +energy_amp% Energy from every intake (the ENERGY_AMP multiplier at
 # SkillController.updateMana). The old skill-crit gate moved off this synergy -
-# its mark lives on as the dormant `skill_crit_unlock`, reserved for a future
-# synergy (e.g. Assassin).
+# its mark lives on as `skill_crit_unlock`, now granted by the Assassin synergy.
 #
 # Two effects share one source_id: EffectInstance.key() is source_id + "/" + id,
 # so the keys stay distinct. Both are REFRESH, so the per-placement re-apply

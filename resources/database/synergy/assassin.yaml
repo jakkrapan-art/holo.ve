@@ -3,8 +3,11 @@ name: "Assassin"
 kind: class
 type: standard
 rarity: common
-# Placeholder: thresholds carried from the old hardcoded table for UI counting.
-# Effect not wired yet - Director defines it when Assassin enters scope.
-effect: none
-thresholds: [3, 4, 6]
-desc: "Assassin synergy effect not yet defined."
+thresholds: [2]
+effect: skill_crit_unlock_crit_up
+parameters:
+  crit_chance: 25    # percent points (crit_chance kind convention)
+  crit_damage: 0.5   # decimal, added to critMultiplier (crit_damage kind convention)
+desc: "Assassin units strike from the shadows: their skills can land critical hits, and they gain {crit_chance:pct} critical chance and {crit_damage:percent} critical damage."
+tier_effects:
+  - "+{crit_chance:pct} critical chance, +{crit_damage:percent} critical damage"

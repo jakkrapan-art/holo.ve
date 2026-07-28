@@ -9,6 +9,11 @@ class_name Projectile
 # circle projectile behavior (orbital may legitimately hit same enemy across
 # revolutions if designer wants — kept as opt-in).
 @export var prevent_rehit: bool = false
+# Target-mode opt-in: when the homing target dies mid-flight, keep flying to the
+# spot it last stood and resolve there instead of vanishing. Skill projectiles
+# whose payload is a terminal blast use this so a kill can't waste the cast
+# (first user: Bettel's card); normal-attack bullets stay on the vanish path.
+@export var explode_on_target_lost: bool = false
 
 var damage: Damage;
 var shooter: Tower = null
@@ -27,6 +32,11 @@ var _hit_ids: Dictionary = {}  # enemy.instance_id → true; used when prevent_r
 
 # for circle movement
 var spawn_position: Vector2 = Vector2.ZERO
+# Last live position of a homing target, refreshed every frame; the fallback
+# destination for explode_on_target_lost. Seeded at setupTarget so a target that
+# dies before the first _process still leaves a real point (ZERO reads as "no
+# destination" in processMoveToPosition and would free the projectile silently).
+var _last_target_position: Vector2 = Vector2.ZERO
 var circle_radius: float = 100.0
 var circle_angle: float = 0.0
 var circle_angular_speed: float = 180.0  # Degrees per second
@@ -49,6 +59,7 @@ func setupTarget(p_shooter: Tower, p_target: Enemy, p_damage: Damage, p_lifetime
 	_base_setup(p_shooter, p_damage, p_lifetime, p_callback)
 	self.target = p_target
 	moveType = ProjectileMoveType.Target
+	_last_target_position = p_target.global_position
 	rotation = Utility.get_angle_to_target(global_position, p_target.global_position)
 	connect("area_entered", Callable(self, "onAreaEntered"))
 
@@ -97,9 +108,22 @@ func _process(delta: float) -> void:
 
 func processMoveToTarget(delta: float):
 	if not is_instance_valid(target):
+		if explode_on_target_lost and _last_target_position != Vector2.ZERO:
+			# Finish the throw at the remembered spot. area_entered is dropped so
+			# the switched-to Position flight resolves exactly once, on arrival -
+			# the non-Target branch of hitTarget would otherwise fire the callback
+			# again for every body met en route.
+			target_position = _last_target_position
+			moveType = ProjectileMoveType.Position
+			if is_connected("area_entered", Callable(self, "onAreaEntered")):
+				disconnect("area_entered", Callable(self, "onAreaEntered"))
+			processMoveToPosition(delta)
+			return
+
 		queue_free()
 		return
 
+	_last_target_position = target.global_position
 	var direction = (target.global_position - global_position).normalized()
 	rotation = Utility.get_angle_to_target(global_position, target.global_position)
 	global_position += direction * speed * delta
@@ -109,14 +133,25 @@ func processMoveToPosition(delta: float):
 		queue_free()
 		return
 
-	var direction = (target_position - global_position).normalized()
-	global_position += direction * speed * delta
+	var to_target: Vector2 = target_position - global_position
+	var step: float = speed * delta
 
-	if global_position.distance_to(target_position) < 5.0:
-		# hitTarget(target.area)
+	# Arrive when this frame's step reaches or overshoots the point. A fixed
+	# arrival radius does NOT work here: one frame covers tens of pixels at skill
+	# speeds, so the projectile steps straight over a small radius and then
+	# oscillates around the destination forever - never resolving its payload,
+	# never freeing.
+	if to_target.length() <= step:
+		global_position = target_position
+		# Arrival resolves the terminal payload. Same (projectile, target) shape
+		# every other onHit site uses; `target` is null on the target-lost path,
+		# so a handler must not assume an enemy here.
 		if callback and callback.onHit.is_valid():
-			callback.onHit.call(target)
+			callback.onHit.call(self, target)
 		queue_free()
+		return
+
+	global_position += to_target.normalized() * step
 
 func processMoveByDirection(delta: float):
 	global_position += move_direction.normalized() * speed * delta

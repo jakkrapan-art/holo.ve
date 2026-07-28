@@ -11,6 +11,7 @@ class_name EffectTypes
 #   CRIT_CHANCE                         percent points
 #   DAMAGE_AMPLIFIER / DAMAGE_REDUCTION decimal
 #   DAMAGE_AMP_PER_CELL                 percent per cell of attacker-to-target distance
+#   DAMAGE_AMP_MELEE                    percent, Basic Attacks against targets within 1 cell
 #   ENERGY_AMP                          percent (10 = +10% Energy from every gain)
 #   *_FLAT / RANGE / MANA_REGEN / MOVE_SPEED_FLAT  flat additive
 enum Kind {
@@ -44,6 +45,10 @@ enum Kind {
 	# (attack regen, synergy grants, refunds); wave-start refill is a direct
 	# reset, not a gain, and is deliberately outside (SpellCaster synergy).
 	ENERGY_AMP,
+	# Per-attack, per-target amplifier: aggregate() yields the percent granted on
+	# Basic Attacks against targets within 1 cell; TowerData.getMeleeAmp turns it
+	# into a real amp at the normal-attack build site (Warrior synergy).
+	DAMAGE_AMP_MELEE,
 }
 
 enum Category { BUFF, DEBUFF, MARK }
@@ -84,6 +89,7 @@ const KIND_FROM_STRING := {
 	"hot": Kind.HOT,
 	"damage_amp_per_cell": Kind.DAMAGE_AMP_PER_CELL,
 	"energy_amp": Kind.ENERGY_AMP,
+	"damage_amp_melee": Kind.DAMAGE_AMP_MELEE,
 }
 
 const CATEGORY_FROM_STRING := {
@@ -106,7 +112,7 @@ static func is_stat_kind(kind: int) -> bool:
 	# The `< STUN` range test only works for kinds declared before the behavior
 	# block; kinds appended after HOT must be listed explicitly (the enum is
 	# append-only, so the block cannot be re-sorted).
-	return kind < Kind.STUN or kind == Kind.DAMAGE_AMP_PER_CELL or kind == Kind.ENERGY_AMP
+	return kind < Kind.STUN or kind == Kind.DAMAGE_AMP_PER_CELL or kind == Kind.ENERGY_AMP or kind == Kind.DAMAGE_AMP_MELEE
 
 # Decimal-scale kinds display as percent (0.5 -> "50%"); percent-scale kinds
 # append % directly; flats show the plain number. Used by the {value} desc
@@ -116,7 +122,7 @@ const _DECIMAL_PERCENT_KINDS := [
 	Kind.MARMOR_MULT, Kind.DAMAGE_AMPLIFIER, Kind.DAMAGE_REDUCTION,
 	Kind.CRIT_DAMAGE_BONUS,
 ]
-const _PERCENT_POINT_KINDS := [Kind.ATTACK_MULT, Kind.MAGIC_MULT, Kind.CRIT_CHANCE, Kind.ENERGY_AMP]
+const _PERCENT_POINT_KINDS := [Kind.ATTACK_MULT, Kind.MAGIC_MULT, Kind.CRIT_CHANCE, Kind.ENERGY_AMP, Kind.DAMAGE_AMP_MELEE]
 
 static func format_value(kind: int, value: float) -> String:
 	var v: float = absf(value)

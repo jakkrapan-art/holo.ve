@@ -99,7 +99,10 @@ func calculateFinalDamage(baseDamage: float, enemy: Enemy, source: Node2D = null
 	# `source` used to be dropped here, which left ΣAmp unreachable for normal
 	# attacks (Enemy.recvDamage resolves the attacker through it). Keep it stamped.
 	var dmg := Damage.new(source, int(finalDamage), attackType, isCrit)
-	dmg.sourceAmp = getDistanceAmp(source, enemy)
+	# Melee amp stays Basic-Attack-only because live skill actions build their own
+	# Damage and never route here; the dead attack_with_param action would inherit
+	# both amps (and the crit roll) if ever wired.
+	dmg.sourceAmp = getDistanceAmp(source, enemy) + getMeleeAmp(source, enemy)
 	return dmg
 
 # Per-attack amplifier that scales with how far the target is (Marksman synergy).
@@ -116,13 +119,38 @@ func getDistanceAmp(attacker: Node2D, enemy: Enemy) -> float:
 	var perCell: float = effects.aggregate(EffectTypes.Kind.DAMAGE_AMP_PER_CELL)
 	if perCell <= 0.0:
 		return 0.0
-	if attacker == null or enemy == null:
+	var cells: float = _distanceCells(attacker, enemy)
+	if cells < 0.0:
 		return 0.0
-	if not is_instance_valid(attacker) or not is_instance_valid(enemy):
-		return 0.0
-	var px: float = attacker.global_position.distance_to(enemy.global_position)
-	var cells: float = round(px / float(GridHelper.CELL_SIZE))
 	return cells * perCell / 100.0
+
+# Adjacent targets stand within 1 cell: with the round-nearest measure the
+# diagonals (1.41 -> 1) are inside the ring, so "adjacent" = the 8 surrounding
+# tiles (Director 2026-07-27).
+const MELEE_RANGE_CELLS := 1.0
+
+# Per-attack amplifier against adjacent targets (Warrior synergy). Basic Attacks
+# only: computed at the calculateFinalDamage stamp site, which skill actions
+# never route through. Returns a decimal amp (0.5 = +50%) summed into ΣAmp.
+func getMeleeAmp(attacker: Node2D, enemy: Enemy) -> float:
+	var rate: float = effects.aggregate(EffectTypes.Kind.DAMAGE_AMP_MELEE)
+	if rate <= 0.0:
+		return 0.0
+	var cells: float = _distanceCells(attacker, enemy)
+	if cells < 0.0 or cells > MELEE_RANGE_CELLS:
+		return 0.0
+	return rate / 100.0
+
+# Centre-to-centre distance in whole cells, round-nearest - the one distance
+# standard both range-dependent synergies share (Marksman / Warrior must never
+# drift onto two measures). -1.0 when either node is missing or freed.
+func _distanceCells(attacker: Node2D, enemy: Enemy) -> float:
+	if attacker == null or enemy == null:
+		return -1.0
+	if not is_instance_valid(attacker) or not is_instance_valid(enemy):
+		return -1.0
+	var px: float = attacker.global_position.distance_to(enemy.global_position)
+	return round(px / float(GridHelper.CELL_SIZE))
 
 func getAttackRange():
 	return getStat().attackRange + effects.aggregate(EffectTypes.Kind.RANGE)

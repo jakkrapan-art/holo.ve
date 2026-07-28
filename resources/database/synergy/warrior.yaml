@@ -1,0 +1,25 @@
+id: warrior
+name: "Warrior"
+kind: class
+type: standard
+rarity: common
+effect: attack_up_melee_amp
+# Single tier at 2; three demo Warriors exist (Axel Syrios / Banzoin Hakka /
+# Takanashi Kiara), so the threshold is reachable.
+thresholds: [2]
+parameters:
+  # Percent Weapon Attack (attack_mult bucket, 20 = +20%).
+  atk_bonus: 20
+  # Percent damage amp on Basic Attacks against ADJACENT targets only - the 8
+  # surrounding cells (Marksman round-nearest measure, so diagonals count).
+  # NOT a flat amplifier; skills never receive it.
+  melee_amp: 50
+# "1 tile" is a structural constant (code-owned ring size, not a tuned value),
+# so it is written literally; distance copy counts in tiles, never vague words
+# like "adjacent" (game_copy.md).
+desc: "Warrior units hold the front line with {atk_bonus:pct} greater Weapon Attack, and their Basic Attacks deal {melee_amp:pct} more damage to enemies within 1 tile."
+# Tier line carries the synergy's scaling value ONLY (Weapon Attack); the melee
+# bonus is the granted ability and lives in desc alone - value-in-table rule,
+# Director 2026-07-19 + 2026-07-27.
+tier_effects:
+  - "+{atk_bonus:pct} Weapon Attack"

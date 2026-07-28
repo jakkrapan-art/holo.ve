@@ -128,6 +128,22 @@ marksman_range:
   duration: 0
   lifetime: board
 
+# Warrior synergy rate. Same rate-not-amplifier shape as marksman_range: the
+# value is the percent granted only when the target stands within 1 cell (the
+# 8 surrounding tiles - round-nearest, so diagonals count). TowerData.getMeleeAmp
+# turns it into a real amp at the normal-attack build site only, which is what
+# keeps it Basic-Attack-only.
+warrior_melee_amp:
+  name: "Close Combat"
+  desc: "Basic Attacks deal more damage to enemies within 1 tile."
+  icon: "ui_asset/effects/buff_generic.png"
+  category: buff
+  host: tower
+  kind: damage_amp_melee
+  stack: refresh
+  duration: 0
+  lifetime: board
+
 crit_damage_up:
   name: "Critical Damage Up"
   desc: "Critical damage increased by {value}."

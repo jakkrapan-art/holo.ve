@@ -58,6 +58,13 @@ func execute_skill_actions(skill: Skill, context: SkillContext):
 		context.cancel = false;
 		await action.execute(context)
 
+	# Anim tail debt: the last play_animation beat returned at its impact frame;
+	# wait out the clip's remaining frames (the artist's end-pose hold) so the
+	# pose visibly completes before the recovery hold starts.
+	await SkillActionPlayAnimation.settle_tail(context)
+	if not is_instance_valid(user):
+		return
+
 	# Re-check cancellation after the final action's await. Without this, a skill
 	# cancelled mid-await (e.g. wave end during Gura storm) would still reach
 	# onSuccess and drain Energy via SkillController.onSuccess's updateMana(-current).

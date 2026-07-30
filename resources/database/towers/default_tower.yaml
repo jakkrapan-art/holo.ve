@@ -83,6 +83,10 @@ skills:
       - type: play_animation
         data:
           animation: "skill"
+          # cast_time: 0.5   # เวลาร่ายทั้งคลิป (วินาที): ย่อ/ยืดทุกเฟรม "ตามสัดส่วน" ให้จบพอดีเวลานี้
+          #                  # (เฟรมที่ artist หน่วงไว้ยังยาวกว่าเฟรมอื่นตามสัดส่วนเดิม) ไม่ใส่ = เล่น speed ปกติ
+          # impact_frame: 8  # จุดโดน: action ถัดไป (ดาเมจ/effect) ทำงานตอนคลิปถึงเฟรมนี้ (นับแบบ artist เริ่มที่ 1)
+          #                  # เฟรมที่เหลือ = ท่าค้างจบ เล่นต่อจนครบ cast_time — ไม่ใส่ = โดนที่ ~80% ของเวลาคลิป
       - type: attack
         data:
           damage: 100
@@ -130,8 +134,11 @@ skills:
       # COMBO SKILL (หลายท่าใน cast เดียว) — pattern แบบ "beat"
       #
       # 1 beat = play_animation(1 คลิป non-loop) + cast_time(วินาที) + effect ต่อท้าย
-      #   • cast_time ยืด/ย่อคลิปให้พอดีเวลา → ดาเมจ/effect ลงที่ ~80% ของ cast_time
-      #   • ชื่อคลิป: skill_1, skill_2, ... skill_N (ต้องมีใน SpriteFrames ของ .tscn, loop=false)
+      #   • cast_time ยืด/ย่อทั้งคลิปตามสัดส่วนเฟรม (เฟรมหน่วงของ artist นับน้ำหนักด้วย)
+      #   • impact_frame = เฟรมจุดโดน (นับเริ่ม 1): ดาเมจ/effect ลงตรงเฟรมนั้น แล้วเฟรมท้าย
+      #     เล่นต่อจนครบ cast_time — ไม่ใส่ = ลงที่ ~80% ของเวลาคลิป
+      #   • ชื่อคลิป: skill_1, skill_2, ... skill_N (ต้องมีใน SpriteFrames ของ .tscn)
+      #     คลิปสกิลทุกตัวต้อง loop=false — เปิด loop ไว้ = ท่าจบไม่ค้าง + เกมขึ้นเตือน
       #   • ท่าเชื่อม (เช่น ควงปืน) วาดไว้ "หัวคลิป" ของ beat ถัดไป — ไม่มีคลิป "pre" แยก
       #   • beat สุดท้ายปิดด้วย play_animation "idle" เสมอ (คืน speed ปกติ)
       #   • ห้ามต่อ delay หลัง play_animation ของ beat — คุมจังหวะที่ cast_time พอ

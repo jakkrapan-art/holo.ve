@@ -88,6 +88,11 @@ skills:
         data:
           animation: "skill_1"
           cast_time: 0.5
+      - type: play_effect
+        data:
+          # Gun Blade Slash crescent VFX - orients toward tower.enemy and
+          # lands on the 3x1 AOE (see altare_slash_effect.gd setup()).
+          effect_script: "res://resources/tower/holostars/en_branch/tempus_gen/altare/skill_effect/altare_slash_effect.gd"
       - type: attack
         data:
           damage_multiplier_param_name: "beat1Damage"
@@ -106,6 +111,11 @@ skills:
         data:
           animation: "skill_2"
           cast_time: 1.0
+      - type: play_effect
+        data:
+          # Gun Volley lance VFX - shot leaves the muzzle and runs down the
+          # 1x3 lane (see altare_volley_effect.gd setup()).
+          effect_script: "res://resources/tower/holostars/en_branch/tempus_gen/altare/skill_effect/altare_volley_effect.gd"
       - type: attack
         data:
           damage_multiplier_param_name: "beat2Damage"

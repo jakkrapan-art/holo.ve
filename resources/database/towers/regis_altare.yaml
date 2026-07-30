@@ -88,6 +88,7 @@ skills:
         data:
           animation: "skill_1"
           cast_time: 0.5
+          impact_frame: 9    # blade contact: swing runs f6-f9, f10-f11 hold the end pose
       - type: play_effect
         data:
           # Gun Blade Slash crescent VFX - orients toward tower.enemy and
@@ -110,7 +111,8 @@ skills:
       - type: play_animation
         data:
           animation: "skill_2"
-          cast_time: 1.0
+          cast_time: 0.5
+          impact_frame: 4    # first shot: aim/charge f1-f3, volley fires f4-f10, f11 holds
       - type: play_effect
         data:
           # Gun Volley lance VFX - shot leaves the muzzle and runs down the
@@ -182,6 +184,7 @@ evolution_skills:
         data:
           animation: "skill_1"
           cast_time: 0.5
+          impact_frame: 9    # blade contact: swing runs f6-f9, f10-f11 hold the end pose
       - type: attack
         data:
           damage_multiplier_param_name: "beat1Damage"
@@ -199,7 +202,8 @@ evolution_skills:
       - type: play_animation
         data:
           animation: "skill_2"
-          cast_time: 1.0
+          cast_time: 0.5
+          impact_frame: 4    # first shot: aim/charge f1-f3, volley fires f4-f10, f11 holds
       - type: attack
         data:
           damage_multiplier_param_name: "beat2Damage"

@@ -24,7 +24,7 @@ const WIDTH_PAD     := 1.4     # headroom so the effect never clips the rect edg
 const FORWARD_CELLS := 0.9     # push the rect ahead of the caster onto the AOE
 const ROT_OFFSET    := PI / 2  # author "up" -> forward
 
-const DURATION := 0.95         # progress 0->1 seconds
+const DURATION := 0.4          # progress 0->1 seconds - keep in step with the beat's cast_time
 const POP_FRAC := 0.24         # scale_p elastic pop length (fraction of DURATION)
 
 # Called by SkillActionPlayEffect after the node is in the tree.

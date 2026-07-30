@@ -24,7 +24,7 @@ const VISUAL_W_CELLS := 1.6   # visual rect height (tiles) - may exceed the 1-ti
 const LANE_PAD       := 0.25  # frame padding in lane units - MUST match the shader's lane_pad
 const ROT_OFFSET     := 0.0   # shader motion runs along +X
 
-const DURATION := 0.6         # progress 0->1 seconds - tuned to the 1.0s beat (impact_frame 4); visual stays close to the hitbox
+const DURATION := 0.6         # progress 0->1 seconds - keep in step with the beat's cast_time; visual stays close to the hitbox
 const POP_FRAC := 0.18        # scale_p elastic pop length (fraction of DURATION)
 
 # Called by SkillActionPlayEffect after the node is in the tree.

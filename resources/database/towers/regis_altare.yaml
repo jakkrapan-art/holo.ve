@@ -111,7 +111,7 @@ skills:
       - type: play_animation
         data:
           animation: "skill_2"
-          cast_time: 1.0
+          cast_time: 0.5
           impact_frame: 4    # first shot: aim/charge f1-f3, volley fires f4-f10, f11 holds
       - type: play_effect
         data:
@@ -202,7 +202,7 @@ evolution_skills:
       - type: play_animation
         data:
           animation: "skill_2"
-          cast_time: 1.0
+          cast_time: 0.5
           impact_frame: 4    # first shot: aim/charge f1-f3, volley fires f4-f10, f11 holds
       - type: attack
         data:

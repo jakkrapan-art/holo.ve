@@ -159,6 +159,7 @@ static func ParseAction(data: Dictionary, parameters: Dictionary = {}) -> SkillA
 			var skillData = data.get("data", {});
 			skill.animationName = skillData.get("animation", "");
 			skill.castTime = float(skillData.get("cast_time", 0.0));
+			skill.impactFrame = int(skillData.get("impact_frame", 0));
 			if skillData.has("duration"):
 				push_warning("play_animation: 'duration' was renamed to 'cast_time' - rename the key (its value is used).");
 				skill.castTime = float(skillData.get("duration", 0.0));

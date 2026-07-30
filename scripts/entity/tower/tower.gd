@@ -51,7 +51,6 @@ func _ready():
 	if data != null:
 		data.effects.set_host(self)
 	anim = AnimationController.new(spr, IDLE_ANIMATION);
-	Utility.ConnectSignal(anim,"on_animation_finished", Callable(self, "animation_finished"));
 
 	var stat = data.getStat();
 
@@ -350,13 +349,24 @@ func play_animation_default():
 	if(anim != null):
 		anim.playDefault();
 
-func animation_finished(p_name: String):
-	match p_name:
-		_:
-			pass;
-			# play_animation_default();
+func resolve_impact_frame(p_name: String, impact_frame: int) -> int:
+	if(anim != null):
+		return anim.resolve_impact_frame(p_name, impact_frame);
+	return 0;
 
-	on_animation_finished.emit(p_name);
+func is_animation_looping(p_name: String) -> bool:
+	if(anim != null):
+		return anim.is_looping(p_name);
+	return false;
+
+func wait_animation_frame(p_name: String, frame_idx: int) -> bool:
+	if(anim != null):
+		return await anim.wait_frame(p_name, frame_idx);
+	return false;
+
+func wait_animation_end(p_name: String) -> void:
+	if(anim != null):
+		await anim.wait_clip_end(p_name);
 
 func update_mana_bar(current: float):
 	if(manaBar == null):
@@ -439,6 +449,5 @@ func _exit_tree():
 		if data.effects.get_host() == self:
 			data.effects.set_host(null)
 
-signal on_animation_finished(name: String);
 # Emitted after this tower completes a skill cast (drives synergy effects).
 signal skill_cast_succeeded(tower);

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b2ibx85n84a0f"
-path="res://.godot/imported/altare_skill01.png-80f49a81e0837dbbeab64e5b48dd96f1.ctex"
+uid="uid://c7ylquvd1edi3"
+path="res://.godot/imported/amelia_skill.png-b1bfdd27a8fe0a3051a7abea37b1366b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/tower/holostars/en_branch/tempus_gen/altare/sprite/altare_skill01.png"
-dest_files=["res://.godot/imported/altare_skill01.png-80f49a81e0837dbbeab64e5b48dd96f1.ctex"]
+source_file="res://resources/tower/hololive/en_branch/myth_gen/amelia/sprite/amelia_skill.png"
+dest_files=["res://.godot/imported/amelia_skill.png-b1bfdd27a8fe0a3051a7abea37b1366b.ctex"]
 
 [params]
 

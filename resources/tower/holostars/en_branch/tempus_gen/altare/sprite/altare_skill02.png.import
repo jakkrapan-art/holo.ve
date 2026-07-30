@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b2ibx85n84a0f"
-path="res://.godot/imported/altare_skill01.png-80f49a81e0837dbbeab64e5b48dd96f1.ctex"
+uid="uid://d3yufyrcn02k4"
+path="res://.godot/imported/altare_skill02.png-9a20d6359b8901e988993b5aaeeeadc4.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/tower/holostars/en_branch/tempus_gen/altare/sprite/altare_skill01.png"
-dest_files=["res://.godot/imported/altare_skill01.png-80f49a81e0837dbbeab64e5b48dd96f1.ctex"]
+source_file="res://resources/tower/holostars/en_branch/tempus_gen/altare/sprite/altare_skill02.png"
+dest_files=["res://.godot/imported/altare_skill02.png-9a20d6359b8901e988993b5aaeeeadc4.ctex"]
 
 [params]
 

@@ -365,6 +365,3 @@ animations = [{
 
 [node name="AnimatedSprite2D" parent="." index="0"]
 sprite_frames = SubResource("SpriteFrames_si38b")
-animation = &"skill_2"
-frame = 8
-frame_progress = 1.0

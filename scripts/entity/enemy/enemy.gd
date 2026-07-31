@@ -131,6 +131,12 @@ func setTexture(image: Texture2D):
 		sprite.flip_h = false;
 
 func recvDamage(damage: Damage) -> int:
+	# Spawn-frame guard: the node sits in-tree (and in the "enemy" group) before
+	# setup() assigns stats, and a map-wide blast (global_strike) can reach it
+	# there. Not damageable until initialized.
+	if stats == null:
+		return 0
+
 	# Refresh the awake window before ANY early-return so blocked hits
 	# (e.g. while invincible or shield-blocked) still count as engagement.
 	if inCombatRemaining <= 0.0:

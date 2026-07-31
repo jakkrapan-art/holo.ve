@@ -120,6 +120,11 @@ func _on_hitbox_detected(enemies: Array, context: SkillContext, user_position: V
 		if enemy_node == null:
 			continue
 
+		# Spawn-frame enemies (in-tree before setup(); stats still null) are not
+		# valid targets - a map-wide blast box can reach the spawn point.
+		if not enemy_node.initialized:
+			continue
+
 		var distance = user_position.distance_to(enemy.global_position)
 		valid_targets.append({
 			"target": enemy,

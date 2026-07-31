@@ -57,6 +57,7 @@ skills:
       - magic
       - aoe
       - projectile
+      - global
     target_summary:
       target_team: enemy
       target_type: enemy
@@ -78,9 +79,9 @@ skills:
         data:
           width: 1                    # blast box at the landing point
           height: 1
-          speed: 4.0                  # carrier travel, cells/sec
+          speed: 10.0                  # carrier travel, cells/sec
           lifetime: 5.0               # self-free safety net; expiry fires no blast
-          spawn_distance: 6.0         # cells from target to the carrier spawn (fixed -> constant time-to-impact)
+          spawn_distance: 5.0         # cells from target to the carrier spawn (fixed -> constant time-to-impact)
           spawn_angle_deg: 45.0       # diagonal off vertical; side is random per strike
           angle_jitter_deg: 10.0      # +/- wobble per strike (imperfection)
           animation: "skill"
@@ -105,19 +106,19 @@ evolutionStat:
   damage: 500
   attackRange: 4.0
   attackSpeed: 50.0
-  mana: 200
+  mana: 300
   initialMana: 100
   critChance: 50.0
   critMultiplier: 1.5
 
-# Evolved Active Skill - "R-TRUS Overload": a 5-second blocking channel; every
-# second one global strike at a FRESH random map-wide target (`strike:` inside
-# channel), each landing a 3x3 blast. The evolved 50% crit is for Basic
+# Evolved Active Skill - "R-TRUS Overload": a blocking channel; each tick fires
+# one global strike at a FRESH random map-wide target (`strike:` inside
+# channel), each landing a blast box. The evolved crit chance is for Basic
 # Attacks - the skill itself still cannot crit.
 evolution_skills:
   active:
     name: "R-TRUS Overload"
-    desc: "Machina X Flayon boards R-TRUS and overloads its cannons for 5 seconds, dropping a beam on a random enemy every second; each blast deals {skillDamage:percent} magic damage to every enemy within a 3x3 area around its mark."
+    desc: "Machina X Flayon boards R-TRUS and overloads its cannons for 5 seconds, raining beams onto random enemies across the battlefield; each blast deals {skillDamage:percent} magic damage to every enemy within a 3x3 area around its mark."
     icon: ""
     cast_target: global
     tags:
@@ -126,6 +127,7 @@ evolution_skills:
       - aoe
       - channel
       - projectile
+      - global
     target_summary:
       target_team: enemy
       target_type: enemy
@@ -138,19 +140,19 @@ evolution_skills:
           target_shape: area
     recovery: 0.2 # post-cast hold (s) before resuming attack - see default_tower.yaml
     parameters:
-      skillDamage: 5.0
+      skillDamage: 3.0
     actions:
       - type: channel
         data:
           cast_time: 5.0              # channel length (s); the tower is locked for the whole barrage
-          tick_interval: 1.0          # one strike per second -> 5 strikes
+          tick_interval: 0.5          # seconds between strikes
           animation: "skill"
           strike:                     # per-tick global_strike (fresh random target every tick)
             width: 3                  # blast box at each landing point
             height: 3
-            speed: 4.0
+            speed: 10.0
             lifetime: 5.0
-            spawn_distance: 6.0
+            spawn_distance: 5.0
             spawn_angle_deg: 45.0
             angle_jitter_deg: 10.0
             projectile: "res://resources/combat/bullets/gawr_gura_skill_projectile.tscn"  # placeholder art until the beam VFX lands

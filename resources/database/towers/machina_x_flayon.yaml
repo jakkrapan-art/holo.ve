@@ -79,11 +79,11 @@ skills:
         data:
           width: 1                    # blast box at the landing point
           height: 1
-          speed: 10.0                  # carrier travel, cells/sec
+          speed: 12.0                  # carrier travel, cells/sec
           lifetime: 5.0               # self-free safety net; expiry fires no blast
           spawn_distance: 5.0         # cells from target to the carrier spawn (fixed -> constant time-to-impact)
-          spawn_angle_deg: 45.0       # diagonal off vertical; side is random per strike
-          angle_jitter_deg: 10.0      # +/- wobble per strike (imperfection)
+          spawn_angle_deg: 55.0       # diagonal off vertical; side is random per strike
+          angle_jitter_deg: 30.0      # +/- wobble per strike (imperfection)
           animation: "skill"
           cast_time: 0.5
           projectile: "res://resources/combat/bullets/gawr_gura_skill_projectile.tscn"  # placeholder art until the beam VFX lands
@@ -150,11 +150,11 @@ evolution_skills:
           strike:                     # per-tick global_strike (fresh random target every tick)
             width: 3                  # blast box at each landing point
             height: 3
-            speed: 10.0
+            speed: 12.0
             lifetime: 5.0
             spawn_distance: 5.0
-            spawn_angle_deg: 45.0
-            angle_jitter_deg: 10.0
+            spawn_angle_deg: 55.0
+            angle_jitter_deg: 30.0
             projectile: "res://resources/combat/bullets/gawr_gura_skill_projectile.tscn"  # placeholder art until the beam VFX lands
             damage_multiplier_param_name: "skillDamage"
             damage_type: magic

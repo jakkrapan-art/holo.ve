@@ -65,6 +65,8 @@ static func load_data(prefix: String, name: String) -> TowerData:
 
 		tower.evolutionStat = evo
 
+	tower.evolutionName = str(data.get("evolutionName", ""))
+
 	tower.attack_sound = data.get("attack_sound", "default");
 	tower.attack_vfx = data.get("attack_vfx", "default");
 	tower.open_sound = data.get("open_sound", "default");
@@ -178,6 +180,7 @@ static func _apply_skill_data(skill: Skill, skill_data: Dictionary, default_name
 	if skill_data.has("cast_time"):
 		push_warning("Skill '" + skill.name + "': skill-level 'cast_time' (idle pre-cast hold) was removed - draw the windup into the clip; per-beat timing is play_animation 'cast_time'.")
 	skill.recoveryTime = skill_data.get("recovery", 0.2)
+	skill.castTarget = str(skill_data.get("cast_target", "locked"))
 	skill.tags = _parse_string_array(skill_data.get("tags", []))
 	skill.target_summary = _parse_dictionary(skill_data.get("target_summary", {}))
 	skill.icon = str(skill_data.get("icon", ""))

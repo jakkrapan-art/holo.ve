@@ -21,10 +21,21 @@ var attack_action: SkillActionAttack
 # Optional per-tick VFX hook (parity with aftershock); unset = the find's red
 # Hitbox rect is the visible tick flash.
 var effect_action: SkillActionPlayEffect
+# Optional per-tick global retarget (`strike:` sub-block): every tick fires a
+# global_strike at a FRESH random map-wide target instead of re-hitting the
+# locked center; `center` goes unused. First user: Flayon evolved
+# "R-TRUS Overload". null = the classic zone-locked channel (Ina'nis).
+var strike: SkillActionGlobalStrike = null
 
 func execute(context: SkillContext):
 	var tower: Tower = context.user as Tower
 	if tower == null or find_action == null or attack_action == null:
+		return
+	# Strike mode gates on ANY live enemy on the map (this skill has no leading
+	# aimed find). The check runs BEFORE the cast clip so a fizzle plays no
+	# animation and keeps Energy - the standard fizzle rule.
+	if strike != null and SkillActionGlobalStrike.pick_global_target(tower) == null:
+		context.cancel = true
 		return
 	# Zone center locked at cast start: the skill's first find_multi_enemy
 	# published the world center of the box it queried. Fallbacks mirror the
@@ -102,6 +113,13 @@ class ChannelTicker:
 			_finish()
 
 	func _fire_tick() -> void:
+		# Per-tick global retarget: a fresh random map-wide target each tick; no
+		# enemy alive = whiff tick, the channel continues (commit/whiff
+		# standard). The carrier resolves its blast async on landing under its
+		# own generation guard, so there is nothing to await or track here.
+		if action.strike != null:
+			action.strike.fire_strike(tower, params, skill_name, gen)
+			return
 		# in_flight defers queue_free while this coroutine is suspended in the
 		# Hitbox await - freeing on _finish() the same frame as the final tick
 		# would kill the suspended coroutine and lose that tick's attack.

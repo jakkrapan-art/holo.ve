@@ -212,5 +212,5 @@ animations = [{
 position = Vector2(1, -58)
 sprite_frames = SubResource("SpriteFrames_si38b")
 animation = &"idle"
-frame = 10
+frame = 6
 frame_progress = 1.0

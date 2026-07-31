@@ -4,82 +4,163 @@ generation: tempus
 attackType: magic
 evolutionCost: 1
 
-# skill: "res://resources/database/skill/takanashi_kiara_skill.tres"
 attack_sound: "hit_flayon"
 open_sound: "debut_flayon"
 evolve_sound: "evo_flayon"
 
+# Basic Attack is hitscan (no `attack:` block = the default).
+
 stats:
+  - damage: 80
+    attackRange: 2.0
+    attackSpeed: 80.0
+    mana: 100
+    initialMana: 60
+    critChance: 0
+    critMultiplier: 1.5
+
   - damage: 100
     attackRange: 2.0
-    attackSpeed: 100
+    attackSpeed: 80.0
     mana: 100
     initialMana: 60
     critChance: 0
     critMultiplier: 1.5
 
-  - damage: 125
+  - damage: 150
     attackRange: 2.0
-    attackSpeed: 100
+    attackSpeed: 80.0
     mana: 100
     initialMana: 60
     critChance: 0
     critMultiplier: 1.5
 
-  - damage: 175
-    attackRange: 2.0
-    attackSpeed: 100
-    mana: 100
-    initialMana: 60
-    critChance: 0
-    critMultiplier: 1.5
+# Active Skill - "Funnel": R-TRUS in orbit drops a beam on ONE RANDOM enemy
+# anywhere on the map (cast_target: global - the cast needs no in-range lock);
+# the payload is a 1x1 blast at the landing point. First user of the
+# "global strike" delivery: the carrier spawns at a fixed diagonal offset from
+# the target, so every strike lands the same beat after fire. No skill VFX yet:
+# the placeholder bullet plus the red debug rect at the blast are the interim
+# readout (show_area).
+# Flavour anchors on the official bio: "The pilot of Adventurer's Guild
+# TEMPUS. A real prodigy who can instantly grasp the piloting mechanism of any
+# form of transport." (holostars.hololivepro.com/en/talent/flayon/)
+skills:
+  active:
+    name: "Funnel"
+    names: ["Funnel I", "Funnel II", "Funnel III"]
+    desc: "Machina X Flayon signals R-TRUS in orbit to fire a funnel beam at one random enemy anywhere on the battlefield, dealing {skillDamage:percent} magic damage to every enemy caught in a 1x1 area."
+    icon: ""
+    cast_target: global
+    tags:
+      - damage
+      - magic
+      - aoe
+      - projectile
+      - global
+    target_summary:
+      target_team: enemy
+      target_type: enemy
+      target_shape: area
+    effects:
+      - name: "Orbital Beam"
+        target:
+          target_team: enemy
+          target_type: enemy
+          target_shape: area
+    recovery: 0.2 # post-cast hold (s) before resuming attack - see default_tower.yaml
+    parameters:
+      skillDamage:
+        - 1.2
+        - 1.5
+        - 2.0
+    actions:
+      - type: global_strike
+        data:
+          width: 1                    # blast box at the landing point
+          height: 1
+          speed: 12.0                  # carrier travel, cells/sec
+          lifetime: 5.0               # self-free safety net; expiry fires no blast
+          spawn_distance: 5.0         # cells from target to the carrier spawn (fixed -> constant time-to-impact)
+          spawn_angle_deg: 55.0       # diagonal off vertical; side is random per strike
+          angle_jitter_deg: 30.0      # +/- wobble per strike (imperfection)
+          animation: "skill"
+          cast_time: 0.5
+          projectile: "res://resources/combat/bullets/gawr_gura_skill_projectile.tscn"  # placeholder art until the beam VFX lands
+          damage_multiplier_param_name: "skillDamage"
+          damage_type: magic
+          crit_rule: no_crit   # how this skill crits: no_crit / use_crit_chance / guaranteed_crit
+          show_area: true             # red debug rect stands in until the blast VFX lands
+      - type: play_animation
+        data:
+          animation: "idle"
+  passive: null
 
-skill:
-  name: "Skill"
-  desc: "Machina X Flayon drives a mecha strike through the 3x1 line in front of him, dealing weapon damage to every enemy caught in it."
-  target_summary:
-    target_team: enemy
-    target_type: enemy
-    target_shape: area
-  effects:
-    - name: "Line Strike Damage"
-      target:
-        target_team: enemy
-        target_type: enemy
-        target_shape: area
-  recovery: 0.2 # post-cast hold (s) before resuming attack — see default_tower.yaml
-  actions:
-    - type: find_multi_enemy
-      data:
-        width: 3
-        height: 1
-    - type: play_animation
-      data:
-        animation: "skill"
-    - type: attack
-      data:
-        damage: 100
-        damage_type: physic
-    - type: play_animation
-      data:
-        animation: "idle"
+# Transform on evolve: Flayon boards the robot - different stats (incl. the
+# range 2 -> 4 jump, Director-approved transform exception), a new sprite set
+# (scene `evolution_sprite_frames`, placeholder until the R-TRUS art lands) and
+# a new display name.
+evolutionName: "R-TRUS"
 
 evolutionStat:
-  damage: 400
-  attackRange: 2.0
-  attackSpeed: 20
-  mana: 100
-  initialMana: 80
+  damage: 500
+  attackRange: 4.0
+  attackSpeed: 50.0
+  mana: 300
+  initialMana: 100
   critChance: 50.0
   critMultiplier: 1.5
 
-
-# Optional (only if tower has evolution stats)
-# evolutionStat:
-#   damage: 250
-#   attackRange: 1.2
-#   attackSpeed: 110.0
-#   critChance: 25.0
-#   critMultiplier: 2.0
-#   mana: 80
-#   initialMana: 20
+# Evolved Active Skill - "R-TRUS Overload": a blocking channel; each tick fires
+# one global strike at a FRESH random map-wide target (`strike:` inside
+# channel), each landing a blast box. The evolved crit chance is for Basic
+# Attacks - the skill itself still cannot crit.
+evolution_skills:
+  active:
+    name: "R-TRUS Overload"
+    desc: "Machina X Flayon boards R-TRUS and overloads its cannons for 5 seconds, raining beams onto random enemies across the battlefield; each blast deals {skillDamage:percent} magic damage to every enemy within a 3x3 area around its mark."
+    icon: ""
+    cast_target: global
+    tags:
+      - damage
+      - magic
+      - aoe
+      - channel
+      - projectile
+      - global
+    target_summary:
+      target_team: enemy
+      target_type: enemy
+      target_shape: area
+    effects:
+      - name: "Overload Barrage"
+        target:
+          target_team: enemy
+          target_type: enemy
+          target_shape: area
+    recovery: 0.2 # post-cast hold (s) before resuming attack - see default_tower.yaml
+    parameters:
+      skillDamage: 3.0
+    actions:
+      - type: channel
+        data:
+          cast_time: 5.0              # channel length (s); the tower is locked for the whole barrage
+          tick_interval: 0.5          # seconds between strikes
+          animation: "skill"
+          strike:                     # per-tick global_strike (fresh random target every tick)
+            width: 3                  # blast box at each landing point
+            height: 3
+            speed: 12.0
+            lifetime: 5.0
+            spawn_distance: 5.0
+            spawn_angle_deg: 55.0
+            angle_jitter_deg: 30.0
+            projectile: "res://resources/combat/bullets/gawr_gura_skill_projectile.tscn"  # placeholder art until the beam VFX lands
+            damage_multiplier_param_name: "skillDamage"
+            damage_type: magic
+            crit_rule: no_crit
+            show_area: true
+      - type: play_animation
+        data:
+          animation: "idle"
+  passive: null

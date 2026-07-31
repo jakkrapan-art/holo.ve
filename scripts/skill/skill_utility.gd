@@ -279,6 +279,11 @@ static func ParseAction(data: Dictionary, parameters: Dictionary = {}) -> SkillA
 			# Optional per-tick VFX, spawned each tick alongside the find.
 			if skillData.has("effect_script"):
 				skill.effect_action = ParseAction({"type": "play_effect", "data": {"effect_script": skillData["effect_script"]}}, parameters) as SkillActionPlayEffect;
+			# Optional per-tick global retarget: a `strike:` sub-block turns every
+			# tick into a global_strike at a FRESH random map-wide target instead
+			# of the fixed-center find/attack (first user: Flayon evolved).
+			if skillData.has("strike") and skillData["strike"] is Dictionary:
+				skill.strike = ParseAction({"type": "global_strike", "data": skillData["strike"]}, parameters) as SkillActionGlobalStrike;
 		"field":
 			# Non-blocking persistent damage+debuff zone ("field" pattern). Reuses channel's inner find/attack build and its
 			# ChannelTicker; castTime holds the field LIFETIME (not a cast hold).
@@ -365,6 +370,38 @@ static func ParseAction(data: Dictionary, parameters: Dictionary = {}) -> SkillA
 			skill.find_action = blastFind;
 			skill.attack_action = ParseAction({"type": "attack", "data": skillData}, parameters) as SkillActionAttack;
 			skill.anim_action = ParseAction({"type": "play_animation", "data": {"animation": skill.animation, "cast_time": skill.castTime}}, parameters) as SkillActionPlayAnimation;
+		"global_strike":
+			# "global strike" delivery: random enemy anywhere on the map, carrier
+			# from a diagonal offset, blast box at the landing point. The inner
+			# find/attack/animation are built from this same data block via this
+			# parser, so damage_multiplier_param_name, damage_type, crit_rule,
+			# effects and the per-beat cast_time + impact_frame all work inside
+			# the blast. First user: Machina X Flayon.
+			skill = SkillActionGlobalStrike.new();
+			var skillData = data.get("data", {});
+			skill.width = int(skillData.get("width", 1));
+			skill.height = int(skillData.get("height", 1));
+			skill.speed = float(skillData.get("speed", 4.0));
+			skill.lifetime = float(skillData.get("lifetime", 5.0));
+			skill.spawn_distance = float(skillData.get("spawn_distance", 6.0));
+			skill.spawn_angle_deg = float(skillData.get("spawn_angle_deg", 45.0));
+			skill.angle_jitter_deg = float(skillData.get("angle_jitter_deg", 10.0));
+			# "" = no embedded clip (the channel-tick use); author it explicitly
+			# for a standalone cast.
+			skill.animation = str(skillData.get("animation", ""));
+			skill.castTime = float(skillData.get("cast_time", 0.0));
+			skill.impactFrame = int(skillData.get("impact_frame", 0));
+			skill.projectileTemplate = load(skillData.get("projectile", "res://resources/combat/bullets/gawr_gura_skill_projectile.tscn"));
+			var strikeFind := SkillActionFindMultipleInRange.new();
+			strikeFind.width = skill.width;
+			strikeFind.height = skill.height;
+			# Whiff, never cancel: the carrier is already committed once launched.
+			strikeFind.cancel_when_empty = false;
+			strikeFind.show_area = skillData.get("show_area", true);
+			skill.find_action = strikeFind;
+			skill.attack_action = ParseAction({"type": "attack", "data": skillData}, parameters) as SkillActionAttack;
+			if skill.animation != "":
+				skill.anim_action = ParseAction({"type": "play_animation", "data": {"animation": skill.animation, "cast_time": skill.castTime, "impact_frame": skill.impactFrame}}, parameters) as SkillActionPlayAnimation;
 		"clear_enemy":
 			skill = SkillActionClearEnemy.new();
 		"find_multi_enemy":

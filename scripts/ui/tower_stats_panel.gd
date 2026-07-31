@@ -131,7 +131,9 @@ func _refresh() -> void:
 	# Identity: tower.id is the data key; display name + portrait come from the
 	# TowerCenter registry (same access pattern as Tower.setup).
 	var entry = TowerCenter._towers_data.get(_tower.id.to_lower(), null)
-	_set_text(_name_label, entry.name if entry != null else _tower.id)
+	# Transform towers (Flayon) rename after evolve; getDisplayName falls back
+	# to the registry base name for everyone else.
+	_set_text(_name_label, data.getDisplayName(entry.name if entry != null else _tower.id))
 	_portrait.texture = TowerCenter._tower_portrait.get(entry.data_name, null) if entry != null else null
 
 	_set_text(_level_label, "Evolved" if data.isEvolved else "Level %d" % data.level)

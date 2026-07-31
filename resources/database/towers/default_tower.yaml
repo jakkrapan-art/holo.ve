@@ -68,6 +68,9 @@ skills:
     # recovery = ช่วงจบ (วินาที): หลัง action สุดท้ายจบ tower ค้างท่า/ไม่กลับไปตีต่อทันที
     # ตามโมเดล ตัว(cast_time = เวลาร่าย/เล่นท่า)/หาง(recovery) — ไม่ใส่ = default 0.2
     recovery: 0.2
+    # cast_target = เงื่อนไขเริ่มร่าย: ไม่ใส่ = ต้องมีเป้าล็อกในระยะตี (แบบเดิม)
+    # ใส่ global = ร่ายได้เมื่อมีศัตรูตัวใดก็ได้บนแผนที่ (สกิลเป้าสุ่มทั้งสนาม เช่น Flayon)
+    # cast_target: global
     parameters:
       damageBonus:
         - 0.10
@@ -213,6 +216,16 @@ skills:
       #       effects:
       #         - effect: "stun"
       #           duration_param: "tickStun"
+      #       # strike: (optional) เปลี่ยนทุก tick เป็น global_strike สุ่มเป้าใหม่ทั้งสนาม
+      #       # แทนการฟาดโซนเดิม (คีย์ชุดเดียวกับ GLOBAL STRIKE ข้างล่าง) —
+      #       # ของจริงดู machina_x_flayon.yaml ร่าง evolve
+      #       # strike:
+      #       #   width: 3
+      #       #   height: 3
+      #       #   speed: 4.0
+      #       #   spawn_distance: 6.0
+      #       #   damage_multiplier_param_name: "tickDamage"
+      #       #   damage_type: magic
       # ─────────────────────────────────────────────────────────────────
       # ─────────────────────────────────────────────────────────────────
       # FIELD (โซนค้างรอบตัว ไม่บล็อกการตี) — ของจริงดู banzoin_hakka.yaml
@@ -238,7 +251,33 @@ skills:
       #         - effect: "move_speed_down"
       #           value_param: "slowEffect"
       #           duration: 1.5
+      # ─────────────────────────────────────────────────────────────────
+      # GLOBAL STRIKE (ยิงเป้าสุ่มทั้งแผนที่) — ของจริงดู machina_x_flayon.yaml
+      #
+      #   ไม่ต้องมี find_multi_enemy นำ: action นี้สุ่มศัตรู 1 ตัวจากทั้งสนามเอง
+      #   (คู่กับ cast_target: global ระดับสกิล) แล้วยิง carrier จากจุดเฉียง
+      #   ห่างเป้าระยะคงที่ → เวลาถึงตัวเท่ากันทุกนัด ระเบิดเป็นกล่องที่จุดตก
+      #   ไม่มีศัตรูทั้งสนามตอนเริ่ม = ยกเลิก ไม่กิน Energy — คีย์ damage/crit
+      #   ชุดเดียวกับ attack ใช้ได้หมด
+      #
+      #   - type: global_strike
+      #     data:
+      #       width: 1
+      #       height: 1
+      #       speed: 4.0                # ความเร็ว carrier (ช่อง/วิ)
+      #       spawn_distance: 6.0       # ระยะจุดยิงห่างเป้า (ช่อง) — คงที่ = เวลาตกคงที่
+      #       spawn_angle_deg: 45.0     # มุมเฉียงจากแนวดิ่ง (สุ่มฝั่งซ้าย/ขวาเองต่อนัด)
+      #       angle_jitter_deg: 10.0    # สุ่มแกว่งมุมต่อนัด (imperfection)
+      #       animation: "skill"        # คลิปร่าย — cast_time/impact_frame ใช้ได้เหมือน play_animation
+      #       cast_time: 0.5
+      #       damage_multiplier_param_name: "skillDamage"
+      #       damage_type: magic
+      #       crit_rule: no_crit
   passive: null
+
+# evolutionName = ชื่อโชว์หลัง evolve (tower เปลี่ยนร่าง เช่น Flayon → "R-TRUS")
+# ไม่ใส่ = ใช้ชื่อเดิม; ชุด sprite ร่างใหม่ตั้งที่ scene (.tscn) ช่อง evolution_sprite_frames
+# evolutionName: "R-TRUS"
 
 # evolutionStat = stat ตอน evolve (block เดียว ไม่ใช่ array)
 evolutionStat:

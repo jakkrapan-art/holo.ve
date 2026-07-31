@@ -28,6 +28,9 @@ var effects: EffectContainer = EffectContainer.new()
 
 @export var stats: Array[TowerStat];
 @export var evolutionStat: TowerStat;
+# Evolved-form display name for a transform tower (e.g. Flayon -> "R-TRUS").
+# "" = the base name stays after evolve (every non-transform tower).
+@export var evolutionName: String = "";
 
 @export var skill: Skill;
 var evolutionSkill: Skill = null;
@@ -60,6 +63,12 @@ func getStat():
 @export var evolutionCost: int:
 	get:
 		return _evolutionCost;
+
+# Display name for the current form; base_name is the registry display name.
+func getDisplayName(base_name: String) -> String:
+	if _isEvolved and evolutionName != "":
+		return evolutionName
+	return base_name
 
 func getTotalAttack() -> int:
 	var base: float = float(getStat().damage)

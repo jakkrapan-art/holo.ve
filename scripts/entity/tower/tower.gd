@@ -39,6 +39,13 @@ var onRemove: Callable;
 
 var enemy: Enemy = null;
 
+# Transform-tower sprite set (e.g. Flayon -> R-TRUS robot): assigned in the
+# tower's scene; evolve() swaps the whole AnimatedSprite2D frames to it. Clip
+# names must match the base set (idle loops, skill-family loop OFF) - the
+# AnimationController reads sprite_frames live and its default stays "idle".
+# null = the look never changes on evolve (every non-transform tower).
+@export var evolution_sprite_frames: SpriteFrames = null;
+
 var IDLE_ANIMATION = "idle";
 var ATTACK_ANIMATION = "n_attack";
 
@@ -139,7 +146,7 @@ func _process(delta):
 	# full by design and the attack stays suppressed until find lands a target.
 	var skillReady := skillController != null && skillController.currentMana == skillController.maxMana
 
-	if skillReady && !usingSkill && !attacking && is_instance_valid(enemy):
+	if skillReady && !usingSkill && !attacking && _hasCastTarget():
 		await useSkill();
 		if not is_instance_valid(self):
 			return
@@ -197,6 +204,9 @@ func evolve():
 		_play_evolve_sound()
 		_syncDetectorRange()
 		setTowerStar(4)
+		if evolution_sprite_frames != null && spr != null:
+			spr.sprite_frames = evolution_sprite_frames
+			play_animation_default()
 		if data.evolutionSkill != null:
 			if skillController != null:
 				skillController.cancel()
@@ -278,6 +288,19 @@ func attackEnemy():
 		attackCooldownRemaining = data.getAttackDelay()
 	elif(!is_instance_valid(enemy)):
 		clearEnemy(null, null, null);
+
+# Cast-gate target check. Default rule: a locked in-range enemy. A skill
+# authored `cast_target: global` (map-wide random strikes - first user Flayon)
+# casts with ANY live enemy on the map instead; its find happens at fire time.
+# Only evaluated while skillReady, so the group scan is not a per-frame cost
+# for every tower.
+func _hasCastTarget() -> bool:
+	if is_instance_valid(enemy):
+		return true;
+	var skill_res: Skill = skillController.skills[0] if skillController.skills.size() > 0 else null;
+	if skill_res == null || skill_res.castTarget != "global":
+		return false;
+	return SkillActionGlobalStrike.pick_global_target(self) != null;
 
 func useSkill():
 	if(skillController == null):

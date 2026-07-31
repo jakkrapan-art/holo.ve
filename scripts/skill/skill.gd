@@ -14,6 +14,10 @@ enum TARGET_TYPE {ENEMY, FRIENDLY}
 # play_animation cast_time instead; their loaders no longer set this.
 @export var castTime: float = 0.0
 @export var recoveryTime: float = 0.0
+# Cast-gate target rule (YAML `cast_target`): "locked" (default) needs the
+# tower's in-range lock; "global" casts with ANY live enemy on the map - for
+# map-wide random-target skills whose find happens at fire, not at the gate.
+@export var castTarget: String = "locked"
 @export var actions: Array[SkillAction] = []
 @export var parameters: Dictionary = {}
 @export var tags: Array[String] = []

@@ -12,7 +12,7 @@ evolve_sound: "evo_bettel"
 
 stats:
   - damage: 60
-    attackRange: 2.0
+    attackRange: 3.0
     attackSpeed: 80.0
     mana: 80
     initialMana: 50
@@ -93,7 +93,7 @@ skills:
 
 evolutionStat:
   damage: 250
-  attackRange: 2.0
+  attackRange: 3.0
   attackSpeed: 80.0
   mana: 80
   initialMana: 50

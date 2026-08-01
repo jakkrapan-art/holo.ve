@@ -165,7 +165,11 @@ func _refresh() -> void:
 		_energy_bar.value = sc.currentMana
 		_set_text(_energy_text, "%d / %d" % [int(sc.currentMana), int(sc.maxMana)])
 
-	var skills_key := "%d_%s" % [data.level, data.isEvolved]
+	# Sequence skills fold the phase index into the rebuild key so the icon
+	# flips to the next phase right after each cast (poll-based, no signals to
+	# tear down). Constant -1 / 0 for every non-sequence tower.
+	var seq_idx: int = sc.sequence_index if sc != null else -1
+	var skills_key := "%d_%s_%d" % [data.level, data.isEvolved, seq_idx]
 	if skills_key != _skills_key:
 		_skills_key = skills_key
 		_rebuild_skill_row(data)
@@ -176,7 +180,7 @@ func _rebuild_skill_row(data: TowerData) -> void:
 
 	var level: int = data.level
 	var active: Skill = data.evolutionSkill if data.isEvolved and data.evolutionSkill != null else data.skill
-	if active != null and not active.actions.is_empty():
+	if active != null and active.has_runtime_actions():
 		_skill_column.add_child(_make_skill_icon(active, "Active", level))
 
 	var passive_params: Dictionary = data.evolutionPassive if data.isEvolved and not data.evolutionPassive.is_empty() else data.passive
@@ -199,6 +203,18 @@ func _make_skill_icon(skill: Skill, kind: String, level: int) -> TowerSkillIcon:
 		texture = ResourceManager.loadImage("skill_icon", skill.icon, skill.icon)
 	if texture == null:
 		texture = ResourceManager.getSprite("synergy", "default")
+
+	# Sequence skills show the NEXT phase to cast (Aatrox model): the phase's
+	# own icon when authored, else the fallback tinted with the phase colour.
+	if not skill.sequence_phases.is_empty() and _tower != null and _tower.skillController != null:
+		var phase: SkillSequencePhase = skill.sequence_phases[_tower.skillController.sequence_index % skill.sequence_phases.size()]
+		if phase.icon != "":
+			var phase_texture: Texture2D = ResourceManager.loadImage("skill_icon", phase.icon, phase.icon)
+			if phase_texture != null:
+				texture = phase_texture
+		if phase.icon_tint != "":
+			icon.self_modulate = Color.from_string(phase.icon_tint, Color.WHITE)
+
 	icon.texture = texture
 	return icon
 

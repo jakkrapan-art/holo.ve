@@ -163,7 +163,7 @@ static func warmSkillEffectShaders(host: Node) -> void:
 		for skill in [data.skill, data.evolutionSkill]:
 			if skill == null:
 				continue
-			for action in skill.actions:
+			for action in skill.get_all_actions():
 				# SkillActionField carries its persistent-zone controller in its own
 				# effectScriptPath export (spawned at plant, not a play_effect action),
 				# so it must be matched here too or its shader never warms.

@@ -99,7 +99,7 @@ func _ready():
 	isReady = true;
 
 func _hasActiveSkill() -> bool:
-	return data.skill != null and not data.skill.actions.is_empty();
+	return data.skill != null and data.skill.has_runtime_actions();
 
 # (Re)create the passive runtime from the current form's passive params.
 # Called on _ready and after evolve (evolutionPassive overrides passive).
@@ -416,6 +416,7 @@ func resetForWave():
 
 	if skillController != null:
 		skillController.cancel()
+		skillController.sequence_index = 0
 		var initMana: float = data.getStat().initialMana
 		skillController.currentMana = initMana
 		skillController.on_mana_updated.emit(initMana)

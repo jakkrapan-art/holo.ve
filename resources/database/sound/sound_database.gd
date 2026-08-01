@@ -16,7 +16,10 @@ enum SFX_NAME { #ทำให้รู้ว่าอะไรเป็นเส
 	hit_ina,
 	hit_altare,
 	hit_kiara,
-	hit_amelia
+	hit_amelia,
+	skill_syrios_spear,
+	skill_syrios_sword,
+	skill_syrios_axe
 }
 
 enum VOICE_NAME {
@@ -60,7 +63,10 @@ static var sfx: Dictionary = { #สิ่งนั้นคือไฟล์ไ
 	SFX_NAME.hit_ina: "sfx_Metal_Weapon/nomal_great_sword_atk.mp3",
 	SFX_NAME.hit_altare: "sfx_Metal_Weapon/nomal_great_sword_atk.mp3",
 	SFX_NAME.hit_kiara: "sfx_Metal_Weapon/nomal_great_sword_atk.mp3",
-	SFX_NAME.hit_amelia: "sfx_Metal_Weapon/nomal_great_sword_atk.mp3"
+	SFX_NAME.hit_amelia: "sfx_Metal_Weapon/nomal_great_sword_atk.mp3",
+	SFX_NAME.skill_syrios_spear: "sfx_Metal_Weapon/spear_hit_axel.mp3",
+	SFX_NAME.skill_syrios_sword: "sfx_Metal_Weapon/sword_axel.mp3",
+	SFX_NAME.skill_syrios_axe: "sfx_Metal_Weapon/axe_axel.mp3"
 }
 
 static var voice: Dictionary = { #ตอนนี้ยังไม่เปิดใช้นะ แต่ใส่เผื่อมาก่อน //เสียงเปิดตัว (ขอเป็น debut_voice)

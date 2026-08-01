@@ -40,7 +40,7 @@ skills:
   active:
     name: "Ricky"
     names: ["Ricky I", "Ricky II", "Ricky III"]
-    desc: "Calliope sweeps her scythe Ricky through the 3x3 area around her, dealing {skillDamage:percent} weapon damage plus {soulBonus:percent} more per Soul she holds. Each enemy killed by this skill grants her 1 Soul, kept for the whole run."
+    desc: "Calliope sweeps her scythe Ricky through the 3x3 area around her, dealing {skillDamage:percent}{soulBonus:percent:+soul} weapon damage. Each enemy killed by this skill grants her 1 Soul ({soulBonus:percent} damage each), kept for the whole run."
     icon: ""
     tags:
       - damage
@@ -127,7 +127,7 @@ evolutionStat:
 evolution_skills:
   active:
     name: "Excuse My Rudeness, But Could You Please RIP?"
-    desc: "Calliope reaps the 3x3 area around her for {skillDamage:percent} weapon damage plus {soulBonus:percent} per Soul. {aftershockDelay}s later the same ground erupts for {aftershockDamage:percent} weapon damage plus {aftershockSoulBonus:percent} per Soul she holds at that moment. Each enemy killed grants her 1 Soul."
+    desc: "Calliope reaps the 3x3 area around her for {skillDamage:percent}{soulBonus:percent:+soul} weapon damage, and {aftershockDelay}s later the same ground erupts for {aftershockDamage:percent}{aftershockSoulBonus:percent:+soul} weapon damage. Each Soul she holds adds {soulBonus:percent} to the reap and {aftershockSoulBonus:percent} to the eruption; each enemy killed grants her 1 Soul."
     icon: ""
     tags:
       - damage

@@ -7,12 +7,16 @@ extends TextureRect
 # Palette + layout mirror the synergy hover (ui_synergy_content.gd).
 
 const SCALING_COLOR := "#5AC8FA"   # per-level scaling value (synergy hover palette)
+const FIXED_COLOR := "#9EB7C6"     # fixed (single-value) number - softer sibling of SCALING_COLOR
 const DIM_COLOR := "#7A7A7A"       # metadata lines (affects / tags)
 const KIND_COLOR := "#FFD15A"      # kind line (single gold)
 
 var skill: Skill = null
 var kind_label: String = ""
 var level: int = 1
+# Live effect container of the inspected tower - lets stack-bonus desc tokens
+# show the computed current value. Null on template surfaces (select cards).
+var effects: EffectContainer = null
 
 # Shared icon fallback: authored icon path, else the synergy default placeholder
 # (no tower skill icon art exists yet). Used by the tower-select card too.
@@ -24,10 +28,11 @@ static func resolve_icon_texture(p_skill: Skill) -> Texture2D:
 		icon_texture = ResourceManager.getSprite("synergy", "default")
 	return icon_texture
 
-func setup(p_skill: Skill, p_kind: String, p_level: int) -> void:
+func setup(p_skill: Skill, p_kind: String, p_level: int, p_effects: EffectContainer = null) -> void:
 	skill = p_skill
 	kind_label = p_kind
 	level = p_level
+	effects = p_effects
 	# tooltip_text must carry REAL text: the viewport strips whitespace and
 	# shows nothing for a blank tooltip, custom tooltip included.
 	tooltip_text = p_skill.get_display_name(p_level) if p_skill != null else ""
@@ -58,7 +63,7 @@ func _build_hover_bbcode() -> String:
 			tag_names.append(str(tag).capitalize().to_upper())
 		lines.append("[color=" + DIM_COLOR + "]" + ", ".join(tag_names) + "[/color]")
 
-	var desc := skill.get_display_desc(level, SCALING_COLOR)
+	var desc := skill.get_display_desc(level, SCALING_COLOR, FIXED_COLOR, effects)
 	if desc != "":
 		lines.append("")
 		lines.append(desc)

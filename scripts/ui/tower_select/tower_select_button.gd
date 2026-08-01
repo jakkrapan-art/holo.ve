@@ -142,7 +142,9 @@ func _build_skill_bbcode(skill: Skill, kind: String, level: int) -> String:
 		for tag in skill.tags:
 			tag_names.append(str(tag).capitalize().to_upper())
 		lines.append("[color=" + TowerSkillIcon.DIM_COLOR + "]" + ", ".join(tag_names) + "[/color]")
-	var desc := skill.get_display_desc(level, TowerSkillIcon.SCALING_COLOR)
+	# Template TowerData carries no live EffectContainer, so stack-bonus tokens
+	# render absent here by design (cards show the rule, not the computed part).
+	var desc := skill.get_display_desc(level, TowerSkillIcon.SCALING_COLOR, TowerSkillIcon.FIXED_COLOR)
 	if desc != "":
 		lines.append(desc)
 	return "\n".join(lines)

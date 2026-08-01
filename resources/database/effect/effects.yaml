@@ -9,6 +9,8 @@
 #              NEVER typed in: the {value} token resolves to the real applied
 #              magnitude (stacks included) at display time.
 #   icon       texture path relative to resources/
+#   color      optional "#RRGGBB" identity color for desc highlights (quotes
+#              MANDATORY - an unquoted # starts a YAML comment, value parses empty)
 #   category   buff | debuff | mark
 #   host       tower | enemy (documentation; not enforced at runtime)
 #   kind       stat or behavior kind - see effect_types.gd KIND_FROM_STRING
@@ -205,6 +207,7 @@ soul:
   name: "Souls"
   desc: "Souls reaped: {value}. Each Soul strengthens Calliope's scythe skills."
   icon: "ui_asset/effects/buff_generic.png"
+  color: "#E06AA3"
   category: buff
   host: tower
   kind: mark

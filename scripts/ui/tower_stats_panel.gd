@@ -181,19 +181,19 @@ func _rebuild_skill_row(data: TowerData) -> void:
 	var level: int = data.level
 	var active: Skill = data.evolutionSkill if data.isEvolved and data.evolutionSkill != null else data.skill
 	if active != null and active.has_runtime_actions():
-		_skill_column.add_child(_make_skill_icon(active, "Active", level))
+		_skill_column.add_child(_make_skill_icon(active, "Active", level, data.effects))
 
 	var passive_params: Dictionary = data.evolutionPassive if data.isEvolved and not data.evolutionPassive.is_empty() else data.passive
 	var passive_skill: Skill = TowerDataLoader.build_passive_display_skill(passive_params)
 	if passive_skill != null:
-		_skill_column.add_child(_make_skill_icon(passive_skill, "Passive", level))
+		_skill_column.add_child(_make_skill_icon(passive_skill, "Passive", level, data.effects))
 
-func _make_skill_icon(skill: Skill, kind: String, level: int) -> TowerSkillIcon:
+func _make_skill_icon(skill: Skill, kind: String, level: int, effects: EffectContainer = null) -> TowerSkillIcon:
 	var icon := TowerSkillIcon.new()
 	icon.custom_minimum_size = Vector2(56, 56)
 	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	icon.setup(skill, kind, level)
+	icon.setup(skill, kind, level, effects)
 
 	# No tower skill icon art exists yet; the shared synergy default placeholder
 	# stands in (a dedicated skills/default asset needs a Godot-generated .import,

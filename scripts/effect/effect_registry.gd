@@ -37,6 +37,11 @@ static func _build_def(effect_id: String, entry: Dictionary) -> EffectDef:
 	def.display_name = str(entry.get("name", effect_id))
 	def.desc = str(entry.get("desc", ""))
 	def.icon_path = str(entry.get("icon", ""))
+	def.display_color = str(entry.get("color", ""))
+	# Unquoted hex is comment-stripped to empty by the YAML parser - warn loudly
+	# instead of silently dropping the author's color.
+	if entry.has("color") and not Color.html_is_valid(def.display_color):
+		push_warning("EffectRegistry: '" + effect_id + "' color '" + def.display_color + "' is not a valid HTML color - quote it: color: \"#RRGGBB\"")
 	var category_str := str(entry.get("category", "buff"))
 	def.category = EffectTypes.CATEGORY_FROM_STRING.get(category_str, EffectTypes.Category.BUFF)
 	var stack_str := str(entry.get("stack", "refresh"))

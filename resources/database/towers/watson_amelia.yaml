@@ -130,10 +130,8 @@ evolution_skills:
           target_shape: single
     recovery: 0.2 # post-cast hold (s) before resuming attack — see default_tower.yaml
     parameters:
-      attackSpeedBuff:
-        - 0.50
-      critChanceBuff:
-        - 100.0
+      attackSpeedBuff: 0.50
+      critChanceBuff: 100.0
     actions:
       - type: "play_animation"
         data:

@@ -121,7 +121,7 @@ evolution_skills:
           target_shape: area
     parameters:
       critChancePerStack: 5
-      bonusCritDamage: [1.0]
+      bonusCritDamage: 1.0
     behavior: "crit_pierce"
     reset_on_crit: false
     projectile: "res://resources/combat/bullets/shinri_skill_projectile.tscn"

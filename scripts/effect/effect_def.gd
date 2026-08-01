@@ -13,6 +13,9 @@ var display_name: String = ""
 # tokenized skill desc.
 var desc: String = ""
 var icon_path: String = ""
+# Optional "#RRGGBB" identity color for this effect in player-facing text -
+# today it tints stack-bonus desc tokens (Skill.get_display_desc); "" = none.
+var display_color: String = ""
 var category: EffectTypes.Category = EffectTypes.Category.BUFF
 var kind: EffectTypes.Kind = EffectTypes.Kind.ATTACK_SPEED
 var stack_rule: EffectTypes.StackRule = EffectTypes.StackRule.REFRESH

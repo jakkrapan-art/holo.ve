@@ -160,6 +160,39 @@ static func _parse_skill_data(skill_data: Dictionary, default_name: String, towe
 		push_warning("Tower YAML '" + tower_name + "': actions in " + source_name + " must be an array.")
 
 	skill.actions = skillActions
+
+	# Optional sequence pattern: a list of phase blocks, each carrying its own
+	# actions list (same grammar; `parameters` above binds inside them too).
+	# Mutually exclusive with `actions` - sequence wins.
+	var sequence_list = skill_data.get("sequence", null)
+	if sequence_list is Array:
+		if not skillActions.is_empty():
+			push_warning("Tower YAML '" + tower_name + "': " + source_name + " has both 'actions' and 'sequence'; using 'sequence'.")
+			skill.actions = []
+		var phases: Array[SkillSequencePhase] = []
+		for phase_data in sequence_list:
+			if not (phase_data is Dictionary):
+				push_warning("Tower YAML '" + tower_name + "': sequence entry in " + source_name + " must be a dictionary.")
+				continue
+			var phase := SkillSequencePhase.new()
+			phase.label = str(phase_data.get("label", ""))
+			phase.icon = str(phase_data.get("icon", ""))
+			phase.icon_tint = str(phase_data.get("icon_tint", ""))
+			var phase_actions: Array[SkillAction] = []
+			var phase_action_list = phase_data.get("actions", [])
+			if phase_action_list is Array:
+				for act in phase_action_list:
+					var action = SkillUtility.ParseAction(act, parameters)
+					if action != null:
+						phase_actions.append(action)
+					else:
+						push_warning("Tower YAML '" + tower_name + "': failed to parse action in a " + source_name + " sequence phase.")
+			else:
+				push_warning("Tower YAML '" + tower_name + "': sequence phase actions in " + source_name + " must be an array.")
+			phase.actions = phase_actions
+			phases.append(phase)
+		skill.sequence_phases = phases
+
 	_apply_skill_data(skill, skill_data, default_name)
 	return skill
 

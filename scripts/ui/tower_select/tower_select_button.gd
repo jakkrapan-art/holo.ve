@@ -122,7 +122,7 @@ func _setup_card_details(p_name: String, level: int, evolutionCost: int) -> void
 	# same way the stats panel does.
 	var skill: Skill = data.evolutionSkill if evolved and data.evolutionSkill != null else data.skill
 	var kind := "ACTIVE"
-	if skill == null or skill.actions.is_empty():
+	if skill == null or not skill.has_runtime_actions():
 		var passive_params: Dictionary = data.evolutionPassive if evolved and not data.evolutionPassive.is_empty() else data.passive
 		skill = TowerDataLoader.build_passive_display_skill(passive_params)
 		kind = "PASSIVE"

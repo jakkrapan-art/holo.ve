@@ -273,6 +273,49 @@ skills:
       #       damage_multiplier_param_name: "skillDamage"
       #       damage_type: magic
       #       crit_rule: no_crit
+      # ─────────────────────────────────────────────────────────────────
+      # SEQUENCE (ร่ายสำเร็จ = เลื่อนท่าถัดไป ครบแล้ววนกลับท่าแรก) — ของจริงดู axel_syrios.yaml
+      #
+      #   ใช้คีย์ sequence: แทน actions: (ห้ามมีคู่กัน — มีคู่ = เตือนแล้วใช้ sequence)
+      #   แต่ละ phase = 1 ท่า มีชุด actions เต็มของตัวเอง (find → play_animation
+      #   → play_sound → attack → idle) + icon/สี/เสียงของตัวเอง
+      #   • ร่ายสำเร็จ 1 ครั้ง = ออกท่าปัจจุบัน แล้วเลื่อนไปท่าถัดไป ครบแล้ววนท่า 1
+      #   • fizzle (ไม่มีเป้าตอนเริ่มร่าย) = ไม่เลื่อนท่า ไม่กิน Energy
+      #     whiff (ร่ายออกแต่กล่องว่าง) = เลื่อนท่าตามปกติ
+      #   • เริ่ม wave ใหม่ = กลับท่า 1 เสมอ; หลัง evolve ก็เริ่มท่า 1
+      #   • parameters ชุดเดียวใช้ร่วมทุก phase (ผูกผ่าน *_param_name เหมือนเดิม)
+      #   • icon_tint = สีย้อม icon placeholder ต่อท่า — ค่า "#RRGGBB" ต้องอยู่ใน
+      #     เครื่องหมายคำพูดเสมอ (# เปล่า ๆ = comment ค่าจะหายเงียบ)
+      #   • คลิปต่อท่าตั้งชื่อ skill_1..skill_N ใน SpriteFrames ของ .tscn (loop=false)
+      #   • stats panel โชว์ icon/สีของ "ท่าถัดไป" เอง — ไม่ต้องตั้งอะไรเพิ่ม
+      #
+      #   sequence:
+      #     - label: "Spear Thrust"        # ชื่อท่า (กันไว้สำหรับ tooltip อนาคต)
+      #       icon: ""                     # icon เฉพาะท่า (ว่าง = ใช้ fallback)
+      #       icon_tint: "#4FC3F7"
+      #       actions:
+      #         - type: find_multi_enemy
+      #           data:
+      #             width: 1
+      #             height: 2
+      #         - type: play_animation
+      #           data:
+      #             animation: "skill_1"
+      #             cast_time: 0.5
+      #         - type: play_sound         # เสียงต่อท่า (optional) — id จากตาราง SFX_NAME
+      #           data:
+      #             sfx: "skill_syrios_spear"
+      #         - type: attack
+      #           data:
+      #             damage_multiplier_param_name: "spearDamage"
+      #             damage_type: physic
+      #         - type: play_animation
+      #           data:
+      #             animation: "idle"
+      #     - label: "Sword Slash"
+      #       icon_tint: "#81C784"
+      #       actions:
+      #         # ...ชุด actions เต็มของท่าถัดไป รูปแบบเดียวกัน
   passive: null
 
 # evolutionName = ชื่อโชว์หลัง evolve (tower เปลี่ยนร่าง เช่น Flayon → "R-TRUS")

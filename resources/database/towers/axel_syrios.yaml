@@ -4,82 +4,359 @@ generation: tempus
 attackType: physic
 evolutionCost: 1
 
-# skill: "res://resources/database/skill/takanashi_kiara_skill.tres"
 attack_sound: "hit_syrios"
 open_sound: "debut_syrios"
 evolve_sound: "evo_syrios"
 
+# Basic Attack is hitscan (no `attack:` block = the default).
+
 stats:
+  - damage: 90
+    attackRange: 1.0
+    attackSpeed: 90
+    mana: 40
+    initialMana: 0
+    critChance: 0
+    critMultiplier: 1.5
+
   - damage: 120
     attackRange: 1.0
-    attackSpeed: 80
-    mana: 30
+    attackSpeed: 90
+    mana: 40
     initialMana: 0
     critChance: 0
     critMultiplier: 1.5
 
   - damage: 180
     attackRange: 1.0
-    attackSpeed: 80
-    mana: 30
+    attackSpeed: 90
+    mana: 40
     initialMana: 0
     critChance: 0
     critMultiplier: 1.5
 
-  - damage: 270
-    attackRange: 1.0
-    attackSpeed: 80
-    mana: 30
-    initialMana: 0
-    critChance: 0
-    critMultiplier: 1.5
-
-skill:
-  name: "Skill"
-  desc: "Axel Syrios strikes the 3x1 line in front of him with a fierce blow, dealing weapon damage to every enemy caught in it."
-  target_summary:
-    target_team: enemy
-    target_type: enemy
-    target_shape: area
-  effects:
-    - name: "Line Strike Damage"
-      target:
-        target_team: enemy
-        target_type: enemy
-        target_shape: area
-  recovery: 0.2 # post-cast hold (s) before resuming attack — see default_tower.yaml
-  actions:
-    - type: find_multi_enemy
-      data:
-        width: 3
-        height: 1
-    - type: play_animation
-      data:
-        animation: "skill"
-    - type: attack
-      data:
-        damage: 100
-        damage_type: physic
-    - type: play_animation
-      data:
-        animation: "idle"
+# Active Skill - "Gladiator Combo": first user of the sequence pattern. Each
+# successful cast runs the CURRENT phase and advances to the next, looping
+# past the last phase; a fizzle (no target at cast start) keeps Energy AND the
+# phase. The phase resets to 1 at wave end. Phase clips skill_1..skill_3 and
+# the icon tints are placeholders until the real art lands; the red debug box
+# (show_area default) stands in for the per-phase VFX.
+# Flavour anchors on the official bio: "The chief of human resources in
+# Adventurer's Guild TEMPUS. He is the owner of the combat arena, and a
+# gladiator himself." (holostars.hololivepro.com/en/talent/axel-syrios/)
+skills:
+  active:
+    name: "Gladiator Combo"
+    names: ["Gladiator Combo I", "Gladiator Combo II", "Gladiator Combo III"]
+    desc: "Every cast raises Axel Syrios's combo one level, up to level 3; finishing the final level restarts the combo at level 1.\nLevel 1 - Axel thrusts his spear through a 1x2 line for {spearDamage:percent} weapon damage.\nLevel 2 - Axel sweeps his sword across a 3x1 arc for {swordDamage:percent} weapon damage, Slowing enemies hit by 50% for 1.5 seconds.\nLevel 3 - Axel smashes his axe into a 2x3 area for {axeDamage:percent} weapon damage, Stunning enemies hit for 0.75 seconds."
+    icon: ""
+    tags:
+      - weapon
+      - damage
+      - aoe
+      - sequence
+      - debuff
+      - stun
+    target_summary:
+      target_team: enemy
+      target_type: enemy
+      target_shape: area
+    effects:
+      - name: "Spear Thrust"
+        target:
+          target_team: enemy
+          target_type: enemy
+          target_shape: area
+      - name: "Sword Slash"
+        target:
+          target_team: enemy
+          target_type: enemy
+          target_shape: area
+      - name: "Slow"
+        target:
+          target_team: enemy
+          target_type: enemy
+          target_shape: area
+      - name: "Axe Smash"
+        target:
+          target_team: enemy
+          target_type: enemy
+          target_shape: area
+      - name: "Stun"
+        target:
+          target_team: enemy
+          target_type: enemy
+          target_shape: area
+    recovery: 0.2 # post-cast hold (s) before resuming attack - see default_tower.yaml
+    parameters:
+      spearDamage:
+        - 1.2
+        - 1.3
+        - 1.4
+      swordDamage:
+        - 1.4
+        - 1.5
+        - 1.6
+      axeDamage:
+        - 1.6
+        - 1.7
+        - 1.8
+    sequence:
+      - label: "Spear Thrust"
+        icon: ""
+        icon_tint: "#4FC3F7"   # placeholder tint - keep the hex quoted, a bare # starts a YAML comment
+        actions:
+          - type: find_multi_enemy
+            data:
+              width: 1
+              height: 2
+          - type: play_animation
+            data:
+              animation: "skill_1"
+              cast_time: 0.5
+              impact_frame: 9
+          - type: play_sound
+            data:
+              sfx: "skill_syrios_spear"
+          - type: attack
+            data:
+              damage_multiplier_param_name: "spearDamage"
+              damage_type: physic
+              crit_rule: no_crit   # how this skill crits: no_crit / use_crit_chance / guaranteed_crit
+          - type: play_animation
+            data:
+              animation: "idle"
+      - label: "Sword Slash"
+        icon: ""
+        icon_tint: "#81C784"
+        actions:
+          - type: find_multi_enemy
+            data:
+              width: 3
+              height: 1
+          - type: play_animation
+            data:
+              animation: "skill_2"
+              cast_time: 0.5
+              impact_frame: 9
+          - type: play_sound
+            data:
+              sfx: "skill_syrios_sword"
+          - type: attack
+            data:
+              damage_multiplier_param_name: "swordDamage"
+              damage_type: physic
+              crit_rule: no_crit
+              effects:
+                - effect: move_speed_down
+                  title: "Gladiator Combo - Slow"
+                  value: 0.5        # decimal scale: 0.5 = 50% slow
+                  duration: 1.5
+          - type: play_animation
+            data:
+              animation: "idle"
+      - label: "Axe Smash"
+        icon: ""
+        icon_tint: "#FFB74D"
+        actions:
+          - type: find_multi_enemy
+            data:
+              width: 2
+              height: 3
+          - type: play_animation
+            data:
+              animation: "skill_3"
+              cast_time: 0.5
+              impact_frame: 9
+          - type: play_sound
+            data:
+              sfx: "skill_syrios_axe"
+          - type: attack
+            data:
+              damage_multiplier_param_name: "axeDamage"
+              damage_type: physic
+              crit_rule: no_crit
+              effects:
+                - effect: stun
+                  title: "Gladiator Combo - Stun"
+                  duration: 0.75
+          - type: play_animation
+            data:
+              animation: "idle"
+  passive: null
 
 evolutionStat:
-  damage: 400
+  damage: 300
   attackRange: 1.0
-  attackSpeed: 80
-  mana: 30
+  attackSpeed: 90
+  mana: 40
   initialMana: 0
   critChance: 50.0
   critMultiplier: 1.5
 
-
-# Optional (only if tower has evolution stats)
-# evolutionStat:
-#   damage: 250
-#   attackRange: 1.2
-#   attackSpeed: 110.0
-#   critChance: 25.0
-#   critMultiplier: 2.0
-#   mana: 80
-#   initialMana: 20
+# Evolved Active Skill - "Mad Dog Rage": the same 3-phase loop plus an
+# unlocked 4th phase, a greatsword sweep centered on Axel (3x3 all around,
+# Calliope-style self box) that CAN crit (use_crit_chance; the evolved 50%
+# crit chance covers Basic Attacks and this phase). The phase restarts at 1
+# after the evolve rebuild.
+evolution_skills:
+  active:
+    name: "Mad Dog Rage"
+    desc: "Every cast raises Axel Syrios's combo one level, up to level 4; finishing the final level restarts the combo at level 1.\nLevel 1 - Axel thrusts his spear through a 1x2 line for {spearDamage:percent} weapon damage.\nLevel 2 - Axel sweeps his sword across a 3x1 arc for {swordDamage:percent} weapon damage, Slowing enemies hit by 50% for 1.5 seconds.\nLevel 3 - Axel smashes his axe into a 2x3 area for {axeDamage:percent} weapon damage, Stunning enemies hit for 0.75 seconds.\nLevel 4 - Axel whirls his greatsword around himself, tearing the 3x3 area for {sweepDamage:percent} weapon damage; this strike can critically hit."
+    icon: ""
+    tags:
+      - weapon
+      - damage
+      - aoe
+      - sequence
+      - debuff
+      - stun
+    target_summary:
+      target_team: enemy
+      target_type: enemy
+      target_shape: area
+    effects:
+      - name: "Spear Thrust"
+        target:
+          target_team: enemy
+          target_type: enemy
+          target_shape: area
+      - name: "Sword Slash"
+        target:
+          target_team: enemy
+          target_type: enemy
+          target_shape: area
+      - name: "Slow"
+        target:
+          target_team: enemy
+          target_type: enemy
+          target_shape: area
+      - name: "Axe Smash"
+        target:
+          target_team: enemy
+          target_type: enemy
+          target_shape: area
+      - name: "Stun"
+        target:
+          target_team: enemy
+          target_type: enemy
+          target_shape: area
+      - name: "Greatsword Sweep"
+        target:
+          target_team: enemy
+          target_type: enemy
+          target_shape: area
+    recovery: 0.2 # post-cast hold (s) before resuming attack - see default_tower.yaml
+    parameters:
+      spearDamage: 1.5
+      swordDamage: 1.7
+      axeDamage: 1.9
+      sweepDamage: 3.0
+    sequence:
+      - label: "Spear Thrust"
+        icon: ""
+        icon_tint: "#4FC3F7"   # placeholder tint - keep the hex quoted, a bare # starts a YAML comment
+        actions:
+          - type: find_multi_enemy
+            data:
+              width: 1
+              height: 2
+          - type: play_animation
+            data:
+              animation: "skill_1"
+              cast_time: 0.5
+              impact_frame: 9
+          - type: play_sound
+            data:
+              sfx: "skill_syrios_spear"
+          - type: attack
+            data:
+              damage_multiplier_param_name: "spearDamage"
+              damage_type: physic
+              crit_rule: no_crit
+          - type: play_animation
+            data:
+              animation: "idle"
+      - label: "Sword Slash"
+        icon: ""
+        icon_tint: "#81C784"
+        actions:
+          - type: find_multi_enemy
+            data:
+              width: 3
+              height: 1
+          - type: play_animation
+            data:
+              animation: "skill_2"
+              cast_time: 0.5
+              impact_frame: 9
+          - type: play_sound
+            data:
+              sfx: "skill_syrios_sword"
+          - type: attack
+            data:
+              damage_multiplier_param_name: "swordDamage"
+              damage_type: physic
+              crit_rule: no_crit
+              effects:
+                - effect: move_speed_down
+                  title: "Mad Dog Rage - Slow"
+                  value: 0.5        # decimal scale: 0.5 = 50% slow
+                  duration: 1.5
+          - type: play_animation
+            data:
+              animation: "idle"
+      - label: "Axe Smash"
+        icon: ""
+        icon_tint: "#FFB74D"
+        actions:
+          - type: find_multi_enemy
+            data:
+              width: 2
+              height: 3
+          - type: play_animation
+            data:
+              animation: "skill_3"
+              cast_time: 0.5
+              impact_frame: 9
+          - type: play_sound
+            data:
+              sfx: "skill_syrios_axe"
+          - type: attack
+            data:
+              damage_multiplier_param_name: "axeDamage"
+              damage_type: physic
+              crit_rule: no_crit
+              effects:
+                - effect: stun
+                  title: "Mad Dog Rage - Stun"
+                  duration: 0.75
+          - type: play_animation
+            data:
+              animation: "idle"
+      - label: "Greatsword Sweep"
+        icon: ""
+        icon_tint: "#E57373"
+        actions:
+          - type: find_multi_enemy
+            data:
+              width: 3
+              height: 3
+              center_on_self: true
+          - type: play_animation
+            data:
+              animation: "skill_4"
+              cast_time: 0.5
+              impact_frame: 9
+          - type: play_sound
+            data:
+              sfx: "hit"   # shared great-sword hit until a dedicated file lands
+          - type: attack
+            data:
+              damage_multiplier_param_name: "sweepDamage"
+              damage_type: physic
+              crit_rule: use_crit_chance
+          - type: play_animation
+            data:
+              animation: "idle"
+  passive: null

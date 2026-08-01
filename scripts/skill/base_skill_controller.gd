@@ -6,6 +6,14 @@ var modifier: Dictionary = {}
 
 var cancelled = false;
 
+# Sequence pattern: index of the NEXT phase to cast for a sequence skill
+# (Skill.sequence_phases non-empty). Lives on the controller because Skill
+# objects are shared per character while controllers are per-caster instances.
+# Reset by Tower.resetForWave; evolve rebuilds the controller, restarting at 0.
+# Single index per controller: correct for the single-skill tower shape; a
+# future multi-skill sequence caster needs a per-skill index.
+var sequence_index: int = 0;
+
 # Emitted after a fully successful (non-cancelled) cast, post onSuccess. Towers
 # re-emit this as Tower.skill_cast_succeeded for the synergy system; enemies also
 # emit it but nothing listens on the enemy side.
@@ -50,7 +58,7 @@ func execute_skill_actions(skill: Skill, context: SkillContext):
 			resetUsingSkill(skill);
 			return
 
-	for action in skill.actions:
+	for action in _current_actions(skill):
 		if(context.cancel || cancelled):
 			resetUsingSkill(skill);
 			return
@@ -90,6 +98,11 @@ func execute_skill_actions(skill: Skill, context: SkillContext):
 	onSuccess(skill);
 	cast_succeeded.emit(skill);
 
+func _current_actions(skill: Skill) -> Array[SkillAction]:
+	if skill.sequence_phases.is_empty():
+		return skill.actions;
+	return skill.sequence_phases[sequence_index % skill.sequence_phases.size()].actions;
+
 func resetUsingSkill(skill: Skill):
 	skill.using = false;
 	# Valid guard: a cancel can arrive after the host was freed (e.g. an enemy
@@ -101,6 +114,11 @@ func resetUsingSkill(skill: Skill):
 func onSuccess(skill: Skill):
 	skill.use();
 	resetUsingSkill(skill);
+	# Sequence advance sits here on purpose: every fizzle/cancel path returns
+	# before onSuccess, so only a fully successful cast moves the phase (a whiff
+	# still advances - commit/whiff standard).
+	if not skill.sequence_phases.is_empty():
+		sequence_index = (sequence_index + 1) % skill.sequence_phases.size();
 
 func checkUsingSkill(skill:Skill) -> bool:
 	return skill.using;

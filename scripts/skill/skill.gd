@@ -24,6 +24,11 @@ enum TARGET_TYPE {ENEMY, FRIENDLY}
 @export var target_summary: Dictionary = {}
 @export var icon: String = ""
 @export var effects: Array = []
+# Sequence pattern: non-empty turns this skill into linked phase variants -
+# each successful cast runs the CURRENT phase's actions, then the caster's
+# controller advances its index, looping past the last phase. Empty = normal
+# skill (`actions` runs every cast); the two are mutually exclusive.
+@export var sequence_phases: Array[SkillSequencePhase] = []
 
 var using = false;
 var disable = false;
@@ -115,6 +120,18 @@ func _format_display_number(value) -> String:
 			text = text.substr(0, text.length() - 1)
 		return text
 	return str(value)
+
+func has_runtime_actions() -> bool:
+	return not actions.is_empty() or not sequence_phases.is_empty()
+
+# Every action across the plain list and all sequence phases - for scanners
+# (e.g. shader warm), never for casting (the controller picks one phase).
+func get_all_actions() -> Array[SkillAction]:
+	var all: Array[SkillAction] = []
+	all.append_array(actions)
+	for phase in sequence_phases:
+		all.append_array(phase.actions)
+	return all
 
 func use():
 	if oneTimeUse:

@@ -154,6 +154,10 @@ static func ParseAction(data: Dictionary, parameters: Dictionary = {}) -> SkillA
 			skill = SkillActionBlockDamage.new();
 			var skillData = data.get("data", {});
 			skill.blockCount = skillData.get("count", 0);
+		"play_sound":
+			skill = SkillActionPlaySound.new();
+			var skillData = data.get("data", {});
+			skill.sfxName = str(skillData.get("sfx", ""));
 		"play_animation":
 			skill = SkillActionPlayAnimation.new();
 			var skillData = data.get("data", {});

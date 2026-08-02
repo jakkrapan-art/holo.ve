@@ -17,6 +17,9 @@ var level: int = 1
 # Live effect container of the inspected tower - lets stack-bonus desc tokens
 # show the computed current value. Null on template surfaces (select cards).
 var effects: EffectContainer = null
+# Label of the currently open hover card; effect-change signals rewrite it so
+# stack-bonus values tick live while the tooltip is held (Director 2026-08-02).
+var _tooltip_rich: RichTextLabel = null
 
 # Shared icon fallback: authored icon path, else the synergy default placeholder
 # (no tower skill icon art exists yet). Used by the tower-select card too.
@@ -33,6 +36,11 @@ func setup(p_skill: Skill, p_kind: String, p_level: int, p_effects: EffectContai
 	kind_label = p_kind
 	level = p_level
 	effects = p_effects
+	# Freed icons auto-disconnect, and the handler no-ops with no open tooltip.
+	if effects != null:
+		Utility.ConnectSignal(effects, "effect_added", _on_effects_changed)
+		Utility.ConnectSignal(effects, "effect_updated", _on_effects_changed)
+		Utility.ConnectSignal(effects, "effect_removed", _on_effects_changed)
 	# tooltip_text must carry REAL text: the viewport strips whitespace and
 	# shows nothing for a blank tooltip, custom tooltip included.
 	tooltip_text = p_skill.get_display_name(p_level) if p_skill != null else ""
@@ -41,7 +49,15 @@ func setup(p_skill: Skill, p_kind: String, p_level: int, p_effects: EffectContai
 func _make_custom_tooltip(_for_text: String) -> Object:
 	# Shared opaque card; 340 (not the 320 default) is the tested fit for the
 	# longer skill descs.
-	return UISynergyContent.make_tooltip_card(_build_hover_bbcode(), 340.0, self)
+	var card := UISynergyContent.make_tooltip_card(_build_hover_bbcode(), 340.0, self)
+	_tooltip_rich = card.get_child(0) as RichTextLabel
+	return card
+
+func _on_effects_changed(_inst) -> void:
+	if _tooltip_rich != null and is_instance_valid(_tooltip_rich):
+		_tooltip_rich.text = _build_hover_bbcode()
+	else:
+		_tooltip_rich = null
 
 func _build_hover_bbcode() -> String:
 	if skill == null:

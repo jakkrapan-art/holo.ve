@@ -10,6 +10,7 @@ const SCALING_COLOR := "#5AC8FA"   # per-level scaling value (synergy hover pale
 const FIXED_COLOR := "#9EB7C6"     # fixed (single-value) number - softer sibling of SCALING_COLOR
 const DIM_COLOR := "#7A7A7A"       # metadata lines (affects / tags)
 const KIND_COLOR := "#FFD15A"      # kind line (single gold)
+const NOTE_FONT_SIZE := 13         # hover-card "Note:" line size (body default ~16)
 
 var skill: Skill = null
 var kind_label: String = ""
@@ -20,6 +21,19 @@ var effects: EffectContainer = null
 # Label of the currently open hover card; effect-change signals rewrite it so
 # stack-bonus values tick live while the tooltip is held (Director 2026-08-02).
 var _tooltip_rich: RichTextLabel = null
+
+# "\nNote:" desc tail -> blank-line separated + dimmed (+ optionally smaller).
+# Styling lives renderer-side so YAML keeps plain "\nNote:" (game_copy.md rule).
+# Pass note_font_size 0 on surfaces whose font-fit steps THEME sizes (an
+# absolute BBCode font_size tag would not shrink with them - tower-select card).
+static func style_note_desc(text: String, note_font_size: int = 0) -> String:
+	var idx := text.find("\nNote:")
+	if idx == -1:
+		return text
+	var styled := "[color=" + DIM_COLOR + "]" + text.substr(idx + 1) + "[/color]"
+	if note_font_size > 0:
+		styled = "[font_size=" + str(note_font_size) + "]" + styled + "[/font_size]"
+	return text.substr(0, idx) + "\n\n" + styled
 
 # Shared icon fallback: authored icon path, else the synergy default placeholder
 # (no tower skill icon art exists yet). Used by the tower-select card too.
@@ -79,7 +93,7 @@ func _build_hover_bbcode() -> String:
 			tag_names.append(str(tag).capitalize().to_upper())
 		lines.append("[color=" + DIM_COLOR + "]" + ", ".join(tag_names) + "[/color]")
 
-	var desc := skill.get_display_desc(level, SCALING_COLOR, FIXED_COLOR, effects)
+	var desc := style_note_desc(skill.get_display_desc(level, SCALING_COLOR, FIXED_COLOR, effects), NOTE_FONT_SIZE)
 	if desc != "":
 		lines.append("")
 		lines.append(desc)

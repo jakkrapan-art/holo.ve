@@ -401,6 +401,12 @@ func _on_cast_succeeded(_skill):
 	# A fully successful skill cast -> notify the synergy system (e.g. Myth team battery).
 	skill_cast_succeeded.emit(self)
 
+# A multicast repeat counts as a FULL cast for every on-cast synergy (Director
+# 2026-08-02): each extra thrown card re-emits the same cast event. Beats/ticks
+# inside one cast (combo, channel, field, aftershock) never call this.
+func notify_extra_cast() -> void:
+	skill_cast_succeeded.emit(self)
+
 func resetForWave():
 	attacking = false
 	attackCooldownRemaining = 0.0

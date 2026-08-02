@@ -84,6 +84,12 @@ func execute(context: SkillContext):
 
 		_throw_card(tower, target, context, gen)
 		thrown += 1
+		# Each extra thrown card counts as a full cast for on-cast synergies
+		# (Robotic stacks, Myth energy). The FIRST card is covered by the
+		# skill-end cast_succeeded emit; only repeats re-emit here, and a
+		# fizzled repeat (no card) counts nothing.
+		if thrown > 1:
+			tower.notify_extra_cast()
 
 # One roll, cumulative table, highest-first. Returns 0 when the roll lands in the
 # tail (no multicast) or when no table was authored.

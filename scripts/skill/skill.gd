@@ -56,7 +56,7 @@ func get_display_name(level: int) -> String:
 # container it renders " (+per-stack value x current stacks)" in the effect's
 # registry color; without one it renders nothing (card surfaces carry no
 # computed part - author NO space before a stack token, it brings its own).
-func get_display_desc(level: int, highlight_color: String = "", fixed_color: String = "", effects: EffectContainer = null) -> String:
+func get_display_desc(level: int, highlight_color: String = "", fixed_color: String = "", p_effects: EffectContainer = null) -> String:
 	if desc == "":
 		return ""
 
@@ -74,10 +74,10 @@ func get_display_desc(level: int, highlight_color: String = "", fixed_color: Str
 				# Same raw-token breakage rule as below.
 				push_warning("Missing skill display parameter: " + param_name)
 				text = match_result.get_string()
-			elif effects == null:
+			elif p_effects == null:
 				text = ""
 			else:
-				text = _render_stack_bonus(param_name, format, level, fixed_color, effects)
+				text = _render_stack_bonus(param_name, format, level, fixed_color, p_effects)
 		else:
 			var value = _get_display_parameter(param_name, level)
 			if value == null:
@@ -104,10 +104,10 @@ func _is_stack_bonus_format(format: String) -> bool:
 # stack count. Color: the effect's registry identity color, else fixed_color,
 # else plain. Zero stacks still renders (+0%) - the player should see the
 # bonus mechanic exists on a live tower.
-func _render_stack_bonus(param_name: String, format: String, level: int, fixed_color: String, effects: EffectContainer) -> String:
+func _render_stack_bonus(param_name: String, format: String, level: int, fixed_color: String, p_effects: EffectContainer) -> String:
 	var parts := format.split(":")
 	var effect_id := parts[1].substr(1)
-	var total := float(_get_display_parameter(param_name, level)) * effects.stacks_of(effect_id)
+	var total := float(_get_display_parameter(param_name, level)) * p_effects.stacks_of(effect_id)
 	var text := "(+" + _format_display_parameter(total, parts[0]) + ")"
 	var def := EffectRegistry.get_def(effect_id)
 	var color := def.display_color if def != null else ""

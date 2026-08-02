@@ -7,12 +7,35 @@ extends TextureRect
 # Palette + layout mirror the synergy hover (ui_synergy_content.gd).
 
 const SCALING_COLOR := "#5AC8FA"   # per-level scaling value (synergy hover palette)
+const FIXED_COLOR := "#9EB7C6"     # fixed (single-value) number - softer sibling of SCALING_COLOR
 const DIM_COLOR := "#7A7A7A"       # metadata lines (affects / tags)
 const KIND_COLOR := "#FFD15A"      # kind line (single gold)
+const NOTE_FONT_SIZE := 13         # hover-card "Note:" line size (body default ~16)
 
 var skill: Skill = null
 var kind_label: String = ""
 var level: int = 1
+# Live effect container of the inspected tower - lets stack-bonus desc tokens
+# show the computed current value. Null on template surfaces (select cards).
+var effects: EffectContainer = null
+# Label of the currently open hover card; effect-change signals rewrite it so
+# stack-bonus values tick live while the tooltip is held (Director 2026-08-02).
+var _tooltip_rich: RichTextLabel = null
+
+# "\nNote:" desc tail -> blank-line separated + dimmed (+ optionally smaller);
+# the "Note:" marker itself is stripped from display (Director 2026-08-02).
+# Styling lives renderer-side so YAML keeps plain "\nNote:" (game_copy.md rule).
+# Pass note_font_size 0 on surfaces whose font-fit steps THEME sizes (an
+# absolute BBCode font_size tag would not shrink with them - tower-select card).
+static func style_note_desc(text: String, note_font_size: int = 0) -> String:
+	var idx := text.find("\nNote:")
+	if idx == -1:
+		return text
+	var note := text.substr(idx + 6).strip_edges()
+	var styled := "[color=" + DIM_COLOR + "]" + note + "[/color]"
+	if note_font_size > 0:
+		styled = "[font_size=" + str(note_font_size) + "]" + styled + "[/font_size]"
+	return text.substr(0, idx) + "\n\n" + styled
 
 # Shared icon fallback: authored icon path, else the synergy default placeholder
 # (no tower skill icon art exists yet). Used by the tower-select card too.
@@ -24,10 +47,16 @@ static func resolve_icon_texture(p_skill: Skill) -> Texture2D:
 		icon_texture = ResourceManager.getSprite("synergy", "default")
 	return icon_texture
 
-func setup(p_skill: Skill, p_kind: String, p_level: int) -> void:
+func setup(p_skill: Skill, p_kind: String, p_level: int, p_effects: EffectContainer = null) -> void:
 	skill = p_skill
 	kind_label = p_kind
 	level = p_level
+	effects = p_effects
+	# Freed icons auto-disconnect, and the handler no-ops with no open tooltip.
+	if effects != null:
+		Utility.ConnectSignal(effects, "effect_added", _on_effects_changed)
+		Utility.ConnectSignal(effects, "effect_updated", _on_effects_changed)
+		Utility.ConnectSignal(effects, "effect_removed", _on_effects_changed)
 	# tooltip_text must carry REAL text: the viewport strips whitespace and
 	# shows nothing for a blank tooltip, custom tooltip included.
 	tooltip_text = p_skill.get_display_name(p_level) if p_skill != null else ""
@@ -36,7 +65,15 @@ func setup(p_skill: Skill, p_kind: String, p_level: int) -> void:
 func _make_custom_tooltip(_for_text: String) -> Object:
 	# Shared opaque card; 340 (not the 320 default) is the tested fit for the
 	# longer skill descs.
-	return UISynergyContent.make_tooltip_card(_build_hover_bbcode(), 340.0, self)
+	var card := UISynergyContent.make_tooltip_card(_build_hover_bbcode(), 340.0, self)
+	_tooltip_rich = card.get_child(0) as RichTextLabel
+	return card
+
+func _on_effects_changed(_inst) -> void:
+	if _tooltip_rich != null and is_instance_valid(_tooltip_rich):
+		_tooltip_rich.text = _build_hover_bbcode()
+	else:
+		_tooltip_rich = null
 
 func _build_hover_bbcode() -> String:
 	if skill == null:
@@ -58,7 +95,7 @@ func _build_hover_bbcode() -> String:
 			tag_names.append(str(tag).capitalize().to_upper())
 		lines.append("[color=" + DIM_COLOR + "]" + ", ".join(tag_names) + "[/color]")
 
-	var desc := skill.get_display_desc(level, SCALING_COLOR)
+	var desc := style_note_desc(skill.get_display_desc(level, SCALING_COLOR, FIXED_COLOR, effects), NOTE_FONT_SIZE)
 	if desc != "":
 		lines.append("")
 		lines.append(desc)

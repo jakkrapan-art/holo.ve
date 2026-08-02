@@ -96,7 +96,7 @@ evolutionStat:
 evolution_skills:
   passive:
     name: "Heartpierce Shot"
-    desc: "Josuiji Shinri's aim turns lethal: each non-critical hit adds a Bull Eyes stack, each granting +{critChancePerStack:pct} critical chance. On a critical hit, his shot becomes a piercing arrow that hits all enemies in a 1×4 tile line for critical damage +{bonusCritDamage:percent} — and critical hits no longer consume his Bull Eyes stacks."
+    desc: "Josuiji Shinri's aim turns lethal: each non-critical hit adds a Bull Eyes stack, each granting +{critChancePerStack:pct} critical chance. On a critical hit, his shot becomes a piercing arrow that hits all enemies in a 1×4 tile line for critical damage +{bonusCritDamage:percent}.\nNote: critical hits no longer consume his Bull Eyes stacks."
     icon: ""
     tags:
       - damage
@@ -121,7 +121,7 @@ evolution_skills:
           target_shape: area
     parameters:
       critChancePerStack: 5
-      bonusCritDamage: [1.0]
+      bonusCritDamage: 1.0
     behavior: "crit_pierce"
     reset_on_crit: false
     projectile: "res://resources/combat/bullets/shinri_skill_projectile.tscn"

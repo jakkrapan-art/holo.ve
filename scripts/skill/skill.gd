@@ -47,13 +47,16 @@ func get_display_name(level: int) -> String:
 		return names[index]
 	return name
 
-# highlight_color (BBCode hex, e.g. "#5AC8FA"): wraps values coming from a
-# per-level (array) parameter so the player sees which number scales. Token
-# grammar mirrors SynergyData._render, but the highlight rule deliberately
-# differs: synergy hovers highlight every value, skill descs carry too many
-# numbers for that and keep the scaling-only rule (Director 2026-07-21).
-# "" returns plain text.
-func get_display_desc(level: int, highlight_color: String = "") -> String:
+# Two-tone highlight (Director 2026-08-01, supersedes the scaling-only rule):
+# highlight_color (BBCode hex) wraps per-level (array) parameter values so the
+# player still sees which numbers scale on level-up; fixed_color wraps
+# single-value parameters. "" colors return that class of value plain, so
+# no-arg callers keep plain text. Token grammar mirrors SynergyData._render
+# plus the stack-bonus form {param:format:+effect_id}: with a live `effects`
+# container it renders " (+per-stack value x current stacks)" in the effect's
+# registry color; without one it renders nothing (card surfaces carry no
+# computed part - author NO space before a stack token, it brings its own).
+func get_display_desc(level: int, highlight_color: String = "", fixed_color: String = "", p_effects: EffectContainer = null) -> String:
 	if desc == "":
 		return ""
 
@@ -65,19 +68,54 @@ func get_display_desc(level: int, highlight_color: String = "") -> String:
 		var match_result := matches[i]
 		var param_name := match_result.get_string(1)
 		var format := match_result.get_string(2)
-		var value = _get_display_parameter(param_name, level)
 		var text: String
-		if value == null:
-			# Missing parameter: keep the raw {token} visible instead of an
-			# empty hole ("reduces damage by  for  seconds") so designers see
-			# the breakage in-game; _get_display_parameter already warned.
-			text = match_result.get_string()
+		if _is_stack_bonus_format(format):
+			if not parameters.has(param_name):
+				# Same raw-token breakage rule as below.
+				push_warning("Missing skill display parameter: " + param_name)
+				text = match_result.get_string()
+			elif p_effects == null:
+				text = ""
+			else:
+				text = _render_stack_bonus(param_name, format, level, fixed_color, p_effects)
 		else:
-			text = _format_display_parameter(value, format)
-		if highlight_color != "" and parameters.get(param_name) is Array:
-			text = "[color=" + highlight_color + "]" + text + "[/color]"
+			var value = _get_display_parameter(param_name, level)
+			if value == null:
+				# Missing parameter: keep the raw {token} visible instead of an
+				# empty hole ("reduces damage by  for  seconds") so designers see
+				# the breakage in-game; _get_display_parameter already warned.
+				text = match_result.get_string()
+			else:
+				text = _format_display_parameter(value, format)
+				var wrap_color := highlight_color if parameters.get(param_name) is Array else fixed_color
+				if wrap_color != "":
+					text = "[color=" + wrap_color + "]" + text + "[/color]"
 		result = result.substr(0, match_result.get_start()) + text + result.substr(match_result.get_end())
 	return result
+
+# Stack-bonus token: the regex's format capture arrives as "format:+effect_id"
+# (e.g. "percent:+soul"). A "+" part without a numeric format in front falls
+# through to the unknown-format warning path on purpose.
+func _is_stack_bonus_format(format: String) -> bool:
+	var parts := format.split(":")
+	return parts.size() == 2 and parts[1].begins_with("+")
+
+# " (+total)" where total = per-stack parameter value x the container's live
+# stack count. Color: the effect's registry identity color, else fixed_color,
+# else plain. Zero stacks still renders (+0%) - the player should see the
+# bonus mechanic exists on a live tower.
+func _render_stack_bonus(param_name: String, format: String, level: int, fixed_color: String, p_effects: EffectContainer) -> String:
+	var parts := format.split(":")
+	var effect_id := parts[1].substr(1)
+	var total := float(_get_display_parameter(param_name, level)) * p_effects.stacks_of(effect_id)
+	var text := "(+" + _format_display_parameter(total, parts[0]) + ")"
+	var def := EffectRegistry.get_def(effect_id)
+	var color := def.display_color if def != null else ""
+	if color == "":
+		color = fixed_color
+	if color != "":
+		text = "[color=" + color + "]" + text + "[/color]"
+	return " " + text
 
 func _get_display_parameter(param_name: String, level: int):
 	if not parameters.has(param_name):

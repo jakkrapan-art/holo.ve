@@ -25,7 +25,7 @@ const BULL_EYES_SOURCE := "passive_bull_eyes"
 var tower: Tower
 var crit_chance_per_stack: float
 var reset_on_crit: bool
-var bonus_crit_damage: Array          # per-level additive crit damage (x); index by level-1
+var bonus_crit_damage: Array          # per-level additive crit damage (x); index by level-1; scalar YAML (single-tier evolve) normalizes to a 1-element array
 var projectile_scene: PackedScene
 var effect_script: Script             # lane-static pierce VFX controller (normal or evolve slot)
 var arrow_speed: float                # tiles/sec
@@ -36,7 +36,8 @@ func _init(owner: Tower, params: Dictionary) -> void:
 	# Designer-tunable numbers live under `parameters` (matches active-skill YAML).
 	var parameters: Dictionary = params.get("parameters", {})
 	crit_chance_per_stack = float(parameters.get("critChancePerStack", 5))
-	bonus_crit_damage = parameters.get("bonusCritDamage", [0.0])
+	var bonus_param = parameters.get("bonusCritDamage", [0.0])
+	bonus_crit_damage = bonus_param if bonus_param is Array else [float(bonus_param)]
 	# Structural/runtime params stay top-level.
 	reset_on_crit = bool(params.get("reset_on_crit", true))
 	arrow_speed = float(params.get("arrow_speed", 12.0))

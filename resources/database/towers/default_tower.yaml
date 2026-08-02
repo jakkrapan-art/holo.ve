@@ -41,7 +41,7 @@ skills:
   active:
     name: "Skill"
     names: ["Skill I", "Skill II", "Skill III"] # optional UI display names per tower level
-    desc: "Just a skill with {damageBonus:percent} bonus" # tokenized display text: {param} / {param:percent} (decimal x100) / {param:pct} (percent-scale as-is) resolve from parameters; token-free text renders as-is
+    desc: "Just a skill with {damageBonus:percent} bonus" # tokenized display text: {param} / {param:percent} (decimal x100) / {param:pct} (percent-scale as-is) resolve from parameters; token-free text renders as-is. Stack-bonus form {param:percent:+effect_id} renders " (+per-stack x live stacks)" on a placed tower and nothing on card surfaces - write NO space before it (see mori_calliope.yaml)
     icon: "" # optional — ว่างได้ ถ้ายังไม่มี icon
     # tags = ป้ายสรุปสกิลแบบผู้เล่นอ่าน (controlled registry)
     tags:
@@ -355,8 +355,9 @@ evolution_skills:
           target_shape: area
     recovery: 0.2 # ช่วงจบ (วินาที) — ดูคอมเมนต์ที่ skills.active
     parameters:
-      damageBonus:
-        - 0.30
+      # Single-tier (evolve) values are scalars: the desc renderer colors
+      # per-level arrays as "scaling", scalars as "fixed" (two-tone rule).
+      damageBonus: 0.30
     actions:
       - type: find_multi_enemy
         data:

@@ -22,7 +22,8 @@ var effects: EffectContainer = null
 # stack-bonus values tick live while the tooltip is held (Director 2026-08-02).
 var _tooltip_rich: RichTextLabel = null
 
-# "\nNote:" desc tail -> blank-line separated + dimmed (+ optionally smaller).
+# "\nNote:" desc tail -> blank-line separated + dimmed (+ optionally smaller);
+# the "Note:" marker itself is stripped from display (Director 2026-08-02).
 # Styling lives renderer-side so YAML keeps plain "\nNote:" (game_copy.md rule).
 # Pass note_font_size 0 on surfaces whose font-fit steps THEME sizes (an
 # absolute BBCode font_size tag would not shrink with them - tower-select card).
@@ -30,7 +31,8 @@ static func style_note_desc(text: String, note_font_size: int = 0) -> String:
 	var idx := text.find("\nNote:")
 	if idx == -1:
 		return text
-	var styled := "[color=" + DIM_COLOR + "]" + text.substr(idx + 1) + "[/color]"
+	var note := text.substr(idx + 6).strip_edges()
+	var styled := "[color=" + DIM_COLOR + "]" + note + "[/color]"
 	if note_font_size > 0:
 		styled = "[font_size=" + str(note_font_size) + "]" + styled + "[/font_size]"
 	return text.substr(0, idx) + "\n\n" + styled

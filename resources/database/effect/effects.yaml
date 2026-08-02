@@ -69,6 +69,30 @@ magic_mult_up:
   host: tower
   kind: magic_mult
 
+# Robotic synergy on-cast pair: one cast applies BOTH halves under one source
+# ("Attack" = Weapon + Magic), each cast adds a stack, WAVE lifetime clears at
+# wave end. Only the weapon half shows an icon; the magic twin is hidden
+# (identical value, so the shown number is truthful for both).
+robotic_overdrive:
+  name: "Robotic Overdrive"
+  desc: "Attack increased by {value}."
+  icon: "ui_asset/synergies/robotic.png"
+  color: "#FF2C41"
+  category: buff
+  host: tower
+  kind: attack_mult
+  stack: stack
+  max_stacks: 0
+
+robotic_overdrive_magic:
+  name: "Robotic Overdrive"
+  desc: "Attack increased by {value}."
+  category: buff
+  host: tower
+  kind: magic_mult
+  stack: stack
+  max_stacks: 0
+
 damage_amp_up:
   name: "Damage Amplifier"
   desc: "All damage dealt is amplified by {value}."

@@ -57,6 +57,8 @@ static func create(effect_key: String) -> SynergyEffect:
 			return SynergyEffectAssassin.new()
 		"attack_up_melee_amp":
 			return SynergyEffectWarrior.new()
+		"attack_on_skill_cast":
+			return SynergyEffectRobotic.new()
 		"", "none":
 			return null   # placeholder synergy: declared but no effect handler yet
 		_:

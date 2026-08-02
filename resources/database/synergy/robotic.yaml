@@ -1,0 +1,21 @@
+id: robotic
+name: "Robotic"
+kind: class
+type: standard
+rarity: common
+effect: attack_on_skill_cast
+# Single tier at 2. One demo Robotic exists (Machina X Flayon) - authored ahead
+# of the roster like Assassin; unreachable until a second Robotic unit ships.
+# Proc-testing = a temporary YAML edit (a second tower's towerClass).
+thresholds: [2]
+parameters:
+  # Percent Attack per skill cast - BOTH halves (attack_mult + magic_mult),
+  # applied to the caster as one stack; stacks clear at wave end.
+  atk_per_cast: 10
+# Lore: Flayon's official bio - "The pilot of Adventurer's Guild TEMPUS. A real
+# prodigy who can instantly grasp the piloting mechanism of any form of
+# transport." (holostars.hololivepro.com/en/talent/flayon/) - machinery pushed
+# harder with every command.
+desc: "Robotic units push their machinery into overdrive with every skill they cast, gaining {atk_per_cast:pct} Attack until the end of the wave, stacking endlessly."
+tier_effects:
+  - "+{atk_per_cast:pct} Attack per skill cast"

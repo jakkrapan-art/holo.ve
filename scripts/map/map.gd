@@ -5,7 +5,7 @@ static var mapSize: Vector2 = Vector2(10, 10);
 static var startX: int = 9;
 static var startY: int = 3;
 
-@export var path: Path2D;
+@export var path: Array[Path2D];
 @onready var path_bake: PathBakeAuto = $Path2D
 @onready var drawer: Node2D = $GridDrawer
 
@@ -43,7 +43,9 @@ func addAvailableCell(cell: Vector2i):
 	refresh_visuals()
 
 func setup():
-	var path_data = path_bake.bake();
-	availableCells = path_bake.get_available_tiles(path_data);
-	# Default to visible on setup, or call toggle_grid(false) if you want it off by default
+	path_bake.bake()
+	availableCells = path_bake.get_available_tiles()
+	path = path_bake.baked_paths
+
+	print("path: ", path.size())
 	toggle_grid(false)

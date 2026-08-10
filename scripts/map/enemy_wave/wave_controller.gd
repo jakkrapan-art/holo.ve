@@ -12,7 +12,8 @@ var data: WaveControllerData = null;
 # wave incl. the first and boss waves. Symmetric to game_scene.wave_end_popup_delay.
 # Inspector-editable feel knob; scales with game-speed time_scale like spawns.
 @export var pre_wave_start_delay: float = 0.8
-var spawnParent: Node2D = null;
+var paths: Array[Path2D] = [];
+var spawnParentIndex: int = 0;
 
 var enemyTextures: Dictionary = {};
 @onready var enemyFactory: EnemyFactory = $"../EnemyFactory";
@@ -45,14 +46,6 @@ var enemyAliveCount: int = 0;
 var isSpawnAllEnemy: bool = false;
 var deadList: Array[Enemy] = [];
 
-func _ready():
-	# Skill actions (summon_enemy) locate the controller through this group -
-	# WaveController is not an autoload and actions only receive a SkillContext.
-	add_to_group("wave_controller")
-	spawnParent = map.path
-	if waveTimer != null:
-		waveTimer.visible = false
-
 # Drives the top-center wave countdown. Counts down the wave's authored duration;
 # at zero the spawn timeline is done so the timer hides (the wave continues until
 # the field is clear). delta scales with the game-speed time_scale, matching spawns.
@@ -79,6 +72,14 @@ func _input(event):
 func setup(p_data: WaveControllerData):
 	self.data = p_data;
 	enemyTextures = ResourceManager.getSpriteGroup("enemy");
+
+	# Skill actions (summon_enemy) locate the controller through this group -
+	# WaveController is not an autoload and actions only receive a SkillContext.
+	add_to_group("wave_controller")
+	paths = map.path
+	print("WaveController: paths count = ", paths.size())
+	if waveTimer != null:
+		waveTimer.visible = false
 
 func setBossList(list: Array[BossDBData]):
 	bossList = list;
@@ -403,7 +404,8 @@ func createEnemyObject(type: Enemy.EnemyType, health: int, def: int, mDef: int, 
 	if(enemyFactory == null):
 		return;
 
-	var instance = await enemyFactory.createEnemy(type, spawnParent, health, def, mDef, moveSpeed, texture, skills, damageReduction, pathProgress, spawnScale);
+	var path = paths[getSpawnParentIndex()];
+	var instance = await enemyFactory.createEnemy(type, path, health, def, mDef, moveSpeed, texture, skills, damageReduction, pathProgress, spawnScale);
 	return instance
 
 func enemyReachEndPoint(enemy: Enemy):
@@ -437,6 +439,12 @@ func enemyDead(enemy: Enemy, cause: Damage, reward: EnemyReward):
 func reduceEnemyCount():
 	enemyAliveCount -= 1;
 	checkEndWave();
+
+func getSpawnParentIndex() -> int:
+	var chosenIndex = spawnParentIndex;
+	print("parent index: " + str(spawnParentIndex) + " / " + str(paths.size()));
+	spawnParentIndex = (spawnParentIndex + 1) % paths.size();
+	return chosenIndex;
 
 func _on_next_wave_delay_timer_timeout():
 	startNextWave()

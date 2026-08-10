@@ -94,7 +94,14 @@ func _build(cells: float) -> void:
 			# Path2D so enemies (its children) draw over the zone.
 			_back_holder = Node2D.new()
 			ground_map.add_child(_back_holder)
-			ground_map.move_child(_back_holder, ground_map.path.get_index())
+
+			var path = ground_map.path;
+			var lowest_index := 0;
+			for i in range(ground_map.path.size()):
+				if path.get_child(i).z_index < path.get_child(lowest_index).z_index:
+					lowest_index = i;
+			ground_map.move_child(_back_holder, lowest_index);
+
 			_back_holder.global_position = global_position
 			_back_holder.add_child(rect)
 		elif side == 0:

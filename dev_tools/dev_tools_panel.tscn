@@ -1,0 +1,74 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://dev_tools/dev_tools_panel.gd" id="1_dev"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dev_panel"]
+bg_color = Color(0.035, 0.043, 0.065, 0.96)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.78, 0.12, 0.16, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[node name="DevTools" type="CanvasLayer"]
+layer = 100
+process_mode = 3
+script = ExtResource("1_dev")
+
+[node name="DevTab" type="Button" parent="."]
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 240.0
+offset_top = 12.0
+offset_right = 304.0
+offset_bottom = 48.0
+text = "DEV"
+
+[node name="Panel" type="PanelContainer" parent="."]
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 240.0
+offset_top = 56.0
+offset_right = 582.0
+offset_bottom = 440.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_dev_panel")
+
+[node name="Margin" type="MarginContainer" parent="Panel"]
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="VBox" type="VBoxContainer" parent="Panel/Margin"]
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="Panel/Margin/VBox"]
+text = "Developer Tools"
+
+[node name="SkillAreas" type="CheckButton" parent="Panel/Margin/VBox"]
+text = "Show Skill Areas"
+
+[node name="UnlimitedRerolls" type="CheckButton" parent="Panel/Margin/VBox"]
+text = "Unlimited Card Rerolls"
+
+[node name="AddEvoToken" type="Button" parent="Panel/Margin/VBox"]
+text = "+1 Evolve Token"
+
+[node name="Separator" type="HSeparator" parent="Panel/Margin/VBox"]
+
+[node name="BossLabel" type="Label" parent="Panel/Margin/VBox"]
+text = "Boss"
+
+[node name="BossSelect" type="OptionButton" parent="Panel/Margin/VBox"]
+custom_minimum_size = Vector2(300, 36)
+
+[node name="SpawnBoss" type="Button" parent="Panel/Margin/VBox"]
+text = "Spawn Boss"
+
+[node name="Status" type="Label" parent="Panel/Margin/VBox"]
+text = "Select a boss during an active wave."
+autowrap_mode = 2

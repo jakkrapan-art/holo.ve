@@ -8,10 +8,12 @@ signal tower_select(num_select)
 signal tower_select_skipped
 
 var _dealer: RandomCardsDealer;
-var test_deck = ['1','2','3','4','5']
 @onready var refreshText: Label = $CanvasLayer/PopupPanel/Panel/RefreshButton/RefreshText
 var refreshLeft = 0;
 var maxRefresh = 0;
+var _card_provider: Callable = Callable()
+var _candidate_count: int = 0
+var _current_card_count: int = 0
 # Programmatic title header — lazy-created on first _apply_setup() call when a title is provided.
 # Lives as a child of Panel; anchored top-center above the HBoxContainer card row. Avoids editing
 # tower_select.tscn (RULES.md §5: Engineer cannot modify the node tree in the Scene editor).
@@ -27,20 +29,26 @@ func _ready() -> void:
 	# IGNORE lets hover through; the Panel card below still STOPs clicks on its own rect.
 	# Set here rather than in tower_select.tscn for the same reason as _title_label above.
 	$CanvasLayer/PopupPanel.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	setupRefreshText(refreshLeft, maxRefresh);
+	add_to_group("dev_reroll_surface")
+	$CanvasLayer/PopupPanel/Panel/RefreshButton.pressed.connect(refreshList)
+	sync_dev_reroll_state()
 
 func setup(evoToken: int = 0, p_maxRefresh: int = 0, title: String = ""):
-	var cards = _build_card_list(evoToken)
-	_apply_setup(cards, p_maxRefresh, evoToken, title)
+	_card_provider = Callable(self, "_build_tower_card_result").bind(evoToken)
+	_apply_setup(_card_provider.call(), p_maxRefresh, title)
 
-# Entry point for callers that already have a card list (e.g. deck-add popup at wave-5 end).
-# Bypasses _build_card_list so the popup is not tied to TowerCenter tower pool.
-func setup_with_cards(cards: Array, p_maxRefresh: int = 0, title: String = ""):
-	_apply_setup(cards, p_maxRefresh, 0, title)
+# Provider contract: return {"cards": Array[TowerSelectData], "candidate_count": int}.
+# Rebuilding through the provider makes both Tower Select and Deck Select rerollable.
+func setup_with_card_provider(provider: Callable, p_maxRefresh: int = 0, title: String = ""):
+	_card_provider = provider
+	_apply_setup(_card_provider.call(), p_maxRefresh, title)
 
-func _apply_setup(cards: Array, max_refresh: int, evoTokenForRefresh: int, title: String = ""):
+func _apply_setup(result: Dictionary, max_refresh: int, title: String = ""):
 	self.refreshLeft = max_refresh;
 	self.maxRefresh = max_refresh;
+	var cards: Array = result.get("cards", [])
+	_candidate_count = int(result.get("candidate_count", cards.size()))
+	_current_card_count = cards.size()
 
 	if cards.is_empty():
 		tower_select_skipped.emit()
@@ -51,13 +59,7 @@ func _apply_setup(cards: Array, max_refresh: int, evoTokenForRefresh: int, title
 		_ensure_title_label(title)
 
 	_apply_cards_to_buttons(cards)
-
-	var refresh_button = get_node("CanvasLayer/PopupPanel/Panel/RefreshButton")
-	refresh_button.visible = max_refresh > 0
-	if max_refresh > 0:
-		refresh_button.pressed.connect(Callable(self, "refreshList").bind(evoTokenForRefresh))
-
-	setupRefreshText(refreshLeft, maxRefresh)
+	sync_dev_reroll_state()
 
 func _ensure_title_label(title: String) -> void:
 	# Lazy-create a single header Label inside Panel. Anchored top-stretch so it remains centered
@@ -81,23 +83,56 @@ func _ensure_title_label(title: String) -> void:
 		panel.add_child(_title_label)
 	_title_label.text = title
 
-func setupRefreshText(refreshCount: int, p_maxRefresh: int):
-	if(refreshText):
-		refreshText.text = str(refreshCount) + "/" + str(p_maxRefresh)
-
-func refreshList(evoToken: int = 0):
-	if(refreshLeft <= 0):
+func refreshList():
+	if not _card_provider.is_valid():
 		return
-	refreshLeft -= 1;
+	var unlimited := _dev_unlimited_rerolls()
+	if not unlimited and refreshLeft <= 0:
+		return
+	if not unlimited:
+		refreshLeft -= 1;
 
-	var cards = _build_card_list(evoToken)
+	var result: Dictionary = _card_provider.call()
+	var cards: Array = result.get("cards", [])
 	if cards.is_empty():
 		tower_select_skipped.emit()
 		queue_free()
 		return
 
+	_candidate_count = int(result.get("candidate_count", cards.size()))
+	_current_card_count = cards.size()
 	_apply_cards_to_buttons(cards)
-	setupRefreshText(refreshLeft, maxRefresh)
+	sync_dev_reroll_state()
+
+func sync_dev_reroll_state() -> void:
+	if not is_node_ready():
+		return
+	var refresh_button: Button = $CanvasLayer/PopupPanel/Panel/RefreshButton
+	var has_alternatives := _card_provider.is_valid() and _candidate_count > _current_card_count
+	refresh_button.visible = has_alternatives
+	var unlimited := _dev_unlimited_rerolls()
+	refresh_button.disabled = not unlimited and refreshLeft <= 0
+	if refreshText != null:
+		refreshText.text = "UNLIMITED" if unlimited else str(refreshLeft) + "/" + str(maxRefresh)
+
+func _dev_unlimited_rerolls() -> bool:
+	return bool(get_tree().get_meta(&"_dev_unlimited_card_rerolls", false))
+
+func _build_tower_card_result(evoToken: int) -> Dictionary:
+	var cards := _build_card_list(evoToken)
+	var eligible := 0
+	var evolution_names: Array = TowerCenter.getEvolutionList(3)
+	for tower_name in evolution_names:
+		if TowerCenter.validateSelectTower(tower_name, evoToken):
+			eligible += 1
+	var seen := {}
+	for tower_name in TowerCenter.getTowerNames():
+		if seen.has(tower_name) or evolution_names.has(tower_name):
+			continue
+		seen[tower_name] = true
+		if TowerCenter.validateSelectTower(tower_name, evoToken):
+			eligible += 1
+	return {"cards": cards, "candidate_count": eligible}
 
 func _build_card_list(evoToken: int) -> Array:
 	if (!_dealer):

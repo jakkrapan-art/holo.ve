@@ -3,6 +3,7 @@ class_name GameScene;
 
 # Load the pop-up panel scene
 var PopupPanelScene = preload("res://resources/ui_component/tower_select/tower_select.tscn");
+const DEV_TOOLS_SCENE := "res://dev_tools/dev_tools_panel.tscn"
 
 @onready var waveController: WaveController = $WaveController;
 @onready var player: Player = $Player
@@ -200,6 +201,28 @@ func _ready():
 		Utility.ConnectSignal(waveController, "onEnemyDead", Callable(towerFactory, "onEnemyKilled"));
 		Utility.ConnectSignal(waveController, "onEnemyDead", Callable(self, "_on_enemy_dead_visual"));
 
+	_setup_dev_tools()
+
+func _setup_dev_tools() -> void:
+	if not (OS.has_feature("editor") or OS.has_feature("dev_tools")):
+		return
+	var dev_scene := load(DEV_TOOLS_SCENE) as PackedScene
+	if dev_scene == null:
+		push_warning("GameScene: developer tools scene is unavailable")
+		return
+	var panel := dev_scene.instantiate()
+	add_child(panel)
+	if panel.has_method("setup"):
+		panel.call("setup", waveController, Callable(self, "request_dev_add_evo_token"))
+
+func request_dev_add_evo_token(amount: int = 1) -> bool:
+	if not (OS.has_feature("editor") or OS.has_feature("dev_tools")):
+		return false
+	if amount <= 0 or player == null or player.wallet == null:
+		return false
+	player.wallet.updateEvoToken(amount)
+	return true
+
 func placeTower(cell: Vector2):
 	map.removeAvailableCell(cell);
 
@@ -268,6 +291,8 @@ func _on_staff_died():
 	# Mark game over BEFORE any UI work so popup factories early-return if they fire
 	# concurrently from a wave-end timer or deferred callback.
 	state = "game_over"
+	if waveController != null:
+		waveController.active = false
 	# Drop the inspected tower/enemy. The end screen is a centred panel, not a
 	# full-screen cover, so an outline or range ring left behind it stays visible
 	# - and _unhandled_input early-returns on game_over, so the player could
@@ -370,14 +395,6 @@ func show_deck_popup():
 	_clear_inspection()
 	get_tree().root.add_child(popup)
 
-	var cards: Array = []
-	for deck in TowerCenter.getAvailableDecks():
-		var card = TowerSelectData.new(deck.key, 0, 0)
-		var sprite_path = "res://resources/" + deck.info.sprite
-		if ResourceLoader.exists(sprite_path):
-			card.icon = load(sprite_path)
-		cards.append(card)
-
 	popup.tower_select.connect(Callable(self, "_on_deck_selected"))
 	Utility.ConnectSignal(popup, "tower_select_skipped", Callable(self, "_on_deck_skipped"))
 	# NOTE: tree_exited intentionally NOT connected here. The deck popup's deferred
@@ -386,7 +403,19 @@ func show_deck_popup():
 	# Flag handoff is explicit in _on_deck_selected / _on_deck_skipped below; the
 	# tower popup wires its own tree_exited via show_popup_panel().
 
-	popup.setup_with_cards(cards, 0, "Select Additional Deck")
+	popup.setup_with_card_provider(Callable(self, "_build_available_deck_card_result"), 1, "Select Additional Deck")
+
+func _build_available_deck_card_result() -> Dictionary:
+	var cards: Array = []
+	for deck in TowerCenter.getAvailableDecks():
+		var card = TowerSelectData.new(deck.key, 0, 0)
+		var sprite_path = "res://resources/" + deck.info.sprite
+		if ResourceLoader.exists(sprite_path):
+			card.icon = load(sprite_path)
+		cards.append(card)
+	var candidate_count := cards.size()
+	cards.shuffle()
+	return {"cards": cards.slice(0, mini(3, candidate_count)), "candidate_count": candidate_count}
 
 func _on_deck_selected(deck_key: String):
 	TowerCenter.addDeck(deck_key)
@@ -423,7 +452,7 @@ func show_popup_panel():
 	Utility.ConnectSignal(popup, "tree_exited", Callable(self, "_on_popup_closed"));
 
 	var evoToken = player.wallet.getEvoToken();
-	popup.setup(evoToken, 1000, "Select Tower");
+	popup.setup(evoToken, 1, "Select Tower");
 
 	return
 

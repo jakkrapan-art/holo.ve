@@ -10,7 +10,7 @@ extends Node2D
 # The wide-pierce DAMAGE is the separate shinri_skill_projectile.
 # ════════════════════════════════════════════════════════════════
 
-const SHADER_PATH := "res://resources/tower/holostars/en_branch/tempus_gen/josuiji_shinri/skill_effect/shinri_evo_skill_effect.gdshader"
+const SHADER_PATH := "res://resources/tower/holostars/en_branch/tempus_gen/shinri/skill_effect/shinri_evo_skill_effect.gdshader"
 
 const LANE_PAD       := 0.25    # must match the shader lane_pad uniform
 const RANGE_TILES    := 4.0     # arrow_range — lane length in tiles

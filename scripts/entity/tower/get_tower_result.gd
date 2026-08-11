@@ -4,7 +4,8 @@ class_name GetTowerResult
 enum State {
 	New,
 	Upgrade,
-	Evolve
+	Evolve,
+	Unavailable
 }
 
 var tower: Tower;

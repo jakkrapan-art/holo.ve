@@ -459,7 +459,6 @@ func _on_option_selected(selection):
 		push_error("Tower data not found for selection: ", selection)
 		return
 
-	TowerCenter.upgradeTowerLevelByName(selection);
 	var evoToken = player.wallet.getEvoToken();
 	var result: GetTowerResult = towerFactory.getTower(tower.data_name, evoToken);
 	if(result == null):
@@ -468,6 +467,7 @@ func _on_option_selected(selection):
 
 	match result.state:
 		GetTowerResult.State.New:
+			TowerCenter.upgradeTowerLevelByName(selection);
 			# Enter build mode with the new tower
 			result.tower.enterPlaceMode();
 			if(map != null):
@@ -476,22 +476,20 @@ func _on_option_selected(selection):
 			t = result.tower
 			state = "tower_placement"
 
-		# GetTowerResult.State.Evolve:
-		# 	# Check if have enough evo tokens to evolve
-		# 	var evoToken = player.wallet.getEvoToken();
-		# 	var cost = result.tower.data.evolutionCost;
-		# 	if(evoToken >= cost):
-		# 	else:
-		# 		show_popup_panel();
-
 		GetTowerResult.State.Upgrade:
+			TowerCenter.upgradeTowerLevelByName(selection);
 			startWave();
 
 		GetTowerResult.State.Evolve:
-			towerFactory.evolutionTower(selection);
-
 			var cost = result.tower.data.evolutionCost;
-			player.wallet.updateEvoToken(-cost);
+			if TowerCenter.evolveTowerByName(selection):
+				player.useEvoToken(cost);
+			else:
+				push_error("Evolution record commit failed after live tower evolved: ", selection)
+			startWave();
+
+		GetTowerResult.State.Unavailable:
+			push_warning("Tower selection unavailable: ", selection)
 			startWave();
 
 func _on_enemy_dead_visual(enemy: Enemy, _cause, _reward):

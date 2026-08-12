@@ -38,7 +38,7 @@ var _active_popup: UITowerSelect = null
 # Staff skill casting state — indicator follows mouse; LeftClick commits, RightClick / ESC cancels.
 var _skill_cast_indicator: SkillCastIndicator = null
 var _state_before_skill_cast: String = ""
-# Ref to the Staff HUD widget so _input can ask whether a click landed on the skill button.
+# Ref to the Staff HUD widget for setup and signal wiring.
 var _staff_widget: StaffWidget = null
 
 # Bottom-left stats panels (display-only selection surfaces). They share the
@@ -46,40 +46,40 @@ var _staff_widget: StaffWidget = null
 var _tower_stats_panel: TowerStatsPanel = null
 var _enemy_stats_panel: EnemyStatsPanel = null
 
-func _input(event):
+func _unhandled_input(event):
+	# GUI Controls receive input first. Only input the HUD did not consume can
+	# commit a world action here.
 	if state == "tower_placement" and event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		if(t != null && !t.isOnValidCell):
-			return;
+		get_viewport().set_input_as_handled()
+		if t != null and !t.isOnValidCell:
+			return
 
-		t.exitPlaceMode();
-		t = null;
-		if(map != null):
-			map.toggle_grid(false);
-		startWave();
-		# Consume the commit click: state is already back to "wave" here, and physics
-		# picking runs last - without this, the same click would select the placed tower.
-		get_viewport().set_input_as_handled();
-	elif state == "staff_skill_casting":
+		t.exitPlaceMode()
+		t = null
+		if map != null:
+			map.toggle_grid(false)
+		startWave()
+		return
+
+	if state == "staff_skill_casting":
 		if event is InputEventMouseButton and event.pressed:
 			if event.button_index == MOUSE_BUTTON_LEFT:
-				# Click on the skill button itself -> let the button's pressed signal
-				# toggle-cancel (MOBA-style); do NOT commit a cast under the button.
-				if _staff_widget != null and _staff_widget.is_skill_button_hovered():
-					return
-				_commit_staff_skill_cast()
-				# Same race as the placement commit: consume so the cast click cannot
-				# also pick whatever tower sits under the cursor.
 				get_viewport().set_input_as_handled()
-			elif event.button_index == MOUSE_BUTTON_RIGHT:
+				_commit_staff_skill_cast()
+				return
+			if event.button_index == MOUSE_BUTTON_RIGHT:
+				get_viewport().set_input_as_handled()
 				_cancel_staff_skill_cast()
+				return
 		elif event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE:
+			get_viewport().set_input_as_handled()
 			_cancel_staff_skill_cast()
+			return
 
-func _unhandled_input(event):
 	# Tower select via a direct pick-box lookup, NOT physics picking: GUI-consumed
-	# clicks never reach here, the placement/staff commit branches mark their
-	# clicks handled, and (unlike Area2D input_event, which missed clicks while a
-	# tower was mid-cast) this path has no physics dependency at all.
+	# clicks never reach here, active world actions are handled above, and (unlike
+	# Area2D input_event, which missed clicks while a tower was mid-cast) this path
+	# has no physics dependency at all.
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		if state == "tower_placement" or state == "staff_skill_casting" or _popup_is_blocking() or state == "game_over":
 			return

@@ -39,8 +39,8 @@ stats:
 # successful cast runs the CURRENT phase and advances to the next, looping
 # past the last phase; a fizzle (no target at cast start) keeps Energy AND the
 # phase. The phase resets to 1 at wave end. Phase clips skill_1..skill_3 and
-# the icon tints are placeholders until the real art lands; the red debug box
-# (show_area default) stands in for the per-phase VFX.
+# the icon tints are placeholders until the real art lands; dedicated per-phase
+# VFX are still pending.
 # Flavour anchors on the official bio: "The chief of human resources in
 # Adventurer's Guild TEMPUS. He is the owner of the combat arena, and a
 # gladiator himself." (holostars.hololivepro.com/en/talent/axel-syrios/)

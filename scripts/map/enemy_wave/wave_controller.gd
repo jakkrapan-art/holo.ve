@@ -60,15 +60,6 @@ func _process(delta):
 	if waveTimerText != null:
 		waveTimerText.text = _format_time(remaining)
 
-func _input(event):
-	if event is InputEventKey and event.pressed:
-		if event.keycode == KEY_1:
-			testSpawnBoss(0);
-		elif event.keycode == KEY_2:
-			testSpawnBoss(1);
-		elif event.keycode == KEY_3:
-			testSpawnBoss(2);
-
 func setup(p_data: WaveControllerData):
 	self.data = p_data;
 	enemyTextures = ResourceManager.getSpriteGroup("enemy");
@@ -121,6 +112,7 @@ func endWave():
 	if endWaveCalled:
 		return;
 
+	active = false
 	endWaveCalled = true;
 	_stopCountdown();
 	deadList.clear();
@@ -265,33 +257,69 @@ func spawnBoss():
 	else:
 		bossData = result[0]
 
-	var texture = bossData.texture;
-	var health = bossData.stats.hp
-	var def = bossData.stats.def
-	var mDef = bossData.stats.mDef
-	var moveSpeed = bossData.stats.moveSpeed
-	# Deep-duplicate per spawn: BossDBData holds one parsed skill template per boss,
-	# so each spawn must get its own copy or per-instance state
-	# (cooldownRemaining/using/disable) would collide across boss spawns. Mirrors spawnEnemy.
+	isSpawnAllEnemy = true;
+	_spawn_boss_data(bossData, currWave)
+
+func get_dev_boss_options() -> Array[String]:
+	var options: Array[String] = []
+	for boss in bossList:
+		options.append(boss.name)
+	return options
+
+func can_dev_spawn_boss() -> bool:
+	return _dev_tools_enabled() and active and not endWaveCalled and currWave > 0 and not bossList.is_empty() and not paths.is_empty()
+
+func request_dev_spawn_boss(index: int) -> bool:
+	if not can_dev_spawn_boss() or index < 0 or index >= bossList.size():
+		return false
+	var generation := currWave
+	var boss: Enemy = await _spawn_boss_data(bossList[index], generation)
+	return boss != null
+
+func _spawn_boss_data(bossData: BossDBData, generation: int) -> Enemy:
+	if bossData == null:
+		return null
+
 	var skills: Array[Skill] = []
 	for skill in bossData.skills:
 		skills.append(Utility.deep_duplicate_resource(skill))
 
-	# Reserve count BEFORE the async spawn (same race-condition guard as
-	# spawnEnemy — checkEndWave can fire while boss creation is still in flight).
-	isSpawnAllEnemy = true;
-	enemyAliveCount += 1;
-
-	var boss: Enemy = await createEnemyObject(Enemy.EnemyType.Boss, health, def, mDef, moveSpeed, texture, skills, 0.0, 0.0, bossData.scale);
-
+	# Reserve before the await. A generation change resets the next wave's count,
+	# so only roll back reservations still owned by this generation.
+	enemyAliveCount += 1
+	var boss: Enemy = await createEnemyObject(
+		Enemy.EnemyType.Boss,
+		bossData.stats.hp,
+		bossData.stats.def,
+		bossData.stats.mDef,
+		bossData.stats.moveSpeed,
+		bossData.texture,
+		skills,
+		0.0,
+		0.0,
+		bossData.scale
+	)
 	if boss == null:
-		enemyAliveCount -= 1;
-		return;
+		if currWave == generation:
+			enemyAliveCount -= 1
+			if active:
+				checkEndWave()
+		return null
 
-	boss.display_name = bossData.name;
-	connectSignalToEnemy(boss);
+	if currWave != generation or not active or endWaveCalled:
+		if currWave == generation:
+			enemyAliveCount -= 1
+		boss.queue_free()
+		return null
+
+	boss.display_name = bossData.name
+	connectSignalToEnemy(boss)
 	if bossHpBar != null:
-		bossHpBar.track(boss, bossData.name);
+		bossHpBar.track(boss, bossData.name)
+	return boss
+
+func _dev_tools_enabled() -> bool:
+	return OS.has_feature("editor") or OS.has_feature("dev_tools")
 
 # Skill-driven mid-wave reinforcements (King's Command): spawn `count` copies of a
 # roster enemy at a path position, `interval` seconds apart. Runs through the same
@@ -359,40 +387,6 @@ func _stopCountdown():
 func _format_time(sec: float) -> String:
 	var total: int = int(ceil(sec))
 	return "%d:%02d" % [int(total / 60.0), total % 60]
-
-func testSpawnBoss(index: int = -1):
-	if(bossList.size() == 0):
-		return;
-
-	if(index < 0):
-		index = randi_range(0, bossList.size() - 1);
-
-	if(index >= bossList.size()):
-		return;
-
-	var boss = bossList[index]; # For testing, spawn the first boss in the list.
-
-	var texture = boss.texture;
-	var health = boss.stats.hp
-	var def = boss.stats.def
-	var mDef = boss.stats.mDef
-	var moveSpeed = boss.stats.moveSpeed
-	# Deep-dup skills like spawnBoss so debug spawns exercise real boss behavior
-	# (skills + scale) - the whole point of the test keys.
-	var skills: Array[Skill] = []
-	for skill in boss.skills:
-		skills.append(Utility.deep_duplicate_resource(skill))
-
-	# Same race-condition guard as spawnEnemy / spawnBoss (debug-only path).
-	enemyAliveCount += 1;
-	var enemy: Enemy = await createEnemyObject(Enemy.EnemyType.Boss, health, def, mDef, moveSpeed, texture, skills, 0.0, 0.0, boss.scale);
-	if enemy == null:
-		enemyAliveCount -= 1;
-		return;
-	enemy.display_name = boss.name;
-	connectSignalToEnemy(enemy);
-	if bossHpBar != null:
-		bossHpBar.track(enemy, boss.name);
 
 func connectSignalToEnemy(enemy: Enemy):
 	Utility.ConnectSignal(enemy, "onReachEndPoint", Callable(self, "reduceEnemyCount"));

@@ -54,7 +54,7 @@ func _draw() -> void:
 	for cell in Map.availableCells:
 		var center_pos := map.map_to_local(cell)
 		var rect := Rect2(center_pos - tile_size / 2.0 + Vector2.ONE * inset, rect_size)
-		var is_hovered := cell == _hovered_cell
+		var is_hovered: bool = cell == _hovered_cell
 
 		if is_hovered:
 			draw_rect(rect, HOVER_FILL, true)

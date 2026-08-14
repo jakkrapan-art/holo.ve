@@ -1,14 +1,14 @@
 extends Node2D
 class_name AvailableGridDrawer
 
-const CELL_INSET_FRAC := 0.06
-const CORNER_RADIUS_CELL_FRAC := 0.08
+const CELL_INSET_FRAC := 0.01
+const CORNER_RADIUS_CELL_FRAC := 0.09
 const NORMAL_STROKE_CELL_FRAC := 0.04
 const HOVER_STROKE_CELL_FRAC := 0.04
 const NORMAL_STROKE := Color(1.0, 0.94, 0.80, 0.95)
-const HOVER_STROKE := Color(1.0, 0.78, 0.30, 0.95)
-const NORMAL_FILL := Color(1.0, 0.94, 0.80, 0.06)
-const HOVER_FILL := Color(1.0, 0.78, 0.30, 0.12)
+const HOVER_STROKE := Color("#0f80f0", 0.95)
+const NORMAL_FILL := Color(1.0, 0.94, 0.80, 0.2)
+const HOVER_FILL := Color("#0f80f0", 0.2)
 
 var _hovered_cell: Variant = null
 var _normal_style: StyleBoxFlat = null

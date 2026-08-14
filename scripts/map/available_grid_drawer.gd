@@ -1,21 +1,65 @@
 extends Node2D
+class_name AvailableGridDrawer
 
-func _draw():
-	var parent = get_parent()
-	if not parent is Map or not parent.tile_set:
+const CELL_INSET_FRAC := 0.08
+const NORMAL_STROKE_CELL_FRAC := 0.012
+const HOVER_STROKE_CELL_FRAC := 0.02
+const NORMAL_STROKE := Color(1.0, 0.94, 0.80, 0.45)
+const HOVER_STROKE := Color(1.0, 0.78, 0.30, 0.95)
+const HOVER_FILL := Color(1.0, 0.78, 0.30, 0.08)
+
+var _hovered_cell: Variant = null
+
+func _ready() -> void:
+	visible = false
+	set_process(false)
+
+func set_active(p_is_active: bool) -> void:
+	if not p_is_active:
+		set_process(false)
+		_hovered_cell = null
+		visible = false
 		return
 
-	var tile_size = parent.tile_set.tile_size
+	visible = true
+	set_process(true)
+	_update_hovered_cell()
+	queue_redraw()
 
-	for x in range(Map.startX, Map.startX + int(Map.mapSize.x)):
-		for y in range(Map.startY, Map.startY + int(Map.mapSize.y)):
-			var cell = Vector2i(x, y)
+func _process(_delta: float) -> void:
+	_update_hovered_cell()
 
-			var is_avail = Map.availableCells.has(cell)
-			var color = Color(0, 1, 0, 0.4) if is_avail else Color(1, 0, 0, 0.4)
+func _update_hovered_cell() -> void:
+	var map := get_parent() as Map
+	if map == null:
+		return
 
-			var center_pos = parent.map_to_local(cell)
-			var draw_pos = center_pos - (Vector2(tile_size) / 2)
+	var hovered_cell := map.local_to_map(map.to_local(get_global_mouse_position()))
+	if hovered_cell == _hovered_cell:
+		return
 
-			draw_rect(Rect2(draw_pos, tile_size), color, true)
-			draw_rect(Rect2(draw_pos, tile_size), Color(color, 1.0), false, 1.0)
+	_hovered_cell = hovered_cell
+	queue_redraw()
+
+func _draw() -> void:
+	var map := get_parent() as Map
+	if map == null or map.tile_set == null:
+		return
+
+	var tile_size := Vector2(map.tile_set.tile_size)
+	var cell_scale := minf(tile_size.x, tile_size.y)
+	var inset := cell_scale * CELL_INSET_FRAC
+	var rect_size := tile_size - Vector2.ONE * inset * 2.0
+
+	for cell in Map.availableCells:
+		var center_pos := map.map_to_local(cell)
+		var rect := Rect2(center_pos - tile_size / 2.0 + Vector2.ONE * inset, rect_size)
+		var is_hovered := cell == _hovered_cell
+
+		if is_hovered:
+			draw_rect(rect, HOVER_FILL, true)
+			draw_rect(rect, HOVER_STROKE, false,
+					cell_scale * HOVER_STROKE_CELL_FRAC, true)
+		else:
+			draw_rect(rect, NORMAL_STROKE, false,
+					cell_scale * NORMAL_STROKE_CELL_FRAC, true)

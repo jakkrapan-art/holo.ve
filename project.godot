@@ -33,10 +33,6 @@ window/size/mode=2
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 
-[editor_plugins]
-
-enabled=PackedStringArray("res://addons/load_map_data/plugin.cfg")
-
 [gui]
 
 timers/tooltip_delay_sec=0.15

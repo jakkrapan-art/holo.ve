@@ -1,13 +1,14 @@
 extends Node2D
 class_name AvailableGridDrawer
 
-const CELL_INSET_FRAC := 0.03
+const CELL_INSET_FRAC := 0.06
 const CORNER_RADIUS_CELL_FRAC := 0.08
-const NORMAL_STROKE_CELL_FRAC := 0.03
+const NORMAL_STROKE_CELL_FRAC := 0.04
 const HOVER_STROKE_CELL_FRAC := 0.04
-const NORMAL_STROKE := Color(1.0, 0.94, 0.80, 0.45)
+const NORMAL_STROKE := Color(1.0, 0.94, 0.80, 0.95)
 const HOVER_STROKE := Color(1.0, 0.78, 0.30, 0.95)
-const HOVER_FILL := Color(1.0, 0.78, 0.30, 0.08)
+const NORMAL_FILL := Color(1.0, 0.94, 0.80, 0.06)
+const HOVER_FILL := Color(1.0, 0.78, 0.30, 0.12)
 
 var _hovered_cell: Variant = null
 var _normal_style: StyleBoxFlat = null
@@ -75,7 +76,7 @@ func _ensure_styles(p_cell_scale: float) -> void:
 	var corner_radius := roundi(p_cell_scale * CORNER_RADIUS_CELL_FRAC)
 
 	_normal_style = StyleBoxFlat.new()
-	_normal_style.bg_color = Color.TRANSPARENT
+	_normal_style.bg_color = NORMAL_FILL
 	_normal_style.border_color = NORMAL_STROKE
 	_normal_style.set_border_width_all(roundi(p_cell_scale * NORMAL_STROKE_CELL_FRAC))
 	_normal_style.set_corner_radius_all(corner_radius)

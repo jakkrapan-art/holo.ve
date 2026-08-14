@@ -7,15 +7,13 @@ static var startY: int = 3;
 
 @export var path: Array[Path2D];
 @onready var path_bake: PathBakeAuto = $Path2D
-@onready var drawer: Node2D = $GridDrawer
+@onready var drawer: AvailableGridDrawer = $GridDrawer
 
 static var availableCells: Array[Vector2i];
 
 func toggle_grid(p_is_visible: bool):
 	if drawer:
-		drawer.visible = p_is_visible
-		if p_is_visible:
-			drawer.queue_redraw()
+		drawer.set_active(p_is_visible)
 
 # Internal helper to refresh when data changes
 func refresh_visuals():

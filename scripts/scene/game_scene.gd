@@ -45,6 +45,10 @@ var _staff_widget: StaffWidget = null
 # slot: one selection at a time - showing one always clears the other.
 var _tower_stats_panel: TowerStatsPanel = null
 var _enemy_stats_panel: EnemyStatsPanel = null
+var _placement_prompt: Label = null
+var _placement_prompt_tween: Tween = null
+
+const PLACEMENT_PROMPT_FADE_IN := 0.12
 
 func _unhandled_input(event):
 	# GUI Controls receive input first. Only input the HUD did not consume can
@@ -56,8 +60,7 @@ func _unhandled_input(event):
 
 		t.exitPlaceMode()
 		t = null
-		if map != null:
-			map.toggle_grid(false)
+		_hide_placement_ui()
 		startWave()
 		return
 
@@ -167,6 +170,7 @@ func _ready():
 	setup_staff()
 	_tower_stats_panel = get_node_or_null("GameUI/TowerStatsPanel") as TowerStatsPanel
 	_enemy_stats_panel = get_node_or_null("GameUI/EnemyStatsPanel") as EnemyStatsPanel
+	_placement_prompt = get_node_or_null("GameUI/PlacementPrompt") as Label
 	var camera = get_node("Camera2D")
 	camera.make_current()
 	if(map != null):
@@ -291,6 +295,7 @@ func _on_staff_died():
 	# Mark game over BEFORE any UI work so popup factories early-return if they fire
 	# concurrently from a wave-end timer or deferred callback.
 	state = "game_over"
+	_hide_placement_ui()
 	if waveController != null:
 		waveController.active = false
 	# Drop the inspected tower/enemy. The end screen is a centred panel, not a
@@ -499,11 +504,10 @@ func _on_option_selected(selection):
 			TowerCenter.upgradeTowerLevelByName(selection);
 			# Enter build mode with the new tower
 			result.tower.enterPlaceMode();
-			if(map != null):
-				map.toggle_grid(true);
 			add_child(result.tower);
 			t = result.tower
 			state = "tower_placement"
+			_show_placement_ui()
 
 		GetTowerResult.State.Upgrade:
 			TowerCenter.upgradeTowerLevelByName(selection);
@@ -529,6 +533,36 @@ func _on_enemy_dead_visual(enemy: Enemy, _cause, _reward):
 		EvoTokenDrop.spawn(enemy.global_position, get_tree().current_scene)
 
 func startWave():
+	_hide_placement_ui()
 	state = "wave"
 	if(waveController):
 		waveController.start()
+
+func _show_placement_ui() -> void:
+	if map != null:
+		map.toggle_grid(true)
+	if _placement_prompt == null:
+		return
+
+	_kill_placement_prompt_tween()
+	_placement_prompt.visible = true
+	_placement_prompt.modulate.a = 0.0
+	_placement_prompt_tween = create_tween()
+	_placement_prompt_tween.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	_placement_prompt_tween.tween_property(
+			_placement_prompt, "modulate:a", 1.0, PLACEMENT_PROMPT_FADE_IN)
+
+func _hide_placement_ui() -> void:
+	if map != null:
+		map.toggle_grid(false)
+	if _placement_prompt == null:
+		return
+
+	_kill_placement_prompt_tween()
+	_placement_prompt.modulate.a = 1.0
+	_placement_prompt.visible = false
+
+func _kill_placement_prompt_tween() -> void:
+	if _placement_prompt_tween != null and _placement_prompt_tween.is_valid():
+		_placement_prompt_tween.kill()
+	_placement_prompt_tween = null

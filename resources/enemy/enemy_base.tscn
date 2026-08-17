@@ -21,6 +21,7 @@ corner_radius_bottom_right = 50
 corner_radius_bottom_left = 50
 
 [node name="enemy_base" type="PathFollow2D" groups=["enemy"]]
+z_as_relative = false
 rotates = false
 loop = false
 script = ExtResource("1_wei2r")

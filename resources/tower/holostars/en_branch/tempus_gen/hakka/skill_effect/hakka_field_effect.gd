@@ -19,19 +19,14 @@ extends Node2D
 #            path (channel's `done` once-guard), so no leak path.
 #
 # LAYER model (Director, digital-paint thinking): the zone is drawn
-# TWICE with the same shader — `fx_layer` 0 = the whole zone (ground
-# layer), 1 = front-assigned fireflies only (z_index 0, spawned after
-# towers -> draws above). No positional half-split: a seam line across
-# the tower reads wrong.
+# TWICE with the same shader. `fx_layer` 0 = the whole ground zone;
+# `fx_layer` 1 = front-assigned fireflies only. No positional half-split:
+# a seam line across the tower reads wrong.
 #
-# GROUND layer placement (Director 2026-07-18, in-engine verdict): a
-# persistent field zone must render UNDER enemies, not just under the
-# tower. Enemies live under the Map's Path2D inside the z=-1 TileMap
-# subtree, so the back rect is inserted into that subtree BEFORE the
-# Path2D (a TileMap draws its own cells before its children): ground
-# cells -> zone -> enemies -> towers -> front fireflies. Fallback when
-# no Map sibling is found: child of self at z -1 (under towers only,
-# the pre-verdict behavior).
+# Draw order uses absolute world bands instead of Map/TileMap parenting:
+# map art (-3) -> ground zone (-2) -> grid/range (-1) -> actors (0) ->
+# summons (1) -> front fireflies (2). The VFX never inspects or reparents
+# under Map, TileMap, or enemy paths.
 #
 # SHADER_PATH is read by ResourceManager.warmSkillEffectShaders to
 # pre-compile the pipeline at deck load, so the first cast won't hitch.
@@ -42,9 +37,10 @@ const PAD := 1.35            # visual pad beyond the footprint (free: damage is 
 const PLANT_TIME := 0.5
 const FADE_NATURAL := 0.6
 const FADE_CANCEL := 0.25
+const GROUND_Z := -2
+const FRONT_Z := 2
 
 var _mats: Array[ShaderMaterial] = []
-var _back_holder: Node2D = null   # ground-layer host inside the map subtree
 var _t := 0.0
 var _fade_time := FADE_NATURAL
 var _exp_t := -1.0           # >= 0 once expiring
@@ -72,7 +68,6 @@ func _ensure_built() -> void:
 func _build(cells: float) -> void:
 	var draw_size := GridHelper.CELL_SIZE * cells * PAD
 	var shader: Shader = load(SHADER_PATH)
-	var ground_map := _resolve_ground_map()
 	for side in 2:
 		var rect := ColorRect.new()
 		rect.size = Vector2(draw_size, draw_size)
@@ -89,44 +84,10 @@ func _build(cells: float) -> void:
 		mat.set_shader_parameter("loop_time", 0.0)
 		mat.set_shader_parameter("expire", 0.0)
 		rect.material = mat
-		if side == 0 and ground_map != null:
-			# Ground layer: hosted inside the map subtree, ordered before the
-			# Path2D so enemies (its children) draw over the zone.
-			_back_holder = Node2D.new()
-			ground_map.add_child(_back_holder)
-
-			var path = ground_map.path;
-			var lowest_index := 0;
-			for i in range(ground_map.path.size()):
-				if path.get_child(i).z_index < path.get_child(lowest_index).z_index:
-					lowest_index = i;
-			ground_map.move_child(_back_holder, lowest_index);
-
-			_back_holder.global_position = global_position
-			_back_holder.add_child(rect)
-		elif side == 0:
-			rect.z_index = -1   # fallback: under towers only
-			add_child(rect)
-		else:
-			add_child(rect)     # front fireflies, above towers/enemies
+		rect.z_as_relative = false
+		rect.z_index = GROUND_Z if side == 0 else FRONT_Z
+		add_child(rect)
 		_mats.append(mat)
-
-# The Map (a TileMap, z -1) is a sibling of this effect under the game-scene
-# root; its `path` export holds the Path2D the enemies spawn under.
-func _resolve_ground_map() -> Map:
-	var parent := get_parent()
-	if parent == null:
-		return null
-	for child in parent.get_children():
-		if child is Map and child.path != null:
-			return child
-	return null
-
-func _exit_tree() -> void:
-	# The ground holder lives in the map subtree, not under this node — free
-	# it explicitly on every exit path.
-	if is_instance_valid(_back_holder):
-		_back_holder.queue_free()
 
 func _process(delta: float) -> void:
 	if _mats.is_empty():

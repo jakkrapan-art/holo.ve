@@ -30,7 +30,16 @@ func track(boss: Enemy, displayName: String):
 	visible = true
 
 func untrack():
-	# Signal connections die with the freed boss; just drop the ref and hide.
+	if _boss != null and is_instance_valid(_boss):
+		var hp_callable := Callable(self, "_onBossHpChanged")
+		var dead_callable := Callable(self, "_onBossDead")
+		var left_callable := Callable(self, "_onBossLeft")
+		if _boss.is_connected("onHpChanged", hp_callable):
+			_boss.disconnect("onHpChanged", hp_callable)
+		if _boss.is_connected("onDead", dead_callable):
+			_boss.disconnect("onDead", dead_callable)
+		if _boss.is_connected("onReachEndPoint", left_callable):
+			_boss.disconnect("onReachEndPoint", left_callable)
 	_boss = null
 	visible = false
 
@@ -39,6 +48,8 @@ func _onBossHpChanged(current: float, _maxHp: float):
 		healthBar.updateValue(maxf(current, 0.0))
 
 func _onBossDead(_enemy: Enemy, _cause: Damage, _reward: EnemyReward):
+	if _enemy != _boss:
+		return
 	untrack()
 
 func _onBossLeft():

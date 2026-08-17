@@ -10,7 +10,6 @@ var onRemove: Callable
 var towerTrait: TowerTrait = TowerTrait.new()
 var towersByName: Dictionary = {}
 var towers: Dictionary = {}
-var _evolutionList: Dictionary = {}
 var synergyController: SynergyController
 var _wave_active := false            # gates time-based synergy ticks to active waves
 
@@ -42,18 +41,19 @@ func getTower(p_name: String, evoToken: int = 0) -> GetTowerResult:
 	if (towersByName.has(p_name)):
 		var t = towersByName.get(p_name, null);
 		if (t != null):
-			if(t.data.level >= t.data.maxLevel && !t.isEvolved() && t.data.evolutionCost >= evoToken):
-				result.state = GetTowerResult.State.Evolve;
-				result.tower = t;
-				return result;
-
-			t.upgrade();
 			result.tower = t;
-			result.state = GetTowerResult.State.Upgrade;
+			if t.canEvolve():
+				var tower_entry = TowerCenter.getTowerData(p_name);
+				var record_can_evolve := tower_entry != null and TowerCenter.canEvolveTowerByName(
+					tower_entry.name, evoToken, t.data.evolutionCost
+				)
+				if not record_can_evolve:
+					result.state = GetTowerResult.State.Unavailable;
+					return result
+				result.state = GetTowerResult.State.Evolve if t.evolve() else GetTowerResult.State.Unavailable;
+				return result
 
-			if(t.canEvolve() && not t.isEvolved()):
-				_evolutionList[p_name] = t.data;
-
+			result.state = GetTowerResult.State.Upgrade if t.upgrade() else GetTowerResult.State.Unavailable;
 			return result;
 
 	var tower: Tower = resource.instantiate() as Tower
@@ -116,22 +116,6 @@ func removeTowerFromDict(tower: Tower, key: int):
 
 	list.remove_at(index)
 	towers[key] = list
-
-func evolutionTower(p_name: String):
-	var towerData = TowerCenter.getTowerDataByName(p_name);
-	if towerData == null:
-		push_error("Tower data not found for evolution: ", p_name)
-		return;
-
-	var dataName = towerData.data_name;
-	var tower = towersByName.get(dataName, null);
-	if tower == null:
-		return
-
-	var success = tower.evolve();
-	if success:
-		_evolutionList.erase(dataName);
-		TowerCenter._evolvedList.append(dataName);
 
 func _on_synergy_updated(synergy_id: int, count: int, tier: int):
 	# Draw/refresh the panel row BEFORE the controller updates the effect, so a

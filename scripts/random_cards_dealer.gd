@@ -6,13 +6,9 @@ class_name RandomCardsDealer
 #send out 3 cards to ui_tower_select
 
 func get_random_cards(deck, count: int, evoToken: int) -> Array:
-	if deck.size() < count:
-		push_error("Not enough cards in the deck!")
-		return []
-
 	var shuffled_deck = deck.duplicate().filter(func(card): return TowerCenter.validateSelectTower(card, evoToken))
 	shuffled_deck.shuffle()  # Shuffle the deck randomly
-	var selected_cards = shuffled_deck.slice(0, count);
+	var selected_cards = shuffled_deck.slice(0, mini(count, shuffled_deck.size()));
 	var result: Array[TowerSelectData] = []
 	for card in selected_cards:
 		var selectData = TowerCenter.getTowerSelectDataByName(card);

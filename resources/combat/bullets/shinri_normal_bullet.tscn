@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=3 uid="uid://cshinriarrowbul0"]
 
 [ext_resource type="Script" path="res://scripts/combat/projectile.gd" id="1_proj"]
-[ext_resource type="Shader" path="res://resources/tower/holostars/en_branch/tempus_gen/josuiji_shinri/normal_effect/shinri_arrow.gdshader" id="2_shdr"]
+[ext_resource type="Shader" path="res://resources/tower/holostars/en_branch/tempus_gen/shinri/normal_effect/shinri_arrow.gdshader" id="2_shdr"]
 
 [sub_resource type="Gradient" id="Gradient_w"]
 offsets = PackedFloat32Array(0, 1)

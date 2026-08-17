@@ -3,6 +3,7 @@ class_name GameScene;
 
 # Load the pop-up panel scene
 var PopupPanelScene = preload("res://resources/ui_component/tower_select/tower_select.tscn");
+const DEV_TOOLS_SCENE := "res://dev_tools/dev_tools_panel.tscn"
 
 @onready var waveController: WaveController = $WaveController;
 @onready var player: Player = $Player
@@ -37,48 +38,51 @@ var _active_popup: UITowerSelect = null
 # Staff skill casting state — indicator follows mouse; LeftClick commits, RightClick / ESC cancels.
 var _skill_cast_indicator: SkillCastIndicator = null
 var _state_before_skill_cast: String = ""
-# Ref to the Staff HUD widget so _input can ask whether a click landed on the skill button.
+# Ref to the Staff HUD widget for setup and signal wiring.
 var _staff_widget: StaffWidget = null
 
 # Bottom-left stats panels (display-only selection surfaces). They share the
 # slot: one selection at a time - showing one always clears the other.
 var _tower_stats_panel: TowerStatsPanel = null
 var _enemy_stats_panel: EnemyStatsPanel = null
+var _placement_prompt: Label = null
+var _placement_prompt_tween: Tween = null
 
-func _input(event):
-	if state == "tower_placement" and event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		if(t != null && !t.isOnValidCell):
-			return;
-
-		t.exitPlaceMode();
-		t = null;
-		if(map != null):
-			map.toggle_grid(false);
-		startWave();
-		# Consume the commit click: state is already back to "wave" here, and physics
-		# picking runs last - without this, the same click would select the placed tower.
-		get_viewport().set_input_as_handled();
-	elif state == "staff_skill_casting":
-		if event is InputEventMouseButton and event.pressed:
-			if event.button_index == MOUSE_BUTTON_LEFT:
-				# Click on the skill button itself -> let the button's pressed signal
-				# toggle-cancel (MOBA-style); do NOT commit a cast under the button.
-				if _staff_widget != null and _staff_widget.is_skill_button_hovered():
-					return
-				_commit_staff_skill_cast()
-				# Same race as the placement commit: consume so the cast click cannot
-				# also pick whatever tower sits under the cursor.
-				get_viewport().set_input_as_handled()
-			elif event.button_index == MOUSE_BUTTON_RIGHT:
-				_cancel_staff_skill_cast()
-		elif event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE:
-			_cancel_staff_skill_cast()
+const PLACEMENT_PROMPT_FADE_IN := 0.12
 
 func _unhandled_input(event):
+	# GUI Controls receive input first. Only input the HUD did not consume can
+	# commit a world action here.
+	if state == "tower_placement" and event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		get_viewport().set_input_as_handled()
+		if t != null and !t.isOnValidCell:
+			return
+
+		t.exitPlaceMode()
+		t = null
+		_hide_placement_ui()
+		startWave()
+		return
+
+	if state == "staff_skill_casting":
+		if event is InputEventMouseButton and event.pressed:
+			if event.button_index == MOUSE_BUTTON_LEFT:
+				get_viewport().set_input_as_handled()
+				_commit_staff_skill_cast()
+				return
+			if event.button_index == MOUSE_BUTTON_RIGHT:
+				get_viewport().set_input_as_handled()
+				_cancel_staff_skill_cast()
+				return
+		elif event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE:
+			get_viewport().set_input_as_handled()
+			_cancel_staff_skill_cast()
+			return
+
 	# Tower select via a direct pick-box lookup, NOT physics picking: GUI-consumed
-	# clicks never reach here, the placement/staff commit branches mark their
-	# clicks handled, and (unlike Area2D input_event, which missed clicks while a
-	# tower was mid-cast) this path has no physics dependency at all.
+	# clicks never reach here, active world actions are handled above, and (unlike
+	# Area2D input_event, which missed clicks while a tower was mid-cast) this path
+	# has no physics dependency at all.
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		if state == "tower_placement" or state == "staff_skill_casting" or _popup_is_blocking() or state == "game_over":
 			return
@@ -166,6 +170,7 @@ func _ready():
 	setup_staff()
 	_tower_stats_panel = get_node_or_null("GameUI/TowerStatsPanel") as TowerStatsPanel
 	_enemy_stats_panel = get_node_or_null("GameUI/EnemyStatsPanel") as EnemyStatsPanel
+	_placement_prompt = get_node_or_null("GameUI/PlacementPrompt") as Label
 	var camera = get_node("Camera2D")
 	camera.make_current()
 	if(map != null):
@@ -199,6 +204,28 @@ func _ready():
 		Utility.ConnectSignal(waveController, "onEnemyDead", Callable(player, "processReward"));
 		Utility.ConnectSignal(waveController, "onEnemyDead", Callable(towerFactory, "onEnemyKilled"));
 		Utility.ConnectSignal(waveController, "onEnemyDead", Callable(self, "_on_enemy_dead_visual"));
+
+	_setup_dev_tools()
+
+func _setup_dev_tools() -> void:
+	if not (OS.has_feature("editor") or OS.has_feature("dev_tools")):
+		return
+	var dev_scene := load(DEV_TOOLS_SCENE) as PackedScene
+	if dev_scene == null:
+		push_warning("GameScene: developer tools scene is unavailable")
+		return
+	var panel := dev_scene.instantiate()
+	add_child(panel)
+	if panel.has_method("setup"):
+		panel.call("setup", waveController, Callable(self, "request_dev_add_evo_token"))
+
+func request_dev_add_evo_token(amount: int = 1) -> bool:
+	if not (OS.has_feature("editor") or OS.has_feature("dev_tools")):
+		return false
+	if amount <= 0 or player == null or player.wallet == null:
+		return false
+	player.wallet.updateEvoToken(amount)
+	return true
 
 func placeTower(cell: Vector2):
 	map.removeAvailableCell(cell);
@@ -268,6 +295,9 @@ func _on_staff_died():
 	# Mark game over BEFORE any UI work so popup factories early-return if they fire
 	# concurrently from a wave-end timer or deferred callback.
 	state = "game_over"
+	_hide_placement_ui()
+	if waveController != null:
+		waveController.active = false
 	# Drop the inspected tower/enemy. The end screen is a centred panel, not a
 	# full-screen cover, so an outline or range ring left behind it stays visible
 	# - and _unhandled_input early-returns on game_over, so the player could
@@ -370,14 +400,6 @@ func show_deck_popup():
 	_clear_inspection()
 	get_tree().root.add_child(popup)
 
-	var cards: Array = []
-	for deck in TowerCenter.getAvailableDecks():
-		var card = TowerSelectData.new(deck.key, 0, 0)
-		var sprite_path = "res://resources/" + deck.info.sprite
-		if ResourceLoader.exists(sprite_path):
-			card.icon = load(sprite_path)
-		cards.append(card)
-
 	popup.tower_select.connect(Callable(self, "_on_deck_selected"))
 	Utility.ConnectSignal(popup, "tower_select_skipped", Callable(self, "_on_deck_skipped"))
 	# NOTE: tree_exited intentionally NOT connected here. The deck popup's deferred
@@ -386,7 +408,19 @@ func show_deck_popup():
 	# Flag handoff is explicit in _on_deck_selected / _on_deck_skipped below; the
 	# tower popup wires its own tree_exited via show_popup_panel().
 
-	popup.setup_with_cards(cards, 0, "Select Additional Deck")
+	popup.setup_with_card_provider(Callable(self, "_build_available_deck_card_result"), 1, "Select Additional Deck")
+
+func _build_available_deck_card_result() -> Dictionary:
+	var cards: Array = []
+	for deck in TowerCenter.getAvailableDecks():
+		var card = TowerSelectData.new(deck.key, 0, 0)
+		var sprite_path = "res://resources/" + deck.info.sprite
+		if ResourceLoader.exists(sprite_path):
+			card.icon = load(sprite_path)
+		cards.append(card)
+	var candidate_count := cards.size()
+	cards.shuffle()
+	return {"cards": cards.slice(0, mini(3, candidate_count)), "candidate_count": candidate_count}
 
 func _on_deck_selected(deck_key: String):
 	TowerCenter.addDeck(deck_key)
@@ -423,7 +457,7 @@ func show_popup_panel():
 	Utility.ConnectSignal(popup, "tree_exited", Callable(self, "_on_popup_closed"));
 
 	var evoToken = player.wallet.getEvoToken();
-	popup.setup(evoToken, 1000, "Select Tower");
+	popup.setup(evoToken, 1, "Select Tower");
 
 	return
 
@@ -459,7 +493,6 @@ func _on_option_selected(selection):
 		push_error("Tower data not found for selection: ", selection)
 		return
 
-	TowerCenter.upgradeTowerLevelByName(selection);
 	var evoToken = player.wallet.getEvoToken();
 	var result: GetTowerResult = towerFactory.getTower(tower.data_name, evoToken);
 	if(result == null):
@@ -468,30 +501,28 @@ func _on_option_selected(selection):
 
 	match result.state:
 		GetTowerResult.State.New:
+			TowerCenter.upgradeTowerLevelByName(selection);
 			# Enter build mode with the new tower
 			result.tower.enterPlaceMode();
-			if(map != null):
-				map.toggle_grid(true);
 			add_child(result.tower);
 			t = result.tower
 			state = "tower_placement"
-
-		# GetTowerResult.State.Evolve:
-		# 	# Check if have enough evo tokens to evolve
-		# 	var evoToken = player.wallet.getEvoToken();
-		# 	var cost = result.tower.data.evolutionCost;
-		# 	if(evoToken >= cost):
-		# 	else:
-		# 		show_popup_panel();
+			_show_placement_ui()
 
 		GetTowerResult.State.Upgrade:
+			TowerCenter.upgradeTowerLevelByName(selection);
 			startWave();
 
 		GetTowerResult.State.Evolve:
-			towerFactory.evolutionTower(selection);
-
 			var cost = result.tower.data.evolutionCost;
-			player.wallet.updateEvoToken(-cost);
+			if TowerCenter.evolveTowerByName(selection):
+				player.useEvoToken(cost);
+			else:
+				push_error("Evolution record commit failed after live tower evolved: ", selection)
+			startWave();
+
+		GetTowerResult.State.Unavailable:
+			push_warning("Tower selection unavailable: ", selection)
 			startWave();
 
 func _on_enemy_dead_visual(enemy: Enemy, _cause, _reward):
@@ -502,6 +533,36 @@ func _on_enemy_dead_visual(enemy: Enemy, _cause, _reward):
 		EvoTokenDrop.spawn(enemy.global_position, get_tree().current_scene)
 
 func startWave():
+	_hide_placement_ui()
 	state = "wave"
 	if(waveController):
 		waveController.start()
+
+func _show_placement_ui() -> void:
+	if map != null:
+		map.toggle_grid(true)
+	if _placement_prompt == null:
+		return
+
+	_kill_placement_prompt_tween()
+	_placement_prompt.visible = true
+	_placement_prompt.modulate.a = 0.0
+	_placement_prompt_tween = create_tween()
+	_placement_prompt_tween.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	_placement_prompt_tween.tween_property(
+			_placement_prompt, "modulate:a", 1.0, PLACEMENT_PROMPT_FADE_IN)
+
+func _hide_placement_ui() -> void:
+	if map != null:
+		map.toggle_grid(false)
+	if _placement_prompt == null:
+		return
+
+	_kill_placement_prompt_tween()
+	_placement_prompt.modulate.a = 1.0
+	_placement_prompt.visible = false
+
+func _kill_placement_prompt_tween() -> void:
+	if _placement_prompt_tween != null and _placement_prompt_tween.is_valid():
+		_placement_prompt_tween.kill()
+	_placement_prompt_tween = null

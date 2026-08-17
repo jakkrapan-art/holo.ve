@@ -45,10 +45,12 @@ func execute(context: SkillContext) -> void:
 	# skills stack. Fallback keeps the key non-empty for unnamed skills.
 	var source_id := context.skillName if context.skillName != "" else "skill_" + str(get_instance_id())
 
-	# Enemy-cast area debuff: flash the affected box in red so the player (and
-	# playtests) can see the real footprint - reuses the staff SkillCastIndicator.
-	if targetMode == "towers_in_range" and showArea:
-		_spawn_area_flash(user)
+	# Enemy area debuffs keep a gameplay telegraph. Allied range boxes are
+	# debug-only but use the same geometry so the developer overlay stays truthful.
+	if targetMode == "towers_in_range":
+		_spawn_area_flash(user, Hitbox.VisualKind.GAMEPLAY_TELEGRAPH if showArea else Hitbox.VisualKind.DEBUG_ONLY)
+	elif targetMode == "allies_in_range":
+		_spawn_area_flash(user, Hitbox.VisualKind.DEBUG_ONLY)
 
 	for target in _resolve_targets(context, user):
 		if not is_instance_valid(target) or not target.has_method("apply_effect"):
@@ -63,12 +65,13 @@ const AREA_FLASH_SECONDS := 0.6
 # Show the applied box with the same red Hitbox visual Kiara/Altare skills use
 # (Lead's component). Detection is done by _resolve_targets; the empty Callable
 # skips the Hitbox callback - this instance is visual-only.
-func _spawn_area_flash(user: Node) -> void:
+func _spawn_area_flash(user: Node, visual_kind: Hitbox.VisualKind) -> void:
 	var caster := user as Node2D
 	if caster == null or not caster.is_inside_tree():
 		return
 	var side := float(range_cells * 2 + 1) * GridHelper.CELL_SIZE   # range 1 = 3x3
-	Hitbox.create(side, side, Callable(), caster.global_position, caster.get_parent(), 0.0, Vector2.ZERO, Color(1, 0, 0, 0.25), AREA_FLASH_SECONDS)
+	var visible_seconds := AREA_FLASH_SECONDS if visual_kind == Hitbox.VisualKind.GAMEPLAY_TELEGRAPH else 0.0
+	Hitbox.create(side, side, Callable(), caster.global_position, caster.get_parent(), 0.0, Vector2.ZERO, Color(1, 0, 0, 0.25), visible_seconds, visual_kind)
 
 func _resolve_targets(context: SkillContext, user: Node) -> Array:
 	match targetMode:

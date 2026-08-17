@@ -16,7 +16,7 @@ evolve_sound: "evo_shinri"
 attack:
   mode: projectile
   projectile: "res://resources/combat/bullets/shinri_normal_bullet.tscn"
-  vfx_shader: "res://resources/tower/holostars/en_branch/tempus_gen/josuiji_shinri/normal_effect/shinri_arrow.gdshader"
+  vfx_shader: "res://resources/tower/holostars/en_branch/tempus_gen/shinri/normal_effect/shinri_arrow.gdshader"
   speed: 12
   size: 72
   burst: 1
@@ -82,7 +82,7 @@ skills:
     behavior: "crit_pierce"
     reset_on_crit: true
     projectile: "res://resources/combat/bullets/shinri_skill_projectile.tscn"
-    effect_script: "res://resources/tower/holostars/en_branch/tempus_gen/josuiji_shinri/skill_effect/shinri_skill_effect.gd"
+    effect_script: "res://resources/tower/holostars/en_branch/tempus_gen/shinri/skill_effect/shinri_skill_effect.gd"
     arrow_speed: 12.0   # tiles/sec
     arrow_range: 4.0    # tiles (pierce line length)
 
@@ -125,6 +125,6 @@ evolution_skills:
     behavior: "crit_pierce"
     reset_on_crit: false
     projectile: "res://resources/combat/bullets/shinri_skill_projectile.tscn"
-    effect_script: "res://resources/tower/holostars/en_branch/tempus_gen/josuiji_shinri/skill_effect/shinri_evo_skill_effect.gd"
+    effect_script: "res://resources/tower/holostars/en_branch/tempus_gen/shinri/skill_effect/shinri_evo_skill_effect.gd"
     arrow_speed: 12.0
     arrow_range: 4.0

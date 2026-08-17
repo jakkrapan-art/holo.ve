@@ -1,4 +1,4 @@
-[gd_scene load_steps=34 format=3 uid="uid://drdktrtd7dqo"]
+[gd_scene load_steps=35 format=3 uid="uid://drdktrtd7dqo"]
 
 [ext_resource type="Texture2D" uid="uid://k8qramgis244" path="res://resources/ui_component/ui_asset/BG02.png" id="1_4mrre"]
 [ext_resource type="Script" path="res://scripts/ui_scenes/deck_selection.gd" id="1_c6p8i"]
@@ -69,13 +69,18 @@ font = ExtResource("4_c2gtp")
 font_size = 32
 font_color = Color(0.262745, 0.372549, 0.556863, 1)
 
+[sub_resource type="LabelSettings" id="LabelSettings_group_inactive"]
+font = ExtResource("4_c2gtp")
+font_size = 32
+font_color = Color(0.996078, 0.996078, 0.996078, 1)
+
 [sub_resource type="LabelSettings" id="LabelSettings_m8ldg"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_kkrlg"]
 font = ExtResource("3_sa6kc")
 font_size = 29
 
-[node name="DeckSelection" type="Panel" node_paths=PackedStringArray("exitBtn", "startBtn", "deckContainer", "genGroupContainer", "branchFilterContainer")]
+[node name="DeckSelection" type="Panel" node_paths=PackedStringArray("exitBtn", "startBtn", "deckContainer", "genGroupContainer", "branchFilterContainer", "emptyDeckLabel")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -88,6 +93,7 @@ startBtn = NodePath("Start")
 deckContainer = NodePath("ContentContainer/DeckSelectField/Container/DeckContainer")
 genGroupContainer = NodePath("ContentContainer/DeckSelectField/Container/GenGroupContainer")
 branchFilterContainer = NodePath("ContentContainer/DeckSelectField/Container/BranchFilterContainer")
+emptyDeckLabel = NodePath("ContentContainer/DeckSelectField/Container/ComingSoon")
 
 [node name="Header" type="Label" parent="."]
 layout_mode = 1
@@ -448,7 +454,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 text = "Hololive"
-label_settings = SubResource("LabelSettings_onk2b")
+label_settings = SubResource("LabelSettings_group_inactive")
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -510,7 +516,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 text = "Holostars"
-label_settings = SubResource("LabelSettings_onk2b")
+label_settings = SubResource("LabelSettings_group_inactive")
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -520,6 +526,69 @@ offset_left = 381.0
 offset_top = 20.0
 offset_right = 1539.0
 offset_bottom = 65.0
+
+[node name="en" type="Button" parent="ContentContainer/DeckSelectField/Container/BranchFilterContainer"]
+self_modulate = Color(1, 1, 1, 0.00392157)
+custom_minimum_size = Vector2(159, 45)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+text = "EN"
+
+[node name="Toggle" type="Control" parent="ContentContainer/DeckSelectField/Container/BranchFilterContainer/en"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("10_g7cw1")
+
+[node name="Active" type="TextureRect" parent="ContentContainer/DeckSelectField/Container/BranchFilterContainer/en/Toggle"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("15_e7684")
+
+[node name="Label" type="Label" parent="ContentContainer/DeckSelectField/Container/BranchFilterContainer/en/Toggle/Active"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "EN"
+label_settings = SubResource("LabelSettings_1fb8m")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Inactive" type="TextureRect" parent="ContentContainer/DeckSelectField/Container/BranchFilterContainer/en/Toggle"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("16_t4gjl")
+
+[node name="Label" type="Label" parent="ContentContainer/DeckSelectField/Container/BranchFilterContainer/en/Toggle/Inactive"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "EN"
+label_settings = SubResource("LabelSettings_onk2b")
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="jp" type="Button" parent="ContentContainer/DeckSelectField/Container/BranchFilterContainer"]
 self_modulate = Color(1, 1, 1, 0.00392157)
@@ -579,71 +648,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 text = "JP"
-label_settings = SubResource("LabelSettings_onk2b")
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="en" type="Button" parent="ContentContainer/DeckSelectField/Container/BranchFilterContainer"]
-self_modulate = Color(1, 1, 1, 0.00392157)
-custom_minimum_size = Vector2(159, 45)
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 0
-text = "EN"
-
-[node name="Toggle" type="Control" parent="ContentContainer/DeckSelectField/Container/BranchFilterContainer/en"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-script = ExtResource("10_g7cw1")
-
-[node name="Active" type="TextureRect" parent="ContentContainer/DeckSelectField/Container/BranchFilterContainer/en/Toggle"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-texture = ExtResource("15_e7684")
-
-[node name="Label" type="Label" parent="ContentContainer/DeckSelectField/Container/BranchFilterContainer/en/Toggle/Active"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "EN
-"
-label_settings = SubResource("LabelSettings_1fb8m")
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Inactive" type="TextureRect" parent="ContentContainer/DeckSelectField/Container/BranchFilterContainer/en/Toggle"]
-visible = false
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-texture = ExtResource("16_t4gjl")
-
-[node name="Label" type="Label" parent="ContentContainer/DeckSelectField/Container/BranchFilterContainer/en/Toggle/Inactive"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "EN
-"
 label_settings = SubResource("LabelSettings_onk2b")
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -725,6 +729,24 @@ offset_bottom = -24.0
 grow_horizontal = 2
 grow_vertical = 2
 columns = 4
+
+[node name="ComingSoon" type="Label" parent="ContentContainer/DeckSelectField/Container"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 375.0
+offset_top = 96.0
+offset_right = -91.0
+offset_bottom = -24.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+text = "Coming Soon"
+label_settings = SubResource("LabelSettings_1fb8m")
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="MainPanel" type="Panel" parent="."]
 visible = false

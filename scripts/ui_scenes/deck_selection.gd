@@ -11,7 +11,7 @@ var current_character_index: int = 0
 @export var startBtn: Button;
 
 @export var deckContainer: Node;
-@export var genGroupContainer: Node;
+@export var groupFilterContainer: Node;
 var selectingDeckToggle: UIToggle;
 
 @export var branchFilterContainer: Node;
@@ -39,7 +39,7 @@ const VISIBLE_BRANCHES_BY_GROUP: Dictionary = {
 
 func _ready():
 	_load_deck();
-	_setup_gen_filter()
+	_setup_group_filter()
 	_setup_branch_filter()
 	_setup_buttons()
 	_setup_staff_card()
@@ -65,11 +65,11 @@ func _load_deck():
 
 		deckContainer.add_child(deck_choice)
 
-func _setup_gen_filter():
-	var genGroupBtn = genGroupContainer.get_children();
+func _setup_group_filter():
+	var groupFilterButtons = groupFilterContainer.get_children();
 
-	for filter_button in genGroupBtn:
-		filter_button.pressed.connect(Callable(self, "_on_gen_filter_pressed").bind(filter_button.name))
+	for filter_button in groupFilterButtons:
+		filter_button.pressed.connect(Callable(self, "_on_group_filter_pressed").bind(filter_button.name))
 
 func _setup_branch_filter():
 	var branchGroupBtn = branchFilterContainer.get_children();
@@ -92,18 +92,18 @@ func _setup_buttons():
 	#%NextButton.pressed.connect(_on_next_character)
 	#%PrevButton.pressed.connect(_on_prev_character)
 
-func _on_gen_filter_pressed(target_gen: String):
-	if not VISIBLE_BRANCHES_BY_GROUP.has(target_gen):
+func _on_group_filter_pressed(target_group: String):
+	if not VISIBLE_BRANCHES_BY_GROUP.has(target_group):
 		return
 	var nextBranchFilter: String = currentBranchFilter
-	var visibleBranches: Array = _visible_branches_for_group(target_gen)
+	var visibleBranches: Array = _visible_branches_for_group(target_group)
 	if not visibleBranches.has(nextBranchFilter):
 		nextBranchFilter = DEFAULT_BRANCH_FILTER
-	if target_gen == currentGroupFilter and nextBranchFilter == currentBranchFilter:
+	if target_group == currentGroupFilter and nextBranchFilter == currentBranchFilter:
 		return
 
 	_clear_deck_selection()
-	currentGroupFilter = target_gen
+	currentGroupFilter = target_group
 	currentBranchFilter = nextBranchFilter
 	_refresh_deck_filters()
 
@@ -121,7 +121,7 @@ func _visible_branches_for_group(target_group: String) -> Array:
 	return VISIBLE_BRANCHES_BY_GROUP.get(target_group, [DEFAULT_BRANCH_FILTER])
 
 func _refresh_deck_filters():
-	for filter_button in genGroupContainer.get_children():
+	for filter_button in groupFilterContainer.get_children():
 		_set_filter_toggle(filter_button, filter_button.name == currentGroupFilter)
 
 	var visibleBranches: Array = _visible_branches_for_group(currentGroupFilter)

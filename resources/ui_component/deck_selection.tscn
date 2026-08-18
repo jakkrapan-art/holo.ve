@@ -80,7 +80,7 @@ font_color = Color(0.996078, 0.996078, 0.996078, 1)
 font = ExtResource("3_sa6kc")
 font_size = 29
 
-[node name="DeckSelection" type="Panel" node_paths=PackedStringArray("exitBtn", "startBtn", "deckContainer", "genGroupContainer", "branchFilterContainer", "emptyDeckLabel")]
+[node name="DeckSelection" type="Panel" node_paths=PackedStringArray("exitBtn", "startBtn", "deckContainer", "groupFilterContainer", "branchFilterContainer", "emptyDeckLabel")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -91,7 +91,7 @@ script = ExtResource("1_c6p8i")
 exitBtn = NodePath("Back")
 startBtn = NodePath("Start")
 deckContainer = NodePath("ContentContainer/DeckSelectField/Container/DeckContainer")
-genGroupContainer = NodePath("ContentContainer/DeckSelectField/Container/GenGroupContainer")
+groupFilterContainer = NodePath("ContentContainer/DeckSelectField/Container/GroupFilterContainer")
 branchFilterContainer = NodePath("ContentContainer/DeckSelectField/Container/BranchFilterContainer")
 emptyDeckLabel = NodePath("ContentContainer/DeckSelectField/Container/ComingSoon")
 
@@ -388,7 +388,7 @@ offset_bottom = 402.0
 grow_horizontal = 2
 texture = ExtResource("13_frjjy")
 
-[node name="GenGroupContainer" type="VBoxContainer" parent="ContentContainer/DeckSelectField/Container"]
+[node name="GroupFilterContainer" type="VBoxContainer" parent="ContentContainer/DeckSelectField/Container"]
 layout_mode = 1
 anchors_preset = 9
 anchor_bottom = 1.0
@@ -397,13 +397,13 @@ offset_right = 363.0
 offset_bottom = 2.0
 grow_vertical = 2
 
-[node name="Hololive" type="Button" parent="ContentContainer/DeckSelectField/Container/GenGroupContainer"]
+[node name="Hololive" type="Button" parent="ContentContainer/DeckSelectField/Container/GroupFilterContainer"]
 self_modulate = Color(1, 1, 1, 0.00392157)
 custom_minimum_size = Vector2(0, 201)
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Toggle" type="Control" parent="ContentContainer/DeckSelectField/Container/GenGroupContainer/Hololive"]
+[node name="Toggle" type="Control" parent="ContentContainer/DeckSelectField/Container/GroupFilterContainer/Hololive"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -414,7 +414,7 @@ mouse_filter = 2
 script = ExtResource("10_g7cw1")
 active = true
 
-[node name="Active" type="TextureRect" parent="ContentContainer/DeckSelectField/Container/GenGroupContainer/Hololive/Toggle"]
+[node name="Active" type="TextureRect" parent="ContentContainer/DeckSelectField/Container/GroupFilterContainer/Hololive/Toggle"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -424,7 +424,7 @@ grow_vertical = 2
 mouse_filter = 2
 texture = ExtResource("14_7k427")
 
-[node name="Label" type="Label" parent="ContentContainer/DeckSelectField/Container/GenGroupContainer/Hololive/Toggle/Active"]
+[node name="Label" type="Label" parent="ContentContainer/DeckSelectField/Container/GroupFilterContainer/Hololive/Toggle/Active"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -436,7 +436,7 @@ label_settings = SubResource("LabelSettings_1fb8m")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Inactive" type="TextureRect" parent="ContentContainer/DeckSelectField/Container/GenGroupContainer/Hololive/Toggle"]
+[node name="Inactive" type="TextureRect" parent="ContentContainer/DeckSelectField/Container/GroupFilterContainer/Hololive/Toggle"]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -446,7 +446,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="Label" type="Label" parent="ContentContainer/DeckSelectField/Container/GenGroupContainer/Hololive/Toggle/Inactive"]
+[node name="Label" type="Label" parent="ContentContainer/DeckSelectField/Container/GroupFilterContainer/Hololive/Toggle/Inactive"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -458,14 +458,14 @@ label_settings = SubResource("LabelSettings_group_inactive")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Holostars" type="Button" parent="ContentContainer/DeckSelectField/Container/GenGroupContainer"]
+[node name="Holostars" type="Button" parent="ContentContainer/DeckSelectField/Container/GroupFilterContainer"]
 self_modulate = Color(1, 1, 1, 0.00392157)
 custom_minimum_size = Vector2(0, 201)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Holostars"
 
-[node name="Toggle" type="Control" parent="ContentContainer/DeckSelectField/Container/GenGroupContainer/Holostars"]
+[node name="Toggle" type="Control" parent="ContentContainer/DeckSelectField/Container/GroupFilterContainer/Holostars"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -475,7 +475,7 @@ grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("10_g7cw1")
 
-[node name="Active" type="TextureRect" parent="ContentContainer/DeckSelectField/Container/GenGroupContainer/Holostars/Toggle"]
+[node name="Active" type="TextureRect" parent="ContentContainer/DeckSelectField/Container/GroupFilterContainer/Holostars/Toggle"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -486,7 +486,7 @@ mouse_filter = 2
 texture = ExtResource("14_7k427")
 flip_v = true
 
-[node name="Label" type="Label" parent="ContentContainer/DeckSelectField/Container/GenGroupContainer/Holostars/Toggle/Active"]
+[node name="Label" type="Label" parent="ContentContainer/DeckSelectField/Container/GroupFilterContainer/Holostars/Toggle/Active"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -498,7 +498,7 @@ label_settings = SubResource("LabelSettings_1fb8m")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Inactive" type="TextureRect" parent="ContentContainer/DeckSelectField/Container/GenGroupContainer/Holostars/Toggle"]
+[node name="Inactive" type="TextureRect" parent="ContentContainer/DeckSelectField/Container/GroupFilterContainer/Holostars/Toggle"]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -508,7 +508,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="Label" type="Label" parent="ContentContainer/DeckSelectField/Container/GenGroupContainer/Holostars/Toggle/Inactive"]
+[node name="Label" type="Label" parent="ContentContainer/DeckSelectField/Container/GroupFilterContainer/Holostars/Toggle/Inactive"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0

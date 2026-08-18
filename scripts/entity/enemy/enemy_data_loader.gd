@@ -17,6 +17,9 @@ static func load_map(mapName: String) -> Dictionary:
 		push_error("EnemyDataLoader: invalid or missing enemy roster: " + manifestPath)
 		return out
 
+	if OS.has_feature("editor"):
+		EnemyRosterValidator.warn_duplicate_ids_once()
+
 	for tier in ENEMY_TIERS:
 		var ids = manifest.get(tier, [])
 		if not (ids is Array):

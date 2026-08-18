@@ -1,0 +1,7 @@
+name: Rolling Stone (Autumn)
+stats:
+  hp: 125
+  def: 0
+  mDef: 0
+  moveSpeed: 30
+skill: []

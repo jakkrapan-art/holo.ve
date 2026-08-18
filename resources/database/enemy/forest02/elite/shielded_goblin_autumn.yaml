@@ -1,0 +1,18 @@
+name: Armored Red Goblin
+stats:
+  hp: 3200
+  def: 5
+  mDef: 5
+  moveSpeed: 45
+skill:
+  - name: Shield Block
+    type: passive
+    tags:
+      - defense
+      - self
+    desc: "Armored Red Goblin carries a sturdy shield that blocks the first hit of any kind, once."
+    action:
+      - type: target_self
+      - type: block_damage
+        data:
+          count: 1

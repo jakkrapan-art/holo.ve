@@ -1,0 +1,7 @@
+name: Armored Grape Salam
+stats:
+  hp: 300
+  def: 0
+  mDef: 0
+  moveSpeed: 45
+skill: []

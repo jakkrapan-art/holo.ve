@@ -1,0 +1,7 @@
+name: Grape Salam
+stats:
+  hp: 75
+  def: 0
+  mDef: 0
+  moveSpeed: 30
+skill: []

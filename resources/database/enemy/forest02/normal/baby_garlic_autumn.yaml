@@ -1,0 +1,7 @@
+name: Baby Red Garlic
+stats:
+  hp: 450
+  def: 0
+  mDef: 0
+  moveSpeed: 65
+skill: []

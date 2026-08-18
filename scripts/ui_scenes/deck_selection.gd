@@ -95,16 +95,12 @@ func _setup_buttons():
 func _on_group_filter_pressed(target_group: String):
 	if not VISIBLE_BRANCHES_BY_GROUP.has(target_group):
 		return
-	var nextBranchFilter: String = currentBranchFilter
-	var visibleBranches: Array = _visible_branches_for_group(target_group)
-	if not visibleBranches.has(nextBranchFilter):
-		nextBranchFilter = DEFAULT_BRANCH_FILTER
-	if target_group == currentGroupFilter and nextBranchFilter == currentBranchFilter:
+	if target_group == currentGroupFilter:
 		return
 
 	_clear_deck_selection()
 	currentGroupFilter = target_group
-	currentBranchFilter = nextBranchFilter
+	currentBranchFilter = DEFAULT_BRANCH_FILTER
 	_refresh_deck_filters()
 
 func _on_branch_filter_pressed(target_branch: String):

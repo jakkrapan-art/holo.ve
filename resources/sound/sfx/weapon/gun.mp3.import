@@ -3,12 +3,12 @@
 importer="mp3"
 type="AudioStreamMP3"
 uid="uid://ck7oud1wius23"
-path="res://.godot/imported/gun.mp3-1cc3cfb2cc21efa045cc1b1652c2f4d5.mp3str"
+path="res://.godot/imported/gun.mp3-75a37554d3091b1670823853af9f5764.mp3str"
 
 [deps]
 
-source_file="res://resources/sound/sfx/gun_pistol/gun.mp3"
-dest_files=["res://.godot/imported/gun.mp3-1cc3cfb2cc21efa045cc1b1652c2f4d5.mp3str"]
+source_file="res://resources/sound/sfx/weapon/gun.mp3"
+dest_files=["res://.godot/imported/gun.mp3-75a37554d3091b1670823853af9f5764.mp3str"]
 
 [params]
 

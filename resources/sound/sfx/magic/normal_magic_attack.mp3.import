@@ -3,12 +3,12 @@
 importer="mp3"
 type="AudioStreamMP3"
 uid="uid://hrmadw2mggh6"
-path="res://.godot/imported/gomal_magic_atk.mp3-049cf72df31c6e76179f5c15c282bd92.mp3str"
+path="res://.godot/imported/normal_magic_attack.mp3-48338dc6f334f8b8d81c03cefd131943.mp3str"
 
 [deps]
 
-source_file="res://resources/sound/sfx/sfx_Magic_hit/gomal_magic_atk.mp3"
-dest_files=["res://.godot/imported/gomal_magic_atk.mp3-049cf72df31c6e76179f5c15c282bd92.mp3str"]
+source_file="res://resources/sound/sfx/magic/normal_magic_attack.mp3"
+dest_files=["res://.godot/imported/normal_magic_attack.mp3-48338dc6f334f8b8d81c03cefd131943.mp3str"]
 
 [params]
 

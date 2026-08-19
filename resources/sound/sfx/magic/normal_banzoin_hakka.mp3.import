@@ -3,12 +3,12 @@
 importer="mp3"
 type="AudioStreamMP3"
 uid="uid://df6al6ly62nh4"
-path="res://.godot/imported/normal_banzoin_hakka.mp3-881ef9efb1cb91ea69b6421541e8a550.mp3str"
+path="res://.godot/imported/normal_banzoin_hakka.mp3-de6cbffc748b18fe1d1c085111b436c7.mp3str"
 
 [deps]
 
-source_file="res://resources/sound/sfx/sfx_Magic_hit/normal_banzoin_hakka.mp3"
-dest_files=["res://.godot/imported/normal_banzoin_hakka.mp3-881ef9efb1cb91ea69b6421541e8a550.mp3str"]
+source_file="res://resources/sound/sfx/magic/normal_banzoin_hakka.mp3"
+dest_files=["res://.godot/imported/normal_banzoin_hakka.mp3-de6cbffc748b18fe1d1c085111b436c7.mp3str"]
 
 [params]
 

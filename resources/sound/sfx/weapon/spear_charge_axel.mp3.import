@@ -3,12 +3,12 @@
 importer="mp3"
 type="AudioStreamMP3"
 uid="uid://bvubk4ao6rxm6"
-path="res://.godot/imported/spear_charge_axel.mp3-9c178cedc03f773915c414b10d3c6518.mp3str"
+path="res://.godot/imported/spear_charge_axel.mp3-604f026702ff1b78ff7e082aa56f38b6.mp3str"
 
 [deps]
 
-source_file="res://resources/sound/sfx/sfx_Metal_Weapon/spear_charge_axel.mp3"
-dest_files=["res://.godot/imported/spear_charge_axel.mp3-9c178cedc03f773915c414b10d3c6518.mp3str"]
+source_file="res://resources/sound/sfx/weapon/spear_charge_axel.mp3"
+dest_files=["res://.godot/imported/spear_charge_axel.mp3-604f026702ff1b78ff7e082aa56f38b6.mp3str"]
 
 [params]
 

@@ -3,12 +3,12 @@
 importer="mp3"
 type="AudioStreamMP3"
 uid="uid://ct56f7yev30dw"
-path="res://.godot/imported/switch_Click.mp3-6a7614e38159e436ad59051e5d9733a2.mp3str"
+path="res://.godot/imported/switch_click.mp3-ed672a1e25e0d9a3f91db62c1810770f.mp3str"
 
 [deps]
 
-source_file="res://resources/sound/sfx/click/switch_Click.mp3"
-dest_files=["res://.godot/imported/switch_Click.mp3-6a7614e38159e436ad59051e5d9733a2.mp3str"]
+source_file="res://resources/sound/sfx/ui/switch_click.mp3"
+dest_files=["res://.godot/imported/switch_click.mp3-ed672a1e25e0d9a3f91db62c1810770f.mp3str"]
 
 [params]
 

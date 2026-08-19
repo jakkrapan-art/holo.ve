@@ -3,12 +3,12 @@
 importer="mp3"
 type="AudioStreamMP3"
 uid="uid://re0trtnrpi13"
-path="res://.godot/imported/weapknif_sword1.mp3-1fd875a914c9114db60a5816336c8788.mp3str"
+path="res://.godot/imported/weapon_knife_sword_1.mp3-a6a817d4183e124170db9eb0c149cba0.mp3str"
 
 [deps]
 
-source_file="res://resources/sound/sfx/sfx_Metal_Weapon/weapknif_sword1.mp3"
-dest_files=["res://.godot/imported/weapknif_sword1.mp3-1fd875a914c9114db60a5816336c8788.mp3str"]
+source_file="res://resources/sound/sfx/weapon/weapon_knife_sword_1.mp3"
+dest_files=["res://.godot/imported/weapon_knife_sword_1.mp3-a6a817d4183e124170db9eb0c149cba0.mp3str"]
 
 [params]
 

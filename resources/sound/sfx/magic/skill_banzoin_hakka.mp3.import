@@ -3,12 +3,12 @@
 importer="mp3"
 type="AudioStreamMP3"
 uid="uid://ygqkujdu8b2o"
-path="res://.godot/imported/skill_banzoin_hakka.mp3-7eda67ff7ad0dc1db0ad4774c4cc93b4.mp3str"
+path="res://.godot/imported/skill_banzoin_hakka.mp3-d83c1884acc28c1115ea4468dc7f785b.mp3str"
 
 [deps]
 
-source_file="res://resources/sound/sfx/sfx_Magic_hit/skill_banzoin_hakka.mp3"
-dest_files=["res://.godot/imported/skill_banzoin_hakka.mp3-7eda67ff7ad0dc1db0ad4774c4cc93b4.mp3str"]
+source_file="res://resources/sound/sfx/magic/skill_banzoin_hakka.mp3"
+dest_files=["res://.godot/imported/skill_banzoin_hakka.mp3-d83c1884acc28c1115ea4468dc7f785b.mp3str"]
 
 [params]
 

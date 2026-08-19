@@ -3,12 +3,12 @@
 importer="mp3"
 type="AudioStreamMP3"
 uid="uid://i8b8a26uvimm"
-path="res://.godot/imported/sickle03Large.mp3-d11c17035c7b92417cb3086430ab71a9.mp3str"
+path="res://.godot/imported/sickle_03_large.mp3-2d549255f63d6047a0aadeec4109b05a.mp3str"
 
 [deps]
 
-source_file="res://resources/sound/sfx/sfx_Metal_Weapon/sickle03Large.mp3"
-dest_files=["res://.godot/imported/sickle03Large.mp3-d11c17035c7b92417cb3086430ab71a9.mp3str"]
+source_file="res://resources/sound/sfx/weapon/sickle_03_large.mp3"
+dest_files=["res://.godot/imported/sickle_03_large.mp3-2d549255f63d6047a0aadeec4109b05a.mp3str"]
 
 [params]
 

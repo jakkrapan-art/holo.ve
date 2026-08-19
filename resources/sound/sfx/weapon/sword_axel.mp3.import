@@ -3,12 +3,12 @@
 importer="mp3"
 type="AudioStreamMP3"
 uid="uid://chugvk5emat7c"
-path="res://.godot/imported/sword_axel.mp3-95186a5a609fa79baedc71c885244e17.mp3str"
+path="res://.godot/imported/sword_axel.mp3-7c9582fe30c8f3c5b1b4a50ef63b860f.mp3str"
 
 [deps]
 
-source_file="res://resources/sound/sfx/sfx_Metal_Weapon/sword_axel.mp3"
-dest_files=["res://.godot/imported/sword_axel.mp3-95186a5a609fa79baedc71c885244e17.mp3str"]
+source_file="res://resources/sound/sfx/weapon/sword_axel.mp3"
+dest_files=["res://.godot/imported/sword_axel.mp3-7c9582fe30c8f3c5b1b4a50ef63b860f.mp3str"]
 
 [params]
 

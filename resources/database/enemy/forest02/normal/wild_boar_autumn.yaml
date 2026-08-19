@@ -1,0 +1,7 @@
+name: Kurobuta
+stats:
+  hp: 670
+  def: 0
+  mDef: 0
+  moveSpeed: 85
+skill: []

@@ -1,0 +1,83 @@
+# Boss. The sprite and id come from this file's path. Skills reuse the
+# established mechanics and balance values with Forest02 names.
+name: King Grape Salam
+scale: 1.75
+wave:
+  - 5
+stats:
+  hp: 10000
+  def: 3
+  mDef: 7
+  moveSpeed: 40
+skill:
+  - name: Adaptation
+    cooldown: 12
+    recovery: 0.2
+    tags:
+      - defense
+      - self
+    parameters:
+      reduction: 0.2
+      duration: 5
+    desc: "King Grape Salam adapts his royal hide, reducing all damage he takes by {reduction:percent} for {duration} seconds."
+    action:
+      - type: target_self
+      - type: apply_effect
+        data:
+          effect: damage_reduction_up
+          target: targets
+          value_param: reduction
+          duration_param: duration
+          title: "Adaptation"
+  - name: Grape Slime Fluid
+    cooldown: 15
+    cast_time: 0.5
+    recovery: 0.2
+    tags:
+      - debuff
+      - attack_speed
+      - aoe
+    parameters:
+      slow: 0.1
+      duration: 10
+    desc: "King Grape Salam splashes grape slime across a 7x7 area, coating units in Grape Slime Fluid that slows their attack speed by {slow:percent} for {duration} seconds."
+    action:
+      - type: apply_effect
+        data:
+          effect: slime_fluid
+          target: towers_in_range
+          range: 3
+          value_param: slow
+          duration_param: duration
+          title: "Grape Slime Fluid"
+  - name: King's Command
+    cooldown: 30
+    recovery: 0.2
+    tags:
+      - channel
+      - invincible
+      - summon
+    parameters:
+      channel_time: 4
+      summon_count: 10
+    desc: "King Grape Salam channels his royal authority for {channel_time} seconds - invincible and untargetable while {summon_count} Armored Grape Salam march out to join the battle at his side."
+    action:
+      - type: target_self
+      - type: apply_effect
+        data:
+          effect: invincible
+          target: targets
+          duration_param: channel_time
+      - type: apply_effect
+        data:
+          effect: royal_command
+          target: targets
+          duration_param: channel_time
+      - type: summon_enemy
+        data:
+          enemy: armored_salam_autumn
+          count_param: summon_count
+          interval: 0.4
+      - type: delay
+        data:
+          delay_param: channel_time

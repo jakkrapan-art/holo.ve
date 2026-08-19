@@ -1,0 +1,16 @@
+# Enemy roster for forest02. The inline wave notes are a temporary handoff for
+# Stage02 authoring; remove them after the schedule is encoded in the map data.
+normal:
+  - salam_autumn # waves: 1
+  - rolling_stone_autumn # waves: 2
+  - goblin_autumn # waves: 3
+  - armored_salam_autumn # waves: 4
+  - baby_garlic_autumn # waves: 6, 7, 8, 9
+  - wild_boar_autumn # waves: 7
+elite:
+  - shielded_goblin_autumn # waves: 4
+  - flying_flower_autumn # waves: 8
+  - armored_boar_autumn # waves: 9
+boss:
+  - king_salam_autumn
+  - giant_boar_autumn

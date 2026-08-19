@@ -1,0 +1,103 @@
+# Boss. The sprite and id come from this file's path. Skills reuse the
+# established mechanics and balance values with Forest02 names.
+name: Giant Kurobuta
+scale: 2.0
+wave:
+  - 10
+stats:
+  hp: 22500
+  def: 7
+  mDef: 3
+  moveSpeed: 50
+skill:
+  - name: Super Charge
+    cooldown: 12
+    cast_time: 1.0
+    recovery: 0.2
+    tags:
+      - movement
+    parameters:
+      charge_cells: 2
+    desc: "Giant Kurobuta braces, then charges {charge_cells} tiles forward along the path."
+    action:
+      - type: dash
+        data:
+          cells_param: charge_cells
+          duration: 0.3
+  - name: Thick Skin
+    type: triggered
+    trigger:
+      hp_below_param: trigger_hp
+    oneTime: true
+    cast_time: 0.5
+    recovery: 0.2
+    tags:
+      - defense
+      - heal
+    parameters:
+      trigger_hp: 0.4
+      rest_duration: 5
+      damage_reduction: 0.5
+      haste: 0.5
+      haste_duration: 5
+    desc: "When Giant Kurobuta's health falls below {trigger_hp:percent}, Giant Kurobuta rests for {rest_duration} seconds - taking {damage_reduction:percent} less damage and recovering 5% of their max health every second. On waking, Giant Kurobuta gains {haste:percent} movement speed for {haste_duration} seconds."
+    action:
+      - type: target_self
+      - type: apply_effect
+        data:
+          effect: rest
+          target: targets
+          duration_param: rest_duration
+          title: "Thick Skin - Resting"
+      - type: apply_effect
+        data:
+          effect: damage_reduction_up
+          target: targets
+          value_param: damage_reduction
+          duration_param: rest_duration
+          title: "Thick Skin - Hardened"
+      - type: apply_effect
+        data:
+          effect: rest_recovery
+          target: targets
+          duration_param: rest_duration
+          title: "Thick Skin - Recovering"
+      - type: delay
+        data:
+          delay_param: rest_duration
+      - type: apply_effect
+        data:
+          effect: move_speed_up
+          target: targets
+          value_param: haste
+          duration_param: haste_duration
+          title: "Thick Skin - Haste"
+  - name: Bulldoze
+    cooldown: 20
+    cast_time: 0.5
+    recovery: 0.2
+    tags:
+      - debuff
+      - aoe
+    parameters:
+      damage_down: 20
+      debuff_duration: 8
+    desc: "Giant Kurobuta stomps the ground, shaking a 5x5 area - units caught inside deal {damage_down:pct} less damage for {debuff_duration} seconds."
+    action:
+      - type: apply_effect
+        data:
+          effect: attack_mult_down
+          target: towers_in_range
+          range: 2
+          value_param: damage_down
+          duration_param: debuff_duration
+          title: "Bulldoze - Weapon Attack Down"
+      - type: apply_effect
+        data:
+          effect: magic_mult_down
+          target: towers_in_range
+          range: 2
+          value_param: damage_down
+          duration_param: debuff_duration
+          show_area: false
+          title: "Bulldoze - Magic Attack Down"

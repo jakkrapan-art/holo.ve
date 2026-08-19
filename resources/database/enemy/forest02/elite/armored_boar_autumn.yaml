@@ -1,0 +1,24 @@
+name: Sleepwalk Armored Boar
+stats:
+  hp: 5000
+  def: 6
+  mDef: 4
+  moveSpeed: 35
+skill:
+  - name: Protector Aura
+    type: passive
+    tags:
+      - defense
+      - aoe
+    parameters:
+      armor_up: 0.025
+    desc: "A protective aura surrounds Sleepwalk Armored Boar, hardening the armor of nearby monsters by {armor_up:percent}."
+    action:
+      - type: target_self
+      - type: effect_area
+        data:
+          effect: armor_mult_up
+          value_param: armor_up
+          duration: 10000
+          radius: 1
+          affects: enemies

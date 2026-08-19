@@ -1,0 +1,23 @@
+name: Poison Flying Flower
+stats:
+  hp: 4000
+  def: 4
+  mDef: 6
+  moveSpeed: 45
+skill:
+  - name: Sweat Spore
+    type: passive
+    tags:
+      - defense
+      - self
+    parameters:
+      armor_up: 0.05
+    desc: "Sweat spores bloom across Poison Flying Flower, hardening their armor by {armor_up:percent}."
+    action:
+      - type: target_self
+      - type: apply_effect
+        data:
+          effect: armor_mult_up
+          target: targets
+          value_param: armor_up
+          duration: 10000

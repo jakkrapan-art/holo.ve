@@ -21,9 +21,10 @@ extends Node2D
 #     is forced to 0.0 on the cancel path — the feather/overload/skyward
 #     play ONLY on natural expiry, matching the refund.
 #
-# LAYER model (same as normal): drawn TWICE — fx_layer 0 = ground zone
-# (flame sea + beads) under enemies via the map subtree, 1 = front
-# (script columns + the rising feather) above towers/enemies.
+# LAYER model (same as normal): drawn TWICE. fx_layer 0 = ground zone
+# (flame sea + beads) at absolute world Z -2; fx_layer 1 = front
+# (script columns + the rising feather) at absolute world Z 2.
+# The VFX never inspects or reparents under Map, TileMap, or enemy paths.
 #
 # SHADER_PATH is read by ResourceManager.warmSkillEffectShaders (it
 # scans evolutionSkill field actions too) to pre-compile at deck load.
@@ -34,9 +35,10 @@ const PAD := 1.35            # visual pad beyond the footprint (free: damage is 
 const PLANT_TIME := 0.5
 const FADE_NATURAL := 0.9    # longer than normal's 0.6: the refund beat lives in this fade
 const FADE_CANCEL := 0.25
+const GROUND_Z := -2
+const FRONT_Z := 2
 
 var _mats: Array[ShaderMaterial] = []
-var _back_holder: Node2D = null   # ground-layer host inside the map subtree
 var _t := 0.0
 var _fade_time := FADE_NATURAL
 var _exp_t := -1.0           # >= 0 once expiring
@@ -62,7 +64,6 @@ func _ensure_built() -> void:
 func _build(cells: float) -> void:
 	var draw_size := GridHelper.CELL_SIZE * cells * PAD
 	var shader: Shader = load(SHADER_PATH)
-	var ground_map := _resolve_ground_map()
 	for side in 2:
 		var rect := ColorRect.new()
 		rect.size = Vector2(draw_size, draw_size)
@@ -80,44 +81,10 @@ func _build(cells: float) -> void:
 		mat.set_shader_parameter("expire", 0.0)
 		mat.set_shader_parameter("refund_beat", 1.0)  # 1 = play the refund beat; 0 on cancel
 		rect.material = mat
-		if side == 0 and ground_map != null:
-			# Ground layer: hosted inside the map subtree, ordered before the
-			# Path2D so enemies (its children) draw over the zone.
-			_back_holder = Node2D.new()
-			ground_map.add_child(_back_holder)
-
-			var path = ground_map.path
-			var lowest_index := 0;
-			for i in range(ground_map.path.size()):
-				if path.get_child(i).z_index < path.get_child(lowest_index).z_index:
-					lowest_index = i;
-			ground_map.move_child(_back_holder, lowest_index);
-
-			_back_holder.global_position = global_position
-			_back_holder.add_child(rect)
-		elif side == 0:
-			rect.z_index = -1   # fallback: under towers only
-			add_child(rect)
-		else:
-			add_child(rect)     # front script + feather, above towers/enemies
+		rect.z_as_relative = false
+		rect.z_index = GROUND_Z if side == 0 else FRONT_Z
+		add_child(rect)
 		_mats.append(mat)
-
-# The Map (a TileMap, z -1) is a sibling of this effect under the game-scene
-# root; its `path` export holds the Path2D the enemies spawn under.
-func _resolve_ground_map() -> Map:
-	var parent := get_parent()
-	if parent == null:
-		return null
-	for child in parent.get_children():
-		if child is Map and child.path != null:
-			return child
-	return null
-
-func _exit_tree() -> void:
-	# The ground holder lives in the map subtree, not under this node — free
-	# it explicitly on every exit path.
-	if is_instance_valid(_back_holder):
-		_back_holder.queue_free()
 
 func _process(delta: float) -> void:
 	if _mats.is_empty():

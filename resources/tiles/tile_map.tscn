@@ -963,6 +963,7 @@ _data = {
 }
 
 [node name="TileMap" type="TileMap" node_paths=PackedStringArray("path")]
+z_index = -3
 rotation = 6.28319
 tile_set = SubResource("TileSet_xh70x")
 rendering_quadrant_size = 64
@@ -988,6 +989,7 @@ script = ExtResource("2_f5qkg")
 path = NodePath("Path2D")
 
 [node name="Path2D" type="Path2D" parent="." node_paths=PackedStringArray("tilemap", "path2d")]
+z_as_relative = false
 curve = SubResource("Curve2D_lircj")
 script = ExtResource("8_nw8xb")
 tilemap = NodePath("..")
@@ -999,12 +1001,17 @@ libraries = {
 }
 
 [node name="LightAnimation01" type="Sprite2D" parent="AnimationPlayer"]
+z_index = -3
+z_as_relative = false
 position = Vector2(4353, 4971)
 texture = ExtResource("8_wce3f")
 
 [node name="GridDrawer" type="Node2D" parent="."]
+z_index = -1
+z_as_relative = false
 script = ExtResource("10_y0try")
 
 [node name="StaffEndPoint" type="Marker2D" parent="."]
+z_as_relative = false
 position = Vector2(10253, 4977.95)
 scale = Vector2(1.87, 1.87)

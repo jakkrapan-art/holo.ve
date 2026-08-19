@@ -4,7 +4,7 @@ enum BGM_NAME {
 	main
 }
 
-enum SFX_NAME { #ทำให้รู้ว่าอะไรเป็นเสียง (ประกาศตัวแปร)
+enum SFX_NAME {
 	hit,
 	hit_syrios,
 	hit_hakka,
@@ -19,7 +19,21 @@ enum SFX_NAME { #ทำให้รู้ว่าอะไรเป็นเส
 	hit_amelia,
 	skill_syrios_spear,
 	skill_syrios_sword,
-	skill_syrios_axe
+	skill_syrios_axe,
+	ui_button_click,
+	hit_flayon_evo,
+	skill_hakka,
+	skill_bettel,
+	skill_gura,
+	skill_shinri,
+	skill_flayon,
+	skill_flayon_active_sys,
+	skill_caliope,
+	skill_ina,
+	skill_altare,
+	skill_altare_shoot,
+	skill_kiara,
+	skill_amelia
 }
 
 enum VOICE_NAME {
@@ -51,25 +65,39 @@ static var bgm: Dictionary = {
 	BGM_NAME.main: "lobby_seishun_akaibu_Instrumental.mp3"
 }
 
-static var sfx: Dictionary = { #สิ่งนั้นคือไฟล์ไหน (value ของตัวแปร)
-	SFX_NAME.hit: "sfx_Metal_Weapon/nomal_great_sword_atk.mp3",
-	SFX_NAME.hit_syrios: "sfx_Metal_Weapon/nomal_great_sword_atk.mp3",
-	SFX_NAME.hit_hakka: "sfx_Metal_Weapon/nomal_great_sword_atk.mp3",
-	SFX_NAME.hit_bettel: "sfx_Metal_Weapon/nomal_great_sword_atk.mp3",
-	SFX_NAME.hit_gura: "sfx_Metal_Weapon/nomal_great_sword_atk.mp3",
-	SFX_NAME.hit_shinri: "sfx_Metal_Weapon/nomal_great_sword_atk.mp3",
-	SFX_NAME.hit_flayon: "sfx_Metal_Weapon/nomal_great_sword_atk.mp3",
-	SFX_NAME.hit_caliope: "sfx_Metal_Weapon/nomal_great_sword_atk.mp3",
-	SFX_NAME.hit_ina: "sfx_Metal_Weapon/nomal_great_sword_atk.mp3",
-	SFX_NAME.hit_altare: "sfx_Metal_Weapon/nomal_great_sword_atk.mp3",
-	SFX_NAME.hit_kiara: "sfx_Metal_Weapon/nomal_great_sword_atk.mp3",
-	SFX_NAME.hit_amelia: "sfx_Metal_Weapon/nomal_great_sword_atk.mp3",
-	SFX_NAME.skill_syrios_spear: "sfx_Metal_Weapon/spear_hit_axel.mp3",
-	SFX_NAME.skill_syrios_sword: "sfx_Metal_Weapon/sword_axel.mp3",
-	SFX_NAME.skill_syrios_axe: "sfx_Metal_Weapon/axe_axel.mp3"
+static var sfx: Dictionary = {
+	SFX_NAME.ui_button_click: "ui/finger_click.mp3",
+	SFX_NAME.hit: "weapon/normal_great_sword_attack.mp3",
+	SFX_NAME.hit_syrios: "weapon/normal_great_sword_attack.mp3",
+	SFX_NAME.hit_hakka: "magic/normal_banzoin_hakka.mp3",
+	SFX_NAME.hit_bettel: "magic/normal_attack_bloom.mp3",
+	SFX_NAME.hit_gura: "weapon/trident_miss_1.mp3",
+	SFX_NAME.hit_shinri: "weapon/fast_arrow.mp3",
+	SFX_NAME.hit_flayon: "magic/normal_laser_attack_flayon.mp3",
+	SFX_NAME.hit_flayon_evo: "magic/normal_laser_attack_flayon_evolved.mp3",
+	SFX_NAME.hit_caliope: "weapon/normal_calliope_sickle_slash_2.mp3",
+	SFX_NAME.hit_ina: "magic/normal_magic_attack.mp3",
+	SFX_NAME.hit_altare: "magic/laser_shot_regis.mp3",
+	SFX_NAME.hit_kiara: "weapon/normal_great_sword_attack.mp3",
+	SFX_NAME.hit_amelia: "weapon/gun_3_shot.mp3",
+	SFX_NAME.skill_syrios_spear: "weapon/spear_charge_axel.mp3",
+	SFX_NAME.skill_syrios_sword: "weapon/sword_axel.mp3",
+	SFX_NAME.skill_syrios_axe: "weapon/axe_axel.mp3",
+	SFX_NAME.skill_hakka: "magic/skill_banzoin_hakka.mp3",
+	SFX_NAME.skill_bettel: "magic/skill_bloom.mp3",
+	SFX_NAME.skill_gura: "weapon/weapon_knife_sword_1.mp3",
+	SFX_NAME.skill_shinri: "weapon/arrow.mp3",
+	SFX_NAME.skill_flayon: "magic/skill_flayon.mp3",
+	SFX_NAME.skill_flayon_active_sys: "magic/skill_flayon_active_sys.mp3",
+	SFX_NAME.skill_caliope: "weapon/skill_calliope_weapon_sickle_hit_whoosh_bloody.mp3",
+	SFX_NAME.skill_ina: "magic/skill_use_ina.mp3",
+	SFX_NAME.skill_altare: "magic/light_saber_swing_regis.mp3",
+	SFX_NAME.skill_altare_shoot: "magic/skill_laser_beam_regis.mp3",
+	SFX_NAME.skill_kiara: "weapon/skill_use_takanashi_kiara_2.mp3",
+	SFX_NAME.skill_amelia: "mechanical/skill_ame_clock_tick.mp3"
 }
 
-static var voice: Dictionary = { #ตอนนี้ยังไม่เปิดใช้นะ แต่ใส่เผื่อมาก่อน //เสียงเปิดตัว (ขอเป็น debut_voice)
+static var voice: Dictionary = {
 	VOICE_NAME.debut_syrios: "axel_Syrios/greeting_axel.mp3",
 	VOICE_NAME.debut_hakka: "hakkito/greeting_Banzoin_Hakka.mp3",
 	VOICE_NAME.debut_bettel: "gavis_bettel/greeting_gavis.mp3",

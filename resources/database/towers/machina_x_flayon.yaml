@@ -5,6 +5,7 @@ attackType: magic
 evolutionCost: 1
 
 attack_sound: "hit_flayon"
+evolution_attack_sound: "hit_flayon_evo"
 open_sound: "debut_flayon"
 evolve_sound: "evo_flayon"
 
@@ -85,6 +86,7 @@ skills:
           angle_jitter_deg: 30.0      # +/- wobble per strike (imperfection)
           animation: "skill"
           cast_time: 0.5
+          sfx: "skill_flayon"
           projectile: "res://resources/combat/bullets/gawr_gura_skill_projectile.tscn"  # placeholder art until the beam VFX lands
           damage_multiplier_param_name: "skillDamage"
           damage_type: magic
@@ -145,6 +147,7 @@ evolution_skills:
           cast_time: 5.0              # channel length (s); the tower is locked for the whole barrage
           tick_interval: 0.5          # seconds between strikes
           animation: "skill"
+          sfx: "skill_flayon_active_sys"
           strike:                     # per-tick global_strike (fresh random target every tick)
             width: 3                  # blast box at each landing point
             height: 3

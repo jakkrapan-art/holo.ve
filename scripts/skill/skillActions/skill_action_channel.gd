@@ -21,6 +21,8 @@ var attack_action: SkillActionAttack
 # Optional per-tick VFX hook (parity with aftershock); unset = the find's red
 # Hitbox rect is the visible tick flash.
 var effect_action: SkillActionPlayEffect
+# Optional one-shot at successful channel start. It never repeats per tick.
+var sound_action: SkillActionPlaySound
 # Optional per-tick global retarget (`strike:` sub-block): every tick fires a
 # global_strike at a FRESH random map-wide target instead of re-hitting the
 # locked center; `center` goes unused. First user: Flayon evolved
@@ -37,6 +39,8 @@ func execute(context: SkillContext):
 	if strike != null and SkillActionGlobalStrike.pick_global_target(tower) == null:
 		context.cancel = true
 		return
+	if sound_action != null:
+		sound_action.execute(context)
 	# Zone center locked at cast start: the skill's first find_multi_enemy
 	# published the world center of the box it queried. Fallbacks mirror the
 	# finder's own aimed-mode math in case the key is ever absent.

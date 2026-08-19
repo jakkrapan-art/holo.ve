@@ -31,4 +31,5 @@ func set_deck_info(deck_name: String, deck_info: Dictionary):
 		nameLabelInactive.text = deck_name;
 
 func _on_SelectButton_pressed():
+	AudioManager.playSfx(SoundDatabase.SFX_NAME.ui_button_click)
 	deck_selected.emit(deck_key, toggle)

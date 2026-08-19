@@ -68,6 +68,7 @@ static func load_data(prefix: String, name: String) -> TowerData:
 	tower.evolutionName = str(data.get("evolutionName", ""))
 
 	tower.attack_sound = data.get("attack_sound", "default");
+	tower.evolution_attack_sound = data.get("evolution_attack_sound", "");
 	tower.attack_vfx = data.get("attack_vfx", "default");
 	tower.open_sound = data.get("open_sound", "default");
 	tower.evolve_sound = data.get("evolve_sound", "");

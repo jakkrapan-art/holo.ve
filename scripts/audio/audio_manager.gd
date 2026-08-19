@@ -14,6 +14,7 @@ var bgm: Dictionary = {}
 var voice: Dictionary = {}
 
 var soundCache: Dictionary = {}
+var reported_unknown_names: Dictionary = {}
 
 const SFX_POOL_SIZE = 10
 const VOICE_POOL_SIZE = 5
@@ -26,17 +27,17 @@ func _ready():
 	add_child(music_player)
 
 	# create sfx pool
-	for i in SFX_POOL_SIZE:
-		var player = AudioStreamPlayer.new()
-		player.bus = "sfx"
-		add_child(player)
-		sfx_players.append(player)
+	for _i in SFX_POOL_SIZE:
+		sfx_players.append(_create_player(&"sfx"))
 	# create voice pool
-	for i in VOICE_POOL_SIZE:
-		var player = AudioStreamPlayer.new()
-		player.bus = "voice"
-		add_child(player)
-		voice_players.append(player)
+	for _i in VOICE_POOL_SIZE:
+		voice_players.append(_create_player(&"voice"))
+
+func _create_player(bus_name: StringName) -> AudioStreamPlayer:
+	var player := AudioStreamPlayer.new()
+	player.bus = bus_name
+	add_child(player)
+	return player
 
 func preloadAudio():
 	var sfxList = SoundDatabase.sfx.keys()
@@ -97,28 +98,66 @@ func playMusic(music_name: SoundDatabase.BGM_NAME, loop := true):
 	music_player.stream.loop = loop
 	music_player.play()
 
-func playSfx(sfx_name: SoundDatabase.SFX_NAME):
+func playSfx(sfx_name: SoundDatabase.SFX_NAME) -> bool:
 	var stream = sfx.get(sfx_name)
 
 	if stream == null:
 		push_warning("SFX not found: " + str(sfx_name))
-		return
+		return false
 
 	for player in sfx_players:
 		if !player.playing:
 			player.stream = stream
 			player.play()
-			return
+			return true
 
-func playVoice(voice_name: SoundDatabase.VOICE_NAME):
+	# Keep active one-shots intact. Overflow players remain in the pool and are
+	# reused after their stream finishes.
+	var overflow_player := _create_player(&"sfx")
+	sfx_players.append(overflow_player)
+	overflow_player.stream = stream
+	overflow_player.play()
+	return true
+
+func playSfxByName(sfx_name: String) -> bool:
+	var normalized := sfx_name.strip_edges()
+	if normalized == "":
+		return false
+	var resolved = _resolve_audio_name(SoundDatabase.SFX_NAME, normalized, "SFX")
+	if resolved == null:
+		return false
+	return playSfx(int(resolved))
+
+func playVoice(voice_name: SoundDatabase.VOICE_NAME) -> bool:
 	var stream = voice.get(voice_name)
 
 	if stream == null:
 		push_warning("Voice not found: " + str(voice_name))
-		return
+		return false
 
 	for player in voice_players:
 		if !player.playing:
 			player.stream = stream
 			player.play()
-			return
+			return true
+	return false
+
+func playVoiceByName(voice_name: String) -> bool:
+	var normalized := voice_name.strip_edges()
+	if normalized == "":
+		return false
+	var resolved = _resolve_audio_name(SoundDatabase.VOICE_NAME, normalized, "Voice")
+	if resolved == null:
+		return false
+	return playVoice(int(resolved))
+
+func _resolve_audio_name(enum_dict: Dictionary, value: String, label: String):
+	var target := value.to_lower()
+	for key in enum_dict.keys():
+		if str(key).to_lower() == target:
+			return enum_dict[key]
+	var report_key := label.to_lower() + ":" + target
+	if not reported_unknown_names.has(report_key):
+		reported_unknown_names[report_key] = true
+		push_error(label + " name not found: " + value)
+	return null

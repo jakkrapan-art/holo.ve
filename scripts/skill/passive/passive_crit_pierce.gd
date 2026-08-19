@@ -30,6 +30,7 @@ var projectile_scene: PackedScene
 var effect_script: Script             # lane-static pierce VFX controller (normal or evolve slot)
 var arrow_speed: float                # tiles/sec
 var arrow_range: float                # tiles
+var sfx_name: String
 
 func _init(owner: Tower, params: Dictionary) -> void:
 	tower = owner
@@ -42,6 +43,7 @@ func _init(owner: Tower, params: Dictionary) -> void:
 	reset_on_crit = bool(params.get("reset_on_crit", true))
 	arrow_speed = float(params.get("arrow_speed", 12.0))
 	arrow_range = float(params.get("arrow_range", 4.0))
+	sfx_name = str(params.get("sfx", ""))
 	var path: String = str(params.get("projectile", ""))
 	if path != "" and ResourceLoader.exists(path):
 		projectile_scene = load(path)
@@ -64,6 +66,7 @@ func on_normal_attack() -> void:
 
 # Called when the auto-attack rolled a crit; fires the arrow and updates stacks.
 func on_crit_attack(target: Enemy) -> void:
+	AudioManager.playSfxByName(sfx_name)
 	_fire_arrow(target)
 	if reset_on_crit:
 		reset()

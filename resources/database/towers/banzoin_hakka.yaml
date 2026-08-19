@@ -81,6 +81,9 @@ skills:
         data:
           animation: "skill"
           cast_time: 0.5
+      - type: play_sound
+        data:
+          sfx: "skill_hakka"
       - type: field                    # plant the zone and return - Hakka keeps attacking
         data:
           width: 3
@@ -150,6 +153,9 @@ evolution_skills:
         data:
           animation: "skill"
           cast_time: 0.5
+      - type: play_sound
+        data:
+          sfx: "skill_hakka"
       - type: field
         data:
           width: 5

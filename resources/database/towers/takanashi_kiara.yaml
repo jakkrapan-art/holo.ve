@@ -80,6 +80,9 @@ skills:
         data:
           animation: "skill"
           cast_time: 0.2   # skill clip scaled to 0.2s; effect lands ~0.16s (tune in-engine)
+      - type: "play_sound"
+        data:
+          sfx: "skill_kiara"
       - type: "play_effect"
         data:
           # Flame Slash crescent VFX — orients toward tower.enemy and lands
@@ -158,6 +161,9 @@ evolution_skills:
         data:
           animation: "skill"
           cast_time: 0.2   # skill clip scaled to 0.2s; effect lands ~0.16s (tune in-engine)
+      - type: "play_sound"
+        data:
+          sfx: "skill_kiara"
       - type: "play_effect"
         data:
           # Hinotori phoenix VFX (Wingsweep, magma-violet) — orients onto the

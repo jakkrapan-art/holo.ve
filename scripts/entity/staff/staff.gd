@@ -86,13 +86,10 @@ func executeSkillAtPosition(world_position: Vector2) -> void:
 		if frames != null and frames.has_animation(data.cast_animation):
 			staff_sprite.play(data.cast_animation)
 
-	# Cast sound — mirrors Tower attack_sound pattern (attack_controller.gd:37 uses
-	# Utility.parse_string_to_enum + AudioManager.playSfx). Empty cast_sound = skip.
+	# Cast sound uses the same safe name resolution as tower and skill audio.
 	# TODO: Game Director picks the final SFX key from SoundDatabase.SFX_NAME and fills
 	# a_chan.yaml cast_sound (e.g., "skill_cast"). Until then, leave "" so we skip silently.
-	if data.cast_sound != "":
-		var sfx_enum = Utility.parse_string_to_enum(SoundDatabase.SFX_NAME, data.cast_sound)
-		AudioManager.playSfx(sfx_enum)
+	AudioManager.playSfxByName(data.cast_sound)
 
 	# Build SkillContext + run actions sequentially via the same pattern as Tower
 	# skills (await each action). target_position in extra is the player click world pos.

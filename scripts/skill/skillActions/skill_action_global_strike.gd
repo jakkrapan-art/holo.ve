@@ -42,6 +42,7 @@ extends SkillAction
 var find_action: SkillActionFindMultipleInRange
 var attack_action: SkillActionAttack
 var anim_action: SkillActionPlayAnimation
+var sound_action: SkillActionPlaySound
 
 func execute(context: SkillContext):
 	var tower: Tower = context.user as Tower
@@ -77,6 +78,8 @@ func execute(context: SkillContext):
 		if target == null:
 			return
 
+	if sound_action != null:
+		sound_action.execute(context)
 	_launch_strike(tower, target, context.extra.get("parameter", {}), context.skillName, gen)
 
 # One animation-free strike (per channel tick). Returns false on a whiff

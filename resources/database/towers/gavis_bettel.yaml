@@ -80,6 +80,7 @@ skills:
           search_time: 1.0            # seconds spent looking for a target before the cast ends
           animation: "skill"
           cast_time: 0.25
+          sfx: "skill_bettel"
           projectile: "res://resources/combat/bullets/gawr_gura_skill_projectile.tscn"  # placeholder art until the card VFX lands
           damage_multiplier_param_name: "skillDamage"
           damage_type: magic
@@ -142,6 +143,7 @@ evolution_skills:
           search_time: 1.0
           animation: "skill"
           cast_time: 0.25
+          sfx: "skill_bettel"
           projectile: "res://resources/combat/bullets/gawr_gura_skill_projectile.tscn"  # placeholder art until the card VFX lands
           damage_multiplier_param_name: "skillDamage"
           damage_type: magic

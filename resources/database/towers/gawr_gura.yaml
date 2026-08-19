@@ -68,6 +68,9 @@ skills:
         data:
           animation: "skill"
           cast_time: 0.5   # cast pose only (generic clip; verify in-engine)
+      - type: "play_sound"
+        data:
+          sfx: "skill_gura"
       - type: "play_animation"
         data:
           animation: "idle"   # return to idle BEFORE the 10s persistent storm so the cast pose doesn't hold during it
@@ -132,6 +135,9 @@ evolution_skills:
         data:
           animation: "skill"
           cast_time: 0.5   # cast pose only (generic clip; verify in-engine)
+      - type: "play_sound"
+        data:
+          sfx: "skill_gura"
       - type: "play_animation"
         data:
           animation: "idle"   # return to idle BEFORE the 10s persistent storm so the cast pose doesn't hold during it

@@ -89,6 +89,7 @@ func refreshList():
 	var unlimited := _dev_unlimited_rerolls()
 	if not unlimited and refreshLeft <= 0:
 		return
+	AudioManager.playSfx(SoundDatabase.SFX_NAME.ui_button_click)
 	if not unlimited:
 		refreshLeft -= 1;
 
@@ -202,6 +203,7 @@ func _apply_cards_to_buttons(cards: Array) -> void:
 			buttons[index].visible = false
 
 func _on_select_tower_button(p_name):
+	AudioManager.playSfx(SoundDatabase.SFX_NAME.ui_button_click)
 	tower_select.emit(p_name)
 	# emit_signal("tower_select", "gawr_gura") #temp
 	queue_free()

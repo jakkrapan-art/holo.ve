@@ -6,7 +6,20 @@ env:
   EXPORT_NAME: holo.ve
 
 jobs:
+  validate-import-sidecars:
+    runs-on: ubuntu-latest
+    name: Validate Import Sidecars
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Validate Import Sidecars
+        run: python3 .github/scripts/validate_import_sidecars.py
+
   export-windows:
+    needs: validate-import-sidecars
     runs-on: ubuntu-latest
     name: Export Windows
     steps:
@@ -37,6 +50,7 @@ jobs:
           path: build/windows
 
   export-web:
+    needs: validate-import-sidecars
     name: Web export
     runs-on: ubuntu-latest
     container:

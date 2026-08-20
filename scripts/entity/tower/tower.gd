@@ -189,7 +189,7 @@ func exitPlaceMode():
 	showAttackRange(false);
 	onPlace.call(cell);
 
-	AudioManager.playVoice(Utility.parse_string_to_enum(SoundDatabase.VOICE_NAME, data.open_sound))
+	AudioManager.playVoiceByName(data.open_sound)
 
 func upgrade():
 	var success = data.levelUp()
@@ -228,16 +228,7 @@ func evolve():
 	return success
 
 func _play_evolve_sound():
-	if data.evolve_sound == "":
-		return
-
-	var target := data.evolve_sound.to_lower()
-	for key in SoundDatabase.VOICE_NAME.keys():
-		if str(key).to_lower() == target:
-			AudioManager.playVoice(SoundDatabase.VOICE_NAME[key])
-			return
-
-	push_warning("Tower evolve voice not found: " + data.evolve_sound)
+	AudioManager.playVoiceByName(data.evolve_sound)
 
 func canEvolve():
 	return data.level >= data.maxLevel && !data.isEvolved;
@@ -265,20 +256,19 @@ func attackEnemy():
 		# this call (bumping skill_lock_generation). If so, skip the post-attack
 		# state writes so mana/cooldown/attacking don't leak into the next wave.
 		var gen := skill_lock_generation
+		var attack_sound := data.get_attack_sound()
 		if passive != null and dmg.isCritical and passive.replaces_attack_on_crit():
 			# Crit -> the passive fires its pierce arrow INSTEAD of the normal hit.
+			# The replacement owns its sound so the normal attack sound never layers.
 			passive.on_crit_attack(enemy)
-			if data.attack_sound != "":
-				AudioManager.playSfx(Utility.parse_string_to_enum(SoundDatabase.SFX_NAME, data.attack_sound))
 		else:
 			if data.attack_config != null and data.attack_config.is_projectile():
 				# Projectile mode: spawn homing bullet(s); damage lands on hit (async).
 				# Sound at fire; no generic AttackVfx (the bullet IS the vfx).
 				attackController.attackProjectile(enemy, dmg, data.attack_config)
-				if data.attack_sound != "":
-					AudioManager.playSfx(Utility.parse_string_to_enum(SoundDatabase.SFX_NAME, data.attack_sound))
+				AudioManager.playSfxByName(attack_sound)
 			else:
-				attackController.attack(enemy, attackDir, dmg, data.attack_sound, data.attack_vfx);
+				attackController.attack(enemy, attackDir, dmg, attack_sound, data.attack_vfx);
 			if skill_lock_generation != gen:
 				return
 			if passive != null:

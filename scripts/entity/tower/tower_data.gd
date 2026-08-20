@@ -39,6 +39,7 @@ var evolutionSkill: Skill = null;
 var passive: Dictionary = {};
 var evolutionPassive: Dictionary = {};
 var attack_sound: String = "hit";
+var evolution_attack_sound: String = "";
 var attack_vfx: String = "atk";
 var open_sound: String = "open";
 var evolve_sound: String = "";
@@ -69,6 +70,11 @@ func getDisplayName(base_name: String) -> String:
 	if _isEvolved and evolutionName != "":
 		return evolutionName
 	return base_name
+
+func get_attack_sound() -> String:
+	if _isEvolved and evolution_attack_sound != "":
+		return evolution_attack_sound
+	return attack_sound
 
 func getTotalAttack() -> int:
 	var base: float = float(getStat().damage)

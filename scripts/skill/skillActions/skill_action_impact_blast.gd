@@ -42,6 +42,7 @@ var extra_casts: Array = []
 var find_action: SkillActionFindMultipleInRange
 var attack_action: SkillActionAttack
 var anim_action: SkillActionPlayAnimation
+var sound_action: SkillActionPlaySound
 
 func execute(context: SkillContext):
 	var tower: Tower = context.user as Tower
@@ -82,6 +83,8 @@ func execute(context: SkillContext):
 			if target == null:
 				return
 
+		if sound_action != null:
+			sound_action.execute(context)
 		_throw_card(tower, target, context, gen)
 		thrown += 1
 		# Each extra thrown card counts as a full cast for on-cast synergies

@@ -83,6 +83,9 @@ skills:
         data:
           animation: "skill"
           cast_time: 0.5
+      - type: play_sound
+        data:
+          sfx: "skill_ina"
       - type: attack
         data:
           damage_multiplier_param_name: "skillDamage"
@@ -150,6 +153,7 @@ evolution_skills:
         data:
           width: 3
           height: 3
+          sfx: "skill_ina"
           cast_time_param_name: "channelDuration"
           tick_interval_param_name: "tickInterval"
           animation: "skill"

@@ -85,6 +85,7 @@ skills:
     effect_script: "res://resources/tower/holostars/en_branch/tempus_gen/shinri/skill_effect/shinri_skill_effect.gd"
     arrow_speed: 12.0   # tiles/sec
     arrow_range: 4.0    # tiles (pierce line length)
+    sfx: "skill_shinri"
 
 evolutionStat:
   damage: 400
@@ -128,3 +129,4 @@ evolution_skills:
     effect_script: "res://resources/tower/holostars/en_branch/tempus_gen/shinri/skill_effect/shinri_evo_skill_effect.gd"
     arrow_speed: 12.0
     arrow_range: 4.0
+    sfx: "skill_shinri"

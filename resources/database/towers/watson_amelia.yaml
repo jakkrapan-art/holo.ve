@@ -76,6 +76,9 @@ skills:
           animation: "skill"
           cast_time: 0.5   # whole clip (incl. end-pose hold) scaled to 0.5s
           impact_frame: 8  # buff + VFX fire when the clip shows frame 8 (1-based, artist numbering)
+      - type: "play_sound"
+        data:
+          sfx: "skill_amelia"
       - type: "play_effect"
         data:
           effect_script: "res://resources/tower/hololive/en_branch/myth_gen/amelia/skill_effect/amelia_skill_effect.gd"
@@ -138,6 +141,9 @@ evolution_skills:
           animation: "skill"
           cast_time: 0.5   # whole clip (incl. end-pose hold) scaled to 0.5s
           impact_frame: 8  # buff + VFX fire when the clip shows frame 8 (1-based, artist numbering)
+      - type: "play_sound"
+        data:
+          sfx: "skill_amelia"
       - type: "play_effect"
         data:
           effect_script: "res://resources/tower/hololive/en_branch/myth_gen/amelia/skill_effect/amelia_evo_skill_effect.gd"

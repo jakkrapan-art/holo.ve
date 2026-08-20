@@ -283,6 +283,8 @@ static func ParseAction(data: Dictionary, parameters: Dictionary = {}) -> SkillA
 			# Optional per-tick VFX, spawned each tick alongside the find.
 			if skillData.has("effect_script"):
 				skill.effect_action = ParseAction({"type": "play_effect", "data": {"effect_script": skillData["effect_script"]}}, parameters) as SkillActionPlayEffect;
+			if str(skillData.get("sfx", "")) != "":
+				skill.sound_action = ParseAction({"type": "play_sound", "data": {"sfx": skillData["sfx"]}}, parameters) as SkillActionPlaySound;
 			# Optional per-tick global retarget: a `strike:` sub-block turns every
 			# tick into a global_strike at a FRESH random map-wide target instead
 			# of the fixed-center find/attack (first user: Flayon evolved).
@@ -370,6 +372,8 @@ static func ParseAction(data: Dictionary, parameters: Dictionary = {}) -> SkillA
 			skill.find_action = blastFind;
 			skill.attack_action = ParseAction({"type": "attack", "data": skillData}, parameters) as SkillActionAttack;
 			skill.anim_action = ParseAction({"type": "play_animation", "data": {"animation": skill.animation, "cast_time": skill.castTime}}, parameters) as SkillActionPlayAnimation;
+			if str(skillData.get("sfx", "")) != "":
+				skill.sound_action = ParseAction({"type": "play_sound", "data": {"sfx": skillData["sfx"]}}, parameters) as SkillActionPlaySound;
 		"global_strike":
 			# "global strike" delivery: random enemy anywhere on the map, carrier
 			# from a diagonal offset, blast box at the landing point. The inner
@@ -401,6 +405,8 @@ static func ParseAction(data: Dictionary, parameters: Dictionary = {}) -> SkillA
 			skill.attack_action = ParseAction({"type": "attack", "data": skillData}, parameters) as SkillActionAttack;
 			if skill.animation != "":
 				skill.anim_action = ParseAction({"type": "play_animation", "data": {"animation": skill.animation, "cast_time": skill.castTime, "impact_frame": skill.impactFrame}}, parameters) as SkillActionPlayAnimation;
+			if str(skillData.get("sfx", "")) != "":
+				skill.sound_action = ParseAction({"type": "play_sound", "data": {"sfx": skillData["sfx"]}}, parameters) as SkillActionPlaySound;
 		"clear_enemy":
 			skill = SkillActionClearEnemy.new();
 		"find_multi_enemy":

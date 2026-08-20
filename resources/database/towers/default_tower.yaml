@@ -5,6 +5,7 @@ attackType: physic # physic | magic (1 tower 1 type ตาม design)
 evolutionCost: 1 # ค่า evolution
 
 attack_sound: "hit" # ชื่อเสียงที่ใช้ตอนโจมตี (enum ใน sound_database.gd VOICE_NAME)
+evolution_attack_sound: "" # optional evolved SFX key; empty = use attack_sound
 open_sound: "open" # ชื่อเสียงที่ใช้ตอนเปิดตัว
 evolve_sound: "" # optional evolve voice key (VOICE_NAME); empty = no evolve voice
 # attack_vfx: "blue" # optional — ชื่อ VFX ตอนโจมตี (enum ใน attack_vfx.gd AttackVFXName); ไม่ใส่ = "default"

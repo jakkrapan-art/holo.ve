@@ -93,6 +93,7 @@ func _setup_buttons():
 	#%PrevButton.pressed.connect(_on_prev_character)
 
 func _on_group_filter_pressed(target_group: String):
+	AudioManager.playSfx(SoundDatabase.SFX_NAME.ui_button_click)
 	if not VISIBLE_BRANCHES_BY_GROUP.has(target_group):
 		return
 	if target_group == currentGroupFilter:
@@ -104,6 +105,7 @@ func _on_group_filter_pressed(target_group: String):
 	_refresh_deck_filters()
 
 func _on_branch_filter_pressed(target_branch: String):
+	AudioManager.playSfx(SoundDatabase.SFX_NAME.ui_button_click)
 	if not _visible_branches_for_group(currentGroupFilter).has(target_branch):
 		return
 	if target_branch == currentBranchFilter:
@@ -186,6 +188,7 @@ func _on_confirm():
 	if _selected_deck.is_empty() or not _selected_deck.has("name") or not _selected_deck.has("data_file"):
 		setActiveStartBtn(false)
 		return
+	AudioManager.playSfx(SoundDatabase.SFX_NAME.ui_button_click)
 	TowerCenter.selected_deck = _selected_deck["name"]
 	TowerCenter.selected_data_file = _selected_deck["data_file"]
 	# Staff selection: persisted via StaffCenter.selected_staff (already set by _refresh_staff_card on bullet/arrow).
@@ -226,4 +229,5 @@ func _refresh_staff_card():
 			_manager_skill_desc.text = skill_desc
 
 func _on_exit():
+	AudioManager.playSfx(SoundDatabase.SFX_NAME.ui_button_click)
 	get_tree().change_scene_to_file("res://scenes/main_menu.tscn")

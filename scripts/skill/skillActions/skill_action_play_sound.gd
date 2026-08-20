@@ -8,6 +8,4 @@ class_name SkillActionPlaySound
 @export var sfxName: String = ""
 
 func execute(_context: SkillContext):
-	if sfxName == "":
-		return
-	AudioManager.playSfx(Utility.parse_string_to_enum(SoundDatabase.SFX_NAME, sfxName))
+	AudioManager.playSfxByName(sfxName)

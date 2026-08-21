@@ -49,6 +49,18 @@ var _placement_prompt: Label = null
 var _placement_prompt_tween: Tween = null
 
 const PLACEMENT_PROMPT_FADE_IN := 0.12
+const DECK_OFFER_PAGE_SIZE := 3
+const DECK_MAX_PREPARED_CANDIDATES := 6
+
+var _deck_run_generation: int = 0
+var _deck_offer_milestone: int = -1
+var _deck_offer_pages: Array = []
+var _deck_offer_page_cursor: int = 0
+var _deck_current_page: Array = []
+var _deck_dev_pending_page: Array = []
+var _deck_preparation_keys: Array = []
+var _deck_shader_warm_allowed: bool = false
+var _deck_processed_milestones: Dictionary = {}
 
 func _unhandled_input(event):
 	# GUI Controls receive input first. Only input the HUD did not consume can
@@ -154,17 +166,18 @@ func _process(_delta):
 
 func _ready():
 	TowerCenter.clearData();
+	_deck_run_generation = TowerCenter.getRunGeneration()
 	# Map folder name = selected_map_file minus ".yaml" (e.g. "forest01.yaml" ->
 	# "forest01"). Single source of identity for this run's enemy/boss data so the
 	# boss pool key matches the getBossList lookup below.
 	var mapName := TowerCenter.selected_map_file.get_basename();
 	var b: BossLibrary = BossLibrary.new(mapName);
 
-	TowerCenter.addDeck(TowerCenter.selected_deck)
+	TowerCenter.loadInitialDeck(TowerCenter.selected_deck)
 	var default = TowerDataLoader.load_data("res://resources/database/towers/", "default_tower")
 	TowerCenter.setDefaultTowerData(default)
 	# (tower-scene cache + skill-effect shader warm are both handled inside
-	# TowerCenter.addDeck above)
+	# TowerCenter.loadInitialDeck above)
 
 	# Staff system: load data → instantiate entity → wire widget → spawn endpoint sprite.
 	setup_staff()
@@ -206,6 +219,9 @@ func _ready():
 		Utility.ConnectSignal(waveController, "onEnemyDead", Callable(self, "_on_enemy_dead_visual"));
 
 	_setup_dev_tools()
+
+func _exit_tree() -> void:
+	TowerCenter.endRun(_deck_run_generation)
 
 func _setup_dev_tools() -> void:
 	if not (OS.has_feature("editor") or OS.has_feature("dev_tools")):
@@ -295,6 +311,8 @@ func _on_staff_died():
 	# Mark game over BEFORE any UI work so popup factories early-return if they fire
 	# concurrently from a wave-end timer or deferred callback.
 	state = "game_over"
+	TowerCenter.cancelDeckPreparation(_deck_run_generation)
+	_deck_run_generation = TowerCenter.getRunGeneration()
 	_hide_placement_ui()
 	if waveController != null:
 		waveController.active = false
@@ -378,13 +396,37 @@ func on_wave_ended():
 	# onto the now-empty field. Field is clear, so a pending cast has no value anyway.
 	if state == "staff_skill_casting":
 		_cancel_staff_skill_cast()
+	_prepareUpcomingDeckOfferIfNeeded()
 
 	# At configured wave milestones, offer one of the remaining decks BEFORE
 	# the normal tower-select popup. Pre-filter empty decks so the popup never
 	# opens with nothing to pick.
 	if deck_unlock_waves.has(waveController.currWave) and !TowerCenter.getAvailableDecks().is_empty():
-		show_deck_popup()
+		_deck_processed_milestones[waveController.currWave] = true
+		if _deck_offer_milestone == waveController.currWave and not _deck_preparation_keys.is_empty():
+			state = "deck_preparing"
+			_clear_inspection()
+			_deck_shader_warm_allowed = true
+			while (
+					state != "game_over"
+					and _deck_run_generation == TowerCenter.getRunGeneration()
+					and not TowerCenter.areDeckPreparationsSettled(
+							_deck_preparation_keys, _deck_run_generation)
+			):
+				await get_tree().process_frame
+			_deck_shader_warm_allowed = false
+			if state == "game_over" or _deck_run_generation != TowerCenter.getRunGeneration():
+				return
+			state = "wave"
+			_pruneDeckOfferPages()
+		if not _deck_offer_pages.is_empty():
+			show_deck_popup()
+		else:
+			_clearDeckOffer()
+			show_popup_panel()
 	else:
+		if deck_unlock_waves.has(waveController.currWave):
+			_deck_processed_milestones[waveController.currWave] = true
 		show_popup_panel()
 
 func show_deck_popup():
@@ -393,6 +435,12 @@ func show_deck_popup():
 		return
 	if _popup_open:
 		return
+	_deck_offer_page_cursor = 0
+	_deck_current_page = []
+	_deck_dev_pending_page = []
+	# Initial candidates are already READY. Keep the management window eligible
+	# for later dev-unlimited pages, which may need their own shader warm pass.
+	_deck_shader_warm_allowed = true
 
 	var popup: UITowerSelect = PopupPanelScene.instantiate() as UITowerSelect
 	_popup_open = true
@@ -411,28 +459,180 @@ func show_deck_popup():
 	popup.setup_with_card_provider(Callable(self, "_build_available_deck_card_result"), 1, "Select Additional Deck")
 
 func _build_available_deck_card_result() -> Dictionary:
+	var page := _takeNextPreparedDeckPage()
 	var cards: Array = []
-	for deck in TowerCenter.getAvailableDecks():
-		var card = TowerSelectData.new(deck.key, 0, 0)
-		var sprite_path = "res://resources/" + deck.info.sprite
-		if ResourceLoader.exists(sprite_path):
-			card.icon = load(sprite_path)
+	for deck_key in page:
+		var card = TowerSelectData.new(deck_key, 0, 0)
+		card.icon = TowerCenter.getPreparedDeckCover(deck_key, _deck_run_generation)
 		cards.append(card)
-	var candidate_count := cards.size()
-	cards.shuffle()
-	return {"cards": cards.slice(0, mini(3, candidate_count)), "candidate_count": candidate_count}
+	var candidate_count := _preparedDeckCandidateCount()
+	if _devUnlimitedDeckRerolls() and _deck_offer_page_cursor >= _deck_offer_pages.size():
+		_beginDevDeckPagePreparation()
+	return {"cards": cards, "candidate_count": candidate_count}
 
 func _on_deck_selected(deck_key: String):
-	TowerCenter.addDeck(deck_key)
+	var committed := TowerCenter.commitPreparedDeck(deck_key, _deck_run_generation)
 	# Hand off the popup flag from the (about-to-free) deck popup to the tower popup.
 	_popup_open = false
-	show_popup_panel()
+	if not committed:
+		TowerCenter.rejectPreparedDeck(
+				deck_key, _deck_run_generation, "commit validation:" + deck_key)
+		_pruneDeckOfferPages()
+		if not _deck_offer_pages.is_empty():
+			show_deck_popup()
+		else:
+			_clearDeckOffer()
+			show_popup_panel()
+	else:
+		_clearDeckOffer()
+		show_popup_panel()
 
 func _on_deck_skipped():
 	# Safety net: getAvailableDecks() pre-filter prevents an empty deck popup
 	# in normal flow. If the popup self-skips anyway, fall through to tower select.
 	_popup_open = false
+	_clearDeckOffer()
 	show_popup_panel()
+
+func _prepareUpcomingDeckOfferIfNeeded() -> void:
+	if state == "game_over" or waveController == null:
+		return
+	var milestone := _nextUnprocessedDeckMilestone()
+	if milestone < 0 or milestone > waveController.currWave + 2:
+		return
+	if _deck_offer_milestone == milestone and not _deck_offer_pages.is_empty():
+		return
+	var available_keys := _availableDeckKeys()
+	if available_keys.is_empty():
+		return
+
+	_clearDeckOffer()
+	_deck_offer_milestone = milestone
+	var first_page := _rollDeckOfferPage(available_keys)
+	var reroll_page := _rollDeckOfferPage(available_keys)
+	_deck_offer_pages = [first_page, reroll_page]
+	var unique_candidates: Dictionary = {}
+	for page in _deck_offer_pages:
+		for deck_key in page:
+			unique_candidates[deck_key] = true
+	_deck_preparation_keys = unique_candidates.keys().slice(0, DECK_MAX_PREPARED_CANDIDATES)
+	_deck_shader_warm_allowed = true
+	TowerCenter.prepareDecks(
+			_deck_preparation_keys,
+			self,
+			_deck_run_generation,
+			Callable(self, "_canPrepareDeckCpu"),
+			Callable(self, "_canWarmDeckShaders"))
+
+func _nextUnprocessedDeckMilestone() -> int:
+	var next_milestone := -1
+	for milestone in deck_unlock_waves:
+		if milestone < waveController.currWave or _deck_processed_milestones.has(milestone):
+			continue
+		if next_milestone < 0 or milestone < next_milestone:
+			next_milestone = milestone
+	return next_milestone
+
+func _availableDeckKeys() -> Array:
+	var keys: Array = []
+	for deck in TowerCenter.getAvailableDecks():
+		keys.append(str(deck.key))
+	return keys
+
+func _rollDeckOfferPage(available_keys: Array) -> Array:
+	var shuffled := available_keys.duplicate()
+	shuffled.shuffle()
+	return shuffled.slice(0, mini(DECK_OFFER_PAGE_SIZE, shuffled.size()))
+
+func _canPrepareDeckCpu() -> bool:
+	return (
+			state != "game_over"
+			and _deck_run_generation == TowerCenter.getRunGeneration()
+			and waveController != null
+			and not waveController.active
+			and (_popup_open or state == "deck_preparing")
+	)
+
+func _canWarmDeckShaders() -> bool:
+	return _deck_shader_warm_allowed and _canPrepareDeckCpu()
+
+func _pruneDeckOfferPages() -> void:
+	var valid_pages: Array = []
+	for page in _deck_offer_pages:
+		var valid_page: Array = []
+		for deck_key in page:
+			if (
+					not TowerCenter.added_decks.has(deck_key)
+					and TowerCenter.isDeckPrepared(deck_key, _deck_run_generation)
+			):
+				valid_page.append(deck_key)
+		if not valid_page.is_empty():
+			valid_pages.append(valid_page)
+	_deck_offer_pages = valid_pages
+	_deck_offer_page_cursor = 0
+
+func _takeNextPreparedDeckPage() -> Array:
+	while _deck_offer_page_cursor < _deck_offer_pages.size():
+		var page: Array = _deck_offer_pages[_deck_offer_page_cursor]
+		_deck_offer_page_cursor += 1
+		var ready_page: Array = []
+		for deck_key in page:
+			if TowerCenter.isDeckPrepared(deck_key, _deck_run_generation):
+				ready_page.append(deck_key)
+		if not ready_page.is_empty():
+			_deck_current_page = ready_page
+			return ready_page
+
+	if _devUnlimitedDeckRerolls():
+		if not _deck_dev_pending_page.is_empty() and TowerCenter.areDeckPreparationsSettled(
+				_deck_dev_pending_page, _deck_run_generation):
+			var ready_page: Array = []
+			for deck_key in _deck_dev_pending_page:
+				if TowerCenter.isDeckPrepared(deck_key, _deck_run_generation):
+					ready_page.append(deck_key)
+			_deck_dev_pending_page = []
+			if not ready_page.is_empty():
+				_deck_current_page = ready_page
+				return ready_page
+	return _deck_current_page
+
+func _preparedDeckCandidateCount() -> int:
+	var eligible_count := _availableDeckKeys().size()
+	if _devUnlimitedDeckRerolls() or _deck_offer_page_cursor < _deck_offer_pages.size():
+		return eligible_count
+	return _deck_current_page.size()
+
+func _beginDevDeckPagePreparation() -> void:
+	if not _devUnlimitedDeckRerolls() or not _deck_dev_pending_page.is_empty():
+		return
+	var available_keys := _availableDeckKeys()
+	if available_keys.is_empty():
+		return
+	_deck_dev_pending_page = _rollDeckOfferPage(available_keys)
+	var retained: Dictionary = {}
+	for deck_key in _deck_current_page + _deck_dev_pending_page:
+		retained[deck_key] = true
+	var retained_keys: Array = retained.keys().slice(0, DECK_MAX_PREPARED_CANDIDATES)
+	TowerCenter.retainDeckPreparations(retained_keys, _deck_run_generation)
+	TowerCenter.prepareDecks(
+			_deck_dev_pending_page,
+			self,
+			_deck_run_generation,
+			Callable(self, "_canPrepareDeckCpu"),
+			Callable(self, "_canWarmDeckShaders"))
+
+func _devUnlimitedDeckRerolls() -> bool:
+	return bool(get_tree().get_meta(&"_dev_unlimited_card_rerolls", false))
+
+func _clearDeckOffer() -> void:
+	TowerCenter.clearDeckPreparations(_deck_run_generation)
+	_deck_offer_milestone = -1
+	_deck_offer_pages = []
+	_deck_offer_page_cursor = 0
+	_deck_current_page = []
+	_deck_dev_pending_page = []
+	_deck_preparation_keys = []
+	_deck_shader_warm_allowed = false
 
 func show_popup_panel():
 	# End-game guard: if the staff has died, never open a new popup over the end screen.
@@ -441,6 +641,9 @@ func show_popup_panel():
 	# Prevent opening multiple popups if this function is called repeatedly
 	if _popup_open:
 		return
+	_prepareUpcomingDeckOfferIfNeeded()
+	if not _deck_preparation_keys.is_empty():
+		_deck_shader_warm_allowed = true
 
 	var popup: UITowerSelect = PopupPanelScene.instantiate() as UITowerSelect;
 	_popup_open = true
@@ -468,7 +671,7 @@ func _on_popup_closed():
 # "A popup is covering the field", split from _popup_open's other meaning ("a popup exists,
 # do not open a second one"). The hide-popup button (coding log) flips only this half.
 func _popup_is_blocking() -> bool:
-	return _popup_open
+	return _popup_open or state == "deck_preparing"
 
 # Inspection and the card-pick modal are mutually exclusive (Director 2026-07-20): the popup
 # draws above the field, so a stats panel - with its inspect outline, and the planned tower
@@ -487,6 +690,9 @@ func _on_tower_select_skipped():
 
 # Handle the selection from the popup
 func _on_option_selected(selection):
+	# Stop a background shader warm before the management popup hands control
+	# back to placement or the next wave.
+	_deck_shader_warm_allowed = false
 	# selection = "gawr_gura"
 	var tower = TowerCenter.getTowerDataByName(selection);
 	if(tower == null):
@@ -533,6 +739,7 @@ func _on_enemy_dead_visual(enemy: Enemy, _cause, _reward):
 		EvoTokenDrop.spawn(enemy.global_position, get_tree().current_scene)
 
 func startWave():
+	_deck_shader_warm_allowed = false
 	_hide_placement_ui()
 	state = "wave"
 	if(waveController):

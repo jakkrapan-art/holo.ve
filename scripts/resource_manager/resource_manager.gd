@@ -12,14 +12,21 @@ static var _sprites: Dictionary = {}
 # RESOURCE SYSTEM
 # -----------------------------
 
-static func loadResources():
-	var towerDatas = [];
-	for k in TowerCenter._towers_data.keys():
-		var data = TowerCenter._towers_data.get(k, null)
-		if(data != null):
-			towerDatas.append(data.data_name)
+static func clearRunTowerResources() -> void:
+	towerCollection = null
+	_sprites.erase("portrait")
 
-	towerCollection = GameResource.new(towerDirPrefix, towerDatas)
+static func loadResources(towerNames: Array = []) -> void:
+	var namesToLoad: Array = towerNames
+	if namesToLoad.is_empty():
+		for k in TowerCenter._towers_data.keys():
+			var data = TowerCenter._towers_data.get(k, null)
+			if data != null:
+				namesToLoad.append(data.data_name)
+
+	if towerCollection == null:
+		towerCollection = GameResource.new(towerDirPrefix, [])
+	towerCollection.loadResource(towerDirPrefix, namesToLoad)
 
 static func getTower(key: String):
 	if towerCollection == null:
@@ -38,11 +45,24 @@ static func loadImage(group, key, path):
 		return null
 	var texture: Texture2D = load(fullPath)
 	if(texture):
-		if(_sprites.has(group) == false):
-			_sprites[group] = {}
-		_sprites[group][key] = texture
+		cacheImage(group, key, texture)
 
 	return texture
+
+static func cacheImage(group, key, texture: Texture2D) -> void:
+	if texture == null:
+		return
+	if not _sprites.has(group):
+		_sprites[group] = {}
+	_sprites[group][key] = texture
+
+static func cacheTowerScenes(scenes: Dictionary) -> void:
+	if towerCollection == null:
+		towerCollection = GameResource.new(towerDirPrefix, [])
+	for key in scenes.keys():
+		var scene := scenes[key] as PackedScene
+		if scene != null:
+			towerCollection.collection[str(key).to_lower()] = scene
 
 # Icon for a synergy display name, already falling back to the grey placeholder.
 # The cache key comes from TowerTrait.name_key (the one identity rule), so the
@@ -66,7 +86,7 @@ static func preloadSynergy():
 	loadImage("synergy", "default", "ui_asset/synergies/default.png")
 
 # Synergy definitions (resources/database/synergy/) keyed by TowerTrait enum id.
-# Loaded next to preloadSynergy() at each addDeck; rebuilt (not accumulated).
+# Loaded with the run's initial deck and reused for later deck commits.
 static var _synergy_data: Dictionary = {}
 
 static func loadSynergyData() -> void:
@@ -147,15 +167,61 @@ static func getSprite(group: String, key: String):
 #
 # Process-wide guard: a shader path warmed once stays warmed (its compiled GPU
 # pipeline persists because we keep the Shader ref alive here), so repeated calls
-# - e.g. a mid-run deck unlock via addDeck - only warm genuinely-new shaders.
+# - e.g. a prepared mid-run deck unlock - only warm genuinely-new shaders.
 static var _warmed_shaders: Dictionary = {}
-static func warmSkillEffectShaders(host: Node) -> void:
+static func warmSkillEffectShaders(host: Node, towerEntries: Array = []) -> void:
 	if host == null or not is_instance_valid(host):
 		return
 
+	var shaderPaths := collectSkillEffectShaderPaths(towerEntries)
+
+	# Skip shaders already warmed this process; only compile genuinely-new ones.
+	var toWarm: Array = []
+	for sp in shaderPaths:
+		if not _warmed_shaders.has(sp):
+			toWarm.append(sp)
+	if toWarm.is_empty():
+		return
+
+	# Draw each pipeline for two frames on a throwaway CanvasLayer, then free.
+	# Must actually rasterize (not visible=false, and on-screen so it isn't
+	# culled) so the RenderingServer compiles the pipeline; the real shader +
+	# render_mode is used so the key matches the in-run cast. At the shaders'
+	# default `progress`=0 the output is ~invisible, and a 2px alpha-low rect
+	# for two frames is imperceptible.
+	var layer := CanvasLayer.new()
+	host.add_child(layer)
+	var resolved: Dictionary = {}
+	for sp in toWarm:
+		var shader = load(sp)
+		if shader == null:
+			resolved[sp] = true
+			continue
+		resolved[sp] = shader
+		var mat := ShaderMaterial.new()
+		mat.shader = shader
+		var rect := ColorRect.new()
+		rect.size = Vector2(2, 2)
+		rect.position = Vector2.ZERO
+		rect.modulate = Color(1, 1, 1, 0.01)
+		rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		rect.material = mat
+		layer.add_child(rect)
+
+	await host.get_tree().process_frame
+	await host.get_tree().process_frame
+	for sp in resolved.keys():
+		_warmed_shaders[sp] = resolved[sp]
+
+	if is_instance_valid(layer):
+		layer.queue_free()
+
+static func collectSkillEffectShaderPaths(towerEntries: Array = []) -> Array:
 	var shaderPaths: Dictionary = {}
-	for k in TowerCenter._towers_data.keys():
-		var entry = TowerCenter._towers_data.get(k, null)
+	var entriesToScan: Array = towerEntries
+	if entriesToScan.is_empty():
+		entriesToScan = TowerCenter._towers_data.values()
+	for entry in entriesToScan:
 		# _towers_data values are YAML wrapper dicts; the TowerData is under "data".
 		var data = entry.get("data", null) if entry is Dictionary else entry
 		if data == null:
@@ -192,47 +258,75 @@ static func warmSkillEffectShaders(host: Node) -> void:
 	# Inspect-highlight outline (tower/enemy click-select): assigned to a
 	# character sprite on first selection, so warm it here with the rest.
 	shaderPaths["res://resources/ui_component/inspect_outline.gdshader"] = true
+	return shaderPaths.keys()
 
-	# Skip shaders already warmed this process; only compile genuinely-new ones.
-	var toWarm: Array = []
-	for sp in shaderPaths.keys():
-		if not _warmed_shaders.has(sp):
-			toWarm.append(sp)
-	if toWarm.is_empty():
-		return
-
-	# Draw each pipeline for two frames on a throwaway CanvasLayer, then free.
-	# Must actually rasterize (not visible=false, and on-screen so it isn't
-	# culled) so the RenderingServer compiles the pipeline; the real shader +
-	# render_mode is used so the key matches the in-run cast. At the shaders'
-	# default `progress`=0 the output is ~invisible, and a 2px alpha-low rect
-	# for two frames is imperceptible.
+static func warmPreparedShaderPaths(
+		host: Node,
+		shaderPaths: Array,
+		canWarm: Callable,
+		isCurrent: Callable) -> bool:
+	if host == null or not is_instance_valid(host):
+		return false
 	var layer := CanvasLayer.new()
+	var rect := ColorRect.new()
+	rect.size = Vector2(2, 2)
+	rect.position = Vector2.ZERO
+	rect.modulate = Color(1, 1, 1, 0.01)
+	rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	layer.add_child(rect)
 	host.add_child(layer)
-	for sp in toWarm:
-		var shader = load(sp)
-		# Mark the resolved path warmed regardless of load result (a missing file
-		# must not retry every unlock); keep the Shader ref so its compiled
-		# pipeline survives scene changes and the skip stays valid next run.
-		if shader == null:
-			_warmed_shaders[sp] = true
-			continue
-		_warmed_shaders[sp] = shader
-		var mat := ShaderMaterial.new()
-		mat.shader = shader
-		var rect := ColorRect.new()
-		rect.size = Vector2(2, 2)
-		rect.position = Vector2.ZERO
-		rect.modulate = Color(1, 1, 1, 0.01)
-		rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		rect.material = mat
-		layer.add_child(rect)
 
-	await host.get_tree().process_frame
-	await host.get_tree().process_frame
+	for sp in shaderPaths:
+		if _warmed_shaders.has(sp):
+			continue
+		var warm_window_ready := false
+		while isCurrent.call() and is_instance_valid(host) and host.is_inside_tree():
+			await host.get_tree().process_frame
+			if isCurrent.call() and canWarm.call():
+				warm_window_ready = true
+				break
+		if not warm_window_ready:
+			if is_instance_valid(layer):
+				layer.queue_free()
+			return false
+		if not ResourceLoader.has_cached(sp):
+			if is_instance_valid(layer):
+				layer.queue_free()
+			return false
+		var shader := ResourceLoader.load(
+				sp, "", ResourceLoader.CACHE_MODE_REUSE) as Shader
+		if shader == null:
+			if is_instance_valid(layer):
+				layer.queue_free()
+			return false
+		var material := ShaderMaterial.new()
+		material.shader = shader
+		var rendered_two_safe_frames := false
+		while isCurrent.call() and is_instance_valid(host) and host.is_inside_tree():
+			while isCurrent.call() and not canWarm.call():
+				await host.get_tree().process_frame
+			if not isCurrent.call() or not is_instance_valid(host):
+				break
+			rect.material = material
+			await host.get_tree().process_frame
+			if not isCurrent.call() or not canWarm.call():
+				rect.material = null
+				continue
+			await host.get_tree().process_frame
+			if not isCurrent.call() or not canWarm.call():
+				rect.material = null
+				continue
+			rendered_two_safe_frames = true
+			break
+		if not rendered_two_safe_frames:
+			if is_instance_valid(layer):
+				layer.queue_free()
+			return false
+		_warmed_shaders[sp] = shader
 
 	if is_instance_valid(layer):
 		layer.queue_free()
+	return true
 
 # Reads the `SHADER_PATH` const off an effect controller script without
 # instantiating it. Returns "" if the script has no such const (warm skipped).

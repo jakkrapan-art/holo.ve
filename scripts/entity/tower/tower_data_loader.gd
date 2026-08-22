@@ -17,8 +17,9 @@ static func load_data(prefix: String, name: String) -> TowerData:
 		push_error("Invalid YAML format: " + path)
 		return null
 
-	var data: Dictionary = parsed
+	return load_from_dict(parsed as Dictionary, name)
 
+static func load_from_dict(data: Dictionary, name: String) -> TowerData:
 	var tower := TowerData.new()
 
 	# Basic config (SAFE: only exported data)

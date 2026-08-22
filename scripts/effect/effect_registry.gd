@@ -1,7 +1,7 @@
 class_name EffectRegistry
 
 # Loads and serves EffectDefs from the canonical registry YAML. Lazy-loaded on
-# first get_def() so load order never matters; addDeck also calls load_all()
+# first get_def() so load order never matters; the initial deck path also calls load_all()
 # up-front alongside the other database loads.
 
 const REGISTRY_PATH := "res://resources/database/effect/effects.yaml"
